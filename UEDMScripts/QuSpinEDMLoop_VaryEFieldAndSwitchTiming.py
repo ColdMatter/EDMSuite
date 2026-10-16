@@ -169,21 +169,22 @@ def QuSpinGo():
     #hc.SetScramblerVoltage(scramblerV)
 
     # calibrate leakage monitors
-    print("calibrating leakage monitors..")
-    print("Is E-field off yet?")
+    # print("calibrating leakage monitors..")
+    # print("Is E-field off yet?")
     # hc.EnableGreenSynth( False )
-    hc.FieldsOff()
-    hc.PollVMonitor()
-    if(hc.CPlusMonitorVoltage * hc.CPlusMonitorScale)>100.0:
-        print("Waiting")
-        System.Threading.Thread.CurrentThread.Join(60000)
-    else:
-        print("E-Field Off")
+    # hc.FieldsOff()
+    # hc.PollVMonitor()
+    # if(hc.CPlusMonitorVoltage * hc.CPlusMonitorScale)>100.0:
+    #     print("Waiting")
+    #     System.Threading.Thread.CurrentThread.Join(60000)
+    # else:
+    #     print("E-Field Off")
     # hc.EnableBleed( True )
     # System.Threading.Thread.CurrentThread.Join(5000)
-    hc.CalibrateIMonitors()
+    # hc.CalibrateIMonitors()
     # hc.EnableBleed( False )
     # System.Threading.Thread.CurrentThread.Join(500)
+    hc.ClearIMonitorChart()
     hc.SetCPlusVoltage(cPlusV)
     hc.SetCMinusVoltage(cMinusV)
     hc.UpdateVoltages()
@@ -191,7 +192,7 @@ def QuSpinGo():
     System.Threading.Thread.CurrentThread.Join(5000)
     print("E-field on")
     hc.EnableEField(True)
-    System.Threading.Thread.CurrentThread.Join(10000)
+    # System.Threading.Thread.CurrentThread.Join(10000)
     # hc.EnableEField( True )
     # hc.EnableGreenSynth( True )
     print("leakage monitors calibrated")
@@ -218,7 +219,7 @@ def QuSpinGo():
                 hc.SwitchEBehlkeAndWait(eCurrentState)
 
                 if (float(i)==0.0):
-                    System.Threading.Thread.CurrentThread.Join(20000)
+                    System.Threading.Thread.CurrentThread.Join(5000)
                 else:
                     System.Threading.Thread.CurrentThread.Join(5000)
                 # Make new block config with correct E Field
@@ -251,6 +252,9 @@ def QuSpinGo():
                 File.Delete(tempConfigFile)
                 
                 blockIndex = blockIndex + 1
+
+                if np.mod(blockIndex,10)==0:
+                    hc.ClearIMonitorChart()
 
                 # if ((blockIndex % kReZeroLeakageMonitorsPeriod) == 0):
                 #     print("Recalibrating leakage monitors.")

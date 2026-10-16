@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bfield"
+version = "0.1.0"
+description = "Magnetic shield characterisation for the lattice eEDM experiment: QZFM magnetometers, NI USB-6008 recording, Twinleaf DG degausser, S(f) sweeps"
+requires-python = ">=3.11"          # tomllib
+dependencies = ["numpy", "scipy", "matplotlib"]
+
+[project.optional-dependencies]
+# the lab PC only: these talk to hardware. Each also needs a vendor
+# runtime that pip cannot install (see LAYOUT.md, "Installing").
+lab = [
+    "pyserial>=3.5",   # QZFM serial link
+    "nidaqmx>=1.0",    # NI USB-6008 (needs the NI-DAQmx driver)
+    "QZFM",            # QuSpin QZFM control package
+    "tio",             # Twinleaf DG degausser (tldevice)
+    "pyvisa>=1.14",    # Tektronix TBS1052B-EDU scope (needs a VISA runtime)
+]
+test = ["pytest", "pyserial"]
+gui = ["PySide6", "pyqtgraph"]
+
+[tool.setuptools.packages.find]
+include = ["bfield*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

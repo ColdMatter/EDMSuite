@@ -129,13 +129,13 @@ namespace ScanMaster.GUI
 			window.ratioPlotCursor = new NationalInstruments.UI.Range(startSpectrumGate, endSpectrumGate);
 			window.differencePlotCursor = new NationalInstruments.UI.Range(startSpectrumGate, endSpectrumGate);
 			//startTOFGate = (int)shotSettings["gateStartTime"];
-			startTOFGate = 100 * (int)shotSettings["TOFgateSelectionStartInMs"];// 100 is the convertion factor for the unit of ms to the unit of clock period. 
-																				// Example:TOFgateSelectionStartInMs=14 means we want to select gate from 14 ms. Then the startTOFGate=1400, which is 1400 numbers of the clock period. 
-																				// The clock period is set to be 10 us, so 1400 clock period is 14000 us, which is 14 ms. 
-																				//endTOFGate = startTOFGate + (int)shotSettings["gateLength"] * (int)shotSettings["clockPeriod"];
-			endTOFGate = 100 * (int)shotSettings["TOFgateSelectionEndInMs"];// This is modified by Guanchen on 01Oct2024
-			bgStartTime = 100 * (int)shotSettings["TOFgateBgStartInMs"];
-			bgEndTime = 100 * (int)shotSettings["TOFgateBgEndInMs"];
+			startTOFGate = (int)shotSettings["sampleRate"] * (int)shotSettings["TOFgateSelectionStartInMs"]/1000; // 100 is the convertion factor for the unit of ms to the unit of clock period. 
+						// Example:TOFgateSelectionStartInMs=14 means we want to select gate from 14 ms. Then the startTOFGate=1400, which is 1400 numbers of the clock period. 
+						// The clock period is set to be 10 us, so 1400 clock period is 14000 us, which is 14 ms. 
+						//endTOFGate = startTOFGate + (int)shotSettings["gateLength"] * (int)shotSettings["clockPeriod"];
+			endTOFGate = (int)shotSettings["sampleRate"] * (int)shotSettings["TOFgateSelectionEndInMs"] / 1000;// This is modified by Guanchen on 01Oct2024
+			bgStartTime = (int)shotSettings["sampleRate"] * (int)shotSettings["TOFgateBgStartInMs"] / 1000;
+			bgEndTime = (int)shotSettings["sampleRate"] * (int)shotSettings["TOFgateBgEndInMs"] / 1000;
 			window.TOFGate = new NationalInstruments.UI.Range(startTOFGate, endTOFGate);
 
 

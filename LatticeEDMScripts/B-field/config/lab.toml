@@ -1,0 +1,60 @@
+# Lab settings for the B-field programs: the facts about THIS bench that the
+# old scripts took as command-line flags every time.
+#
+# To change something on one machine only, put the changed keys in
+# config/lab.local.toml (same layout, git-ignored); it is merged on top.
+# Every run copies the merged config into its session json.
+
+[paths]
+# Where runs are written and where the analysis scripts look. The Box
+# folder; it holds a copy of the old IROP_research/result tree (copied
+# 2026-09-24) plus every new run, bucket by bucket.
+data_root = "C:/Users/cafmot/Box/LatticeEDM/EDM chamber/Magnetic shield/Test data"
+# Where a run goes when no --outdir is given:
+#   "dated"   <data_root>/Oct 2026/15/001_SingleSensorZ -- month, day (two
+#             digits), then the run: numbered through the day across all
+#             programs, named by --name / "Run name" or automatically
+#   "buckets" the old layout: the per-program buckets below
+layout = "dated"
+# Per-program buckets (layout = "buckets"; the old runs live in these).
+bucket_record = "newdata"
+bucket_degauss = "degaussingtest"
+bucket_relax = "degaussrelax"
+bucket_sf = "shield_sf"
+
+# ---------------------------------------------------------------- sensors
+# The sensor heads (number, QuSpin head ID, USB ID, location note) are in
+# config/sensors.toml -- edited from the GUI (QZFM tab, "Manage sensors")
+# or by hand.
+
+[qzfm.defaults]
+gain = "1x"
+zero_cond_pT_per_s = 100.0
+lock_timeout_s = 600.0
+poll_s = 2.0
+zero_shift_warn_pT = 200.0
+
+[daq]
+# NI USB-6008, by its NI MAX name. Empty = auto-detect (refused if two NI
+# devices are present). On the lab PC NI MAX also keeps a stale "Dev1"
+# entry (red cross) for the same card; the working one is Dev2, as in
+# every run since August 2026.
+device = "Dev2"
+fs_hz = 1200.0          # keeps the 923 Hz carrier alias off 77 Hz
+vrange_V = 2.0
+# Fallback wiring for a sensor list without z_input / y_input: the (Z, Y)
+# inputs of the 1st and 2nd sensor, in run order. Each sensor's own wiring
+# is in config/sensors.toml (Manage sensors in the GUI).
+slots = [["ai0", "ai1"], ["ai2", "ai3"]]
+
+[degausser]
+port = "COM5"
+max_amp_A = 8.0         # vendor recipe = unit firmware cap
+# the standing winding since 2026-08-13
+winding = "parallel"
+
+[scope]
+# Tektronix TBS1052B-EDU carries the S(f) drive current. Empty = the one
+# USB instrument VISA finds (refused if there are several).
+resource = ""
+channel = "CH1"

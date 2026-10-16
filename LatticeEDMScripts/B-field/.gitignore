@@ -1,0 +1,16 @@
+# environment
+.venv/
+
+# per-machine settings (copy config/lab.toml's keys you want to change)
+config/lab.local.toml
+
+# measurement data never goes in git -- it lives under data_root
+# (config/lab.toml), which is outside this folder
+data/
+*.meta.json
+*_pT.txt
+*_V.txt
+*_raw.csv
+house*.csv
+*.log
+sim_data/

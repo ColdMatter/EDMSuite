@@ -36,6 +36,7 @@ namespace ScanMaster.Acquire.Plugin
 			scanOutputPlugins.Add("Windfrieksynth F1 Amplitude output", typeof(WindfriekSynthF1AmplitudeOutputPlugin));
 			scanOutputPlugins.Add("Windfrieksynth OP Amplitude output", typeof(WindfriekOPAmplitudeOutputPlugin));
 			scanOutputPlugins.Add("Synth amplitude output", typeof(SynthAmplitudeOutputPlugin));
+			scanOutputPlugins.Add("Novatech synth frequency output", typeof(NovatechSynthFrequencyOutputPlugin));
 			scanOutputPlugins.Add("PG parameter scan", typeof(PGOutputPlugin));
             scanOutputPlugins.Add("TCL scan", typeof(TCLOutputPlugin));
             scanOutputPlugins.Add("DTCL scan", typeof(DTCLOutputPlugin));
@@ -109,6 +110,11 @@ namespace ScanMaster.Acquire.Plugin
 			patternPlugins.Add("Robust Lattice PnP Modulated YAG Pattern Four Shots", typeof(LatticeFourShotPatternPlugin));
 			patternPlugins.Add("Lattice Modulated B-Field Slowing pattern", typeof(LatticeBFieldModPatternPlugin));
 			patternPlugins.Add("Lattice 4Shot Modulated B-Field Slowing pattern", typeof(LatticeBFieldFourShotPatternPlugin));
+			patternPlugins.Add("Classic 4Shot shutter pattern", typeof(ClassicFourShotPatternPlugin));
+			patternPlugins.Add("Classic Single shutter pattern", typeof(ClassicBasicBeamPatternPlugin));
+
+
+
 			// yagPlugins
 			yagPlugins.Add("No YAG", typeof(NullYAGPlugin));
 			yagPlugins.Add("YAG on", typeof(DefaultYAGPlugin));
@@ -123,15 +129,17 @@ namespace ScanMaster.Acquire.Plugin
 			shotGathererPlugins.Add("Buffered event counting gatherer", typeof(BufferedEventCountingShotGathererPlugin));
             shotGathererPlugins.Add("Image grabbing analog gatherer", typeof(ImageGrabbingAnalogShotGathererPlugin));
 			shotGathererPlugins.Add("Modulated four shot analog gatherer", typeof(ModulatedFourAnalogShotGathererPlugin));
-			
+			shotGathererPlugins.Add("Modulated four shot Hybrid gatherer", typeof(ModulatedFourHybridShotGathererPlugin));
 
 			// analog input plugins
 			analogInputPlugins.Add("No analog input", typeof(NullAnalogInputPlugin));
 			analogInputPlugins.Add("Analog input", typeof(DAQMxAnalogInputPlugin));
 			analogInputPlugins.Add("Wavemeter input", typeof(WavemeterInputPlugin));
+			analogInputPlugins.Add("Multiple wavemeter inputs", typeof(MultipleWavemeterInputPlugin));
+			analogInputPlugins.Add("Wavemeter and PD inputs", typeof(UEDMWavemeterPDPlugin));
 
-            //GPIB Input plugins
-            gpibInputPlugins.Add("Single Counter input", typeof(SingleCounterInputPlugin));
+			//GPIB Input plugins
+			gpibInputPlugins.Add("Single Counter input", typeof(SingleCounterInputPlugin));
             gpibInputPlugins.Add("No GPIB input", typeof(NullGPIBInputPlugin));
 			gpibInputPlugins.Add("DMM GPIB input", typeof(DMMInputPlugin));
 			gpibInputPlugins.Add("GPIB input", typeof(GPIBInputPlugin));

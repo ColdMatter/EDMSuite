@@ -301,6 +301,7 @@ namespace WavemeterLock
                     if (lasers.ContainsKey(laserName) && double.TryParse(parts[2], out double voltage))
                     {
                         lasers[laserName].CurrentVoltage = voltage;
+                        lasers[laserName].offsetVoltage = voltage;
                         ui.Log("Restored voltage for " + laserName + ": " + voltage.ToString("F4") + " V");
                     }
                 }
@@ -500,6 +501,7 @@ namespace WavemeterLock
             while (true)
             {
                 polling();
+                Thread.Sleep(2);
             }
         }
 
@@ -521,15 +523,63 @@ namespace WavemeterLock
         {
             while (true)
             {
-                if (WMLState != ControllerState.STOPPED) { 
+                if (WMLState != ControllerState.STOPPED) {
                     foreach (string slave in lasers.Keys){
-                    
+
                         if (lockBlocked.ContainsKey(slave)){
-                        
+
                             checkBlockStatus(slave);
                         }
                     }
                 }
+                Thread.Sleep(2);
+            }
+        }
+
+        private const int MaxGlitches = 3;
+
+        private string WlmFaultDescription(string laserName, double measuredFreq)
+        {
+            switch ((int)measuredFreq)
+            {
+                case  0: return "no WLM value yet (ErrNoValue)";
+                case -1: return "no signal (ErrNoSignal)";
+                case -2: return "bad signal (ErrBadSignal)";
+                case -3: return "signal too low / underexposed (ErrLowSignal)";
+                case -4: return "signal too high / overexposed (ErrBigSignal)";
+                case -5: return "wavemeter not connected (ErrWlmMissing)";
+                case -6: return "channel not available (ErrNotAvailable)";
+                case -8: return "no pulse (ErrNoPulse)";
+                case -10: return "channel not available (ErrChannelNotAvailable)";
+                case -13: return "WLM division by zero (ErrDiv0)";
+                case -14: return "WLM out of range (ErrOutOfRange)";
+                case -15: return "unit not available (ErrUnitNotAvailable)";
+                case -26: return "TCP error (ErrTCPErr)";
+                default:
+                    if (measuredFreq <= 0)
+                        return "unknown WLM error code " + ((int)measuredFreq).ToString();
+                    double errorMHz = 1e6 * (measuredFreq - lasers[laserName].setFrequency);
+                    return "frequency jump " + errorMHz.ToString("F2") +
+                           " MHz (measured " + measuredFreq.ToString("F6") +
+                           " THz, set " + lasers[laserName].setFrequency.ToString("F6") + " THz)";
+            }
+        }
+
+        private void HandleLockFault(string slave)
+        {
+            lasers[slave].glitchCount++;
+            string description = WlmFaultDescription(slave, lasers[slave].currentFrequency);
+            if (lasers[slave].glitchCount > MaxGlitches)
+            {
+                faultyLaser = slave;
+                lasers[slave].glitchCount = 0;
+                lasers[slave].DisengageLock();
+                indicateRemoteConnection(lasers[slave].WLMChannel, false);
+                ui.Log(slave + " lock disengaged after " + MaxGlitches + " glitches: " + description);
+            }
+            else
+            {
+                ui.Log(slave + " glitch " + lasers[slave].glitchCount + "/" + MaxGlitches + ": " + description);
             }
         }
 
@@ -553,13 +603,11 @@ namespace WavemeterLock
                             if (Math.Abs(getFrequency(lasers[slave].WLMChannel) - lasers[slave].setFrequency) > freqTolerance)//In the case of over/underexpose or big mode-hop, disengage lock
 
                             {
-                                faultyLaser = slave;
-                                lasers[slave].DisengageLock();
-                                indicateRemoteConnection(lasers[slave].WLMChannel, false);
-                                ui.Log("Laser " + slave + " lock disengaged due to wavemeter reading error or large frequency jump.");
+                                HandleLockFault(slave);
                             }
                             else
                             {
+                                lasers[slave].glitchCount = 0;
                                 lasers[slave].UpdateLock();
                             }
                         }
@@ -583,13 +631,11 @@ namespace WavemeterLock
                             if (Math.Abs(getFrequency(lasers[slave].WLMChannel) - lasers[slave].setFrequency) > freqTolerance)//In the case of over/underexpose or big mode-hop, disengage lock
 
                             {
-                                faultyLaser = slave;
-                                lasers[slave].DisengageLock();
-                                indicateRemoteConnection(lasers[slave].WLMChannel, false);
-                                ui.Log("Laser " + slave + " lock disengaged due to wavemeter reading error or large frequency jump.");
+                                HandleLockFault(slave);
                             }
                             else
                             {
+                                lasers[slave].glitchCount = 0;
                                 lasers[slave].UpdateLock();
                             }
                         }
@@ -668,7 +714,8 @@ namespace WavemeterLock
             if (!System.IO.File.Exists(filename))
             {
                 string header = "Time \t Set_Frequency(THz) \t Current_Frequency(THz) \t " +
-                   "Frequency_Error(MHz) \t Lock_Status \t Lock_Block_Status \t ";
+                   "Frequency_Error(MHz) \t Lock_Status \t Lock_Block_Status \t "+
+                   "Current Voltage \t";
                 using (System.IO.StreamWriter file =
                 new System.IO.StreamWriter(filename, false))
                     file.WriteLine(header);
@@ -678,7 +725,9 @@ namespace WavemeterLock
                 new System.IO.StreamWriter(filename, true))
             {
                 file.WriteLine(dt.TimeOfDay.ToString() + "\t" + lasers[slave].setFrequency + "\t" + lasers[slave].currentFrequency + "\t" +
-                    lasers[slave].FrequencyError * 1000000.0 + "\t" + lasers[slave].lState.ToString() + "\t" + lasers[slave].isBlocked.ToString());
+                    lasers[slave].FrequencyError * 1000000.0 + "\t" + lasers[slave].lState.ToString() + "\t" + lasers[slave].isBlocked.ToString()+"\t"+
+                    lasers[slave].CurrentVoltage
+                    );
                 file.Flush();
             }
         }

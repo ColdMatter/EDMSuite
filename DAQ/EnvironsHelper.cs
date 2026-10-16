@@ -228,7 +228,7 @@ namespace DAQ.Environment
                     Hardware = new PXIEDMHardware();
                     FileSystem = new PixieFileSystem();
                     Debug = false;
-                    serverComputerName = "IC-CZC136CFDJ";
+                    serverComputerName = "IC-CZC136CFDJ"; // "IC-CZC222C0F4";// 
                     wavemeterLockTCPChannel = 1012;
                     serverTCPChannel = 1984;
                     //ExperimentType = "edm";
@@ -340,16 +340,16 @@ namespace DAQ.Environment
                     // FileSystem = new SSWARBFileSystem();
                     Debug = true;
                     break;
-
+                //THIS IS THE ACTUAL ULTRACOLD EDM CENTAUR
                 case "CENTAUR":
                     Hardware = new BufferClassicHardware();
                     FileSystem = new CENTAURFileSystem();
                     Debug = false;
-                    viewerServerComputerName = "ULTRACOLDEDM";
-                    serverComputerName = "ULTRACOLDEDM";
-                    viewerServerTCPChannel = 1997;
-                    serverTCPChannel = 1997;
-                    wavemeterLockTCPChannel = 2345;
+                    //viewerServerComputerName = "WS8SERVERHUXLEY";
+                    serverComputerName = "WS8SERVERHUXLEY";
+                    //viewerServerTCPChannel = 2001;
+                    serverTCPChannel = 2001;
+                    wavemeterLockTCPChannel = 1919;
                     break;
 
                 case "PH-RHENDRIC-02":

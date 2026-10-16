@@ -10,7 +10,7 @@ namespace DAQ
 		{
 			//Paths.Add("mathPath", "c:/program files/wolfram research/mathematica/10.4/mathkernel.exe");
 			Paths.Add("settingsPath", "D:\\OneDrive - Imperial College London\\Data\\settings\\");
-            Paths.Add("scanMasterDataPath", "D:\\OneDrive - Imperial College London\\Data\\general\\");
+            Paths.Add("scanMasterDataPath", "C:\\Users\\EDM\\Box\\LatticeEDM\\data");
             Paths.Add("fakeData", "D:\\OneDrive - Imperial College London\\Data\\examples\\");
             Paths.Add("transferCavityData", "D:\\OneDrive - Imperial College London\\Data\\transfer cavity\\");
             Paths.Add("MOTMasterDataPath", "D:\\OneDrive - Imperial College London\\Data\\mot_master_data\\");
@@ -19,10 +19,9 @@ namespace DAQ
             Paths.Add("MOTMasterExePath", "D:\\EDMSuite\\MOTMaster\\bin\\EDM\\");
             Paths.Add("ExternalFilesPath", "D:\\Temp_Camera_Images\\");
             Paths.Add("HardwareClassPath", "D:\\EDMSuite\\DAQ\\PXIEDMHardware.cs");
-
-			DataSearchPaths.Add(Paths["MOTMasterDataPath"]);
-			
-			SortDataByDate = true;
+            Paths.Add("wavemeterLockData", "C:\\Users\\EDM\\OneDrive - Imperial College London\\Documents\\WavemeterLockData\\");
+            DataSearchPaths.Add(Paths["MOTMasterDataPath"]);
+			SortDataByDate = false;
 		}
 	}
 }

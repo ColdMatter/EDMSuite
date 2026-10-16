@@ -161,6 +161,14 @@ namespace UEDMHardwareControl
             this.Show_DeviceKey = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.tabPagePumping = new System.Windows.Forms.TabPage();
+            this.btQueryMWSynthTemperatureDetection = new System.Windows.Forms.Button();
+            this.tbMWSynthTemperatureMonitorDetection = new System.Windows.Forms.TextBox();
+            this.btQueryMWSynthTemperature = new System.Windows.Forms.Button();
+            this.labelDetectSynthTemp = new System.Windows.Forms.Label();
+            this.tbMWSynthTemperatureMonitor = new System.Windows.Forms.TextBox();
+            this.btQueryMWSynthTemperatureDetectionB = new System.Windows.Forms.Button();
+            this.tbMWSynthTemperatureMonitorDetectionB = new System.Windows.Forms.TextBox();
+            this.labelDetectSynthTempB = new System.Windows.Forms.Label();
             this.groupBoxMWSwitch = new System.Windows.Forms.GroupBox();
             this.labelF0 = new System.Windows.Forms.Label();
             this.labelF1 = new System.Windows.Forms.Label();
@@ -172,7 +180,12 @@ namespace UEDMHardwareControl
             this.ledChADetA = new NationalInstruments.UI.WindowsForms.Led();
             this.labelMWSwitchState = new System.Windows.Forms.Label();
             this.cBMWSwitchState = new System.Windows.Forms.CheckBox();
+            this.labelOPSynthTemp = new System.Windows.Forms.Label();
             this.groupBoxStirapRF = new System.Windows.Forms.GroupBox();
+            this.label48 = new System.Windows.Forms.Label();
+            this.label47 = new System.Windows.Forms.Label();
+            this.tbStirapRFfreqFalseValue = new System.Windows.Forms.TextBox();
+            this.tbStirapRFfreqTrueValue = new System.Windows.Forms.TextBox();
             this.labelStirapRFAmp = new System.Windows.Forms.Label();
             this.labelStirapRFFreq = new System.Windows.Forms.Label();
             this.cbStirapRFOn = new System.Windows.Forms.CheckBox();
@@ -185,8 +198,6 @@ namespace UEDMHardwareControl
             this.labelStirapRF = new System.Windows.Forms.Label();
             this.tbStirapRFFreqMon = new System.Windows.Forms.TextBox();
             this.groupBoxWindfreakDetection = new System.Windows.Forms.GroupBox();
-            this.btQueryMWSynthTemperatureDetection = new System.Windows.Forms.Button();
-            this.labelDetectSynthTemp = new System.Windows.Forms.Label();
             this.groupBoxMWCHAdetection = new System.Windows.Forms.GroupBox();
             this.cbCHATrigger = new System.Windows.Forms.CheckBox();
             this.cbCHAPAPoweredOnDetection = new System.Windows.Forms.CheckBox();
@@ -208,7 +219,6 @@ namespace UEDMHardwareControl
             this.tbMWCHAFrequencySetpointDetection = new System.Windows.Forms.TextBox();
             this.labelDetectMicrowavesChAFreq = new System.Windows.Forms.Label();
             this.tbMWCHAFrequencyMonitorDetection = new System.Windows.Forms.TextBox();
-            this.tbMWSynthTemperatureMonitorDetection = new System.Windows.Forms.TextBox();
             this.groupBoxMWCHBdetection = new System.Windows.Forms.GroupBox();
             this.cbCHBTrigger = new System.Windows.Forms.CheckBox();
             this.cbCHBPLLPoweredOnDetection = new System.Windows.Forms.CheckBox();
@@ -229,9 +239,27 @@ namespace UEDMHardwareControl
             this.btUpdateMWCHBFrequencyDetection = new System.Windows.Forms.Button();
             this.tbMWCHBFrequencySetpointDetection = new System.Windows.Forms.TextBox();
             this.tbMWCHBFrequencyMonitorDetection = new System.Windows.Forms.TextBox();
+            this.groupBoxMWDetectionB = new System.Windows.Forms.GroupBox();
+            this.cbTriggerDetectionB = new System.Windows.Forms.CheckBox();
+            this.cbPLLPoweredOnDetectionB = new System.Windows.Forms.CheckBox();
+            this.cbPAPoweredOnDetectionB = new System.Windows.Forms.CheckBox();
+            this.cbRFMutedDetectionB = new System.Windows.Forms.CheckBox();
+            this.btQueryMWPowerDetectionB = new System.Windows.Forms.Button();
+            this.btQueryMWFrequencyDetectionB = new System.Windows.Forms.Button();
+            this.btIncrementMWPowerDetectionB = new System.Windows.Forms.Button();
+            this.tbMWPowerIncrementDetectionB = new System.Windows.Forms.TextBox();
+            this.btUpdateMWPowerDetectionB = new System.Windows.Forms.Button();
+            this.tbMWPowerSetpointDetectionB = new System.Windows.Forms.TextBox();
+            this.labelDetectMicrowavesPowerDetectionB = new System.Windows.Forms.Label();
+            this.tbMWPowerMonitorDetectionB = new System.Windows.Forms.TextBox();
+            this.comboBoxMWSetpointUnitDetectionB = new System.Windows.Forms.ComboBox();
+            this.comboBoxMWIncrementUnitDetectionB = new System.Windows.Forms.ComboBox();
+            this.btIncrementMWFrequencyDetectionB = new System.Windows.Forms.Button();
+            this.tbMWFrequencyIncrementDetectionB = new System.Windows.Forms.TextBox();
+            this.btUpdateMWFrequencyDetectionB = new System.Windows.Forms.Button();
+            this.tbMWFrequencySetpointDetectionB = new System.Windows.Forms.TextBox();
+            this.tbMWFrequencyMonitorDetectionB = new System.Windows.Forms.TextBox();
             this.groupBoxWindfreaksynthhd = new System.Windows.Forms.GroupBox();
-            this.btQueryMWSynthTemperature = new System.Windows.Forms.Button();
-            this.labelOPSynthTemp = new System.Windows.Forms.Label();
             this.groupBoxMWCHA = new System.Windows.Forms.GroupBox();
             this.cbCHARFTrigger = new System.Windows.Forms.CheckBox();
             this.btCHAPLLPowerOnInfo = new System.Windows.Forms.Button();
@@ -256,31 +284,6 @@ namespace UEDMHardwareControl
             this.tbMWCHAFrequencySetpoint = new System.Windows.Forms.TextBox();
             this.labelMicrowavesChannelAFrequency = new System.Windows.Forms.Label();
             this.tbMWCHAFrequencyMonitor = new System.Windows.Forms.TextBox();
-            this.tbMWSynthTemperatureMonitor = new System.Windows.Forms.TextBox();
-            this.groupBoxMWCHB = new System.Windows.Forms.GroupBox();
-            this.cbCHBRFTrigger = new System.Windows.Forms.CheckBox();
-            this.btCHBPLLPowerOnInfo = new System.Windows.Forms.Button();
-            this.btCHBPAPowerOnInfo = new System.Windows.Forms.Button();
-            this.btCHBRFMuteInfo = new System.Windows.Forms.Button();
-            this.cbCHBPLLPoweredOn = new System.Windows.Forms.CheckBox();
-            this.cbCHBPAPoweredOn = new System.Windows.Forms.CheckBox();
-            this.cbCHBRFMuted = new System.Windows.Forms.CheckBox();
-            this.btQueryMWCHBPower = new System.Windows.Forms.Button();
-            this.btQueryMWCHBFrequency = new System.Windows.Forms.Button();
-            this.btIncrementMWCHBPower = new System.Windows.Forms.Button();
-            this.tbMWCHBPowerIncrement = new System.Windows.Forms.TextBox();
-            this.btUpdateMWCHBPower = new System.Windows.Forms.Button();
-            this.tbMWCHBPowerSetpoint = new System.Windows.Forms.TextBox();
-            this.labelMicrowavesChannelBPower = new System.Windows.Forms.Label();
-            this.tbMWCHBPowerMonitor = new System.Windows.Forms.TextBox();
-            this.comboBoxMWCHBSetpointUnit = new System.Windows.Forms.ComboBox();
-            this.comboBoxMWCHBIncrementUnit = new System.Windows.Forms.ComboBox();
-            this.btIncrementMWCHBFrequency = new System.Windows.Forms.Button();
-            this.tbMWCHBFrequencyIncrement = new System.Windows.Forms.TextBox();
-            this.btUpdateMWCHBFrequency = new System.Windows.Forms.Button();
-            this.tbMWCHBFrequencySetpoint = new System.Windows.Forms.TextBox();
-            this.labelMicrowavesChannelBFrequency = new System.Windows.Forms.Label();
-            this.tbMWCHBFrequencyMonitor = new System.Windows.Forms.TextBox();
             this.groupBoxRF = new System.Windows.Forms.GroupBox();
             this.labelRFStatus = new System.Windows.Forms.Label();
             this.tbRFStatus = new System.Windows.Forms.TextBox();
@@ -422,6 +425,7 @@ namespace UEDMHardwareControl
             this.eOnCheck = new System.Windows.Forms.CheckBox();
             this.cPlusTextBox = new System.Windows.Forms.TextBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.pollftTCheckBox = new System.Windows.Forms.CheckBox();
             this.pollVCheckBox = new System.Windows.Forms.CheckBox();
             this.tbiMonitorPollPeriod = new System.Windows.Forms.TextBox();
             this.changePollPeriodButton = new System.Windows.Forms.Button();
@@ -779,8 +783,61 @@ namespace UEDMHardwareControl
             this.btinfoCCDExposure = new System.Windows.Forms.Button();
             this.tbCCDShotCount = new System.Windows.Forms.TextBox();
             this.labelCCDShotCount = new System.Windows.Forms.Label();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.PDMonitorTabPage = new System.Windows.Forms.TabPage();
+            this.queryPDButton = new System.Windows.Forms.Button();
+            this.PDConvertToMwCheckBox = new System.Windows.Forms.CheckBox();
+            this.labelPDChannel = new System.Windows.Forms.Label();
+            this.labelPDValue = new System.Windows.Forms.Label();
+            this.labelPDGain = new System.Windows.Forms.Label();
+            this.labelPDLog = new System.Windows.Forms.Label();
+            this.labelPD1 = new System.Windows.Forms.Label();
+            this.PD1MonitorTextBox = new System.Windows.Forms.TextBox();
+            this.PD1GainComboBox = new System.Windows.Forms.ComboBox();
+            this.PD1LogCheck = new System.Windows.Forms.CheckBox();
+            this.labelPDLogDuration = new System.Windows.Forms.Label();
+            this.PDLogDurationTextBox = new System.Windows.Forms.TextBox();
+            this.labelPDSamplePeriod = new System.Windows.Forms.Label();
+            this.PDSamplePeriodTextBox = new System.Windows.Forms.TextBox();
+            this.labelPDLogDirectory = new System.Windows.Forms.Label();
+            this.PDLogDirectoryTextBox = new System.Windows.Forms.TextBox();
+            this.PDLogDirectoryBrowseButton = new System.Windows.Forms.Button();
+            this.startPDLogButton = new System.Windows.Forms.Button();
+            this.stopPDLogButton = new System.Windows.Forms.Button();
+            this.labelPD2 = new System.Windows.Forms.Label();
+            this.PD2MonitorTextBox = new System.Windows.Forms.TextBox();
+            this.PD2GainComboBox = new System.Windows.Forms.ComboBox();
+            this.PD2LogCheck = new System.Windows.Forms.CheckBox();
+            this.labelPD3 = new System.Windows.Forms.Label();
+            this.PD3MonitorTextBox = new System.Windows.Forms.TextBox();
+            this.PD3GainComboBox = new System.Windows.Forms.ComboBox();
+            this.PD3LogCheck = new System.Windows.Forms.CheckBox();
+            this.labelPD4 = new System.Windows.Forms.Label();
+            this.PD4MonitorTextBox = new System.Windows.Forms.TextBox();
+            this.PD4GainComboBox = new System.Windows.Forms.ComboBox();
+            this.PD4LogCheck = new System.Windows.Forms.CheckBox();
+            this.labelPD5 = new System.Windows.Forms.Label();
+            this.PD5MonitorTextBox = new System.Windows.Forms.TextBox();
+            this.PD5GainComboBox = new System.Windows.Forms.ComboBox();
+            this.PD5LogCheck = new System.Windows.Forms.CheckBox();
+            this.labelPD6 = new System.Windows.Forms.Label();
+            this.PD6MonitorTextBox = new System.Windows.Forms.TextBox();
+            this.PD6GainComboBox = new System.Windows.Forms.ComboBox();
+            this.PD6LogCheck = new System.Windows.Forms.CheckBox();
+            this.labelPD7 = new System.Windows.Forms.Label();
+            this.PD7MonitorTextBox = new System.Windows.Forms.TextBox();
+            this.PD7GainComboBox = new System.Windows.Forms.ComboBox();
+            this.PD7LogCheck = new System.Windows.Forms.CheckBox();
+            this.labelPD8 = new System.Windows.Forms.Label();
+            this.PD8MonitorTextBox = new System.Windows.Forms.TextBox();
+            this.PD8GainComboBox = new System.Windows.Forms.ComboBox();
+            this.PD8LogCheck = new System.Windows.Forms.CheckBox();
+            this.labelPDFileName = new System.Windows.Forms.Label();
+            this.PDFileNameTextBox = new System.Windows.Forms.TextBox();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.calibrationVoltageV = new System.Windows.Forms.TextBox();
+            this.calibrationPowerV = new System.Windows.Forms.TextBox();
+            this.VcoolingPowerBox = new System.Windows.Forms.TextBox();
+            this.label46 = new System.Windows.Forms.Label();
             this.label44 = new System.Windows.Forms.Label();
             this.label42 = new System.Windows.Forms.Label();
             this.VcoolingMonitorUpdateButton = new System.Windows.Forms.Button();
@@ -796,10 +853,6 @@ namespace UEDMHardwareControl
             this.HcoolingMonitorUpdateButton = new System.Windows.Forms.Button();
             this.HcoolingMonitorTextBox = new System.Windows.Forms.TextBox();
             this.label36 = new System.Windows.Forms.Label();
-            this.label46 = new System.Windows.Forms.Label();
-            this.VcoolingPowerBox = new System.Windows.Forms.TextBox();
-            this.calibrationPowerV = new System.Windows.Forms.TextBox();
-            this.calibrationVoltageV = new System.Windows.Forms.TextBox();
             this.gbTempMonitors.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -817,9 +870,9 @@ namespace UEDMHardwareControl
             this.groupBoxWindfreakDetection.SuspendLayout();
             this.groupBoxMWCHAdetection.SuspendLayout();
             this.groupBoxMWCHBdetection.SuspendLayout();
+            this.groupBoxMWDetectionB.SuspendLayout();
             this.groupBoxWindfreaksynthhd.SuspendLayout();
             this.groupBoxMWCHA.SuspendLayout();
-            this.groupBoxMWCHB.SuspendLayout();
             this.groupBoxRF.SuspendLayout();
             this.tabPageBfield.SuspendLayout();
             this.groupBoxbUSB.SuspendLayout();
@@ -888,9 +941,7 @@ namespace UEDMHardwareControl
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart6)).BeginInit();
             this.tabCCDCamera.SuspendLayout();
-            this.tabPage3.SuspendLayout();
-            this.groupBox9.SuspendLayout();
-            this.HCoolingGroupBox.SuspendLayout();
+            this.PDMonitorTabPage.SuspendLayout();
             this.SuspendLayout();
             // 
             // gbTempMonitors
@@ -909,7 +960,7 @@ namespace UEDMHardwareControl
             this.gbTempMonitors.Margin = new System.Windows.Forms.Padding(4);
             this.gbTempMonitors.Name = "gbTempMonitors";
             this.gbTempMonitors.Padding = new System.Windows.Forms.Padding(4);
-            this.gbTempMonitors.Size = new System.Drawing.Size(272, 201);
+            this.gbTempMonitors.Size = new System.Drawing.Size(243, 201);
             this.gbTempMonitors.TabIndex = 0;
             this.gbTempMonitors.TabStop = false;
             this.gbTempMonitors.Text = "Temperature Monitors";
@@ -917,7 +968,7 @@ namespace UEDMHardwareControl
             // labelTS1
             // 
             this.labelTS1.AutoSize = true;
-            this.labelTS1.Location = new System.Drawing.Point(69, 97);
+            this.labelTS1.Location = new System.Drawing.Point(48, 97);
             this.labelTS1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelTS1.Name = "labelTS1";
             this.labelTS1.Size = new System.Drawing.Size(29, 17);
@@ -928,7 +979,7 @@ namespace UEDMHardwareControl
             // 
             this.tbTS1.BackColor = System.Drawing.SystemColors.MenuText;
             this.tbTS1.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbTS1.Location = new System.Drawing.Point(108, 95);
+            this.tbTS1.Location = new System.Drawing.Point(87, 95);
             this.tbTS1.Margin = new System.Windows.Forms.Padding(4);
             this.tbTS1.Name = "tbTS1";
             this.tbTS1.ReadOnly = true;
@@ -939,7 +990,7 @@ namespace UEDMHardwareControl
             // 
             this.tbTSF6.BackColor = System.Drawing.SystemColors.MenuText;
             this.tbTSF6.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbTSF6.Location = new System.Drawing.Point(108, 159);
+            this.tbTSF6.Location = new System.Drawing.Point(87, 159);
             this.tbTSF6.Margin = new System.Windows.Forms.Padding(4);
             this.tbTSF6.Name = "tbTSF6";
             this.tbTSF6.ReadOnly = true;
@@ -949,7 +1000,7 @@ namespace UEDMHardwareControl
             // labelTSF6
             // 
             this.labelTSF6.AutoSize = true;
-            this.labelTSF6.Location = new System.Drawing.Point(61, 161);
+            this.labelTSF6.Location = new System.Drawing.Point(40, 161);
             this.labelTSF6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelTSF6.Name = "labelTSF6";
             this.labelTSF6.Size = new System.Drawing.Size(37, 17);
@@ -960,7 +1011,7 @@ namespace UEDMHardwareControl
             // 
             this.tbTNeon.BackColor = System.Drawing.SystemColors.MenuText;
             this.tbTNeon.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbTNeon.Location = new System.Drawing.Point(108, 127);
+            this.tbTNeon.Location = new System.Drawing.Point(87, 127);
             this.tbTNeon.Margin = new System.Windows.Forms.Padding(4);
             this.tbTNeon.Name = "tbTNeon";
             this.tbTNeon.ReadOnly = true;
@@ -970,7 +1021,7 @@ namespace UEDMHardwareControl
             // labelTNeon
             // 
             this.labelTNeon.AutoSize = true;
-            this.labelTNeon.Location = new System.Drawing.Point(52, 129);
+            this.labelTNeon.Location = new System.Drawing.Point(31, 129);
             this.labelTNeon.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelTNeon.Name = "labelTNeon";
             this.labelTNeon.Size = new System.Drawing.Size(46, 17);
@@ -981,7 +1032,7 @@ namespace UEDMHardwareControl
             // 
             this.tbTS2.BackColor = System.Drawing.SystemColors.MenuText;
             this.tbTS2.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbTS2.Location = new System.Drawing.Point(108, 63);
+            this.tbTS2.Location = new System.Drawing.Point(87, 63);
             this.tbTS2.Margin = new System.Windows.Forms.Padding(4);
             this.tbTS2.Name = "tbTS2";
             this.tbTS2.ReadOnly = true;
@@ -991,7 +1042,7 @@ namespace UEDMHardwareControl
             // labelTS2
             // 
             this.labelTS2.AutoSize = true;
-            this.labelTS2.Location = new System.Drawing.Point(69, 65);
+            this.labelTS2.Location = new System.Drawing.Point(48, 65);
             this.labelTS2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelTS2.Name = "labelTS2";
             this.labelTS2.Size = new System.Drawing.Size(29, 17);
@@ -1001,7 +1052,7 @@ namespace UEDMHardwareControl
             // labelTCell
             // 
             this.labelTCell.AutoSize = true;
-            this.labelTCell.Location = new System.Drawing.Point(64, 33);
+            this.labelTCell.Location = new System.Drawing.Point(43, 33);
             this.labelTCell.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelTCell.Name = "labelTCell";
             this.labelTCell.Size = new System.Drawing.Size(35, 17);
@@ -1012,7 +1063,7 @@ namespace UEDMHardwareControl
             // 
             this.tbTCell.BackColor = System.Drawing.SystemColors.MenuText;
             this.tbTCell.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbTCell.Location = new System.Drawing.Point(108, 31);
+            this.tbTCell.Location = new System.Drawing.Point(87, 31);
             this.tbTCell.Margin = new System.Windows.Forms.Padding(4);
             this.tbTCell.Name = "tbTCell";
             this.tbTCell.ReadOnly = true;
@@ -1022,7 +1073,7 @@ namespace UEDMHardwareControl
             // labelPBeamline
             // 
             this.labelPBeamline.AutoSize = true;
-            this.labelPBeamline.Location = new System.Drawing.Point(29, 60);
+            this.labelPBeamline.Location = new System.Drawing.Point(8, 60);
             this.labelPBeamline.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelPBeamline.Name = "labelPBeamline";
             this.labelPBeamline.Size = new System.Drawing.Size(70, 17);
@@ -1033,7 +1084,7 @@ namespace UEDMHardwareControl
             // 
             this.tbPBeamline.BackColor = System.Drawing.SystemColors.MenuText;
             this.tbPBeamline.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbPBeamline.Location = new System.Drawing.Point(108, 57);
+            this.tbPBeamline.Location = new System.Drawing.Point(87, 57);
             this.tbPBeamline.Margin = new System.Windows.Forms.Padding(4);
             this.tbPBeamline.Name = "tbPBeamline";
             this.tbPBeamline.ReadOnly = true;
@@ -1052,7 +1103,7 @@ namespace UEDMHardwareControl
             this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox1.Size = new System.Drawing.Size(272, 132);
+            this.groupBox1.Size = new System.Drawing.Size(243, 132);
             this.groupBox1.TabIndex = 8;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Pressure Monitors";
@@ -1061,7 +1112,7 @@ namespace UEDMHardwareControl
             // 
             this.tbPDetection.BackColor = System.Drawing.SystemColors.MenuText;
             this.tbPDetection.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbPDetection.Location = new System.Drawing.Point(108, 92);
+            this.tbPDetection.Location = new System.Drawing.Point(87, 92);
             this.tbPDetection.Margin = new System.Windows.Forms.Padding(4);
             this.tbPDetection.Name = "tbPDetection";
             this.tbPDetection.ReadOnly = true;
@@ -1071,7 +1122,7 @@ namespace UEDMHardwareControl
             // labelPDetection
             // 
             this.labelPDetection.AutoSize = true;
-            this.labelPDetection.Location = new System.Drawing.Point(29, 96);
+            this.labelPDetection.Location = new System.Drawing.Point(8, 96);
             this.labelPDetection.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelPDetection.Name = "labelPDetection";
             this.labelPDetection.Size = new System.Drawing.Size(72, 17);
@@ -1081,7 +1132,7 @@ namespace UEDMHardwareControl
             // labelPSource
             // 
             this.labelPSource.AutoSize = true;
-            this.labelPSource.Location = new System.Drawing.Point(41, 27);
+            this.labelPSource.Location = new System.Drawing.Point(20, 27);
             this.labelPSource.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelPSource.Name = "labelPSource";
             this.labelPSource.Size = new System.Drawing.Size(57, 17);
@@ -1092,7 +1143,7 @@ namespace UEDMHardwareControl
             // 
             this.tbPSource.BackColor = System.Drawing.SystemColors.MenuText;
             this.tbPSource.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbPSource.Location = new System.Drawing.Point(108, 23);
+            this.tbPSource.Location = new System.Drawing.Point(87, 23);
             this.tbPSource.Margin = new System.Windows.Forms.Padding(4);
             this.tbPSource.Name = "tbPSource";
             this.tbPSource.ReadOnly = true;
@@ -1108,7 +1159,7 @@ namespace UEDMHardwareControl
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(8, 1, 0, 1);
-            this.menuStrip1.Size = new System.Drawing.Size(1715, 30);
+            this.menuStrip1.Size = new System.Drawing.Size(1648, 26);
             this.menuStrip1.TabIndex = 17;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -1119,7 +1170,7 @@ namespace UEDMHardwareControl
             this.saveToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 28);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 24);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // openToolStripMenuItem
@@ -1268,7 +1319,7 @@ namespace UEDMHardwareControl
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.statusToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(75, 28);
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(75, 24);
             this.optionsToolStripMenuItem.Text = "Options";
             // 
             // statusToolStripMenuItem
@@ -1295,7 +1346,7 @@ namespace UEDMHardwareControl
             this.gbCryoControl.Margin = new System.Windows.Forms.Padding(4);
             this.gbCryoControl.Name = "gbCryoControl";
             this.gbCryoControl.Padding = new System.Windows.Forms.Padding(4);
-            this.gbCryoControl.Size = new System.Drawing.Size(272, 90);
+            this.gbCryoControl.Size = new System.Drawing.Size(243, 90);
             this.gbCryoControl.TabIndex = 19;
             this.gbCryoControl.TabStop = false;
             this.gbCryoControl.Text = "Cryo Cooler Control";
@@ -1348,16 +1399,16 @@ namespace UEDMHardwareControl
             this.gbTemperatureandPressureMonitoringControl.Margin = new System.Windows.Forms.Padding(4);
             this.gbTemperatureandPressureMonitoringControl.Name = "gbTemperatureandPressureMonitoringControl";
             this.gbTemperatureandPressureMonitoringControl.Padding = new System.Windows.Forms.Padding(4);
-            this.gbTemperatureandPressureMonitoringControl.Size = new System.Drawing.Size(272, 204);
+            this.gbTemperatureandPressureMonitoringControl.Size = new System.Drawing.Size(243, 204);
             this.gbTemperatureandPressureMonitoringControl.TabIndex = 20;
             this.gbTemperatureandPressureMonitoringControl.TabStop = false;
-            this.gbTemperatureandPressureMonitoringControl.Text = "Temperature and Pressure Monitoring";
+            this.gbTemperatureandPressureMonitoringControl.Text = "T and p Monitoring";
             // 
             // tbTandPPollPeriodMonitor
             // 
             this.tbTandPPollPeriodMonitor.BackColor = System.Drawing.SystemColors.WindowText;
             this.tbTandPPollPeriodMonitor.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbTandPPollPeriodMonitor.Location = new System.Drawing.Point(141, 65);
+            this.tbTandPPollPeriodMonitor.Location = new System.Drawing.Point(131, 65);
             this.tbTandPPollPeriodMonitor.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tbTandPPollPeriodMonitor.Name = "tbTandPPollPeriodMonitor";
             this.tbTandPPollPeriodMonitor.ReadOnly = true;
@@ -1366,7 +1417,7 @@ namespace UEDMHardwareControl
             // 
             // btSaveAllPTDataToCSV
             // 
-            this.btSaveAllPTDataToCSV.Location = new System.Drawing.Point(140, 143);
+            this.btSaveAllPTDataToCSV.Location = new System.Drawing.Point(129, 143);
             this.btSaveAllPTDataToCSV.Margin = new System.Windows.Forms.Padding(4);
             this.btSaveAllPTDataToCSV.Name = "btSaveAllPTDataToCSV";
             this.btSaveAllPTDataToCSV.Size = new System.Drawing.Size(100, 47);
@@ -1377,7 +1428,7 @@ namespace UEDMHardwareControl
             // 
             // btResetPTCSVData
             // 
-            this.btResetPTCSVData.Location = new System.Drawing.Point(23, 143);
+            this.btResetPTCSVData.Location = new System.Drawing.Point(12, 143);
             this.btResetPTCSVData.Margin = new System.Windows.Forms.Padding(4);
             this.btResetPTCSVData.Name = "btResetPTCSVData";
             this.btResetPTCSVData.Size = new System.Drawing.Size(100, 47);
@@ -1388,7 +1439,7 @@ namespace UEDMHardwareControl
             // 
             // btUpdatePTPollPeriod
             // 
-            this.btUpdatePTPollPeriod.Location = new System.Drawing.Point(23, 98);
+            this.btUpdatePTPollPeriod.Location = new System.Drawing.Point(12, 98);
             this.btUpdatePTPollPeriod.Margin = new System.Windows.Forms.Padding(4);
             this.btUpdatePTPollPeriod.Name = "btUpdatePTPollPeriod";
             this.btUpdatePTPollPeriod.Size = new System.Drawing.Size(100, 28);
@@ -1400,7 +1451,7 @@ namespace UEDMHardwareControl
             // labelTandPPollPeriod
             // 
             this.labelTandPPollPeriod.AutoSize = true;
-            this.labelTandPPollPeriod.Location = new System.Drawing.Point(27, 65);
+            this.labelTandPPollPeriod.Location = new System.Drawing.Point(16, 65);
             this.labelTandPPollPeriod.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelTandPPollPeriod.Name = "labelTandPPollPeriod";
             this.labelTandPPollPeriod.Size = new System.Drawing.Size(111, 17);
@@ -1409,7 +1460,7 @@ namespace UEDMHardwareControl
             // 
             // tbTandPPollPeriod
             // 
-            this.tbTandPPollPeriod.Location = new System.Drawing.Point(140, 101);
+            this.tbTandPPollPeriod.Location = new System.Drawing.Point(129, 101);
             this.tbTandPPollPeriod.Margin = new System.Windows.Forms.Padding(4);
             this.tbTandPPollPeriod.Name = "tbTandPPollPeriod";
             this.tbTandPPollPeriod.Size = new System.Drawing.Size(100, 22);
@@ -1420,7 +1471,7 @@ namespace UEDMHardwareControl
             // btStopTandPMonitoring
             // 
             this.btStopTandPMonitoring.Enabled = false;
-            this.btStopTandPMonitoring.Location = new System.Drawing.Point(141, 27);
+            this.btStopTandPMonitoring.Location = new System.Drawing.Point(131, 27);
             this.btStopTandPMonitoring.Margin = new System.Windows.Forms.Padding(4);
             this.btStopTandPMonitoring.Name = "btStopTandPMonitoring";
             this.btStopTandPMonitoring.Size = new System.Drawing.Size(99, 28);
@@ -1431,7 +1482,7 @@ namespace UEDMHardwareControl
             // 
             // btStartTandPMonitoring
             // 
-            this.btStartTandPMonitoring.Location = new System.Drawing.Point(23, 27);
+            this.btStartTandPMonitoring.Location = new System.Drawing.Point(12, 27);
             this.btStartTandPMonitoring.Margin = new System.Windows.Forms.Padding(4);
             this.btStartTandPMonitoring.Name = "btStartTandPMonitoring";
             this.btStartTandPMonitoring.Size = new System.Drawing.Size(100, 28);
@@ -1468,7 +1519,7 @@ namespace UEDMHardwareControl
             this.groupBoxStatus.Margin = new System.Windows.Forms.Padding(4);
             this.groupBoxStatus.Name = "groupBoxStatus";
             this.groupBoxStatus.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBoxStatus.Size = new System.Drawing.Size(272, 207);
+            this.groupBoxStatus.Size = new System.Drawing.Size(243, 207);
             this.groupBoxStatus.TabIndex = 24;
             this.groupBoxStatus.TabStop = false;
             this.groupBoxStatus.Text = "Status";
@@ -1483,7 +1534,7 @@ namespace UEDMHardwareControl
             this.tbStatus.Name = "tbStatus";
             this.tbStatus.ReadOnly = true;
             this.tbStatus.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbStatus.Size = new System.Drawing.Size(255, 176);
+            this.tbStatus.Size = new System.Drawing.Size(233, 176);
             this.tbStatus.TabIndex = 6;
             // 
             // tabPage1
@@ -1524,7 +1575,7 @@ namespace UEDMHardwareControl
             this.tabPage1.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPage1.Size = new System.Drawing.Size(1380, 883);
+            this.tabPage1.Size = new System.Drawing.Size(1377, 883);
             this.tabPage1.TabIndex = 9;
             this.tabPage1.Text = "Serial Ports";
             // 
@@ -1860,7 +1911,16 @@ namespace UEDMHardwareControl
             // tabPagePumping
             // 
             this.tabPagePumping.BackColor = System.Drawing.Color.DarkGray;
+            this.tabPagePumping.Controls.Add(this.btQueryMWSynthTemperatureDetection);
+            this.tabPagePumping.Controls.Add(this.tbMWSynthTemperatureMonitorDetection);
+            this.tabPagePumping.Controls.Add(this.btQueryMWSynthTemperature);
+            this.tabPagePumping.Controls.Add(this.labelDetectSynthTemp);
+            this.tabPagePumping.Controls.Add(this.tbMWSynthTemperatureMonitor);
+            this.tabPagePumping.Controls.Add(this.btQueryMWSynthTemperatureDetectionB);
+            this.tabPagePumping.Controls.Add(this.tbMWSynthTemperatureMonitorDetectionB);
+            this.tabPagePumping.Controls.Add(this.labelDetectSynthTempB);
             this.tabPagePumping.Controls.Add(this.groupBoxMWSwitch);
+            this.tabPagePumping.Controls.Add(this.labelOPSynthTemp);
             this.tabPagePumping.Controls.Add(this.groupBoxStirapRF);
             this.tabPagePumping.Controls.Add(this.groupBoxWindfreakDetection);
             this.tabPagePumping.Controls.Add(this.groupBoxWindfreaksynthhd);
@@ -1868,9 +1928,94 @@ namespace UEDMHardwareControl
             this.tabPagePumping.Location = new System.Drawing.Point(4, 25);
             this.tabPagePumping.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tabPagePumping.Name = "tabPagePumping";
-            this.tabPagePumping.Size = new System.Drawing.Size(1380, 883);
+            this.tabPagePumping.Size = new System.Drawing.Size(1377, 883);
             this.tabPagePumping.TabIndex = 7;
             this.tabPagePumping.Text = "Microwaves";
+            // 
+            // btQueryMWSynthTemperatureDetection
+            // 
+            this.btQueryMWSynthTemperatureDetection.Location = new System.Drawing.Point(1193, 289);
+            this.btQueryMWSynthTemperatureDetection.Margin = new System.Windows.Forms.Padding(4);
+            this.btQueryMWSynthTemperatureDetection.Name = "btQueryMWSynthTemperatureDetection";
+            this.btQueryMWSynthTemperatureDetection.Size = new System.Drawing.Size(57, 28);
+            this.btQueryMWSynthTemperatureDetection.TabIndex = 52;
+            this.btQueryMWSynthTemperatureDetection.Text = "Query";
+            this.btQueryMWSynthTemperatureDetection.UseVisualStyleBackColor = true;
+            this.btQueryMWSynthTemperatureDetection.Click += new System.EventHandler(this.btQueryMWSynthTemperatureDetection_Click);
+            // 
+            // tbMWSynthTemperatureMonitorDetection
+            // 
+            this.tbMWSynthTemperatureMonitorDetection.BackColor = System.Drawing.SystemColors.WindowText;
+            this.tbMWSynthTemperatureMonitorDetection.ForeColor = System.Drawing.Color.Chartreuse;
+            this.tbMWSynthTemperatureMonitorDetection.Location = new System.Drawing.Point(1259, 292);
+            this.tbMWSynthTemperatureMonitorDetection.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tbMWSynthTemperatureMonitorDetection.Name = "tbMWSynthTemperatureMonitorDetection";
+            this.tbMWSynthTemperatureMonitorDetection.ReadOnly = true;
+            this.tbMWSynthTemperatureMonitorDetection.Size = new System.Drawing.Size(99, 22);
+            this.tbMWSynthTemperatureMonitorDetection.TabIndex = 51;
+            // 
+            // btQueryMWSynthTemperature
+            // 
+            this.btQueryMWSynthTemperature.Location = new System.Drawing.Point(1195, 37);
+            this.btQueryMWSynthTemperature.Margin = new System.Windows.Forms.Padding(4);
+            this.btQueryMWSynthTemperature.Name = "btQueryMWSynthTemperature";
+            this.btQueryMWSynthTemperature.Size = new System.Drawing.Size(57, 28);
+            this.btQueryMWSynthTemperature.TabIndex = 52;
+            this.btQueryMWSynthTemperature.Text = "Query";
+            this.btQueryMWSynthTemperature.UseVisualStyleBackColor = true;
+            this.btQueryMWSynthTemperature.Click += new System.EventHandler(this.btQueryMWSynthTemperature_Click);
+            // 
+            // labelDetectSynthTemp
+            // 
+            this.labelDetectSynthTemp.AutoSize = true;
+            this.labelDetectSynthTemp.Location = new System.Drawing.Point(1193, 268);
+            this.labelDetectSynthTemp.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelDetectSynthTemp.Name = "labelDetectSynthTemp";
+            this.labelDetectSynthTemp.Size = new System.Drawing.Size(158, 17);
+            this.labelDetectSynthTemp.TabIndex = 50;
+            this.labelDetectSynthTemp.Text = "Synth temperature (°C):";
+            // 
+            // tbMWSynthTemperatureMonitor
+            // 
+            this.tbMWSynthTemperatureMonitor.BackColor = System.Drawing.SystemColors.WindowText;
+            this.tbMWSynthTemperatureMonitor.ForeColor = System.Drawing.Color.Chartreuse;
+            this.tbMWSynthTemperatureMonitor.Location = new System.Drawing.Point(1259, 39);
+            this.tbMWSynthTemperatureMonitor.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tbMWSynthTemperatureMonitor.Name = "tbMWSynthTemperatureMonitor";
+            this.tbMWSynthTemperatureMonitor.ReadOnly = true;
+            this.tbMWSynthTemperatureMonitor.Size = new System.Drawing.Size(99, 22);
+            this.tbMWSynthTemperatureMonitor.TabIndex = 51;
+            // 
+            // btQueryMWSynthTemperatureDetectionB
+            // 
+            this.btQueryMWSynthTemperatureDetectionB.Location = new System.Drawing.Point(1191, 640);
+            this.btQueryMWSynthTemperatureDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btQueryMWSynthTemperatureDetectionB.Name = "btQueryMWSynthTemperatureDetectionB";
+            this.btQueryMWSynthTemperatureDetectionB.Size = new System.Drawing.Size(57, 28);
+            this.btQueryMWSynthTemperatureDetectionB.TabIndex = 120;
+            this.btQueryMWSynthTemperatureDetectionB.Text = "Query";
+            this.btQueryMWSynthTemperatureDetectionB.UseVisualStyleBackColor = true;
+            this.btQueryMWSynthTemperatureDetectionB.Click += new System.EventHandler(this.btQueryMWSynthTemperatureDetectionB_Click);
+            // 
+            // tbMWSynthTemperatureMonitorDetectionB
+            // 
+            this.tbMWSynthTemperatureMonitorDetectionB.BackColor = System.Drawing.SystemColors.WindowText;
+            this.tbMWSynthTemperatureMonitorDetectionB.ForeColor = System.Drawing.Color.Chartreuse;
+            this.tbMWSynthTemperatureMonitorDetectionB.Location = new System.Drawing.Point(1259, 642);
+            this.tbMWSynthTemperatureMonitorDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tbMWSynthTemperatureMonitorDetectionB.Name = "tbMWSynthTemperatureMonitorDetectionB";
+            this.tbMWSynthTemperatureMonitorDetectionB.ReadOnly = true;
+            this.tbMWSynthTemperatureMonitorDetectionB.Size = new System.Drawing.Size(99, 22);
+            this.tbMWSynthTemperatureMonitorDetectionB.TabIndex = 121;
+            // 
+            // labelDetectSynthTempB
+            // 
+            this.labelDetectSynthTempB.AutoSize = true;
+            this.labelDetectSynthTempB.Location = new System.Drawing.Point(1192, 620);
+            this.labelDetectSynthTempB.Name = "labelDetectSynthTempB";
+            this.labelDetectSynthTempB.Size = new System.Drawing.Size(154, 17);
+            this.labelDetectSynthTempB.TabIndex = 122;
+            this.labelDetectSynthTempB.Text = "Synth temperature (°C)";
             // 
             // groupBoxMWSwitch
             // 
@@ -1884,7 +2029,7 @@ namespace UEDMHardwareControl
             this.groupBoxMWSwitch.Controls.Add(this.ledChADetA);
             this.groupBoxMWSwitch.Controls.Add(this.labelMWSwitchState);
             this.groupBoxMWSwitch.Controls.Add(this.cBMWSwitchState);
-            this.groupBoxMWSwitch.Location = new System.Drawing.Point(4, 473);
+            this.groupBoxMWSwitch.Location = new System.Drawing.Point(4, 530);
             this.groupBoxMWSwitch.Margin = new System.Windows.Forms.Padding(4);
             this.groupBoxMWSwitch.Name = "groupBoxMWSwitch";
             this.groupBoxMWSwitch.Padding = new System.Windows.Forms.Padding(4);
@@ -1991,8 +2136,21 @@ namespace UEDMHardwareControl
             this.cBMWSwitchState.UseVisualStyleBackColor = true;
             this.cBMWSwitchState.CheckedChanged += new System.EventHandler(this.cBMWSwitchState_CheckedChanged);
             // 
+            // labelOPSynthTemp
+            // 
+            this.labelOPSynthTemp.AutoSize = true;
+            this.labelOPSynthTemp.Location = new System.Drawing.Point(1192, 16);
+            this.labelOPSynthTemp.Name = "labelOPSynthTemp";
+            this.labelOPSynthTemp.Size = new System.Drawing.Size(158, 17);
+            this.labelOPSynthTemp.TabIndex = 50;
+            this.labelOPSynthTemp.Text = "Synth temperature (°C):";
+            // 
             // groupBoxStirapRF
             // 
+            this.groupBoxStirapRF.Controls.Add(this.label48);
+            this.groupBoxStirapRF.Controls.Add(this.label47);
+            this.groupBoxStirapRF.Controls.Add(this.tbStirapRFfreqFalseValue);
+            this.groupBoxStirapRF.Controls.Add(this.tbStirapRFfreqTrueValue);
             this.groupBoxStirapRF.Controls.Add(this.labelStirapRFAmp);
             this.groupBoxStirapRF.Controls.Add(this.labelStirapRFFreq);
             this.groupBoxStirapRF.Controls.Add(this.cbStirapRFOn);
@@ -2008,10 +2166,48 @@ namespace UEDMHardwareControl
             this.groupBoxStirapRF.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.groupBoxStirapRF.Name = "groupBoxStirapRF";
             this.groupBoxStirapRF.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBoxStirapRF.Size = new System.Drawing.Size(339, 231);
+            this.groupBoxStirapRF.Size = new System.Drawing.Size(339, 290);
             this.groupBoxStirapRF.TabIndex = 50;
             this.groupBoxStirapRF.TabStop = false;
             this.groupBoxStirapRF.Text = "Stirap RF";
+            // 
+            // label48
+            // 
+            this.label48.AutoSize = true;
+            this.label48.Location = new System.Drawing.Point(175, 217);
+            this.label48.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label48.Name = "label48";
+            this.label48.Size = new System.Drawing.Size(126, 17);
+            this.label48.TabIndex = 64;
+            this.label48.Text = "False value (MHz):";
+            // 
+            // label47
+            // 
+            this.label47.AutoSize = true;
+            this.label47.Location = new System.Drawing.Point(23, 217);
+            this.label47.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label47.Name = "label47";
+            this.label47.Size = new System.Drawing.Size(122, 17);
+            this.label47.TabIndex = 63;
+            this.label47.Text = "True value (MHz):";
+            // 
+            // tbStirapRFfreqFalseValue
+            // 
+            this.tbStirapRFfreqFalseValue.Location = new System.Drawing.Point(179, 239);
+            this.tbStirapRFfreqFalseValue.Margin = new System.Windows.Forms.Padding(4);
+            this.tbStirapRFfreqFalseValue.Name = "tbStirapRFfreqFalseValue";
+            this.tbStirapRFfreqFalseValue.Size = new System.Drawing.Size(100, 22);
+            this.tbStirapRFfreqFalseValue.TabIndex = 62;
+            this.tbStirapRFfreqFalseValue.Text = "175.02";
+            // 
+            // tbStirapRFfreqTrueValue
+            // 
+            this.tbStirapRFfreqTrueValue.Location = new System.Drawing.Point(27, 239);
+            this.tbStirapRFfreqTrueValue.Margin = new System.Windows.Forms.Padding(4);
+            this.tbStirapRFfreqTrueValue.Name = "tbStirapRFfreqTrueValue";
+            this.tbStirapRFfreqTrueValue.Size = new System.Drawing.Size(100, 22);
+            this.tbStirapRFfreqTrueValue.TabIndex = 61;
+            this.tbStirapRFfreqTrueValue.Text = "175.01";
             // 
             // labelStirapRFAmp
             // 
@@ -2136,41 +2332,18 @@ namespace UEDMHardwareControl
             // 
             // groupBoxWindfreakDetection
             // 
-            this.groupBoxWindfreakDetection.Controls.Add(this.btQueryMWSynthTemperatureDetection);
-            this.groupBoxWindfreakDetection.Controls.Add(this.labelDetectSynthTemp);
             this.groupBoxWindfreakDetection.Controls.Add(this.groupBoxMWCHAdetection);
-            this.groupBoxWindfreakDetection.Controls.Add(this.tbMWSynthTemperatureMonitorDetection);
             this.groupBoxWindfreakDetection.Controls.Add(this.groupBoxMWCHBdetection);
+            this.groupBoxWindfreakDetection.Controls.Add(this.groupBoxMWDetectionB);
             this.groupBoxWindfreakDetection.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBoxWindfreakDetection.Location = new System.Drawing.Point(347, 452);
+            this.groupBoxWindfreakDetection.Location = new System.Drawing.Point(347, 250);
             this.groupBoxWindfreakDetection.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.groupBoxWindfreakDetection.Name = "groupBoxWindfreakDetection";
             this.groupBoxWindfreakDetection.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBoxWindfreakDetection.Size = new System.Drawing.Size(844, 411);
+            this.groupBoxWindfreakDetection.Size = new System.Drawing.Size(844, 608);
             this.groupBoxWindfreakDetection.TabIndex = 49;
             this.groupBoxWindfreakDetection.TabStop = false;
             this.groupBoxWindfreakDetection.Text = "Windfreak for Detection";
-            // 
-            // btQueryMWSynthTemperatureDetection
-            // 
-            this.btQueryMWSynthTemperatureDetection.Location = new System.Drawing.Point(48, 378);
-            this.btQueryMWSynthTemperatureDetection.Margin = new System.Windows.Forms.Padding(4);
-            this.btQueryMWSynthTemperatureDetection.Name = "btQueryMWSynthTemperatureDetection";
-            this.btQueryMWSynthTemperatureDetection.Size = new System.Drawing.Size(100, 28);
-            this.btQueryMWSynthTemperatureDetection.TabIndex = 52;
-            this.btQueryMWSynthTemperatureDetection.Text = "Query";
-            this.btQueryMWSynthTemperatureDetection.UseVisualStyleBackColor = true;
-            this.btQueryMWSynthTemperatureDetection.Click += new System.EventHandler(this.btQueryMWSynthTemperatureDetection_Click);
-            // 
-            // labelDetectSynthTemp
-            // 
-            this.labelDetectSynthTemp.AutoSize = true;
-            this.labelDetectSynthTemp.Location = new System.Drawing.Point(44, 357);
-            this.labelDetectSynthTemp.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.labelDetectSynthTemp.Name = "labelDetectSynthTemp";
-            this.labelDetectSynthTemp.Size = new System.Drawing.Size(188, 17);
-            this.labelDetectSynthTemp.TabIndex = 50;
-            this.labelDetectSynthTemp.Text = "Synth temperature (Celsius):";
             // 
             // groupBoxMWCHAdetection
             // 
@@ -2202,7 +2375,7 @@ namespace UEDMHardwareControl
             this.groupBoxMWCHAdetection.Size = new System.Drawing.Size(839, 162);
             this.groupBoxMWCHAdetection.TabIndex = 39;
             this.groupBoxMWCHAdetection.TabStop = false;
-            this.groupBoxMWCHAdetection.Text = "Channel A - Nominally F1";
+            this.groupBoxMWCHAdetection.Text = "Channel A (NOT IN USE)";
             // 
             // cbCHATrigger
             // 
@@ -2428,17 +2601,6 @@ namespace UEDMHardwareControl
             this.tbMWCHAFrequencyMonitorDetection.Size = new System.Drawing.Size(99, 22);
             this.tbMWCHAFrequencyMonitorDetection.TabIndex = 36;
             // 
-            // tbMWSynthTemperatureMonitorDetection
-            // 
-            this.tbMWSynthTemperatureMonitorDetection.BackColor = System.Drawing.SystemColors.WindowText;
-            this.tbMWSynthTemperatureMonitorDetection.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbMWSynthTemperatureMonitorDetection.Location = new System.Drawing.Point(155, 380);
-            this.tbMWSynthTemperatureMonitorDetection.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.tbMWSynthTemperatureMonitorDetection.Name = "tbMWSynthTemperatureMonitorDetection";
-            this.tbMWSynthTemperatureMonitorDetection.ReadOnly = true;
-            this.tbMWSynthTemperatureMonitorDetection.Size = new System.Drawing.Size(99, 22);
-            this.tbMWSynthTemperatureMonitorDetection.TabIndex = 51;
-            // 
             // groupBoxMWCHBdetection
             // 
             this.groupBoxMWCHBdetection.BackColor = System.Drawing.Color.Transparent;
@@ -2468,7 +2630,7 @@ namespace UEDMHardwareControl
             this.groupBoxMWCHBdetection.Size = new System.Drawing.Size(839, 162);
             this.groupBoxMWCHBdetection.TabIndex = 47;
             this.groupBoxMWCHBdetection.TabStop = false;
-            this.groupBoxMWCHBdetection.Text = "Channel B - Nominally F0";
+            this.groupBoxMWCHBdetection.Text = "Channel B - Det A";
             // 
             // cbCHBTrigger
             // 
@@ -2671,7 +2833,7 @@ namespace UEDMHardwareControl
             this.tbMWCHBFrequencySetpointDetection.Name = "tbMWCHBFrequencySetpointDetection";
             this.tbMWCHBFrequencySetpointDetection.Size = new System.Drawing.Size(100, 22);
             this.tbMWCHBFrequencySetpointDetection.TabIndex = 36;
-            this.tbMWCHBFrequencySetpointDetection.Text = "14.467242";
+            this.tbMWCHBFrequencySetpointDetection.Text = "14.458087";
             // 
             // tbMWCHBFrequencyMonitorDetection
             // 
@@ -2684,43 +2846,247 @@ namespace UEDMHardwareControl
             this.tbMWCHBFrequencyMonitorDetection.Size = new System.Drawing.Size(99, 22);
             this.tbMWCHBFrequencyMonitorDetection.TabIndex = 36;
             // 
+            // groupBoxMWDetectionB
+            // 
+            this.groupBoxMWDetectionB.BackColor = System.Drawing.Color.Transparent;
+            this.groupBoxMWDetectionB.Controls.Add(this.cbTriggerDetectionB);
+            this.groupBoxMWDetectionB.Controls.Add(this.cbPLLPoweredOnDetectionB);
+            this.groupBoxMWDetectionB.Controls.Add(this.cbPAPoweredOnDetectionB);
+            this.groupBoxMWDetectionB.Controls.Add(this.cbRFMutedDetectionB);
+            this.groupBoxMWDetectionB.Controls.Add(this.btQueryMWPowerDetectionB);
+            this.groupBoxMWDetectionB.Controls.Add(this.btQueryMWFrequencyDetectionB);
+            this.groupBoxMWDetectionB.Controls.Add(this.btIncrementMWPowerDetectionB);
+            this.groupBoxMWDetectionB.Controls.Add(this.tbMWPowerIncrementDetectionB);
+            this.groupBoxMWDetectionB.Controls.Add(this.btUpdateMWPowerDetectionB);
+            this.groupBoxMWDetectionB.Controls.Add(this.tbMWPowerSetpointDetectionB);
+            this.groupBoxMWDetectionB.Controls.Add(this.labelDetectMicrowavesPowerDetectionB);
+            this.groupBoxMWDetectionB.Controls.Add(this.tbMWPowerMonitorDetectionB);
+            this.groupBoxMWDetectionB.Controls.Add(this.comboBoxMWSetpointUnitDetectionB);
+            this.groupBoxMWDetectionB.Controls.Add(this.comboBoxMWIncrementUnitDetectionB);
+            this.groupBoxMWDetectionB.Controls.Add(this.btIncrementMWFrequencyDetectionB);
+            this.groupBoxMWDetectionB.Controls.Add(this.tbMWFrequencyIncrementDetectionB);
+            this.groupBoxMWDetectionB.Controls.Add(this.btUpdateMWFrequencyDetectionB);
+            this.groupBoxMWDetectionB.Controls.Add(this.tbMWFrequencySetpointDetectionB);
+            this.groupBoxMWDetectionB.Controls.Add(this.tbMWFrequencyMonitorDetectionB);
+            this.groupBoxMWDetectionB.Location = new System.Drawing.Point(-1, 359);
+            this.groupBoxMWDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBoxMWDetectionB.Name = "groupBoxMWDetectionB";
+            this.groupBoxMWDetectionB.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBoxMWDetectionB.Size = new System.Drawing.Size(839, 162);
+            this.groupBoxMWDetectionB.TabIndex = 60;
+            this.groupBoxMWDetectionB.TabStop = false;
+            this.groupBoxMWDetectionB.Text = "Mini Synth: Det B";
+            // 
+            // cbTriggerDetectionB
+            // 
+            this.cbTriggerDetectionB.AutoSize = true;
+            this.cbTriggerDetectionB.Enabled = false;
+            this.cbTriggerDetectionB.Location = new System.Drawing.Point(617, 22);
+            this.cbTriggerDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.cbTriggerDetectionB.Name = "cbTriggerDetectionB";
+            this.cbTriggerDetectionB.Size = new System.Drawing.Size(113, 21);
+            this.cbTriggerDetectionB.TabIndex = 0;
+            this.cbTriggerDetectionB.Text = "Trigger (N/A)";
+            // 
+            // cbPLLPoweredOnDetectionB
+            // 
+            this.cbPLLPoweredOnDetectionB.AutoSize = true;
+            this.cbPLLPoweredOnDetectionB.Location = new System.Drawing.Point(617, 127);
+            this.cbPLLPoweredOnDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.cbPLLPoweredOnDetectionB.Name = "cbPLLPoweredOnDetectionB";
+            this.cbPLLPoweredOnDetectionB.Size = new System.Drawing.Size(133, 21);
+            this.cbPLLPoweredOnDetectionB.TabIndex = 1;
+            this.cbPLLPoweredOnDetectionB.Text = "PLL powered on";
+            this.cbPLLPoweredOnDetectionB.CheckedChanged += new System.EventHandler(this.cbPLLPoweredOnDetectionB_CheckedChanged);
+            // 
+            // cbPAPoweredOnDetectionB
+            // 
+            this.cbPAPoweredOnDetectionB.AutoSize = true;
+            this.cbPAPoweredOnDetectionB.Location = new System.Drawing.Point(617, 91);
+            this.cbPAPoweredOnDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.cbPAPoweredOnDetectionB.Name = "cbPAPoweredOnDetectionB";
+            this.cbPAPoweredOnDetectionB.Size = new System.Drawing.Size(126, 21);
+            this.cbPAPoweredOnDetectionB.TabIndex = 2;
+            this.cbPAPoweredOnDetectionB.Text = "PA powered on";
+            this.cbPAPoweredOnDetectionB.CheckedChanged += new System.EventHandler(this.cbPAPoweredOnDetectionB_CheckedChanged);
+            // 
+            // cbRFMutedDetectionB
+            // 
+            this.cbRFMutedDetectionB.AutoSize = true;
+            this.cbRFMutedDetectionB.Location = new System.Drawing.Point(617, 55);
+            this.cbRFMutedDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.cbRFMutedDetectionB.Name = "cbRFMutedDetectionB";
+            this.cbRFMutedDetectionB.Size = new System.Drawing.Size(91, 21);
+            this.cbRFMutedDetectionB.TabIndex = 3;
+            this.cbRFMutedDetectionB.Text = "RF muted";
+            this.cbRFMutedDetectionB.CheckedChanged += new System.EventHandler(this.cbRFMutedDetectionB_CheckedChanged);
+            // 
+            // btQueryMWPowerDetectionB
+            // 
+            this.btQueryMWPowerDetectionB.Location = new System.Drawing.Point(361, 50);
+            this.btQueryMWPowerDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btQueryMWPowerDetectionB.Name = "btQueryMWPowerDetectionB";
+            this.btQueryMWPowerDetectionB.Size = new System.Drawing.Size(100, 28);
+            this.btQueryMWPowerDetectionB.TabIndex = 4;
+            this.btQueryMWPowerDetectionB.Text = "Query";
+            this.btQueryMWPowerDetectionB.Click += new System.EventHandler(this.btQueryMWPowerDetectionB_Click);
+            // 
+            // btQueryMWFrequencyDetectionB
+            // 
+            this.btQueryMWFrequencyDetectionB.Location = new System.Drawing.Point(49, 50);
+            this.btQueryMWFrequencyDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btQueryMWFrequencyDetectionB.Name = "btQueryMWFrequencyDetectionB";
+            this.btQueryMWFrequencyDetectionB.Size = new System.Drawing.Size(100, 28);
+            this.btQueryMWFrequencyDetectionB.TabIndex = 5;
+            this.btQueryMWFrequencyDetectionB.Text = "Query";
+            this.btQueryMWFrequencyDetectionB.Click += new System.EventHandler(this.btQueryMWFrequencyDetectionB_Click);
+            // 
+            // btIncrementMWPowerDetectionB
+            // 
+            this.btIncrementMWPowerDetectionB.Location = new System.Drawing.Point(361, 122);
+            this.btIncrementMWPowerDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btIncrementMWPowerDetectionB.Name = "btIncrementMWPowerDetectionB";
+            this.btIncrementMWPowerDetectionB.Size = new System.Drawing.Size(100, 28);
+            this.btIncrementMWPowerDetectionB.TabIndex = 6;
+            this.btIncrementMWPowerDetectionB.Text = "Increment";
+            this.btIncrementMWPowerDetectionB.Click += new System.EventHandler(this.btIncrementMWPowerDetectionB_Click);
+            // 
+            // tbMWPowerIncrementDetectionB
+            // 
+            this.tbMWPowerIncrementDetectionB.Location = new System.Drawing.Point(467, 126);
+            this.tbMWPowerIncrementDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tbMWPowerIncrementDetectionB.Name = "tbMWPowerIncrementDetectionB";
+            this.tbMWPowerIncrementDetectionB.Size = new System.Drawing.Size(100, 22);
+            this.tbMWPowerIncrementDetectionB.TabIndex = 7;
+            // 
+            // btUpdateMWPowerDetectionB
+            // 
+            this.btUpdateMWPowerDetectionB.Location = new System.Drawing.Point(361, 86);
+            this.btUpdateMWPowerDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btUpdateMWPowerDetectionB.Name = "btUpdateMWPowerDetectionB";
+            this.btUpdateMWPowerDetectionB.Size = new System.Drawing.Size(100, 28);
+            this.btUpdateMWPowerDetectionB.TabIndex = 8;
+            this.btUpdateMWPowerDetectionB.Text = "Update";
+            this.btUpdateMWPowerDetectionB.Click += new System.EventHandler(this.btUpdateMWPowerDetectionB_Click);
+            // 
+            // tbMWPowerSetpointDetectionB
+            // 
+            this.tbMWPowerSetpointDetectionB.Location = new System.Drawing.Point(468, 89);
+            this.tbMWPowerSetpointDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tbMWPowerSetpointDetectionB.Name = "tbMWPowerSetpointDetectionB";
+            this.tbMWPowerSetpointDetectionB.Size = new System.Drawing.Size(100, 22);
+            this.tbMWPowerSetpointDetectionB.TabIndex = 9;
+            this.tbMWPowerSetpointDetectionB.Text = "-10";
+            // 
+            // labelDetectMicrowavesPowerDetectionB
+            // 
+            this.labelDetectMicrowavesPowerDetectionB.AutoSize = true;
+            this.labelDetectMicrowavesPowerDetectionB.Location = new System.Drawing.Point(357, 30);
+            this.labelDetectMicrowavesPowerDetectionB.Name = "labelDetectMicrowavesPowerDetectionB";
+            this.labelDetectMicrowavesPowerDetectionB.Size = new System.Drawing.Size(120, 17);
+            this.labelDetectMicrowavesPowerDetectionB.TabIndex = 10;
+            this.labelDetectMicrowavesPowerDetectionB.Text = "MW power (dBm):";
+            // 
+            // tbMWPowerMonitorDetectionB
+            // 
+            this.tbMWPowerMonitorDetectionB.BackColor = System.Drawing.SystemColors.WindowText;
+            this.tbMWPowerMonitorDetectionB.ForeColor = System.Drawing.Color.Chartreuse;
+            this.tbMWPowerMonitorDetectionB.Location = new System.Drawing.Point(468, 53);
+            this.tbMWPowerMonitorDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tbMWPowerMonitorDetectionB.Name = "tbMWPowerMonitorDetectionB";
+            this.tbMWPowerMonitorDetectionB.ReadOnly = true;
+            this.tbMWPowerMonitorDetectionB.Size = new System.Drawing.Size(99, 22);
+            this.tbMWPowerMonitorDetectionB.TabIndex = 11;
+            // 
+            // comboBoxMWSetpointUnitDetectionB
+            // 
+            this.comboBoxMWSetpointUnitDetectionB.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxMWSetpointUnitDetectionB.Items.AddRange(new object[] {
+            "GHz",
+            "MHz",
+            "kHz",
+            "Hz"});
+            this.comboBoxMWSetpointUnitDetectionB.Location = new System.Drawing.Point(264, 89);
+            this.comboBoxMWSetpointUnitDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.comboBoxMWSetpointUnitDetectionB.Name = "comboBoxMWSetpointUnitDetectionB";
+            this.comboBoxMWSetpointUnitDetectionB.Size = new System.Drawing.Size(69, 24);
+            this.comboBoxMWSetpointUnitDetectionB.TabIndex = 12;
+            // 
+            // comboBoxMWIncrementUnitDetectionB
+            // 
+            this.comboBoxMWIncrementUnitDetectionB.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxMWIncrementUnitDetectionB.Items.AddRange(new object[] {
+            "GHz",
+            "MHz",
+            "kHz",
+            "Hz"});
+            this.comboBoxMWIncrementUnitDetectionB.Location = new System.Drawing.Point(264, 126);
+            this.comboBoxMWIncrementUnitDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.comboBoxMWIncrementUnitDetectionB.Name = "comboBoxMWIncrementUnitDetectionB";
+            this.comboBoxMWIncrementUnitDetectionB.Size = new System.Drawing.Size(69, 24);
+            this.comboBoxMWIncrementUnitDetectionB.TabIndex = 13;
+            // 
+            // btIncrementMWFrequencyDetectionB
+            // 
+            this.btIncrementMWFrequencyDetectionB.Location = new System.Drawing.Point(49, 122);
+            this.btIncrementMWFrequencyDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btIncrementMWFrequencyDetectionB.Name = "btIncrementMWFrequencyDetectionB";
+            this.btIncrementMWFrequencyDetectionB.Size = new System.Drawing.Size(100, 28);
+            this.btIncrementMWFrequencyDetectionB.TabIndex = 14;
+            this.btIncrementMWFrequencyDetectionB.Text = "Increment";
+            this.btIncrementMWFrequencyDetectionB.Click += new System.EventHandler(this.btIncrementMWFrequencyDetectionB_Click);
+            // 
+            // tbMWFrequencyIncrementDetectionB
+            // 
+            this.tbMWFrequencyIncrementDetectionB.Location = new System.Drawing.Point(157, 126);
+            this.tbMWFrequencyIncrementDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tbMWFrequencyIncrementDetectionB.Name = "tbMWFrequencyIncrementDetectionB";
+            this.tbMWFrequencyIncrementDetectionB.Size = new System.Drawing.Size(100, 22);
+            this.tbMWFrequencyIncrementDetectionB.TabIndex = 15;
+            // 
+            // btUpdateMWFrequencyDetectionB
+            // 
+            this.btUpdateMWFrequencyDetectionB.Location = new System.Drawing.Point(49, 86);
+            this.btUpdateMWFrequencyDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btUpdateMWFrequencyDetectionB.Name = "btUpdateMWFrequencyDetectionB";
+            this.btUpdateMWFrequencyDetectionB.Size = new System.Drawing.Size(100, 28);
+            this.btUpdateMWFrequencyDetectionB.TabIndex = 16;
+            this.btUpdateMWFrequencyDetectionB.Text = "Update";
+            this.btUpdateMWFrequencyDetectionB.Click += new System.EventHandler(this.btUpdateMWFrequencyDetectionB_Click);
+            // 
+            // tbMWFrequencySetpointDetectionB
+            // 
+            this.tbMWFrequencySetpointDetectionB.Location = new System.Drawing.Point(157, 89);
+            this.tbMWFrequencySetpointDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tbMWFrequencySetpointDetectionB.Name = "tbMWFrequencySetpointDetectionB";
+            this.tbMWFrequencySetpointDetectionB.Size = new System.Drawing.Size(100, 22);
+            this.tbMWFrequencySetpointDetectionB.TabIndex = 17;
+            this.tbMWFrequencySetpointDetectionB.Text = "14.467242";
+            // 
+            // tbMWFrequencyMonitorDetectionB
+            // 
+            this.tbMWFrequencyMonitorDetectionB.BackColor = System.Drawing.SystemColors.WindowText;
+            this.tbMWFrequencyMonitorDetectionB.ForeColor = System.Drawing.Color.Chartreuse;
+            this.tbMWFrequencyMonitorDetectionB.Location = new System.Drawing.Point(156, 53);
+            this.tbMWFrequencyMonitorDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tbMWFrequencyMonitorDetectionB.Name = "tbMWFrequencyMonitorDetectionB";
+            this.tbMWFrequencyMonitorDetectionB.ReadOnly = true;
+            this.tbMWFrequencyMonitorDetectionB.Size = new System.Drawing.Size(99, 22);
+            this.tbMWFrequencyMonitorDetectionB.TabIndex = 18;
+            // 
             // groupBoxWindfreaksynthhd
             // 
-            this.groupBoxWindfreaksynthhd.Controls.Add(this.btQueryMWSynthTemperature);
-            this.groupBoxWindfreaksynthhd.Controls.Add(this.labelOPSynthTemp);
             this.groupBoxWindfreaksynthhd.Controls.Add(this.groupBoxMWCHA);
-            this.groupBoxWindfreaksynthhd.Controls.Add(this.tbMWSynthTemperatureMonitor);
-            this.groupBoxWindfreaksynthhd.Controls.Add(this.groupBoxMWCHB);
             this.groupBoxWindfreaksynthhd.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBoxWindfreaksynthhd.Location = new System.Drawing.Point(347, 2);
             this.groupBoxWindfreaksynthhd.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.groupBoxWindfreaksynthhd.Name = "groupBoxWindfreaksynthhd";
             this.groupBoxWindfreaksynthhd.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBoxWindfreaksynthhd.Size = new System.Drawing.Size(844, 414);
+            this.groupBoxWindfreaksynthhd.Size = new System.Drawing.Size(844, 192);
             this.groupBoxWindfreaksynthhd.TabIndex = 48;
             this.groupBoxWindfreaksynthhd.TabStop = false;
             this.groupBoxWindfreaksynthhd.Text = "Windfreak for Optical Pumping";
             this.groupBoxWindfreaksynthhd.Enter += new System.EventHandler(this.groupBoxWindfreaksynthhd_Enter);
-            // 
-            // btQueryMWSynthTemperature
-            // 
-            this.btQueryMWSynthTemperature.Location = new System.Drawing.Point(48, 378);
-            this.btQueryMWSynthTemperature.Margin = new System.Windows.Forms.Padding(4);
-            this.btQueryMWSynthTemperature.Name = "btQueryMWSynthTemperature";
-            this.btQueryMWSynthTemperature.Size = new System.Drawing.Size(100, 28);
-            this.btQueryMWSynthTemperature.TabIndex = 52;
-            this.btQueryMWSynthTemperature.Text = "Query";
-            this.btQueryMWSynthTemperature.UseVisualStyleBackColor = true;
-            this.btQueryMWSynthTemperature.Click += new System.EventHandler(this.btQueryMWSynthTemperature_Click);
-            // 
-            // labelOPSynthTemp
-            // 
-            this.labelOPSynthTemp.AutoSize = true;
-            this.labelOPSynthTemp.Location = new System.Drawing.Point(44, 357);
-            this.labelOPSynthTemp.Name = "labelOPSynthTemp";
-            this.labelOPSynthTemp.Size = new System.Drawing.Size(188, 17);
-            this.labelOPSynthTemp.TabIndex = 50;
-            this.labelOPSynthTemp.Text = "Synth temperature (Celsius):";
             // 
             // groupBoxMWCHA
             // 
@@ -3015,309 +3381,6 @@ namespace UEDMHardwareControl
             this.tbMWCHAFrequencyMonitor.Size = new System.Drawing.Size(99, 22);
             this.tbMWCHAFrequencyMonitor.TabIndex = 36;
             // 
-            // tbMWSynthTemperatureMonitor
-            // 
-            this.tbMWSynthTemperatureMonitor.BackColor = System.Drawing.SystemColors.WindowText;
-            this.tbMWSynthTemperatureMonitor.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbMWSynthTemperatureMonitor.Location = new System.Drawing.Point(155, 380);
-            this.tbMWSynthTemperatureMonitor.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.tbMWSynthTemperatureMonitor.Name = "tbMWSynthTemperatureMonitor";
-            this.tbMWSynthTemperatureMonitor.ReadOnly = true;
-            this.tbMWSynthTemperatureMonitor.Size = new System.Drawing.Size(99, 22);
-            this.tbMWSynthTemperatureMonitor.TabIndex = 51;
-            // 
-            // groupBoxMWCHB
-            // 
-            this.groupBoxMWCHB.BackColor = System.Drawing.Color.Transparent;
-            this.groupBoxMWCHB.Controls.Add(this.cbCHBRFTrigger);
-            this.groupBoxMWCHB.Controls.Add(this.btCHBPLLPowerOnInfo);
-            this.groupBoxMWCHB.Controls.Add(this.btCHBPAPowerOnInfo);
-            this.groupBoxMWCHB.Controls.Add(this.btCHBRFMuteInfo);
-            this.groupBoxMWCHB.Controls.Add(this.cbCHBPLLPoweredOn);
-            this.groupBoxMWCHB.Controls.Add(this.cbCHBPAPoweredOn);
-            this.groupBoxMWCHB.Controls.Add(this.cbCHBRFMuted);
-            this.groupBoxMWCHB.Controls.Add(this.btQueryMWCHBPower);
-            this.groupBoxMWCHB.Controls.Add(this.btQueryMWCHBFrequency);
-            this.groupBoxMWCHB.Controls.Add(this.btIncrementMWCHBPower);
-            this.groupBoxMWCHB.Controls.Add(this.tbMWCHBPowerIncrement);
-            this.groupBoxMWCHB.Controls.Add(this.btUpdateMWCHBPower);
-            this.groupBoxMWCHB.Controls.Add(this.tbMWCHBPowerSetpoint);
-            this.groupBoxMWCHB.Controls.Add(this.labelMicrowavesChannelBPower);
-            this.groupBoxMWCHB.Controls.Add(this.tbMWCHBPowerMonitor);
-            this.groupBoxMWCHB.Controls.Add(this.comboBoxMWCHBSetpointUnit);
-            this.groupBoxMWCHB.Controls.Add(this.comboBoxMWCHBIncrementUnit);
-            this.groupBoxMWCHB.Controls.Add(this.btIncrementMWCHBFrequency);
-            this.groupBoxMWCHB.Controls.Add(this.tbMWCHBFrequencyIncrement);
-            this.groupBoxMWCHB.Controls.Add(this.btUpdateMWCHBFrequency);
-            this.groupBoxMWCHB.Controls.Add(this.tbMWCHBFrequencySetpoint);
-            this.groupBoxMWCHB.Controls.Add(this.labelMicrowavesChannelBFrequency);
-            this.groupBoxMWCHB.Controls.Add(this.tbMWCHBFrequencyMonitor);
-            this.groupBoxMWCHB.Location = new System.Drawing.Point(0, 190);
-            this.groupBoxMWCHB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBoxMWCHB.Name = "groupBoxMWCHB";
-            this.groupBoxMWCHB.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBoxMWCHB.Size = new System.Drawing.Size(839, 162);
-            this.groupBoxMWCHB.TabIndex = 47;
-            this.groupBoxMWCHB.TabStop = false;
-            this.groupBoxMWCHB.Text = "Channel B";
-            // 
-            // cbCHBRFTrigger
-            // 
-            this.cbCHBRFTrigger.AutoSize = true;
-            this.cbCHBRFTrigger.Location = new System.Drawing.Point(616, 21);
-            this.cbCHBRFTrigger.Margin = new System.Windows.Forms.Padding(4);
-            this.cbCHBRFTrigger.Name = "cbCHBRFTrigger";
-            this.cbCHBRFTrigger.Size = new System.Drawing.Size(121, 21);
-            this.cbCHBRFTrigger.TabIndex = 57;
-            this.cbCHBRFTrigger.Text = "Trigger Armed";
-            this.cbCHBRFTrigger.UseVisualStyleBackColor = true;
-            this.cbCHBRFTrigger.CheckedChanged += new System.EventHandler(this.cbCHBRFTrigger_CheckedChanged);
-            // 
-            // btCHBPLLPowerOnInfo
-            // 
-            this.btCHBPLLPowerOnInfo.Location = new System.Drawing.Point(757, 123);
-            this.btCHBPLLPowerOnInfo.Margin = new System.Windows.Forms.Padding(4);
-            this.btCHBPLLPowerOnInfo.Name = "btCHBPLLPowerOnInfo";
-            this.btCHBPLLPowerOnInfo.Size = new System.Drawing.Size(31, 28);
-            this.btCHBPLLPowerOnInfo.TabIndex = 56;
-            this.btCHBPLLPowerOnInfo.Text = "?";
-            this.btCHBPLLPowerOnInfo.UseVisualStyleBackColor = true;
-            this.btCHBPLLPowerOnInfo.Click += new System.EventHandler(this.btCHBPLLPowerOnInfo_Click);
-            // 
-            // btCHBPAPowerOnInfo
-            // 
-            this.btCHBPAPowerOnInfo.Location = new System.Drawing.Point(757, 86);
-            this.btCHBPAPowerOnInfo.Margin = new System.Windows.Forms.Padding(4);
-            this.btCHBPAPowerOnInfo.Name = "btCHBPAPowerOnInfo";
-            this.btCHBPAPowerOnInfo.Size = new System.Drawing.Size(31, 28);
-            this.btCHBPAPowerOnInfo.TabIndex = 55;
-            this.btCHBPAPowerOnInfo.Text = "?";
-            this.btCHBPAPowerOnInfo.UseVisualStyleBackColor = true;
-            this.btCHBPAPowerOnInfo.Click += new System.EventHandler(this.btCHBPAPowerOnInfo_Click);
-            // 
-            // btCHBRFMuteInfo
-            // 
-            this.btCHBRFMuteInfo.Location = new System.Drawing.Point(719, 50);
-            this.btCHBRFMuteInfo.Margin = new System.Windows.Forms.Padding(4);
-            this.btCHBRFMuteInfo.Name = "btCHBRFMuteInfo";
-            this.btCHBRFMuteInfo.Size = new System.Drawing.Size(31, 28);
-            this.btCHBRFMuteInfo.TabIndex = 55;
-            this.btCHBRFMuteInfo.Text = "?";
-            this.btCHBRFMuteInfo.UseVisualStyleBackColor = true;
-            this.btCHBRFMuteInfo.Click += new System.EventHandler(this.btCHBRFMuteInfo_Click);
-            // 
-            // cbCHBPLLPoweredOn
-            // 
-            this.cbCHBPLLPoweredOn.AutoSize = true;
-            this.cbCHBPLLPoweredOn.Location = new System.Drawing.Point(617, 127);
-            this.cbCHBPLLPoweredOn.Margin = new System.Windows.Forms.Padding(4);
-            this.cbCHBPLLPoweredOn.Name = "cbCHBPLLPoweredOn";
-            this.cbCHBPLLPoweredOn.Size = new System.Drawing.Size(133, 21);
-            this.cbCHBPLLPoweredOn.TabIndex = 52;
-            this.cbCHBPLLPoweredOn.Text = "PLL powered on";
-            this.cbCHBPLLPoweredOn.UseVisualStyleBackColor = true;
-            this.cbCHBPLLPoweredOn.CheckedChanged += new System.EventHandler(this.cbCHBPLLPoweredOn_CheckedChanged);
-            // 
-            // cbCHBPAPoweredOn
-            // 
-            this.cbCHBPAPoweredOn.AutoSize = true;
-            this.cbCHBPAPoweredOn.Location = new System.Drawing.Point(617, 91);
-            this.cbCHBPAPoweredOn.Margin = new System.Windows.Forms.Padding(4);
-            this.cbCHBPAPoweredOn.Name = "cbCHBPAPoweredOn";
-            this.cbCHBPAPoweredOn.Size = new System.Drawing.Size(126, 21);
-            this.cbCHBPAPoweredOn.TabIndex = 51;
-            this.cbCHBPAPoweredOn.Text = "PA powered on";
-            this.cbCHBPAPoweredOn.UseVisualStyleBackColor = true;
-            this.cbCHBPAPoweredOn.CheckedChanged += new System.EventHandler(this.cbCHBPAPoweredOn_CheckedChanged);
-            // 
-            // cbCHBRFMuted
-            // 
-            this.cbCHBRFMuted.AutoSize = true;
-            this.cbCHBRFMuted.Location = new System.Drawing.Point(617, 55);
-            this.cbCHBRFMuted.Margin = new System.Windows.Forms.Padding(4);
-            this.cbCHBRFMuted.Name = "cbCHBRFMuted";
-            this.cbCHBRFMuted.Size = new System.Drawing.Size(91, 21);
-            this.cbCHBRFMuted.TabIndex = 50;
-            this.cbCHBRFMuted.Text = "RF muted";
-            this.cbCHBRFMuted.UseVisualStyleBackColor = true;
-            this.cbCHBRFMuted.CheckedChanged += new System.EventHandler(this.cbCHBRFMuted_CheckedChanged);
-            // 
-            // btQueryMWCHBPower
-            // 
-            this.btQueryMWCHBPower.Location = new System.Drawing.Point(361, 50);
-            this.btQueryMWCHBPower.Margin = new System.Windows.Forms.Padding(4);
-            this.btQueryMWCHBPower.Name = "btQueryMWCHBPower";
-            this.btQueryMWCHBPower.Size = new System.Drawing.Size(100, 28);
-            this.btQueryMWCHBPower.TabIndex = 49;
-            this.btQueryMWCHBPower.Text = "Query";
-            this.btQueryMWCHBPower.UseVisualStyleBackColor = true;
-            this.btQueryMWCHBPower.Click += new System.EventHandler(this.btQueryMWCHBPower_Click);
-            // 
-            // btQueryMWCHBFrequency
-            // 
-            this.btQueryMWCHBFrequency.Location = new System.Drawing.Point(49, 50);
-            this.btQueryMWCHBFrequency.Margin = new System.Windows.Forms.Padding(4);
-            this.btQueryMWCHBFrequency.Name = "btQueryMWCHBFrequency";
-            this.btQueryMWCHBFrequency.Size = new System.Drawing.Size(100, 28);
-            this.btQueryMWCHBFrequency.TabIndex = 49;
-            this.btQueryMWCHBFrequency.Text = "Query";
-            this.btQueryMWCHBFrequency.UseVisualStyleBackColor = true;
-            this.btQueryMWCHBFrequency.Click += new System.EventHandler(this.btQueryMWCHBFrequency_Click);
-            // 
-            // btIncrementMWCHBPower
-            // 
-            this.btIncrementMWCHBPower.Location = new System.Drawing.Point(361, 122);
-            this.btIncrementMWCHBPower.Margin = new System.Windows.Forms.Padding(4);
-            this.btIncrementMWCHBPower.Name = "btIncrementMWCHBPower";
-            this.btIncrementMWCHBPower.Size = new System.Drawing.Size(100, 28);
-            this.btIncrementMWCHBPower.TabIndex = 45;
-            this.btIncrementMWCHBPower.Text = "Increment";
-            this.btIncrementMWCHBPower.UseVisualStyleBackColor = true;
-            this.btIncrementMWCHBPower.Click += new System.EventHandler(this.btIncrementMWCHBPower_Click);
-            // 
-            // tbMWCHBPowerIncrement
-            // 
-            this.tbMWCHBPowerIncrement.Location = new System.Drawing.Point(467, 126);
-            this.tbMWCHBPowerIncrement.Margin = new System.Windows.Forms.Padding(4);
-            this.tbMWCHBPowerIncrement.Name = "tbMWCHBPowerIncrement";
-            this.tbMWCHBPowerIncrement.Size = new System.Drawing.Size(100, 22);
-            this.tbMWCHBPowerIncrement.TabIndex = 46;
-            // 
-            // btUpdateMWCHBPower
-            // 
-            this.btUpdateMWCHBPower.Location = new System.Drawing.Point(361, 86);
-            this.btUpdateMWCHBPower.Margin = new System.Windows.Forms.Padding(4);
-            this.btUpdateMWCHBPower.Name = "btUpdateMWCHBPower";
-            this.btUpdateMWCHBPower.Size = new System.Drawing.Size(100, 28);
-            this.btUpdateMWCHBPower.TabIndex = 41;
-            this.btUpdateMWCHBPower.Text = "Update";
-            this.btUpdateMWCHBPower.UseVisualStyleBackColor = true;
-            this.btUpdateMWCHBPower.Click += new System.EventHandler(this.btUpdateMWCHBPower_Click);
-            // 
-            // tbMWCHBPowerSetpoint
-            // 
-            this.tbMWCHBPowerSetpoint.Location = new System.Drawing.Point(468, 89);
-            this.tbMWCHBPowerSetpoint.Margin = new System.Windows.Forms.Padding(4);
-            this.tbMWCHBPowerSetpoint.Name = "tbMWCHBPowerSetpoint";
-            this.tbMWCHBPowerSetpoint.Size = new System.Drawing.Size(100, 22);
-            this.tbMWCHBPowerSetpoint.TabIndex = 42;
-            this.tbMWCHBPowerSetpoint.Text = "-10";
-            // 
-            // labelMicrowavesChannelBPower
-            // 
-            this.labelMicrowavesChannelBPower.AutoSize = true;
-            this.labelMicrowavesChannelBPower.Location = new System.Drawing.Point(357, 30);
-            this.labelMicrowavesChannelBPower.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.labelMicrowavesChannelBPower.Name = "labelMicrowavesChannelBPower";
-            this.labelMicrowavesChannelBPower.Size = new System.Drawing.Size(120, 17);
-            this.labelMicrowavesChannelBPower.TabIndex = 43;
-            this.labelMicrowavesChannelBPower.Text = "MW power (dBm):";
-            // 
-            // tbMWCHBPowerMonitor
-            // 
-            this.tbMWCHBPowerMonitor.BackColor = System.Drawing.SystemColors.WindowText;
-            this.tbMWCHBPowerMonitor.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbMWCHBPowerMonitor.Location = new System.Drawing.Point(468, 53);
-            this.tbMWCHBPowerMonitor.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.tbMWCHBPowerMonitor.Name = "tbMWCHBPowerMonitor";
-            this.tbMWCHBPowerMonitor.ReadOnly = true;
-            this.tbMWCHBPowerMonitor.Size = new System.Drawing.Size(99, 22);
-            this.tbMWCHBPowerMonitor.TabIndex = 44;
-            // 
-            // comboBoxMWCHBSetpointUnit
-            // 
-            this.comboBoxMWCHBSetpointUnit.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.comboBoxMWCHBSetpointUnit.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.comboBoxMWCHBSetpointUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxMWCHBSetpointUnit.FormattingEnabled = true;
-            this.comboBoxMWCHBSetpointUnit.Items.AddRange(new object[] {
-            "GHz",
-            "MHz",
-            "kHz",
-            "Hz"});
-            this.comboBoxMWCHBSetpointUnit.Location = new System.Drawing.Point(264, 89);
-            this.comboBoxMWCHBSetpointUnit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.comboBoxMWCHBSetpointUnit.Name = "comboBoxMWCHBSetpointUnit";
-            this.comboBoxMWCHBSetpointUnit.Size = new System.Drawing.Size(69, 24);
-            this.comboBoxMWCHBSetpointUnit.TabIndex = 40;
-            // 
-            // comboBoxMWCHBIncrementUnit
-            // 
-            this.comboBoxMWCHBIncrementUnit.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.comboBoxMWCHBIncrementUnit.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.comboBoxMWCHBIncrementUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxMWCHBIncrementUnit.FormattingEnabled = true;
-            this.comboBoxMWCHBIncrementUnit.Items.AddRange(new object[] {
-            "GHz",
-            "MHz",
-            "kHz",
-            "Hz"});
-            this.comboBoxMWCHBIncrementUnit.Location = new System.Drawing.Point(264, 126);
-            this.comboBoxMWCHBIncrementUnit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.comboBoxMWCHBIncrementUnit.Name = "comboBoxMWCHBIncrementUnit";
-            this.comboBoxMWCHBIncrementUnit.Size = new System.Drawing.Size(69, 24);
-            this.comboBoxMWCHBIncrementUnit.TabIndex = 39;
-            // 
-            // btIncrementMWCHBFrequency
-            // 
-            this.btIncrementMWCHBFrequency.Location = new System.Drawing.Point(49, 122);
-            this.btIncrementMWCHBFrequency.Margin = new System.Windows.Forms.Padding(4);
-            this.btIncrementMWCHBFrequency.Name = "btIncrementMWCHBFrequency";
-            this.btIncrementMWCHBFrequency.Size = new System.Drawing.Size(100, 28);
-            this.btIncrementMWCHBFrequency.TabIndex = 37;
-            this.btIncrementMWCHBFrequency.Text = "Increment";
-            this.btIncrementMWCHBFrequency.UseVisualStyleBackColor = true;
-            this.btIncrementMWCHBFrequency.Click += new System.EventHandler(this.btIncrementMWCHBFrequency_Click);
-            // 
-            // tbMWCHBFrequencyIncrement
-            // 
-            this.tbMWCHBFrequencyIncrement.Location = new System.Drawing.Point(157, 126);
-            this.tbMWCHBFrequencyIncrement.Margin = new System.Windows.Forms.Padding(4);
-            this.tbMWCHBFrequencyIncrement.Name = "tbMWCHBFrequencyIncrement";
-            this.tbMWCHBFrequencyIncrement.Size = new System.Drawing.Size(100, 22);
-            this.tbMWCHBFrequencyIncrement.TabIndex = 38;
-            // 
-            // btUpdateMWCHBFrequency
-            // 
-            this.btUpdateMWCHBFrequency.Location = new System.Drawing.Point(49, 86);
-            this.btUpdateMWCHBFrequency.Margin = new System.Windows.Forms.Padding(4);
-            this.btUpdateMWCHBFrequency.Name = "btUpdateMWCHBFrequency";
-            this.btUpdateMWCHBFrequency.Size = new System.Drawing.Size(100, 28);
-            this.btUpdateMWCHBFrequency.TabIndex = 36;
-            this.btUpdateMWCHBFrequency.Text = "Update";
-            this.btUpdateMWCHBFrequency.UseVisualStyleBackColor = true;
-            this.btUpdateMWCHBFrequency.Click += new System.EventHandler(this.btUpdateMWCHBFrequency_Click);
-            // 
-            // tbMWCHBFrequencySetpoint
-            // 
-            this.tbMWCHBFrequencySetpoint.Location = new System.Drawing.Point(157, 89);
-            this.tbMWCHBFrequencySetpoint.Margin = new System.Windows.Forms.Padding(4);
-            this.tbMWCHBFrequencySetpoint.Name = "tbMWCHBFrequencySetpoint";
-            this.tbMWCHBFrequencySetpoint.Size = new System.Drawing.Size(100, 22);
-            this.tbMWCHBFrequencySetpoint.TabIndex = 36;
-            this.tbMWCHBFrequencySetpoint.Text = "14.4754";
-            // 
-            // labelMicrowavesChannelBFrequency
-            // 
-            this.labelMicrowavesChannelBFrequency.AutoSize = true;
-            this.labelMicrowavesChannelBFrequency.Location = new System.Drawing.Point(45, 30);
-            this.labelMicrowavesChannelBFrequency.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.labelMicrowavesChannelBFrequency.Name = "labelMicrowavesChannelBFrequency";
-            this.labelMicrowavesChannelBFrequency.Size = new System.Drawing.Size(145, 17);
-            this.labelMicrowavesChannelBFrequency.TabIndex = 36;
-            this.labelMicrowavesChannelBFrequency.Text = "MW frequency (GHz):";
-            // 
-            // tbMWCHBFrequencyMonitor
-            // 
-            this.tbMWCHBFrequencyMonitor.BackColor = System.Drawing.SystemColors.WindowText;
-            this.tbMWCHBFrequencyMonitor.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbMWCHBFrequencyMonitor.Location = new System.Drawing.Point(156, 53);
-            this.tbMWCHBFrequencyMonitor.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.tbMWCHBFrequencyMonitor.Name = "tbMWCHBFrequencyMonitor";
-            this.tbMWCHBFrequencyMonitor.ReadOnly = true;
-            this.tbMWCHBFrequencyMonitor.Size = new System.Drawing.Size(99, 22);
-            this.tbMWCHBFrequencyMonitor.TabIndex = 36;
-            // 
             // groupBoxRF
             // 
             this.groupBoxRF.Controls.Add(this.labelRFStatus);
@@ -3476,7 +3539,7 @@ namespace UEDMHardwareControl
             this.tabPageBfield.Margin = new System.Windows.Forms.Padding(4);
             this.tabPageBfield.Name = "tabPageBfield";
             this.tabPageBfield.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPageBfield.Size = new System.Drawing.Size(1380, 883);
+            this.tabPageBfield.Size = new System.Drawing.Size(1377, 883);
             this.tabPageBfield.TabIndex = 8;
             this.tabPageBfield.Text = "B-field";
             // 
@@ -4196,7 +4259,7 @@ namespace UEDMHardwareControl
             this.tabPageEfield.Location = new System.Drawing.Point(4, 25);
             this.tabPageEfield.Margin = new System.Windows.Forms.Padding(4);
             this.tabPageEfield.Name = "tabPageEfield";
-            this.tabPageEfield.Size = new System.Drawing.Size(1380, 883);
+            this.tabPageEfield.Size = new System.Drawing.Size(1377, 883);
             this.tabPageEfield.TabIndex = 6;
             this.tabPageEfield.Text = "E-field";
             // 
@@ -4860,6 +4923,7 @@ namespace UEDMHardwareControl
             // 
             // groupBox7
             // 
+            this.groupBox7.Controls.Add(this.pollftTCheckBox);
             this.groupBox7.Controls.Add(this.pollVCheckBox);
             this.groupBox7.Controls.Add(this.tbiMonitorPollPeriod);
             this.groupBox7.Controls.Add(this.changePollPeriodButton);
@@ -4904,6 +4968,17 @@ namespace UEDMHardwareControl
             this.groupBox7.TabIndex = 44;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Current monitors";
+            // 
+            // pollftTCheckBox
+            // 
+            this.pollftTCheckBox.AutoSize = true;
+            this.pollftTCheckBox.Location = new System.Drawing.Point(904, 84);
+            this.pollftTCheckBox.Margin = new System.Windows.Forms.Padding(4);
+            this.pollftTCheckBox.Name = "pollftTCheckBox";
+            this.pollftTCheckBox.Size = new System.Drawing.Size(154, 21);
+            this.pollftTCheckBox.TabIndex = 79;
+            this.pollftTCheckBox.Text = "poll feedthrough T?";
+            this.pollftTCheckBox.UseVisualStyleBackColor = true;
             // 
             // pollVCheckBox
             // 
@@ -5328,7 +5403,7 @@ namespace UEDMHardwareControl
             this.tabPageADIO.Location = new System.Drawing.Point(4, 25);
             this.tabPageADIO.Margin = new System.Windows.Forms.Padding(4);
             this.tabPageADIO.Name = "tabPageADIO";
-            this.tabPageADIO.Size = new System.Drawing.Size(1380, 883);
+            this.tabPageADIO.Size = new System.Drawing.Size(1377, 883);
             this.tabPageADIO.TabIndex = 5;
             this.tabPageADIO.Text = "Analogue/Digital IO";
             // 
@@ -6132,7 +6207,7 @@ namespace UEDMHardwareControl
             this.tabPageLakeShore.Margin = new System.Windows.Forms.Padding(4);
             this.tabPageLakeShore.Name = "tabPageLakeShore";
             this.tabPageLakeShore.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPageLakeShore.Size = new System.Drawing.Size(1380, 883);
+            this.tabPageLakeShore.Size = new System.Drawing.Size(1377, 883);
             this.tabPageLakeShore.TabIndex = 1;
             this.tabPageLakeShore.Text = "LakeShore 336";
             // 
@@ -6452,7 +6527,7 @@ namespace UEDMHardwareControl
             this.tabPageFlowControllers.Margin = new System.Windows.Forms.Padding(4);
             this.tabPageFlowControllers.Name = "tabPageFlowControllers";
             this.tabPageFlowControllers.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPageFlowControllers.Size = new System.Drawing.Size(1380, 883);
+            this.tabPageFlowControllers.Size = new System.Drawing.Size(1377, 883);
             this.tabPageFlowControllers.TabIndex = 2;
             this.tabPageFlowControllers.Text = "Flow Controllers";
             // 
@@ -6956,7 +7031,7 @@ namespace UEDMHardwareControl
             this.tabPageHeatersControl.Location = new System.Drawing.Point(4, 25);
             this.tabPageHeatersControl.Margin = new System.Windows.Forms.Padding(4);
             this.tabPageHeatersControl.Name = "tabPageHeatersControl";
-            this.tabPageHeatersControl.Size = new System.Drawing.Size(1380, 883);
+            this.tabPageHeatersControl.Size = new System.Drawing.Size(1377, 883);
             this.tabPageHeatersControl.TabIndex = 4;
             this.tabPageHeatersControl.Text = "Heaters Control";
             // 
@@ -7262,7 +7337,7 @@ namespace UEDMHardwareControl
             this.tabPageSourceModes.Margin = new System.Windows.Forms.Padding(4);
             this.tabPageSourceModes.Name = "tabPageSourceModes";
             this.tabPageSourceModes.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPageSourceModes.Size = new System.Drawing.Size(1380, 883);
+            this.tabPageSourceModes.Size = new System.Drawing.Size(1377, 883);
             this.tabPageSourceModes.TabIndex = 3;
             this.tabPageSourceModes.Text = "Source Modes";
             // 
@@ -7984,7 +8059,7 @@ namespace UEDMHardwareControl
             this.tabPagePlotting.Margin = new System.Windows.Forms.Padding(4);
             this.tabPagePlotting.Name = "tabPagePlotting";
             this.tabPagePlotting.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPagePlotting.Size = new System.Drawing.Size(1380, 883);
+            this.tabPagePlotting.Size = new System.Drawing.Size(1377, 883);
             this.tabPagePlotting.TabIndex = 0;
             this.tabPagePlotting.Text = "Pressure and T";
             // 
@@ -8806,12 +8881,12 @@ namespace UEDMHardwareControl
             this.tabControl.Controls.Add(this.tabPage1);
             this.tabControl.Controls.Add(this.tabPage2);
             this.tabControl.Controls.Add(this.tabCCDCamera);
-            this.tabControl.Controls.Add(this.tabPage3);
-            this.tabControl.Location = new System.Drawing.Point(296, 33);
+            this.tabControl.Controls.Add(this.PDMonitorTabPage);
+            this.tabControl.Location = new System.Drawing.Point(260, 27);
             this.tabControl.Margin = new System.Windows.Forms.Padding(4);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(1388, 912);
+            this.tabControl.Size = new System.Drawing.Size(1385, 912);
             this.tabControl.TabIndex = 23;
             // 
             // tabPage2
@@ -8837,7 +8912,7 @@ namespace UEDMHardwareControl
             this.tabPage2.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPage2.Size = new System.Drawing.Size(1380, 883);
+            this.tabPage2.Size = new System.Drawing.Size(1377, 883);
             this.tabPage2.TabIndex = 10;
             this.tabPage2.Text = "Frequency Counter";
             // 
@@ -9086,7 +9161,7 @@ namespace UEDMHardwareControl
             this.tabCCDCamera.Margin = new System.Windows.Forms.Padding(4);
             this.tabCCDCamera.Name = "tabCCDCamera";
             this.tabCCDCamera.Padding = new System.Windows.Forms.Padding(4);
-            this.tabCCDCamera.Size = new System.Drawing.Size(1380, 883);
+            this.tabCCDCamera.Size = new System.Drawing.Size(1377, 883);
             this.tabCCDCamera.TabIndex = 11;
             this.tabCCDCamera.Text = "CCD Camera";
             // 
@@ -9373,221 +9448,682 @@ namespace UEDMHardwareControl
             this.labelCCDShotCount.TabIndex = 34;
             this.labelCCDShotCount.Text = "Shot Count (Read Only)";
             // 
-            // tabPage3
+            // PDMonitorTabPage
             // 
-            this.tabPage3.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.tabPage3.Controls.Add(this.groupBox9);
-            this.tabPage3.Controls.Add(this.HCoolingGroupBox);
-            this.tabPage3.Location = new System.Drawing.Point(4, 25);
-            this.tabPage3.Margin = new System.Windows.Forms.Padding(4);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPage3.Size = new System.Drawing.Size(1380, 883);
-            this.tabPage3.TabIndex = 12;
-            this.tabPage3.Text = "CoolingMonitoring";
+            this.PDMonitorTabPage.Controls.Add(this.queryPDButton);
+            this.PDMonitorTabPage.Controls.Add(this.PDConvertToMwCheckBox);
+            this.PDMonitorTabPage.Controls.Add(this.labelPDChannel);
+            this.PDMonitorTabPage.Controls.Add(this.labelPDValue);
+            this.PDMonitorTabPage.Controls.Add(this.labelPDGain);
+            this.PDMonitorTabPage.Controls.Add(this.labelPDLog);
+            this.PDMonitorTabPage.Controls.Add(this.labelPD1);
+            this.PDMonitorTabPage.Controls.Add(this.PD1MonitorTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD1GainComboBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD1LogCheck);
+            this.PDMonitorTabPage.Controls.Add(this.labelPDLogDuration);
+            this.PDMonitorTabPage.Controls.Add(this.PDLogDurationTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.labelPDSamplePeriod);
+            this.PDMonitorTabPage.Controls.Add(this.PDSamplePeriodTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.labelPDLogDirectory);
+            this.PDMonitorTabPage.Controls.Add(this.PDLogDirectoryTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PDLogDirectoryBrowseButton);
+            this.PDMonitorTabPage.Controls.Add(this.startPDLogButton);
+            this.PDMonitorTabPage.Controls.Add(this.stopPDLogButton);
+            this.PDMonitorTabPage.Controls.Add(this.labelPD2);
+            this.PDMonitorTabPage.Controls.Add(this.PD2MonitorTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD2GainComboBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD2LogCheck);
+            this.PDMonitorTabPage.Controls.Add(this.labelPD3);
+            this.PDMonitorTabPage.Controls.Add(this.PD3MonitorTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD3GainComboBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD3LogCheck);
+            this.PDMonitorTabPage.Controls.Add(this.labelPD4);
+            this.PDMonitorTabPage.Controls.Add(this.PD4MonitorTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD4GainComboBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD4LogCheck);
+            this.PDMonitorTabPage.Controls.Add(this.labelPD5);
+            this.PDMonitorTabPage.Controls.Add(this.PD5MonitorTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD5GainComboBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD5LogCheck);
+            this.PDMonitorTabPage.Controls.Add(this.labelPD6);
+            this.PDMonitorTabPage.Controls.Add(this.PD6MonitorTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD6GainComboBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD6LogCheck);
+            this.PDMonitorTabPage.Controls.Add(this.labelPD7);
+            this.PDMonitorTabPage.Controls.Add(this.PD7MonitorTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD7GainComboBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD7LogCheck);
+            this.PDMonitorTabPage.Controls.Add(this.labelPD8);
+            this.PDMonitorTabPage.Controls.Add(this.PD8MonitorTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD8GainComboBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD8LogCheck);
+            this.PDMonitorTabPage.Controls.Add(this.labelPDFileName);
+            this.PDMonitorTabPage.Controls.Add(this.PDFileNameTextBox);
+            this.PDMonitorTabPage.Location = new System.Drawing.Point(4, 25);
+            this.PDMonitorTabPage.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PDMonitorTabPage.Name = "PDMonitorTabPage";
+            this.PDMonitorTabPage.Size = new System.Drawing.Size(1377, 883);
+            this.PDMonitorTabPage.TabIndex = 12;
+            this.PDMonitorTabPage.Text = "Photodiode Monitor";
+            // 
+            // queryPDButton
+            // 
+            this.queryPDButton.Location = new System.Drawing.Point(20, 20);
+            this.queryPDButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.queryPDButton.Name = "queryPDButton";
+            this.queryPDButton.Size = new System.Drawing.Size(120, 30);
+            this.queryPDButton.TabIndex = 0;
+            this.queryPDButton.Text = "Query PDs";
+            this.queryPDButton.UseVisualStyleBackColor = true;
+            this.queryPDButton.Click += new System.EventHandler(this.QueryPDButton_Click);
+            // 
+            // PDConvertToMwCheckBox
+            // 
+            this.PDConvertToMwCheckBox.Location = new System.Drawing.Point(20, 359);
+            this.PDConvertToMwCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PDConvertToMwCheckBox.Name = "PDConvertToMwCheckBox";
+            this.PDConvertToMwCheckBox.Size = new System.Drawing.Size(373, 57);
+            this.PDConvertToMwCheckBox.TabIndex = 1;
+            this.PDConvertToMwCheckBox.Text = "Display in converted monitoring power (mW) ?";
+            this.PDConvertToMwCheckBox.CheckedChanged += new System.EventHandler(this.PDConvertToMwCheckBox_CheckedChanged);
+            // 
+            // labelPDChannel
+            // 
+            this.labelPDChannel.Location = new System.Drawing.Point(20, 70);
+            this.labelPDChannel.Name = "labelPDChannel";
+            this.labelPDChannel.Size = new System.Drawing.Size(51, 20);
+            this.labelPDChannel.TabIndex = 2;
+            this.labelPDChannel.Text = "PD";
+            // 
+            // labelPDValue
+            // 
+            this.labelPDValue.Location = new System.Drawing.Point(91, 70);
+            this.labelPDValue.Name = "labelPDValue";
+            this.labelPDValue.Size = new System.Drawing.Size(120, 25);
+            this.labelPDValue.TabIndex = 3;
+            this.labelPDValue.Text = "Voltage (V)";
+            // 
+            // labelPDGain
+            // 
+            this.labelPDGain.Location = new System.Drawing.Point(240, 70);
+            this.labelPDGain.Name = "labelPDGain";
+            this.labelPDGain.Size = new System.Drawing.Size(51, 20);
+            this.labelPDGain.TabIndex = 4;
+            this.labelPDGain.Text = "Gain";
+            // 
+            // labelPDLog
+            // 
+            this.labelPDLog.Location = new System.Drawing.Point(380, 70);
+            this.labelPDLog.Name = "labelPDLog";
+            this.labelPDLog.Size = new System.Drawing.Size(51, 20);
+            this.labelPDLog.TabIndex = 5;
+            this.labelPDLog.Text = "Log";
+            // 
+            // labelPD1
+            // 
+            this.labelPD1.Location = new System.Drawing.Point(20, 100);
+            this.labelPD1.Name = "labelPD1";
+            this.labelPD1.Size = new System.Drawing.Size(40, 20);
+            this.labelPD1.TabIndex = 6;
+            this.labelPD1.Text = "PD1";
+            // 
+            // PD1MonitorTextBox
+            // 
+            this.PD1MonitorTextBox.Location = new System.Drawing.Point(91, 98);
+            this.PD1MonitorTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD1MonitorTextBox.Name = "PD1MonitorTextBox";
+            this.PD1MonitorTextBox.ReadOnly = true;
+            this.PD1MonitorTextBox.Size = new System.Drawing.Size(120, 22);
+            this.PD1MonitorTextBox.TabIndex = 7;
+            // 
+            // PD1GainComboBox
+            // 
+            this.PD1GainComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.PD1GainComboBox.Items.AddRange(new object[] {
+            "Gain 1",
+            "Gain 2",
+            "Gain 3",
+            "Gain 4"});
+            this.PD1GainComboBox.Location = new System.Drawing.Point(240, 98);
+            this.PD1GainComboBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD1GainComboBox.Name = "PD1GainComboBox";
+            this.PD1GainComboBox.Size = new System.Drawing.Size(100, 24);
+            this.PD1GainComboBox.TabIndex = 8;
+            this.PD1GainComboBox.SelectedIndexChanged += new System.EventHandler(this.PDGainComboBox_SelectedIndexChanged);
+            // 
+            // PD1LogCheck
+            // 
+            this.PD1LogCheck.Location = new System.Drawing.Point(389, 100);
+            this.PD1LogCheck.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD1LogCheck.Name = "PD1LogCheck";
+            this.PD1LogCheck.Size = new System.Drawing.Size(20, 20);
+            this.PD1LogCheck.TabIndex = 9;
+            // 
+            // labelPDLogDuration
+            // 
+            this.labelPDLogDuration.Location = new System.Drawing.Point(500, 60);
+            this.labelPDLogDuration.Name = "labelPDLogDuration";
+            this.labelPDLogDuration.Size = new System.Drawing.Size(120, 20);
+            this.labelPDLogDuration.TabIndex = 10;
+            this.labelPDLogDuration.Text = "Log Duration (s)";
+            // 
+            // PDLogDurationTextBox
+            // 
+            this.PDLogDurationTextBox.Location = new System.Drawing.Point(629, 58);
+            this.PDLogDurationTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PDLogDurationTextBox.Name = "PDLogDurationTextBox";
+            this.PDLogDurationTextBox.Size = new System.Drawing.Size(80, 22);
+            this.PDLogDurationTextBox.TabIndex = 11;
+            this.PDLogDurationTextBox.Text = "60";
+            // 
+            // labelPDSamplePeriod
+            // 
+            this.labelPDSamplePeriod.Location = new System.Drawing.Point(500, 97);
+            this.labelPDSamplePeriod.Name = "labelPDSamplePeriod";
+            this.labelPDSamplePeriod.Size = new System.Drawing.Size(124, 22);
+            this.labelPDSamplePeriod.TabIndex = 12;
+            this.labelPDSamplePeriod.Text = "Poll Period (ms)";
+            // 
+            // PDSamplePeriodTextBox
+            // 
+            this.PDSamplePeriodTextBox.Location = new System.Drawing.Point(629, 97);
+            this.PDSamplePeriodTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PDSamplePeriodTextBox.Name = "PDSamplePeriodTextBox";
+            this.PDSamplePeriodTextBox.Size = new System.Drawing.Size(80, 22);
+            this.PDSamplePeriodTextBox.TabIndex = 13;
+            this.PDSamplePeriodTextBox.Text = "200";
+            // 
+            // labelPDLogDirectory
+            // 
+            this.labelPDLogDirectory.Location = new System.Drawing.Point(500, 178);
+            this.labelPDLogDirectory.Name = "labelPDLogDirectory";
+            this.labelPDLogDirectory.Size = new System.Drawing.Size(105, 18);
+            this.labelPDLogDirectory.TabIndex = 14;
+            this.labelPDLogDirectory.Text = "Save Directory:";
+            // 
+            // PDLogDirectoryTextBox
+            // 
+            this.PDLogDirectoryTextBox.Location = new System.Drawing.Point(629, 180);
+            this.PDLogDirectoryTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PDLogDirectoryTextBox.Name = "PDLogDirectoryTextBox";
+            this.PDLogDirectoryTextBox.Size = new System.Drawing.Size(129, 22);
+            this.PDLogDirectoryTextBox.TabIndex = 15;
+            // 
+            // PDLogDirectoryBrowseButton
+            // 
+            this.PDLogDirectoryBrowseButton.Location = new System.Drawing.Point(771, 178);
+            this.PDLogDirectoryBrowseButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PDLogDirectoryBrowseButton.Name = "PDLogDirectoryBrowseButton";
+            this.PDLogDirectoryBrowseButton.Size = new System.Drawing.Size(40, 25);
+            this.PDLogDirectoryBrowseButton.TabIndex = 16;
+            this.PDLogDirectoryBrowseButton.Text = "...";
+            this.PDLogDirectoryBrowseButton.Click += new System.EventHandler(this.PDLogDirectoryBrowseButton_Click);
+            // 
+            // startPDLogButton
+            // 
+            this.startPDLogButton.Location = new System.Drawing.Point(500, 240);
+            this.startPDLogButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.startPDLogButton.Name = "startPDLogButton";
+            this.startPDLogButton.Size = new System.Drawing.Size(120, 34);
+            this.startPDLogButton.TabIndex = 17;
+            this.startPDLogButton.Text = "Start Log";
+            this.startPDLogButton.Click += new System.EventHandler(this.StartPDLogButton_Click);
+            // 
+            // stopPDLogButton
+            // 
+            this.stopPDLogButton.Enabled = false;
+            this.stopPDLogButton.Location = new System.Drawing.Point(651, 240);
+            this.stopPDLogButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.stopPDLogButton.Name = "stopPDLogButton";
+            this.stopPDLogButton.Size = new System.Drawing.Size(120, 34);
+            this.stopPDLogButton.TabIndex = 18;
+            this.stopPDLogButton.Text = "Stop Log";
+            this.stopPDLogButton.Click += new System.EventHandler(this.StopPDLogButton_Click);
+            // 
+            // labelPD2
+            // 
+            this.labelPD2.Location = new System.Drawing.Point(20, 130);
+            this.labelPD2.Name = "labelPD2";
+            this.labelPD2.Size = new System.Drawing.Size(40, 20);
+            this.labelPD2.TabIndex = 19;
+            this.labelPD2.Text = "PD2";
+            // 
+            // PD2MonitorTextBox
+            // 
+            this.PD2MonitorTextBox.Location = new System.Drawing.Point(91, 128);
+            this.PD2MonitorTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD2MonitorTextBox.Name = "PD2MonitorTextBox";
+            this.PD2MonitorTextBox.ReadOnly = true;
+            this.PD2MonitorTextBox.Size = new System.Drawing.Size(120, 22);
+            this.PD2MonitorTextBox.TabIndex = 20;
+            // 
+            // PD2GainComboBox
+            // 
+            this.PD2GainComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.PD2GainComboBox.Items.AddRange(new object[] {
+            "Gain 1",
+            "Gain 2",
+            "Gain 3",
+            "Gain 4"});
+            this.PD2GainComboBox.Location = new System.Drawing.Point(240, 128);
+            this.PD2GainComboBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD2GainComboBox.Name = "PD2GainComboBox";
+            this.PD2GainComboBox.Size = new System.Drawing.Size(100, 24);
+            this.PD2GainComboBox.TabIndex = 21;
+            this.PD2GainComboBox.SelectedIndexChanged += new System.EventHandler(this.PDGainComboBox_SelectedIndexChanged);
+            // 
+            // PD2LogCheck
+            // 
+            this.PD2LogCheck.Location = new System.Drawing.Point(389, 130);
+            this.PD2LogCheck.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD2LogCheck.Name = "PD2LogCheck";
+            this.PD2LogCheck.Size = new System.Drawing.Size(20, 20);
+            this.PD2LogCheck.TabIndex = 22;
+            // 
+            // labelPD3
+            // 
+            this.labelPD3.Location = new System.Drawing.Point(20, 160);
+            this.labelPD3.Name = "labelPD3";
+            this.labelPD3.Size = new System.Drawing.Size(40, 20);
+            this.labelPD3.TabIndex = 23;
+            this.labelPD3.Text = "PD3";
+            // 
+            // PD3MonitorTextBox
+            // 
+            this.PD3MonitorTextBox.Location = new System.Drawing.Point(91, 158);
+            this.PD3MonitorTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD3MonitorTextBox.Name = "PD3MonitorTextBox";
+            this.PD3MonitorTextBox.ReadOnly = true;
+            this.PD3MonitorTextBox.Size = new System.Drawing.Size(120, 22);
+            this.PD3MonitorTextBox.TabIndex = 24;
+            // 
+            // PD3GainComboBox
+            // 
+            this.PD3GainComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.PD3GainComboBox.Items.AddRange(new object[] {
+            "Gain 1",
+            "Gain 2",
+            "Gain 3",
+            "Gain 4"});
+            this.PD3GainComboBox.Location = new System.Drawing.Point(240, 158);
+            this.PD3GainComboBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD3GainComboBox.Name = "PD3GainComboBox";
+            this.PD3GainComboBox.Size = new System.Drawing.Size(100, 24);
+            this.PD3GainComboBox.TabIndex = 25;
+            this.PD3GainComboBox.SelectedIndexChanged += new System.EventHandler(this.PDGainComboBox_SelectedIndexChanged);
+            // 
+            // PD3LogCheck
+            // 
+            this.PD3LogCheck.Location = new System.Drawing.Point(389, 160);
+            this.PD3LogCheck.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD3LogCheck.Name = "PD3LogCheck";
+            this.PD3LogCheck.Size = new System.Drawing.Size(20, 20);
+            this.PD3LogCheck.TabIndex = 26;
+            // 
+            // labelPD4
+            // 
+            this.labelPD4.Location = new System.Drawing.Point(20, 190);
+            this.labelPD4.Name = "labelPD4";
+            this.labelPD4.Size = new System.Drawing.Size(40, 20);
+            this.labelPD4.TabIndex = 27;
+            this.labelPD4.Text = "PD4";
+            // 
+            // PD4MonitorTextBox
+            // 
+            this.PD4MonitorTextBox.Location = new System.Drawing.Point(91, 188);
+            this.PD4MonitorTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD4MonitorTextBox.Name = "PD4MonitorTextBox";
+            this.PD4MonitorTextBox.ReadOnly = true;
+            this.PD4MonitorTextBox.Size = new System.Drawing.Size(120, 22);
+            this.PD4MonitorTextBox.TabIndex = 28;
+            // 
+            // PD4GainComboBox
+            // 
+            this.PD4GainComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.PD4GainComboBox.Items.AddRange(new object[] {
+            "Gain 1",
+            "Gain 2",
+            "Gain 3",
+            "Gain 4"});
+            this.PD4GainComboBox.Location = new System.Drawing.Point(240, 188);
+            this.PD4GainComboBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD4GainComboBox.Name = "PD4GainComboBox";
+            this.PD4GainComboBox.Size = new System.Drawing.Size(100, 24);
+            this.PD4GainComboBox.TabIndex = 29;
+            this.PD4GainComboBox.SelectedIndexChanged += new System.EventHandler(this.PDGainComboBox_SelectedIndexChanged);
+            // 
+            // PD4LogCheck
+            // 
+            this.PD4LogCheck.Location = new System.Drawing.Point(389, 190);
+            this.PD4LogCheck.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD4LogCheck.Name = "PD4LogCheck";
+            this.PD4LogCheck.Size = new System.Drawing.Size(20, 20);
+            this.PD4LogCheck.TabIndex = 30;
+            // 
+            // labelPD5
+            // 
+            this.labelPD5.Location = new System.Drawing.Point(20, 220);
+            this.labelPD5.Name = "labelPD5";
+            this.labelPD5.Size = new System.Drawing.Size(40, 20);
+            this.labelPD5.TabIndex = 31;
+            this.labelPD5.Text = "PD5";
+            // 
+            // PD5MonitorTextBox
+            // 
+            this.PD5MonitorTextBox.Location = new System.Drawing.Point(91, 218);
+            this.PD5MonitorTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD5MonitorTextBox.Name = "PD5MonitorTextBox";
+            this.PD5MonitorTextBox.ReadOnly = true;
+            this.PD5MonitorTextBox.Size = new System.Drawing.Size(120, 22);
+            this.PD5MonitorTextBox.TabIndex = 32;
+            // 
+            // PD5GainComboBox
+            // 
+            this.PD5GainComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.PD5GainComboBox.Items.AddRange(new object[] {
+            "Gain 1",
+            "Gain 2",
+            "Gain 3",
+            "Gain 4"});
+            this.PD5GainComboBox.Location = new System.Drawing.Point(240, 218);
+            this.PD5GainComboBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD5GainComboBox.Name = "PD5GainComboBox";
+            this.PD5GainComboBox.Size = new System.Drawing.Size(100, 24);
+            this.PD5GainComboBox.TabIndex = 33;
+            this.PD5GainComboBox.SelectedIndexChanged += new System.EventHandler(this.PDGainComboBox_SelectedIndexChanged);
+            // 
+            // PD5LogCheck
+            // 
+            this.PD5LogCheck.Location = new System.Drawing.Point(389, 220);
+            this.PD5LogCheck.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD5LogCheck.Name = "PD5LogCheck";
+            this.PD5LogCheck.Size = new System.Drawing.Size(20, 20);
+            this.PD5LogCheck.TabIndex = 34;
+            // 
+            // labelPD6
+            // 
+            this.labelPD6.Location = new System.Drawing.Point(20, 250);
+            this.labelPD6.Name = "labelPD6";
+            this.labelPD6.Size = new System.Drawing.Size(40, 20);
+            this.labelPD6.TabIndex = 35;
+            this.labelPD6.Text = "PD6";
+            // 
+            // PD6MonitorTextBox
+            // 
+            this.PD6MonitorTextBox.Location = new System.Drawing.Point(91, 249);
+            this.PD6MonitorTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD6MonitorTextBox.Name = "PD6MonitorTextBox";
+            this.PD6MonitorTextBox.ReadOnly = true;
+            this.PD6MonitorTextBox.Size = new System.Drawing.Size(120, 22);
+            this.PD6MonitorTextBox.TabIndex = 36;
+            // 
+            // PD6GainComboBox
+            // 
+            this.PD6GainComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.PD6GainComboBox.Items.AddRange(new object[] {
+            "Gain 1",
+            "Gain 2",
+            "Gain 3",
+            "Gain 4"});
+            this.PD6GainComboBox.Location = new System.Drawing.Point(240, 249);
+            this.PD6GainComboBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD6GainComboBox.Name = "PD6GainComboBox";
+            this.PD6GainComboBox.Size = new System.Drawing.Size(100, 24);
+            this.PD6GainComboBox.TabIndex = 37;
+            this.PD6GainComboBox.SelectedIndexChanged += new System.EventHandler(this.PDGainComboBox_SelectedIndexChanged);
+            // 
+            // PD6LogCheck
+            // 
+            this.PD6LogCheck.Location = new System.Drawing.Point(389, 250);
+            this.PD6LogCheck.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD6LogCheck.Name = "PD6LogCheck";
+            this.PD6LogCheck.Size = new System.Drawing.Size(20, 20);
+            this.PD6LogCheck.TabIndex = 38;
+            // 
+            // labelPD7
+            // 
+            this.labelPD7.Location = new System.Drawing.Point(20, 281);
+            this.labelPD7.Name = "labelPD7";
+            this.labelPD7.Size = new System.Drawing.Size(40, 20);
+            this.labelPD7.TabIndex = 39;
+            this.labelPD7.Text = "PD7";
+            // 
+            // PD7MonitorTextBox
+            // 
+            this.PD7MonitorTextBox.Location = new System.Drawing.Point(91, 278);
+            this.PD7MonitorTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD7MonitorTextBox.Name = "PD7MonitorTextBox";
+            this.PD7MonitorTextBox.ReadOnly = true;
+            this.PD7MonitorTextBox.Size = new System.Drawing.Size(120, 22);
+            this.PD7MonitorTextBox.TabIndex = 40;
+            // 
+            // PD7GainComboBox
+            // 
+            this.PD7GainComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.PD7GainComboBox.Items.AddRange(new object[] {
+            "Gain 1",
+            "Gain 2",
+            "Gain 3",
+            "Gain 4"});
+            this.PD7GainComboBox.Location = new System.Drawing.Point(240, 278);
+            this.PD7GainComboBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD7GainComboBox.Name = "PD7GainComboBox";
+            this.PD7GainComboBox.Size = new System.Drawing.Size(100, 24);
+            this.PD7GainComboBox.TabIndex = 41;
+            this.PD7GainComboBox.SelectedIndexChanged += new System.EventHandler(this.PDGainComboBox_SelectedIndexChanged);
+            // 
+            // PD7LogCheck
+            // 
+            this.PD7LogCheck.Location = new System.Drawing.Point(389, 281);
+            this.PD7LogCheck.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD7LogCheck.Name = "PD7LogCheck";
+            this.PD7LogCheck.Size = new System.Drawing.Size(20, 20);
+            this.PD7LogCheck.TabIndex = 42;
+            // 
+            // labelPD8
+            // 
+            this.labelPD8.Location = new System.Drawing.Point(20, 310);
+            this.labelPD8.Name = "labelPD8";
+            this.labelPD8.Size = new System.Drawing.Size(40, 20);
+            this.labelPD8.TabIndex = 43;
+            this.labelPD8.Text = "PD8";
+            // 
+            // PD8MonitorTextBox
+            // 
+            this.PD8MonitorTextBox.Location = new System.Drawing.Point(91, 308);
+            this.PD8MonitorTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD8MonitorTextBox.Name = "PD8MonitorTextBox";
+            this.PD8MonitorTextBox.ReadOnly = true;
+            this.PD8MonitorTextBox.Size = new System.Drawing.Size(120, 22);
+            this.PD8MonitorTextBox.TabIndex = 44;
+            // 
+            // PD8GainComboBox
+            // 
+            this.PD8GainComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.PD8GainComboBox.Items.AddRange(new object[] {
+            "Gain 1",
+            "Gain 2",
+            "Gain 3",
+            "Gain 4"});
+            this.PD8GainComboBox.Location = new System.Drawing.Point(240, 308);
+            this.PD8GainComboBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD8GainComboBox.Name = "PD8GainComboBox";
+            this.PD8GainComboBox.Size = new System.Drawing.Size(100, 24);
+            this.PD8GainComboBox.TabIndex = 45;
+            this.PD8GainComboBox.SelectedIndexChanged += new System.EventHandler(this.PDGainComboBox_SelectedIndexChanged);
+            // 
+            // PD8LogCheck
+            // 
+            this.PD8LogCheck.Location = new System.Drawing.Point(389, 310);
+            this.PD8LogCheck.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD8LogCheck.Name = "PD8LogCheck";
+            this.PD8LogCheck.Size = new System.Drawing.Size(20, 20);
+            this.PD8LogCheck.TabIndex = 46;
+            // 
+            // labelPDFileName
+            // 
+            this.labelPDFileName.Location = new System.Drawing.Point(500, 148);
+            this.labelPDFileName.Name = "labelPDFileName";
+            this.labelPDFileName.Size = new System.Drawing.Size(120, 22);
+            this.labelPDFileName.TabIndex = 47;
+            this.labelPDFileName.Text = "Enter File Name:";
+            // 
+            // PDFileNameTextBox
+            // 
+            this.PDFileNameTextBox.Location = new System.Drawing.Point(629, 148);
+            this.PDFileNameTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PDFileNameTextBox.Name = "PDFileNameTextBox";
+            this.PDFileNameTextBox.Size = new System.Drawing.Size(129, 22);
+            this.PDFileNameTextBox.TabIndex = 48;
             // 
             // groupBox9
             // 
-            this.groupBox9.Controls.Add(this.calibrationVoltageV);
-            this.groupBox9.Controls.Add(this.calibrationPowerV);
-            this.groupBox9.Controls.Add(this.VcoolingPowerBox);
-            this.groupBox9.Controls.Add(this.label46);
-            this.groupBox9.Controls.Add(this.label44);
-            this.groupBox9.Controls.Add(this.label42);
-            this.groupBox9.Controls.Add(this.VcoolingMonitorUpdateButton);
-            this.groupBox9.Controls.Add(this.VcoolingMonitorTextBox);
-            this.groupBox9.Controls.Add(this.label39);
-            this.groupBox9.Location = new System.Drawing.Point(683, 48);
-            this.groupBox9.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBox9.Location = new System.Drawing.Point(0, 0);
             this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox9.Size = new System.Drawing.Size(612, 178);
-            this.groupBox9.TabIndex = 1;
+            this.groupBox9.Size = new System.Drawing.Size(200, 100);
+            this.groupBox9.TabIndex = 0;
             this.groupBox9.TabStop = false;
-            this.groupBox9.Text = "Vertical cooling monitoring";
-            // 
-            // label44
-            // 
-            this.label44.AutoSize = true;
-            this.label44.Location = new System.Drawing.Point(114, 145);
-            this.label44.Name = "label44";
-            this.label44.Size = new System.Drawing.Size(79, 17);
-            this.label44.TabIndex = 51;
-            this.label44.Text = "Voltage (V)";
-            // 
-            // label42
-            // 
-            this.label42.AutoSize = true;
-            this.label42.Location = new System.Drawing.Point(33, 114);
-            this.label42.Name = "label42";
-            this.label42.Size = new System.Drawing.Size(160, 17);
-            this.label42.TabIndex = 49;
-            this.label42.Text = "Calibration: Power (mW)";
-            // 
-            // VcoolingMonitorUpdateButton
-            // 
-            this.VcoolingMonitorUpdateButton.Location = new System.Drawing.Point(496, 24);
-            this.VcoolingMonitorUpdateButton.Margin = new System.Windows.Forms.Padding(4);
-            this.VcoolingMonitorUpdateButton.Name = "VcoolingMonitorUpdateButton";
-            this.VcoolingMonitorUpdateButton.Size = new System.Drawing.Size(108, 30);
-            this.VcoolingMonitorUpdateButton.TabIndex = 47;
-            this.VcoolingMonitorUpdateButton.Text = "update";
-            this.VcoolingMonitorUpdateButton.UseVisualStyleBackColor = true;
-            this.VcoolingMonitorUpdateButton.Click += new System.EventHandler(this.VcoolingMonitorUpdateButton_Click);
-            // 
-            // VcoolingMonitorTextBox
-            // 
-            this.VcoolingMonitorTextBox.Location = new System.Drawing.Point(117, 29);
-            this.VcoolingMonitorTextBox.Margin = new System.Windows.Forms.Padding(4);
-            this.VcoolingMonitorTextBox.Name = "VcoolingMonitorTextBox";
-            this.VcoolingMonitorTextBox.ReadOnly = true;
-            this.VcoolingMonitorTextBox.Size = new System.Drawing.Size(111, 22);
-            this.VcoolingMonitorTextBox.TabIndex = 46;
-            this.VcoolingMonitorTextBox.Text = "0";
-            // 
-            // label39
-            // 
-            this.label39.Location = new System.Drawing.Point(33, 33);
-            this.label39.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label39.Name = "label39";
-            this.label39.Size = new System.Drawing.Size(107, 28);
-            this.label39.TabIndex = 37;
-            this.label39.Text = "Voltage (V)";
-            // 
-            // HCoolingGroupBox
-            // 
-            this.HCoolingGroupBox.Controls.Add(this.HcoolingPowerBox);
-            this.HCoolingGroupBox.Controls.Add(this.label45);
-            this.HCoolingGroupBox.Controls.Add(this.calibrationVoltageH);
-            this.HCoolingGroupBox.Controls.Add(this.label43);
-            this.HCoolingGroupBox.Controls.Add(this.calibrationPowerH);
-            this.HCoolingGroupBox.Controls.Add(this.label41);
-            this.HCoolingGroupBox.Controls.Add(this.HcoolingMonitorUpdateButton);
-            this.HCoolingGroupBox.Controls.Add(this.HcoolingMonitorTextBox);
-            this.HCoolingGroupBox.Controls.Add(this.label36);
-            this.HCoolingGroupBox.Location = new System.Drawing.Point(93, 48);
-            this.HCoolingGroupBox.Margin = new System.Windows.Forms.Padding(4);
-            this.HCoolingGroupBox.Name = "HCoolingGroupBox";
-            this.HCoolingGroupBox.Padding = new System.Windows.Forms.Padding(4);
-            this.HCoolingGroupBox.Size = new System.Drawing.Size(582, 178);
-            this.HCoolingGroupBox.TabIndex = 0;
-            this.HCoolingGroupBox.TabStop = false;
-            this.HCoolingGroupBox.Text = "Horizontal cooling monitoring";
-            // 
-            // HcoolingPowerBox
-            // 
-            this.HcoolingPowerBox.Location = new System.Drawing.Point(327, 30);
-            this.HcoolingPowerBox.Name = "HcoolingPowerBox";
-            this.HcoolingPowerBox.Size = new System.Drawing.Size(125, 22);
-            this.HcoolingPowerBox.TabIndex = 53;
-            // 
-            // label45
-            // 
-            this.label45.AutoSize = true;
-            this.label45.Location = new System.Drawing.Point(236, 35);
-            this.label45.Name = "label45";
-            this.label45.Size = new System.Drawing.Size(85, 17);
-            this.label45.TabIndex = 52;
-            this.label45.Text = "Power (mW)";
-            // 
-            // calibrationVoltageH
-            // 
-            this.calibrationVoltageH.Location = new System.Drawing.Point(216, 142);
-            this.calibrationVoltageH.Name = "calibrationVoltageH";
-            this.calibrationVoltageH.Size = new System.Drawing.Size(113, 22);
-            this.calibrationVoltageH.TabIndex = 51;
-            // 
-            // label43
-            // 
-            this.label43.AutoSize = true;
-            this.label43.Location = new System.Drawing.Point(115, 145);
-            this.label43.Name = "label43";
-            this.label43.Size = new System.Drawing.Size(79, 17);
-            this.label43.TabIndex = 50;
-            this.label43.Text = "Voltage (V)";
-            // 
-            // calibrationPowerH
-            // 
-            this.calibrationPowerH.Location = new System.Drawing.Point(216, 108);
-            this.calibrationPowerH.Name = "calibrationPowerH";
-            this.calibrationPowerH.Size = new System.Drawing.Size(113, 22);
-            this.calibrationPowerH.TabIndex = 49;
-            // 
-            // label41
-            // 
-            this.label41.AutoSize = true;
-            this.label41.Location = new System.Drawing.Point(34, 114);
-            this.label41.Name = "label41";
-            this.label41.Size = new System.Drawing.Size(160, 17);
-            this.label41.TabIndex = 48;
-            this.label41.Text = "Calibration: Power (mW)";
-            // 
-            // HcoolingMonitorUpdateButton
-            // 
-            this.HcoolingMonitorUpdateButton.Location = new System.Drawing.Point(466, 27);
-            this.HcoolingMonitorUpdateButton.Margin = new System.Windows.Forms.Padding(4);
-            this.HcoolingMonitorUpdateButton.Name = "HcoolingMonitorUpdateButton";
-            this.HcoolingMonitorUpdateButton.Size = new System.Drawing.Size(108, 28);
-            this.HcoolingMonitorUpdateButton.TabIndex = 47;
-            this.HcoolingMonitorUpdateButton.Text = "update";
-            this.HcoolingMonitorUpdateButton.UseVisualStyleBackColor = true;
-            this.HcoolingMonitorUpdateButton.Click += new System.EventHandler(this.HcoolingMonitorUpdateButton_Click);
-            // 
-            // HcoolingMonitorTextBox
-            // 
-            this.HcoolingMonitorTextBox.Location = new System.Drawing.Point(118, 33);
-            this.HcoolingMonitorTextBox.Margin = new System.Windows.Forms.Padding(4);
-            this.HcoolingMonitorTextBox.Name = "HcoolingMonitorTextBox";
-            this.HcoolingMonitorTextBox.ReadOnly = true;
-            this.HcoolingMonitorTextBox.Size = new System.Drawing.Size(111, 22);
-            this.HcoolingMonitorTextBox.TabIndex = 46;
-            this.HcoolingMonitorTextBox.Text = "0";
-            // 
-            // label36
-            // 
-            this.label36.Location = new System.Drawing.Point(33, 33);
-            this.label36.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label36.Name = "label36";
-            this.label36.Size = new System.Drawing.Size(107, 28);
-            this.label36.TabIndex = 37;
-            this.label36.Text = "Voltage (V)";
-            // 
-            // label46
-            // 
-            this.label46.AutoSize = true;
-            this.label46.Location = new System.Drawing.Point(246, 32);
-            this.label46.Name = "label46";
-            this.label46.Size = new System.Drawing.Size(85, 17);
-            this.label46.TabIndex = 53;
-            this.label46.Text = "Power (mW)";
-            // 
-            // VcoolingPowerBox
-            // 
-            this.VcoolingPowerBox.Location = new System.Drawing.Point(337, 33);
-            this.VcoolingPowerBox.Name = "VcoolingPowerBox";
-            this.VcoolingPowerBox.Size = new System.Drawing.Size(125, 22);
-            this.VcoolingPowerBox.TabIndex = 54;
-            // 
-            // calibrationPowerV
-            // 
-            this.calibrationPowerV.Location = new System.Drawing.Point(227, 111);
-            this.calibrationPowerV.Name = "calibrationPowerV";
-            this.calibrationPowerV.Size = new System.Drawing.Size(113, 22);
-            this.calibrationPowerV.TabIndex = 55;
             // 
             // calibrationVoltageV
             // 
-            this.calibrationVoltageV.Location = new System.Drawing.Point(227, 145);
+            this.calibrationVoltageV.Location = new System.Drawing.Point(0, 0);
             this.calibrationVoltageV.Name = "calibrationVoltageV";
-            this.calibrationVoltageV.Size = new System.Drawing.Size(113, 22);
-            this.calibrationVoltageV.TabIndex = 56;
+            this.calibrationVoltageV.Size = new System.Drawing.Size(100, 22);
+            this.calibrationVoltageV.TabIndex = 0;
+            // 
+            // calibrationPowerV
+            // 
+            this.calibrationPowerV.Location = new System.Drawing.Point(0, 0);
+            this.calibrationPowerV.Name = "calibrationPowerV";
+            this.calibrationPowerV.Size = new System.Drawing.Size(100, 22);
+            this.calibrationPowerV.TabIndex = 0;
+            // 
+            // VcoolingPowerBox
+            // 
+            this.VcoolingPowerBox.Location = new System.Drawing.Point(0, 0);
+            this.VcoolingPowerBox.Name = "VcoolingPowerBox";
+            this.VcoolingPowerBox.Size = new System.Drawing.Size(100, 22);
+            this.VcoolingPowerBox.TabIndex = 0;
+            // 
+            // label46
+            // 
+            this.label46.Location = new System.Drawing.Point(0, 0);
+            this.label46.Name = "label46";
+            this.label46.Size = new System.Drawing.Size(100, 23);
+            this.label46.TabIndex = 0;
+            // 
+            // label44
+            // 
+            this.label44.Location = new System.Drawing.Point(0, 0);
+            this.label44.Name = "label44";
+            this.label44.Size = new System.Drawing.Size(100, 23);
+            this.label44.TabIndex = 0;
+            // 
+            // label42
+            // 
+            this.label42.Location = new System.Drawing.Point(0, 0);
+            this.label42.Name = "label42";
+            this.label42.Size = new System.Drawing.Size(100, 23);
+            this.label42.TabIndex = 0;
+            // 
+            // VcoolingMonitorUpdateButton
+            // 
+            this.VcoolingMonitorUpdateButton.Location = new System.Drawing.Point(0, 0);
+            this.VcoolingMonitorUpdateButton.Name = "VcoolingMonitorUpdateButton";
+            this.VcoolingMonitorUpdateButton.Size = new System.Drawing.Size(75, 23);
+            this.VcoolingMonitorUpdateButton.TabIndex = 0;
+            // 
+            // VcoolingMonitorTextBox
+            // 
+            this.VcoolingMonitorTextBox.Location = new System.Drawing.Point(0, 0);
+            this.VcoolingMonitorTextBox.Name = "VcoolingMonitorTextBox";
+            this.VcoolingMonitorTextBox.Size = new System.Drawing.Size(100, 22);
+            this.VcoolingMonitorTextBox.TabIndex = 0;
+            // 
+            // label39
+            // 
+            this.label39.Location = new System.Drawing.Point(0, 0);
+            this.label39.Name = "label39";
+            this.label39.Size = new System.Drawing.Size(100, 23);
+            this.label39.TabIndex = 0;
+            // 
+            // HCoolingGroupBox
+            // 
+            this.HCoolingGroupBox.Location = new System.Drawing.Point(0, 0);
+            this.HCoolingGroupBox.Name = "HCoolingGroupBox";
+            this.HCoolingGroupBox.Size = new System.Drawing.Size(200, 100);
+            this.HCoolingGroupBox.TabIndex = 0;
+            this.HCoolingGroupBox.TabStop = false;
+            // 
+            // HcoolingPowerBox
+            // 
+            this.HcoolingPowerBox.Location = new System.Drawing.Point(0, 0);
+            this.HcoolingPowerBox.Name = "HcoolingPowerBox";
+            this.HcoolingPowerBox.Size = new System.Drawing.Size(100, 22);
+            this.HcoolingPowerBox.TabIndex = 0;
+            // 
+            // label45
+            // 
+            this.label45.Location = new System.Drawing.Point(0, 0);
+            this.label45.Name = "label45";
+            this.label45.Size = new System.Drawing.Size(100, 23);
+            this.label45.TabIndex = 0;
+            // 
+            // calibrationVoltageH
+            // 
+            this.calibrationVoltageH.Location = new System.Drawing.Point(0, 0);
+            this.calibrationVoltageH.Name = "calibrationVoltageH";
+            this.calibrationVoltageH.Size = new System.Drawing.Size(100, 22);
+            this.calibrationVoltageH.TabIndex = 0;
+            // 
+            // label43
+            // 
+            this.label43.Location = new System.Drawing.Point(0, 0);
+            this.label43.Name = "label43";
+            this.label43.Size = new System.Drawing.Size(100, 23);
+            this.label43.TabIndex = 0;
+            // 
+            // calibrationPowerH
+            // 
+            this.calibrationPowerH.Location = new System.Drawing.Point(0, 0);
+            this.calibrationPowerH.Name = "calibrationPowerH";
+            this.calibrationPowerH.Size = new System.Drawing.Size(100, 22);
+            this.calibrationPowerH.TabIndex = 0;
+            // 
+            // label41
+            // 
+            this.label41.Location = new System.Drawing.Point(0, 0);
+            this.label41.Name = "label41";
+            this.label41.Size = new System.Drawing.Size(100, 23);
+            this.label41.TabIndex = 0;
+            // 
+            // HcoolingMonitorUpdateButton
+            // 
+            this.HcoolingMonitorUpdateButton.Location = new System.Drawing.Point(0, 0);
+            this.HcoolingMonitorUpdateButton.Name = "HcoolingMonitorUpdateButton";
+            this.HcoolingMonitorUpdateButton.Size = new System.Drawing.Size(75, 23);
+            this.HcoolingMonitorUpdateButton.TabIndex = 0;
+            // 
+            // HcoolingMonitorTextBox
+            // 
+            this.HcoolingMonitorTextBox.Location = new System.Drawing.Point(0, 0);
+            this.HcoolingMonitorTextBox.Name = "HcoolingMonitorTextBox";
+            this.HcoolingMonitorTextBox.Size = new System.Drawing.Size(100, 22);
+            this.HcoolingMonitorTextBox.TabIndex = 0;
+            // 
+            // label36
+            // 
+            this.label36.Location = new System.Drawing.Point(0, 0);
+            this.label36.Name = "label36";
+            this.label36.Size = new System.Drawing.Size(100, 23);
+            this.label36.TabIndex = 0;
             // 
             // ControlWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(1715, 949);
+            this.ClientSize = new System.Drawing.Size(1648, 942);
             this.Controls.Add(this.groupBoxStatus);
             this.Controls.Add(this.tabControl);
             this.Controls.Add(this.gbTemperatureandPressureMonitoringControl);
@@ -9617,6 +10153,7 @@ namespace UEDMHardwareControl
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
             this.tabPagePumping.ResumeLayout(false);
+            this.tabPagePumping.PerformLayout();
             this.groupBoxMWSwitch.ResumeLayout(false);
             this.groupBoxMWSwitch.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ledChBDetB)).EndInit();
@@ -9626,17 +10163,15 @@ namespace UEDMHardwareControl
             this.groupBoxStirapRF.ResumeLayout(false);
             this.groupBoxStirapRF.PerformLayout();
             this.groupBoxWindfreakDetection.ResumeLayout(false);
-            this.groupBoxWindfreakDetection.PerformLayout();
             this.groupBoxMWCHAdetection.ResumeLayout(false);
             this.groupBoxMWCHAdetection.PerformLayout();
             this.groupBoxMWCHBdetection.ResumeLayout(false);
             this.groupBoxMWCHBdetection.PerformLayout();
+            this.groupBoxMWDetectionB.ResumeLayout(false);
+            this.groupBoxMWDetectionB.PerformLayout();
             this.groupBoxWindfreaksynthhd.ResumeLayout(false);
-            this.groupBoxWindfreaksynthhd.PerformLayout();
             this.groupBoxMWCHA.ResumeLayout(false);
             this.groupBoxMWCHA.PerformLayout();
-            this.groupBoxMWCHB.ResumeLayout(false);
-            this.groupBoxMWCHB.PerformLayout();
             this.groupBoxRF.ResumeLayout(false);
             this.groupBoxRF.PerformLayout();
             this.tabPageBfield.ResumeLayout(false);
@@ -9744,11 +10279,8 @@ namespace UEDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.chart6)).EndInit();
             this.tabCCDCamera.ResumeLayout(false);
             this.tabCCDCamera.PerformLayout();
-            this.tabPage3.ResumeLayout(false);
-            this.groupBox9.ResumeLayout(false);
-            this.groupBox9.PerformLayout();
-            this.HCoolingGroupBox.ResumeLayout(false);
-            this.HCoolingGroupBox.PerformLayout();
+            this.PDMonitorTabPage.ResumeLayout(false);
+            this.PDMonitorTabPage.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -9886,29 +10418,6 @@ namespace UEDMHardwareControl
         private System.Windows.Forms.Label labelMicrowavesChannelAFrequency;
         public System.Windows.Forms.TextBox tbMWCHAFrequencyMonitor;
         public System.Windows.Forms.TextBox tbMWSynthTemperatureMonitor;
-        private System.Windows.Forms.GroupBox groupBoxMWCHB;
-        private System.Windows.Forms.Button btCHBPLLPowerOnInfo;
-        private System.Windows.Forms.Button btCHBPAPowerOnInfo;
-        private System.Windows.Forms.Button btCHBRFMuteInfo;
-        public System.Windows.Forms.CheckBox cbCHBPLLPoweredOn;
-        public System.Windows.Forms.CheckBox cbCHBPAPoweredOn;
-        public System.Windows.Forms.CheckBox cbCHBRFMuted;
-        private System.Windows.Forms.Button btQueryMWCHBPower;
-        private System.Windows.Forms.Button btQueryMWCHBFrequency;
-        private System.Windows.Forms.Button btIncrementMWCHBPower;
-        public System.Windows.Forms.TextBox tbMWCHBPowerIncrement;
-        private System.Windows.Forms.Button btUpdateMWCHBPower;
-        public System.Windows.Forms.TextBox tbMWCHBPowerSetpoint;
-        private System.Windows.Forms.Label labelMicrowavesChannelBPower;
-        public System.Windows.Forms.TextBox tbMWCHBPowerMonitor;
-        public System.Windows.Forms.ComboBox comboBoxMWCHBSetpointUnit;
-        public System.Windows.Forms.ComboBox comboBoxMWCHBIncrementUnit;
-        private System.Windows.Forms.Button btIncrementMWCHBFrequency;
-        public System.Windows.Forms.TextBox tbMWCHBFrequencyIncrement;
-        private System.Windows.Forms.Button btUpdateMWCHBFrequency;
-        public System.Windows.Forms.TextBox tbMWCHBFrequencySetpoint;
-        private System.Windows.Forms.Label labelMicrowavesChannelBFrequency;
-        public System.Windows.Forms.TextBox tbMWCHBFrequencyMonitor;
         private System.Windows.Forms.GroupBox groupBoxRF;
         private System.Windows.Forms.Label labelRFStatus;
         public System.Windows.Forms.TextBox tbRFStatus;
@@ -10352,7 +10861,6 @@ namespace UEDMHardwareControl
         private System.Windows.Forms.Label labelStirapRF;
         public System.Windows.Forms.TextBox tbStirapRFFreqMon;
         public System.Windows.Forms.CheckBox cbCHATrigger;
-        public System.Windows.Forms.CheckBox cbCHBRFTrigger;
         public System.Windows.Forms.CheckBox cbCHARFTrigger;
         public System.Windows.Forms.CheckBox cbStirapRFOn;
         private System.Windows.Forms.Label labelStirapRFAmp;
@@ -10444,7 +10952,7 @@ namespace UEDMHardwareControl
         private Label label34;
         private Button updateFeedthroughTempButton;
         public TextBox tbFeedthroughTemp;
-        private TabPage tabPage3;
+        //private TabPage tabPage3;
         private GroupBox HCoolingGroupBox;
         private Label label36;
         public TextBox HcoolingMonitorTextBox;
@@ -10490,5 +10998,95 @@ namespace UEDMHardwareControl
         public TextBox calibrationPowerV;
         public TextBox VcoolingPowerBox;
         private Label label46;
+
+        // Det B - Microwave Synth Mini
+        private System.Windows.Forms.Button btQueryMWFrequencyDetectionB;
+        private System.Windows.Forms.Button btUpdateMWFrequencyDetectionB;
+        private System.Windows.Forms.Button btIncrementMWFrequencyDetectionB;
+
+        public System.Windows.Forms.TextBox tbMWFrequencyMonitorDetectionB;
+        public System.Windows.Forms.TextBox tbMWFrequencySetpointDetectionB;
+        public System.Windows.Forms.TextBox tbMWFrequencyIncrementDetectionB;
+
+        public System.Windows.Forms.ComboBox comboBoxMWSetpointUnitDetectionB;
+        public System.Windows.Forms.ComboBox comboBoxMWIncrementUnitDetectionB;
+
+        private System.Windows.Forms.Button btQueryMWPowerDetectionB;
+        private System.Windows.Forms.Button btUpdateMWPowerDetectionB;
+        private System.Windows.Forms.Button btIncrementMWPowerDetectionB;
+
+        public System.Windows.Forms.TextBox tbMWPowerMonitorDetectionB;
+        public System.Windows.Forms.TextBox tbMWPowerSetpointDetectionB;
+        public System.Windows.Forms.TextBox tbMWPowerIncrementDetectionB;
+        public System.Windows.Forms.CheckBox cbRFMutedDetectionB;
+        public System.Windows.Forms.CheckBox cbPAPoweredOnDetectionB;
+        public System.Windows.Forms.CheckBox cbPLLPoweredOnDetectionB;
+        private System.Windows.Forms.CheckBox cbTriggerDetectionB;
+        public System.Windows.Forms.TextBox tbMWSynthTemperatureMonitorDetectionB;
+        private System.Windows.Forms.GroupBox groupBoxMWDetectionB;
+        private System.Windows.Forms.Label labelDetectMicrowavesPowerDetectionB;
+        private System.Windows.Forms.Button btQueryMWSynthTemperatureDetectionB;
+        private System.Windows.Forms.Label labelDetectSynthTempB;
+        private Label label48;
+        private Label label47;
+        public TextBox tbStirapRFfreqFalseValue;
+        public TextBox tbStirapRFfreqTrueValue;
+        public CheckBox pollftTCheckBox;
+
+        public System.Windows.Forms.TabPage PDMonitorTabPage;
+        public System.Windows.Forms.Button queryPDButton;
+        public System.Windows.Forms.Button startPDLogButton;
+        public System.Windows.Forms.Button stopPDLogButton;
+        public System.Windows.Forms.Button PDLogDirectoryBrowseButton;
+
+        private System.Windows.Forms.Label labelPDChannel;
+        public System.Windows.Forms.Label labelPDValue;
+        private System.Windows.Forms.Label labelPDGain;
+        private System.Windows.Forms.Label labelPDLog;
+        private System.Windows.Forms.Label labelPDLogDuration;
+        private System.Windows.Forms.Label labelPDSamplePeriod;
+        private System.Windows.Forms.Label labelPDLogDirectory;
+        private System.Windows.Forms.Label labelPD1;
+        private System.Windows.Forms.Label labelPD2;
+        private System.Windows.Forms.Label labelPD3;
+        private System.Windows.Forms.Label labelPD4;
+        private System.Windows.Forms.Label labelPD5;
+        private System.Windows.Forms.Label labelPD6;
+        private System.Windows.Forms.Label labelPD7;
+        private System.Windows.Forms.Label labelPD8;
+
+        public System.Windows.Forms.TextBox PDLogDurationTextBox;
+        public System.Windows.Forms.TextBox PDSamplePeriodTextBox;
+        public System.Windows.Forms.TextBox PDLogDirectoryTextBox;
+        public System.Windows.Forms.TextBox PD1MonitorTextBox;
+        public System.Windows.Forms.TextBox PD2MonitorTextBox;
+        public System.Windows.Forms.TextBox PD3MonitorTextBox;
+        public System.Windows.Forms.TextBox PD4MonitorTextBox;
+        public System.Windows.Forms.TextBox PD5MonitorTextBox;
+        public System.Windows.Forms.TextBox PD6MonitorTextBox;
+        public System.Windows.Forms.TextBox PD7MonitorTextBox;
+        public System.Windows.Forms.TextBox PD8MonitorTextBox;
+
+        public System.Windows.Forms.ComboBox PD1GainComboBox;
+        public System.Windows.Forms.ComboBox PD2GainComboBox;
+        public System.Windows.Forms.ComboBox PD3GainComboBox;
+        public System.Windows.Forms.ComboBox PD4GainComboBox;
+        public System.Windows.Forms.ComboBox PD5GainComboBox;
+        public System.Windows.Forms.ComboBox PD6GainComboBox;
+        public System.Windows.Forms.ComboBox PD7GainComboBox;
+        public System.Windows.Forms.ComboBox PD8GainComboBox;
+
+        public System.Windows.Forms.CheckBox PD1LogCheck;
+        public System.Windows.Forms.CheckBox PD2LogCheck;
+        public System.Windows.Forms.CheckBox PD3LogCheck;
+        public System.Windows.Forms.CheckBox PD4LogCheck;
+        public System.Windows.Forms.CheckBox PD5LogCheck;
+        public System.Windows.Forms.CheckBox PD6LogCheck;
+        public System.Windows.Forms.CheckBox PD7LogCheck;
+        public System.Windows.Forms.CheckBox PD8LogCheck;
+        public System.Windows.Forms.CheckBox PDConvertToMwCheckBox;
+        public System.Windows.Forms.TextBox PDFileNameTextBox;
+        private System.Windows.Forms.Label labelPDFileName;
     }
 }
+

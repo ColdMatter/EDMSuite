@@ -289,6 +289,16 @@ namespace WavemeterLock
             }
         }
 
+        private static string StatusLogPath()
+        {
+            string dir = System.IO.Path.Combine(
+                (string)DAQ.Environment.Environs.FileSystem.Paths["wavemeterLockData"],
+                "StatusLogs");
+            System.IO.Directory.CreateDirectory(dir);
+            string fileName = "WML_status_log_" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
+            return System.IO.Path.Combine(dir, fileName);
+        }
+
         public void Log(string message)
         {
             string entry = DateTime.Now.ToString("HH:mm:ss") + "  " + message + Environment.NewLine;
@@ -300,6 +310,11 @@ namespace WavemeterLock
             {
                 AppendLog(entry);
             }
+            try
+            {
+                System.IO.File.AppendAllText(StatusLogPath(), entry);
+            }
+            catch { }
         }
 
         private void AppendLog(string entry)

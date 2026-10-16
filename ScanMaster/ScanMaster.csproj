@@ -29,7 +29,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <TargetFrameworkProfile />
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkProfile />
     <PublishUrl>C:\Users\UEDM\EDMSuitePrograms\</PublishUrl>
     <Install>true</Install>
@@ -542,6 +542,10 @@
       <Project>{5e693c98-6205-4be6-a9d2-3ca4484c41a6}</Project>
       <Name>DigitalTransferCavityLock</Name>
     </ProjectReference>
+    <ProjectReference Include="..\HamamatsuCamera\dcamsdk4\samples\cs\csAcq4\Hamamatsu EMCCD Camera.csproj">
+      <Project>{7443f26b-16b4-4191-b841-cf864abdd579}</Project>
+      <Name>Hamamatsu EMCCD Camera</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SharedCode\SharedCode.csproj">
       <Project>{ba0a0540-3f1c-483b-a180-cb78df424f15}</Project>
       <Name>SharedCode</Name>
@@ -549,6 +553,10 @@
     <ProjectReference Include="..\TransferCavityLock2012\TransferCavityLock2012.csproj">
       <Project>{f1bf43a3-5641-4adf-81cb-35bc0d9ac423}</Project>
       <Name>TransferCavityLock2012</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UEDMHardwareControl\UEDMHardwareControl.csproj">
+      <Project>{cfd6eb01-f4fc-4f62-b476-f132f79d22e4}</Project>
+      <Name>UEDMHardwareControl</Name>
     </ProjectReference>
     <ProjectReference Include="..\WaveMeterExample\WavemeterLockServer.csproj">
       <Project>{d2b91c87-f586-4ebc-9f5b-86b71999eafc}</Project>
@@ -568,15 +576,19 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.DAQmx, Version=24.0.45.49417, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
+    <Reference Include="NationalInstruments.DAQmx, Version=26.5.45.49613, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
       <Private>False</Private>
     </Reference>
     <Reference Include="NationalInstruments.DAQmx.ComponentModel, Version=19.6.0.49152, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
-    <Reference Include="NationalInstruments.UI, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.UI.WindowsForms, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.Visa, Version=24.0.0.49398, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL">
+    <Reference Include="NationalInstruments.UI, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.UI.WindowsForms, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.Visa, Version=26.5.0.12, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
     <Reference Include="System">
@@ -619,6 +631,10 @@
     <Compile Include="AnapicoCH2PowerOutputPlugin.cs" />
     <Compile Include="AnapicoCH2FrequencyOutputPlugin.cs" />
     <Compile Include="BasicBeamFlowPatternBuilder.cs" />
+    <Compile Include="BufferedEventCountingTwoShotGathererPlugin.cs" />
+    <Compile Include="UEDMWavemeterPDPlugin.cs" />
+    <Compile Include="ClassicBasicBeamPatternBuilder.cs" />
+    <Compile Include="ClassicBasicBeamPatternPlugin.cs" />
     <Compile Include="BasicBeamTwoYAGPatternBuilder.cs" />
     <Compile Include="BasicBeamTwoYAGPatternPlugin.cs" />
     <Compile Include="DTCLOutputPlugin.cs" />
@@ -640,7 +656,9 @@
     <Compile Include="FourShutterPatternPluginFindV1.cs" />
     <Compile Include="DMMInputPlugin.cs" />
     <Compile Include="LatticeBFieldFourShotPatternBuilder.cs" />
+    <Compile Include="ClassicFourShotPatternPlugin.cs" />
     <Compile Include="LatticeBFieldFourShotPatternPlugin.cs" />
+    <Compile Include="ClassicFourShotPatternBuilder.cs" />
     <Compile Include="LatticePatternBuilder.cs" />
     <Compile Include="LatticePatternPlugin.cs" />
     <Compile Include="LatticePnPModYAGFourShotsPatternBuilder.cs" />
@@ -657,11 +675,13 @@
     <Compile Include="ModulatedAnalogShotGathererPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ModulatedFourHybridShotGathererPlugin.cs" />
     <Compile Include="ModulatedFourAnalogShotGathererPlugin.cs" />
     <Compile Include="MOTMasterScan.cs" />
     <Compile Include="MSquaredOutputPlugin.cs" />
     <Compile Include="AnapicoCH1FrequencyOutputPlugin.cs" />
     <Compile Include="AnapicoCH1PowerOutputPlugin.cs" />
+    <Compile Include="MultipleWavemeterInputPlugin.cs" />
     <Compile Include="NshotsPatternBuilderCCD.cs" />
     <Compile Include="NshotsPatternPluginCCD.cs" />
     <Compile Include="TwoShutterSlowingPatternBuilder.cs" />
@@ -690,6 +710,7 @@
     <Compile Include="WindfriekSynthF1AmplitudeOutputPlugin.cs" />
     <Compile Include="WindfriekSynthF0AmplitudeOutputPlugin.cs" />
     <Compile Include="WindfriekSynthFrequencyOutputPlugin.cs" />
+    <Compile Include="NovatechSynthFrequencyOutputPlugin.cs" />
     <Compile Include="DualCCDPatternBuilder.cs" />
     <Compile Include="DualCCDPatternPlugin.cs" />
     <Compile Include="LeakTestPatternBuilder.cs" />

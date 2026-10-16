@@ -1,0 +1,28 @@
+# byte-code / caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+
+# editors
+.spyproject/
+.vscode/
+.idea/
+
+# build / install
+build/
+dist/
+*.egg-info/
+
+# outputs: keep analysis products out of the code history
+outputs/
+figures/
+*.pdf
+*.png
+*.svg
+*.csv
+*.xlsx
+*.h5
+*.npz
+# ...but the pinned regression reference is code, not output
+!Tests/data/golden_levels.json

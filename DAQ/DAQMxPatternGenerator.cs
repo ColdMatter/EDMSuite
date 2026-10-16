@@ -207,7 +207,7 @@ namespace DAQ.HAL
 
             /* Configure one of the PFI channels to output the clock signal of the master card. Required to synchronize the slaves when using multiple pattern cards */
 
-            if ((pgTaskName == "PG") && Environs.Info.ContainsKey("PGExportClock") && (bool)Environs.Hardware.GetInfo("PGExportClock"))
+            if ((pgTaskName == "PG") && ((bool?)Environs.Hardware.GetInfo("PGExportClock") ?? false))
             {
                 pgTask.ExportSignals.SampleClockOutputTerminal = (string)Environment.Environs.Hardware.GetInfo(clock_line_out);
             }

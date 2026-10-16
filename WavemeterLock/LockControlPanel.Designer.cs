@@ -71,6 +71,8 @@ namespace WavemeterLock
             this.scaleUp = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.controlPanel = new System.Windows.Forms.GroupBox();
+            this.lockLED = new System.Windows.Forms.Panel();
+            this.LEDBlockIndicator = new System.Windows.Forms.Panel();
             this.checkBoxLogData = new System.Windows.Forms.CheckBox();
             this.RMSValue = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
@@ -81,15 +83,13 @@ namespace WavemeterLock
             this.offsetSet = new System.Windows.Forms.Button();
             this.resetGraph = new System.Windows.Forms.Button();
             this.groupBoxErrorPlot = new System.Windows.Forms.GroupBox();
+            this.errorScatterGraph = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.groupBoxLaserInfo = new System.Windows.Forms.GroupBox();
             this.labelOutOfRange = new System.Windows.Forms.Label();
-            this.LEDBlockIndicator = new System.Windows.Forms.Panel();
-            this.lockLED = new System.Windows.Forms.Panel();
-            this.errorScatterGraph = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.controlPanel.SuspendLayout();
             this.groupBoxErrorPlot.SuspendLayout();
-            this.groupBoxLaserInfo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorScatterGraph)).BeginInit();
+            this.groupBoxLaserInfo.SuspendLayout();
             this.SuspendLayout();
             // 
             // stepDown
@@ -383,6 +383,24 @@ namespace WavemeterLock
             this.controlPanel.Text = "Control Panel";
             this.controlPanel.Enter += new System.EventHandler(this.controlPanel_Enter);
             // 
+            // lockLED
+            // 
+            this.lockLED.BackColor = System.Drawing.Color.Red;
+            this.lockLED.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lockLED.Location = new System.Drawing.Point(324, 26);
+            this.lockLED.Name = "lockLED";
+            this.lockLED.Size = new System.Drawing.Size(10, 10);
+            this.lockLED.TabIndex = 27;
+            // 
+            // LEDBlockIndicator
+            // 
+            this.LEDBlockIndicator.BackColor = System.Drawing.Color.Red;
+            this.LEDBlockIndicator.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.LEDBlockIndicator.Location = new System.Drawing.Point(258, 164);
+            this.LEDBlockIndicator.Name = "LEDBlockIndicator";
+            this.LEDBlockIndicator.Size = new System.Drawing.Size(10, 10);
+            this.LEDBlockIndicator.TabIndex = 75;
+            // 
             // checkBoxLogData
             // 
             this.checkBoxLogData.AutoSize = true;
@@ -392,6 +410,7 @@ namespace WavemeterLock
             this.checkBoxLogData.TabIndex = 75;
             this.checkBoxLogData.Text = "Log Data";
             this.checkBoxLogData.UseVisualStyleBackColor = true;
+            this.checkBoxLogData.CheckedChanged += new System.EventHandler(this.checkBoxLogData_CheckedChanged);
             this.checkBoxLogData.CheckStateChanged += new System.EventHandler(this.logData_check);
             // 
             // RMSValue
@@ -479,56 +498,6 @@ namespace WavemeterLock
             this.groupBoxErrorPlot.TabStop = false;
             this.groupBoxErrorPlot.Text = "Frequency Error (MHz)";
             // 
-            // groupBoxLaserInfo
-            // 
-            this.groupBoxLaserInfo.Controls.Add(this.labelOutOfRange);
-            this.groupBoxLaserInfo.Controls.Add(this.label1);
-            this.groupBoxLaserInfo.Controls.Add(this.lockChannelNum);
-            this.groupBoxLaserInfo.Controls.Add(this.displayFreq);
-            this.groupBoxLaserInfo.Controls.Add(this.displayWL);
-            this.groupBoxLaserInfo.Controls.Add(this.label10);
-            this.groupBoxLaserInfo.Controls.Add(this.VOut);
-            this.groupBoxLaserInfo.Controls.Add(this.frequencyError);
-            this.groupBoxLaserInfo.Controls.Add(this.label8);
-            this.groupBoxLaserInfo.Controls.Add(this.label5);
-            this.groupBoxLaserInfo.Controls.Add(this.label3);
-            this.groupBoxLaserInfo.Controls.Add(this.resetBtn);
-            this.groupBoxLaserInfo.Location = new System.Drawing.Point(27, 9);
-            this.groupBoxLaserInfo.Name = "groupBoxLaserInfo";
-            this.groupBoxLaserInfo.Size = new System.Drawing.Size(218, 193);
-            this.groupBoxLaserInfo.TabIndex = 74;
-            this.groupBoxLaserInfo.TabStop = false;
-            this.groupBoxLaserInfo.Text = "Laser Status";
-            this.groupBoxLaserInfo.Enter += new System.EventHandler(this.groupBoxLaserInfo_Enter);
-            // 
-            // labelOutOfRange
-            // 
-            this.labelOutOfRange.AutoSize = true;
-            this.labelOutOfRange.ForeColor = System.Drawing.Color.Red;
-            this.labelOutOfRange.Location = new System.Drawing.Point(110, 166);
-            this.labelOutOfRange.Name = "labelOutOfRange";
-            this.labelOutOfRange.Size = new System.Drawing.Size(74, 13);
-            this.labelOutOfRange.TabIndex = 75;
-            this.labelOutOfRange.Text = "Out of Range!";
-            // 
-            // LEDBlockIndicator
-            // 
-            this.LEDBlockIndicator.BackColor = System.Drawing.Color.Red;
-            this.LEDBlockIndicator.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.LEDBlockIndicator.Location = new System.Drawing.Point(258, 164);
-            this.LEDBlockIndicator.Name = "LEDBlockIndicator";
-            this.LEDBlockIndicator.Size = new System.Drawing.Size(10, 10);
-            this.LEDBlockIndicator.TabIndex = 75;
-            // 
-            // lockLED
-            // 
-            this.lockLED.BackColor = System.Drawing.Color.Red;
-            this.lockLED.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lockLED.Location = new System.Drawing.Point(324, 26);
-            this.lockLED.Name = "lockLED";
-            this.lockLED.Size = new System.Drawing.Size(10, 10);
-            this.lockLED.TabIndex = 27;
-            // 
             // errorScatterGraph
             // 
             this.errorScatterGraph.BackColor = System.Drawing.Color.Black;
@@ -572,6 +541,38 @@ namespace WavemeterLock
             this.errorScatterGraph.TabIndex = 0;
             this.errorScatterGraph.Text = "chart1";
             // 
+            // groupBoxLaserInfo
+            // 
+            this.groupBoxLaserInfo.Controls.Add(this.labelOutOfRange);
+            this.groupBoxLaserInfo.Controls.Add(this.label1);
+            this.groupBoxLaserInfo.Controls.Add(this.lockChannelNum);
+            this.groupBoxLaserInfo.Controls.Add(this.displayFreq);
+            this.groupBoxLaserInfo.Controls.Add(this.displayWL);
+            this.groupBoxLaserInfo.Controls.Add(this.label10);
+            this.groupBoxLaserInfo.Controls.Add(this.VOut);
+            this.groupBoxLaserInfo.Controls.Add(this.frequencyError);
+            this.groupBoxLaserInfo.Controls.Add(this.label8);
+            this.groupBoxLaserInfo.Controls.Add(this.label5);
+            this.groupBoxLaserInfo.Controls.Add(this.label3);
+            this.groupBoxLaserInfo.Controls.Add(this.resetBtn);
+            this.groupBoxLaserInfo.Location = new System.Drawing.Point(27, 9);
+            this.groupBoxLaserInfo.Name = "groupBoxLaserInfo";
+            this.groupBoxLaserInfo.Size = new System.Drawing.Size(218, 193);
+            this.groupBoxLaserInfo.TabIndex = 74;
+            this.groupBoxLaserInfo.TabStop = false;
+            this.groupBoxLaserInfo.Text = "Laser Status";
+            this.groupBoxLaserInfo.Enter += new System.EventHandler(this.groupBoxLaserInfo_Enter);
+            // 
+            // labelOutOfRange
+            // 
+            this.labelOutOfRange.AutoSize = true;
+            this.labelOutOfRange.ForeColor = System.Drawing.Color.Red;
+            this.labelOutOfRange.Location = new System.Drawing.Point(110, 166);
+            this.labelOutOfRange.Name = "labelOutOfRange";
+            this.labelOutOfRange.Size = new System.Drawing.Size(74, 13);
+            this.labelOutOfRange.TabIndex = 75;
+            this.labelOutOfRange.Text = "Out of Range!";
+            // 
             // LockControlPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -596,9 +597,9 @@ namespace WavemeterLock
             this.controlPanel.ResumeLayout(false);
             this.controlPanel.PerformLayout();
             this.groupBoxErrorPlot.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.errorScatterGraph)).EndInit();
             this.groupBoxLaserInfo.ResumeLayout(false);
             this.groupBoxLaserInfo.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.errorScatterGraph)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

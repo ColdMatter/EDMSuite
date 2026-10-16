@@ -454,7 +454,7 @@ namespace ScanMaster.GUI
             // pmtOffPlot
             // 
             this.pmtOffPlot.LineStyle = NationalInstruments.UI.LineStyle.None;
-            this.pmtOffPlot.PointColor = System.Drawing.Color.LawnGreen;
+            this.pmtOffPlot.PointColor = System.Drawing.Color.MediumPurple;
             this.pmtOffPlot.PointStyle = NationalInstruments.UI.PointStyle.Cross;
             this.pmtOffPlot.XAxis = this.xAxis3;
             this.pmtOffPlot.YAxis = this.pmtYAxis;
@@ -1172,6 +1172,7 @@ namespace ScanMaster.GUI
             // 
             this.instrumentControlStrip1.AutoSize = false;
             this.instrumentControlStrip1.Dock = System.Windows.Forms.DockStyle.None;
+            this.instrumentControlStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.instrumentControlStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripLabel4,
             this.toolStripLabel7,
@@ -1204,7 +1205,7 @@ namespace ScanMaster.GUI
             this.toolStripPropertyEditor7.AutoSize = false;
             this.toolStripPropertyEditor7.Name = "toolStripPropertyEditor7";
             this.toolStripPropertyEditor7.RenderMode = NationalInstruments.UI.PropertyEditorRenderMode.Inherit;
-            this.toolStripPropertyEditor7.Size = new System.Drawing.Size(120, 23);
+            this.toolStripPropertyEditor7.Size = new System.Drawing.Size(100, 23);
             this.toolStripPropertyEditor7.Source = new NationalInstruments.UI.PropertyEditorSource(this.differenceGraph, "Plots");
             this.toolStripPropertyEditor7.Text = "(Collection)";
             this.toolStripPropertyEditor7.SourceValueChanged += new System.EventHandler(this.toolStripPropertyEditor7_SourceValueChanged);
@@ -1281,6 +1282,7 @@ namespace ScanMaster.GUI
             // 
             // contextMenuStrip1
             // 
+            this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 

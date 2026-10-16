@@ -301,6 +301,18 @@ namespace EDMBlockHead
             }
         }
 
+        public void StartAcquisitionWithoutCCDs()
+        {
+            if (appState != AppState.running)
+            {
+                Status = "Acquiring ...";
+                acquisitor.StartWithoutCCDs(config);
+                appState = AppState.running;
+                mainWindow.AppendToTextArea("Starting acquisition ...");
+                mainWindow.ClearLeakageMeasurements();
+            }
+        }
+
         public void StartMagDataAcquisition()
         {
             if (appState != AppState.running)
@@ -373,6 +385,14 @@ namespace EDMBlockHead
             Monitor.Exit(acquisitor.MonitorLockObject);
         }
 
+        public void AcquireWithoutCCDsAndWait()
+        {
+            Monitor.Enter(acquisitor.MonitorLockObject);
+            StartAcquisitionWithoutCCDs();
+            Monitor.Wait(acquisitor.MonitorLockObject);
+            Monitor.Exit(acquisitor.MonitorLockObject);
+        }
+
         public void StartMagDataAcquisitionAndWait()
         {
             Monitor.Enter(acquisitor.MonitorLockObject);
@@ -438,10 +458,10 @@ namespace EDMBlockHead
         {
             this.Block = b;
             mainWindow.AppendToTextArea("Demodulating block.");
-             b.AddDetectorsToBlock();
-            DBlock = blockDemodulator.QuickDemodulateBlock(b);            //This is commented out while we figure out the differences between UEDM and ClassicEDM
-            AnalysedDBlock = QuickEDMAnalysis.AnalyseDBlock(DBlock, (double)b.Config.Settings["liveAnalysisGateLow"], (double)b.Config.Settings["liveAnalysisGateHigh"]);
-            liveViewer.AddAnalysedDBlock(AnalysedDBlock);
+            b.AddDetectorsToBlock();
+            //DBlock = blockDemodulator.QuickDemodulateBlock(b);            //This is commented out while we figure out the differences between UEDM and ClassicEDM
+            //AnalysedDBlock = QuickEDMAnalysis.AnalyseDBlock(DBlock, (double)b.Config.Settings["liveAnalysisGateLow"], (double)b.Config.Settings["liveAnalysisGateHigh"]);
+            //liveViewer.AddAnalysedDBlock(AnalysedDBlock);
        
             //config.g
             haveBlock = true;
@@ -501,11 +521,11 @@ namespace EDMBlockHead
                 mainWindow.PlotTOF(0, tof.Data, tof.GateStartTime, tof.ClockPeriod);
                 tof = (TOF)data.TOFs[1];
                 mainWindow.PlotTOF(1, tof.Data, tof.GateStartTime, tof.ClockPeriod);
-                mainWindow.PlotGates(12000,38000);
-                tof = (TOF)data.TOFs[2];
-                mainWindow.PlotTOF(2, tof.Data, tof.GateStartTime, tof.ClockPeriod);
-                tof = (TOF)data.TOFs[3];
-                mainWindow.PlotTOF(3, tof.Data, tof.GateStartTime, tof.ClockPeriod);
+                mainWindow.PlotGates(1200,3800);
+                // tof = (TOF)data.TOFs[2];
+                //mainWindow.PlotTOF(2, tof.Data, tof.GateStartTime, tof.ClockPeriod);
+                //tof = (TOF)data.TOFs[3];
+                //mainWindow.PlotTOF(3, tof.Data, tof.GateStartTime, tof.ClockPeriod);
 
                 // update the leakage graphs
                 mainWindow.AppendLeakageMeasurement(new double[]{westLeakages[0]}, new double[]{eastLeakages[0]});
