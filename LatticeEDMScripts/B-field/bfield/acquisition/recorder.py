@@ -11,8 +11,12 @@ session, and a sensor-side crash cannot tear the data files. The
 command line is the child's contract and is the same as the old one,
 plus --lab-file (which lab -- bench or simulator -- and the config).
 
-Three bench topologies:
+Bench topologies:
 
+  --numbered  sensors by number, what every session run uses: channels
+            s1z, s1y, s2z, ... (--map s1z:ai0,s1y:ai1,s2z:ai2), files
+            <session>_S1Z_pT.txt, --ids s1:SERIAL,s2:SERIAL; every pair
+            of channels on one axis gets a block-mean r; --aux works too
   --1head   one head, axes from --axes (default z,y); optional
             raw-volt --aux channels (e.g. a coil-current monitor)
   --2head   two dual-axis heads on four inputs (--map axis:head:aiN);
@@ -58,6 +62,9 @@ from bfield.errors import (
     DaqSetupError, NoSignalError, OutputIOError, SaturationError,
     error_record,
 )
+from bfield.channels import (key_number, label, parse_map as
+                             parse_sensor_map, shared_axis_pairs,
+                             split_channel)
 from bfield.heads import (DEFAULT_SENSOR_ID, DEFAULT_SENSOR_ID_B,
                           SENSOR_ID_RX, head_is_unknown, same_head)
 from bfield.io.files import (recorder_leftovers, rollback_block,
@@ -253,13 +260,14 @@ SOFTWARE = "bfield.acquisition.recorder"
 # default run-dir family per topology (the legacy programs' names);
 # keeps result/ sortable by eye
 DEFAULT_DATA_DIR = {"1head": "newdata", "2head": "newxyz",
-                    "4head": "newgrad"}
+                    "4head": "newgrad", "numbered": "newdata"}
 
 # what the old programs wrote into meta["software"]; analyses gate on
 # those strings, so meta carries software and software_legacy
 LEGACY_SOFTWARE = {"1head": "qzfm_analog.py",
                    "2head": "qzfm_3axis.py",
-                   "4head": "qzfm_gradient.py"}
+                   "4head": "qzfm_gradient.py",
+                   "numbered": None}     # no old program wrote this
 
 
 # ------------------------------------------------------------ topologies
@@ -541,7 +549,81 @@ class FourHead(Topology):
         }
 
 
-TOPOLOGIES = {t.key: t for t in (OneHead(), TwoHead(), FourHead())}
+class Numbered(Topology):
+    """Sensors by number: channel s2z = sensor 2's Z output."""
+    key, label = "numbered", "sensors by number"
+
+    def parse(self, args, device):
+        entries = parse_sensor_map(args.map)
+        names = [n for n, _k, _p in entries]
+        keys = []
+        for _n, k, _p in entries:
+            if k not in keys:
+                keys.append(k)
+        channel_map = {n: f"{device}/{p}" for n, _k, p in entries}
+        head_of = {n: k for n, k, _p in entries}
+        head_ids = parse_numbered_ids(args.ids, keys)
+        cal_factors = parse_cal_factors(
+            args.cal_factors, names, noun="channel", known=names,
+            have_hint=f"being recorded (channels: {','.join(names)})")
+        # --aux allowed: the S(f) sweep needs the current monitor on the
+        # same clocked task
+        aux = parse_aux(args.aux, names, device)
+        return {"channel_map": channel_map, "pt_names": names, "aux": aux,
+                "head_of": head_of, "head_ids": head_ids,
+                "pairs": shared_axis_pairs(names),
+                "cal_factors": cal_factors}
+
+    def validate(self, cfg, is_acquire):
+        keys = sorted(set(cfg.head_of.values()), key=key_number)
+        if len(keys) > 1 and not cfg.pairs:
+            cfg.warnings.append(
+                "no two sensors share an axis: the block-mean-r drift check "
+                "needs the same axis on two sensors, e.g. s1z and s2z")
+        missing = [k for k in keys if k not in cfg.head_ids]
+        if is_acquire and missing:
+            cfg.warnings.append(
+                "no serial for sensor(s) "
+                + ", ".join(str(key_number(k)) for k in missing)
+                + " (--ids s1:SERIAL,...): the record cannot say which "
+                  "physical head that was")
+
+    def fold_block(self, rec, blk, np):
+        for a, b in rec.cfg.pairs:
+            ma = float(blk[rec.row_of[a]].mean())
+            mb = float(blk[rec.row_of[b]].mean())
+            rec.update_pair(a, b, ma, mb)
+
+    def meta(self, rec):
+        cfg = rec.cfg
+        pairs_meta = []
+        for a, b in cfg.pairs:
+            r = rec.pair_r(a, b)
+            pairs_meta.append({
+                "axis": split_channel(a)[1],
+                "channels": [a, b],
+                "sensors": [cfg.head_of[a], cfg.head_of[b]],
+                "n_blocks": rec.pair_n(a, b),
+                "blockmean_r": round(r, 4) if r is not None else None,
+            })
+        return {"channels": dict(cfg.channel_map),
+                "aux_map": dict(cfg.aux),
+                "sensor_of": dict(cfg.head_of),
+                "sensor_ids": dict(cfg.head_ids),
+                "pairs": pairs_meta}
+
+    def summary(self, cfg, rec):
+        lines = []
+        for a, b in cfg.pairs if rec.total else ():
+            r = rec.pair_r(a, b)
+            lines.append(f"  [pair {label(a)}/{label(b)}] block-mean r="
+                         + ("n/a (needs 3 blocks)" if r is None
+                            else f"{r:+.3f}"))
+        return lines
+
+
+TOPOLOGIES = {t.key: t for t in (OneHead(), TwoHead(), FourHead(),
+                                 Numbered())}
 
 
 # ------------------------------------------------------- channel parsing
@@ -586,10 +668,10 @@ def parse_aux(specs, axes, device):
             raise ConfigError(
                 f"bad --aux {spec!r} (want e.g. mon:ai3; USB-6008 "
                 f"differential inputs are ai0..ai3)")
-        # x2/y2/z2 stay reserved in every topology: an aux named y2
-        # would read as a second-head axis in the file listings
+        # x2/y2/z2 and s1z... stay reserved in every topology: an aux
+        # named y2 or s2y would read as a sensor axis in the file listings
         reserved = set(axes) | set(VALID_AXES) | {a + "2" for a in VALID_AXES}
-        if name in aux or name in reserved:
+        if name in aux or name in reserved or split_channel(name)[0]:
             raise ConfigError(f"--aux name {name!r} is already taken (an axis "
                               f"name, or an earlier --aux)")
         aux[name] = f"{device}/{phys}"
@@ -661,6 +743,54 @@ def parse_head_ids(spec):
             f"--ids names one sensor twice: {ids['a']!r} and {ids['b']!r} "
             "are the same head (FTDI serial and QuSpin name count as one); "
             "give the two different heads")
+    return ids
+
+
+def wired_map(config):
+    """--numbered with no --map: every sensor in the list on its own
+    inputs, lowest number first; an input already taken is skipped (two
+    sensors can share an input in the list, not in one record)."""
+    from bfield.channels import channel_name
+    from bfield.sensors import load_sensors
+    used, parts = set(), []
+    for s in load_sensors(config):
+        for axis, pin in s.inputs.items():
+            if pin not in used:
+                used.add(pin)
+                parts.append(f"{channel_name(s.number, axis)}:{pin}")
+    if not parts:
+        raise ConfigError("--numbered needs --map (no sensor in the list has "
+                          "DAQ inputs set)")
+    return ",".join(parts)
+
+
+def parse_numbered_ids(spec, keys):
+    """--ids s1:SERIAL,s2:SERIAL -> {key: serial}; only mapped sensors,
+    each a different physical head."""
+    ids = {}
+    for item in (p.strip() for p in (spec or "").split(",")):
+        if not item:
+            if spec and spec.strip():
+                raise ConfigError(f"--ids {spec!r} has an empty entry (a "
+                                  "stray or trailing comma)")
+            continue
+        key, sep, serial = (s.strip() for s in item.partition(":"))
+        key = key.lower()
+        if not sep or key not in keys or not serial:
+            raise ConfigError(
+                f"bad --ids entry {item!r} (want sensor:SERIAL for a "
+                f"sensor in --map: {', '.join(keys)})")
+        if not SENSOR_ID_RX.fullmatch(serial):
+            raise ConfigError(f"bad serial {serial!r} in --ids (letters, "
+                              "digits, . _ - only, up to 32 characters)")
+        if key in ids:
+            raise ConfigError(f"--ids gives sensor {key!r} twice")
+        for other, s in ids.items():
+            if same_head(s, serial):
+                raise ConfigError(
+                    f"--ids gives {other} and {key} the same physical head "
+                    f"({s!r} / {serial!r})")
+        ids[key] = serial
     return ids
 
 
@@ -913,12 +1043,12 @@ def build_cfg(args):
     # they would be ignored and the run would differ from what was typed
     for flag, given, wanted in (
             ("--axes", args.axes != DEFAULT_AXES, {"1head"}),
-            ("--aux", bool(args.aux), {"1head", "2head"}),
+            ("--aux", bool(args.aux), {"1head", "2head", "numbered"}),
             ("--sensor-id", args.sensor_id != DEFAULT_SENSOR_ID, {"1head"}),
             ("--sensors", args.sensors is not None, {"4head"}),
             ("--gradient", bool(args.gradient), {"4head"}),
-            ("--map", args.map is not None, {"1head", "2head"}),
-            ("--ids", args.ids is not None, {"2head", "4head"})):
+            ("--map", args.map is not None, {"1head", "2head", "numbered"}),
+            ("--ids", args.ids is not None, {"2head", "4head", "numbered"})):
         if given and args.topology not in wanted:
             belongs = " or ".join(f"--{w}" for w in sorted(wanted))
             raise ConfigError(
@@ -928,6 +1058,8 @@ def build_cfg(args):
     device = args.lab.daq().resolve_device(args.device, hardware_check)
     if args.topology == "4head" and args.sensors is None:
         args.sensors = "s1:ai0,s2:ai1,s3:ai2,s4:ai3"
+    if args.map is None and args.topology == "numbered":
+        args.map = wired_map(args.lab.config)
     if args.map is None:
         args.map = topo.default_map()
     fields = topo.parse(args, device)
@@ -1138,7 +1270,7 @@ class Recorder:
         for name in cfg.pt_names:
             specs.append((("pt", name), self.pt_paths[name],
                           f"# QZFM acquisition | channel={name.upper()} "
-                          f"head={cfg.head_of.get(name, '?')} "
+                          f"{self.head_field(name)} "
                           f"session={cfg.session}\n"
                           f"# start={self.start_iso} fs={cfg.fs} Hz "
                           f"gain={cfg.gain} cal={cfg.pT_per_V:.4g} pT/V "
@@ -1177,6 +1309,13 @@ class Recorder:
                 self.derived_files[name] = fh
         self._opened = True
         return self
+
+    def head_field(self, name):
+        """'sensor_key=S2' (numbered) or the old 'head=b' for a file header."""
+        head = self.cfg.head_of.get(name, "?")
+        if self.cfg.topology == "numbered":
+            return f"sensor_key={label(head)}"
+        return f"head={head}"
 
     def sensor_of(self, name):
         cfg = self.cfg
@@ -1383,6 +1522,9 @@ def run_probe(cfg):
         print(f"  {','.join(result['railed'])}: at the sensor's own "
               f"+/-{QZFM_RAIL_V:g} V rail -- no --vrange helps; "
               f"{REMEDY_SATURATED}.")
+        print("  (A head that is not running, or an axis its mode does not "
+              "measure -- e.g. Y in Z-only mode -- also sits at the rail; "
+              "that is not a field.)")
     elif result["chosen_vrange"] is None:
         print(f"  peak {result['peak_v']:.3g} V fits no range with "
               f"x{PROBE_HEADROOM:g} headroom -- re-zero first (or check "
@@ -1641,6 +1783,11 @@ def build_parser():
                        const="2head",
                        help="two dual-axis heads on four inputs (--map "
                             "axis:head:aiN); shared axes get a block-mean r")
+    bench.add_argument("--numbered", dest="topology", action="store_const",
+                       const="numbered",
+                       help="sensors by number (--map s1z:ai0,s2z:ai2, "
+                            "--ids s1:SERIAL,s2:SERIAL): what the sensor "
+                            "session uses")
     bench.add_argument("--4head", dest="topology", action="store_const",
                        const="4head",
                        help="four single-axis heads (--sensors) with signed "
@@ -1651,7 +1798,10 @@ def build_parser():
                    help=f"--1head only: axes to record (default "
                         f"{DEFAULT_AXES})")
     p.add_argument("--map", default=None,
-                   help="--1head: axis:aiN list (default z:ai0,y:ai1,x:ai2). "
+                   help="--numbered: channel:aiN list, e.g. "
+                        "s1z:ai0,s1y:ai1,s2z:ai2 (default: the sensors' own "
+                        "inputs from config/sensors.toml). "
+                        "--1head: axis:aiN list (default z:ai0,y:ai1,x:ai2). "
                         f"--2head: axis:head:aiN list (default "
                         f"{DEFAULT_TWO_HEAD_MAP}, the standing wiring); "
                         f"x2/y2/z2 re-read that axis on the other head")
@@ -1668,7 +1818,8 @@ def build_parser():
                    help=f"--1head only: head serial for provenance (default "
                         f"{DEFAULT_SENSOR_ID})")
     p.add_argument("--ids", default=None,
-                   help="--2head: a:SERIAL,b:SERIAL. --4head: "
+                   help="--numbered: s1:SERIAL,s2:SERIAL. "
+                        "--2head: a:SERIAL,b:SERIAL. --4head: "
                         "s1:SERIAL,...,s4:SERIAL (required on hardware)")
 
     p.add_argument("--fs", type=float, default=1200.0,

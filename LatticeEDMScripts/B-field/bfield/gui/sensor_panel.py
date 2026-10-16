@@ -266,7 +266,8 @@ class SensorPanel(QWidget):
         self.cards = {}
         for rec in info:
             card = SensorCard(rec)
-            self.cards[rec.get("head")] = card
+            # keyed like the status events: the sensor key ("s1")
+            self.cards[rec.get("sensor", rec.get("head"))] = card
             self.cards_lay.insertWidget(self.cards_lay.count() - 1, card)
         self.hint.setVisible(not self.cards)
 

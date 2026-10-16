@@ -173,7 +173,7 @@ def test_full_go_in_simulator(tmp_path):
     for d in ("null_before", "p01_5Hz", "p02_25Hz", "p03_5Hz_again"):
         run = os.path.join(outdir, d)
         assert os.path.exists(os.path.join(run, f"{d}.meta.json"))
-        for ch in ("Z", "Y", "Z2", "Y2"):
+        for ch in ("S1Z", "S1Y", "S2Z", "S2Y"):
             assert os.path.exists(os.path.join(run, f"{d}_{ch}_pT.txt"))
         assert not os.path.exists(os.path.join(run, "STOP"))
 
@@ -187,6 +187,8 @@ def test_full_go_in_simulator(tmp_path):
     assert set(doc["nulls"]) == {"before", "after"}
     assert "shield_sf_ac.py" in doc["analysis_command"]
     assert "--i-ma 450,450,450" in doc["analysis_command"]
+    assert "--heads s1z,s2z" in doc["analysis_command"]
+    assert doc["settings"]["ids"] == "s1:A10QHMQMA,s2:A10QHJ1ZA"
     meta = json.load(open(os.path.join(outdir, "p01_5Hz",
                                        "p01_5Hz.meta.json")))
     assert meta["notes"].startswith("sf 5 Hz 450 mA")
@@ -195,10 +197,12 @@ def test_full_go_in_simulator(tmp_path):
     # the drive is in the data: on z (axial) at the expected shielded
     # amplitude, not on y, and not in the null
     expect = 450.0 * COIL_K_NT_PER_MA * 1000.0 / sim_shielding_factor(5.0)
-    z = np.loadtxt(glob.glob(os.path.join(outdir, "p01_5Hz", "*_Z_pT.txt"))[0])
-    y = np.loadtxt(glob.glob(os.path.join(outdir, "p01_5Hz", "*_Y_pT.txt"))[0])
+    z = np.loadtxt(glob.glob(os.path.join(outdir, "p01_5Hz",
+                                          "*_S1Z_pT.txt"))[0])
+    y = np.loadtxt(glob.glob(os.path.join(outdir, "p01_5Hz",
+                                          "*_S1Y_pT.txt"))[0])
     zn = np.loadtxt(glob.glob(os.path.join(outdir, "null_before",
-                                           "*_Z_pT.txt"))[0])
+                                           "*_S1Z_pT.txt"))[0])
     assert lockin_pT(z, 1200.0, 5.0) == pytest.approx(expect, rel=0.1)
     assert lockin_pT(y, 1200.0, 5.0) < 0.1 * expect
     assert lockin_pT(zn, 1200.0, 5.0) < 0.1 * expect
@@ -255,4 +259,4 @@ def test_dc_mode_in_simulator(tmp_path):
     for d in doc["dwells"]:
         name = os.path.basename(d["dir"])
         assert re.fullmatch(r"b01d[1-4]_[pm]", name)
-        assert glob.glob(os.path.join(outdir, name, "*_Z_pT.txt"))
+        assert glob.glob(os.path.join(outdir, name, "*_S1Z_pT.txt"))

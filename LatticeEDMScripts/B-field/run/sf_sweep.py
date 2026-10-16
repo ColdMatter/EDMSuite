@@ -68,7 +68,8 @@ def build_parser():
     p.add_argument("--scope-resource", default=None)
     p.add_argument("--scope-channel", default=None)
     p.add_argument("--ids", default=None,
-                   help="head serials a:SER,b:SER (default: the two "
+                   help="the two sensors by serial, e.g. "
+                        "A10QHMQMA,A10QHJ1ZA (default: the two "
                         "lowest-numbered sensors in the config)")
     p.add_argument("--sensors", default=None,
                    help="the two sensors by number, e.g. 1,2 (instead of "
@@ -82,8 +83,12 @@ def build_parser():
                    help="the heads are already running and zeroed")
     p.add_argument("--device", default=None, help="NI device name")
     p.add_argument("--outdir", default=None,
-                   help="the sweep folder (default <shield_sf bucket>/"
-                        "sw_<stamp>_<orientation>)")
+                   help="the sweep folder (default: the next dated run "
+                        "folder, e.g. <data_root>/Oct 2026/15/"
+                        "004_SfSweepAxial)")
+    p.add_argument("--name", default=None,
+                   help="the run's name in its dated folder (default: "
+                        "SfSweep / SfPrecheck / SfDC + the orientation)")
     add_lab_args(p)
     return p
 
@@ -94,11 +99,19 @@ def ids_from(args, config):
     if not args.sensors:
         return args.ids
     from bfield.sensors import Selection, parse_numbers
-    sel = Selection(config, parse_numbers(args.sensors))
+    sel = Selection(config, parse_numbers(args.sensors), axes="z,y")
     if len(sel.sensors) != 2:
         raise ConfigError("the S(f) sweep reads exactly two sensors "
                           "(--sensors 1,2)")
     return sel.device_name
+
+
+def map_from(args, config):
+    """--sensors: the sensors' own DAQ inputs (unless --map / --aux)."""
+    if not args.sensors or args.map or args.aux:
+        return args.map
+    from bfield.sensors import Selection, parse_numbers
+    return Selection(config, parse_numbers(args.sensors), axes="z,y").map
 
 
 def main(argv=None):
@@ -115,12 +128,13 @@ def main(argv=None):
         min_seconds=args.min_seconds,
         precheck_seconds=args.precheck_seconds,
         null_seconds=args.null_seconds, orientation=args.orientation,
-        map=args.map, aux=args.aux, scope=args.scope,
+        map=map_from(args, lab.config), aux=args.aux, scope=args.scope,
         scope_resource=args.scope_resource,
         scope_channel=args.scope_channel, ids=ids_from(args, lab.config),
         fs=args.fs,
         vrange=args.vrange, gain=args.gain, cal_v_per_nt=args.cal_v_per_nt,
-        skip_setup=args.skip_setup, device=args.device, outdir=args.outdir)
+        skip_setup=args.skip_setup, device=args.device, outdir=args.outdir,
+        name=args.name)
     return sf.SfSweep(ctx, lab, s).run()
 
 

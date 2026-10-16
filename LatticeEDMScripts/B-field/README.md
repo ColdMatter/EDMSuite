@@ -39,7 +39,7 @@ exclusive):
 ```
 .venv\Scripts\python run\qzfm.py --list-ports
 .venv\Scripts\python run\qzfm.py --status --sensors 1,2
-.venv\Scripts\python run\qzfm.py --record --sensors 1,2 --outdir <data_root>\<bucket>\<name>
+.venv\Scripts\python run\qzfm.py --record --sensors 1,2 --name Baseline
 ```
 
 The GUI (simulation only for now):

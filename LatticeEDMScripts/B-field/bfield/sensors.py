@@ -10,22 +10,27 @@ config/lab.toml lists every physical QZFM head once:
 
 The list lives in config/sensors.toml (the GUI's "Manage sensors"
 dialog rewrites it; it takes precedence over any [[sensors]] left in
-lab.toml).
+lab.toml). Each sensor also says which DAQ inputs its outputs are wired
+to -- a QZFM records up to two axes at once, Z and Y:
 
-A run picks some of them (``--sensors 1,2`` / the GUI checklist). The
-DAQ has a fixed number of input SLOTS ([daq] slots, two on the
-USB-6008: ai0/ai1 and ai2/ai3); the chosen sensors fill the slots in
-the order given, and the program says which sensor must be plugged into
-which inputs. With two sensors one is the modulation master: the first
-by default, or the one chosen (``--master 2``) -- that only decides which
-head gets the master command, not where it plugs in.
+    z_input = "ai0"            # its Z output on ai0 ("" = Z not recorded)
+    y_input = "ai1"            # its Y output on ai1 ("" = Y not recorded)
 
-Inside the program the slots are still called heads "a" and "b" -- that
-is what the data files (house_a.csv, meta.json "heads"/"head_ids") and
-the analysis scripts use -- and each run records the full mapping
-(number, label, USB serial, location, inputs) in its session json and in
-every meta.json ("sensor_info"), so a run says which physical head
-produced which column.
+A run picks some of them (``--sensors 1,2`` / the GUI checklist) and the
+axes to record (``--axes``; default Z only -- single-axis mode, 1.35x
+quieter -- for one sensor, Z and Y for two); each sensor records those
+of them it is wired for, on its own inputs. Two sensors in the
+list may share an input (the cable is moved between runs) -- they just
+cannot be chosen together. With two sensors one is the modulation
+master: the first by default, or the one chosen (``--master 2``).
+
+Everything is named by the sensor number (bfield.channels): sensor 2 is
+"s2" in the session json and house_S2.csv, its Z channel "s2z" in
+meta.json and R01_1631_S2Z_pT.txt. Each run also records the full
+mapping (number, label, USB serial, location, inputs) in its session
+json and in every meta.json ("sensor_info"). A run takes as many
+sensors as the DAQ has inputs for (four on the USB-6008: four on one
+axis, or two on both).
 """
 
 from __future__ import annotations
@@ -35,13 +40,16 @@ from dataclasses import dataclass
 import os
 import re
 
-from bfield.constants import HEADS
+from bfield.channels import channel_name, key_number, sensor_key
 from bfield.errors import ConfigError
-from bfield.heads import FTDI_SERIAL_RX
+from bfield.heads import FTDI_SERIAL_RX, same_head
 
-# internal slot labels, in slot order (what the data files call them)
-SLOT_HEADS = HEADS
 DEFAULT_SLOTS = (("ai0", "ai1"), ("ai2", "ai3"))
+
+
+AXES = ("z", "y")                 # what a dual-axis QZFM can record
+INPUTS = ("ai0", "ai1", "ai2", "ai3")   # the USB-6008's differential inputs
+MAX_SENSORS_PER_RUN = len(INPUTS)  # each needs at least one input
 
 
 @dataclass(frozen=True)
@@ -50,6 +58,20 @@ class Sensor:
     label: str          # QuSpin serial, printed on the head
     usb_serial: str     # FTDI serial, what the COM-port match uses
     location: str = ""
+    z_input: str = ""   # DAQ input its Z output is wired to ("" = none)
+    y_input: str = ""   # DAQ input its Y output is wired to ("" = none)
+
+    @property
+    def inputs(self):
+        """{axis: input} for the axes this sensor records, Z first."""
+        return {ax: pin for ax, pin in (("z", self.z_input),
+                                        ("y", self.y_input)) if pin}
+
+    @property
+    def wiring(self):
+        """'Z->ai0, Y->ai1', or 'no DAQ inputs set'."""
+        return (", ".join(f"{a.upper()}->{p}" for a, p in self.inputs.items())
+                or "no DAQ inputs set")
 
     @property
     def display(self):
@@ -72,15 +94,19 @@ def load_sensors(config):
         q = config.section("qzfm") if hasattr(config, "section") else {}
         heads = q.get("heads") or {}
         aliases = q.get("head_aliases") or {}
+        sl = slots(config)
         rows = [{"number": i + 1, "usb_serial": heads[h],
-                 "label": aliases.get(heads[h], heads[h])}
+                 "label": aliases.get(heads[h], heads[h]),
+                 "z_input": sl[i][0] if i < len(sl) else "",
+                 "y_input": sl[i][1] if i < len(sl) else ""}
                 for i, h in enumerate(sorted(heads))]
     out, seen = [], {}
     for r in rows:
         try:
             s = Sensor(int(r["number"]), str(r["label"]).strip(),
                        str(r["usb_serial"]).strip(),
-                       str(r.get("location", "") or "").strip())
+                       str(r.get("location", "") or "").strip(),
+                       _pin(r.get("z_input")), _pin(r.get("y_input")))
         except (KeyError, TypeError, ValueError) as e:
             raise ConfigError(f"bad [[sensors]] entry {r!r} in the config "
                               f"({type(e).__name__}: {e}) -- each needs "
@@ -95,6 +121,14 @@ def load_sensors(config):
     return sorted(out, key=lambda s: s.number)
 
 
+def _pin(value):
+    pin = str(value or "").strip().lower()
+    if pin and pin not in INPUTS:
+        raise ConfigError(f"DAQ input {value!r} is not one of "
+                          f"{', '.join(INPUTS)} (or empty)")
+    return pin
+
+
 def aliases(config):
     """{usb_serial: label}: both ids of a head count as one sensor."""
     return {s.usb_serial: s.label for s in load_sensors(config)}
@@ -104,22 +138,16 @@ def slots(config):
     """The DAQ input slots, [(z_input, y_input), ...]."""
     raw = (config.section("daq").get("slots")
            if hasattr(config, "section") else None) or DEFAULT_SLOTS
-    out = [tuple(str(p).lower() for p in pair) for pair in raw]
-    if len(out) > len(SLOT_HEADS):
-        raise ConfigError(f"[daq] slots lists {len(out)} slots; the "
-                          f"recorder handles at most {len(SLOT_HEADS)} "
-                          "dual-axis sensors per run")
-    return out
+    return [tuple(str(p).lower() for p in pair) for pair in raw]
 
 
 def default_map(config):
-    """The two-slot map with no particular sensors: z/y on slot 1,
-    z2/y2 on slot 2."""
-    sl = slots(config)
+    """The old slot wiring as a map for sensors 1 and 2 (for a sensor
+    list with no inputs set)."""
     parts = []
-    for i, head in enumerate(SLOT_HEADS[:len(sl)]):
-        suffix = "" if i == 0 else str(i + 1)
-        parts += [f"z{suffix}:{head}:{sl[i][0]}", f"y{suffix}:{head}:{sl[i][1]}"]
+    for i, pair in enumerate(slots(config)):
+        for axis, pin in zip(AXES, pair):
+            parts.append(f"{channel_name(i + 1, axis)}:{pin}")
     return ",".join(parts)
 
 
@@ -129,25 +157,42 @@ def display_of(rec):
         loc = rec.get("location")
         return (f"sensor {rec['number']} ({rec.get('label')}"
                 + (f", {loc}" if loc else "") + ")")
-    return f"head {rec.get('head')} ({rec.get('usb_serial')})"
+    return f"sensor ? ({rec.get('usb_serial')})"
 
 
-def info_for_serials(config, serials, pins):
-    """Info records when serials were given directly (--device-name):
-    {head: serial}, {head: {"z": aiN, "y": aiN}} -> [record]."""
-    by_id = {}
-    for s in load_sensors(config):
-        by_id[s.usb_serial] = s
-        by_id[s.label] = s
-    out = []
-    for head, serial in serials.items():
-        s = by_id.get(serial)
-        out.append({"head": head, "number": s.number if s else None,
-                    "label": s.label if s else None,
-                    "usb_serial": s.usb_serial if s else serial,
-                    "location": s.location if s else "",
-                    "inputs": pins.get(head, {}), "modulation": None})
-    return out
+def resolve_device_name(config, spec):
+    """Sensors named by serial -> their numbers, in the order given.
+
+    Takes 'A10QHMQMA' (USB ID or QuSpin label), a comma list of them,
+    's2:A10QHJ1ZA' (key and serial), or the old 'a:SER,b:SER'. Every
+    serial must be in the sensor list: data are filed under the sensor
+    number, so an unlisted head has nowhere to go."""
+    known = load_sensors(config)
+    numbers = []
+    for item in (p.strip() for p in str(spec or "").split(",")):
+        if not item:
+            raise ConfigError(f"device name {spec!r} has an empty entry")
+        prefix, sep, serial = item.rpartition(":")
+        serial = serial.strip()
+        hit = next((s for s in known
+                    if same_head(serial, s.usb_serial)
+                    or same_head(serial, s.label)), None)
+        if hit is None:
+            raise ConfigError(
+                f"{serial!r} is not in the sensor list (config/sensors.toml) "
+                "-- add it in Manage sensors (QZFM tab); run/qzfm.py "
+                "--sensors-list shows the list. Data are filed under the "
+                "sensor number")
+        want = key_number(prefix.strip()) if sep else None
+        if want is not None and want != hit.number:
+            raise ConfigError(f"{item!r}: {serial} is sensor {hit.number}, "
+                              f"not sensor {want}")
+        if hit.number in numbers:
+            raise ConfigError(
+                f"the device name names sensor {hit.number} twice ({spec!r}; "
+                "a USB ID and its QuSpin label count as one head)")
+        numbers.append(hit.number)
+    return numbers
 
 
 def parse_numbers(text):
@@ -176,6 +221,12 @@ def check_sensor(s, others=()):
             if getattr(o, key) == getattr(s, key):
                 raise ConfigError(f"{o.display} already has {key} "
                                   f"{getattr(s, key)!r}")
+    if not s.inputs:
+        raise ConfigError(f"sensor {s.number}: set at least one DAQ input "
+                          "(Z and/or Y)")
+    if s.z_input and s.z_input == s.y_input:
+        raise ConfigError(f"sensor {s.number}: Z and Y cannot both go to "
+                          f"{s.z_input}")
     warnings = []
     if not s.label.upper().startswith("Z3D0"):
         warnings.append(f"head ID {s.label!r} does not look like a QuSpin "
@@ -185,6 +236,19 @@ def check_sensor(s, others=()):
                         "FTDI serial (8-10 capitals and digits, e.g. "
                         "A10QHMQMA)")
     return warnings
+
+
+def input_sharing(sensors):
+    """Notes on sensors wired to the same input: they cannot be recorded
+    together (fine when the cable is moved between runs)."""
+    owners = {}
+    for s in sensors:
+        for ax, pin in s.inputs.items():
+            owners.setdefault(pin, []).append(f"sensor {s.number} "
+                                              f"{ax.upper()}")
+    return [f"{pin} is used by {' and '.join(who)} -- those sensors cannot "
+            "be recorded together" for pin, who in sorted(owners.items())
+            if len(who) > 1]
 
 
 def _toml_str(text):
@@ -203,6 +267,9 @@ def save_sensors(path, sensors):
              "#   label       the QuSpin head ID printed on it (Z3D0-...)",
              "#   usb_serial  the USB ID the PC sees on its COM port (FTDI)",
              "#   location    free note: where it is in the experiment",
+             "#   z_input     the DAQ input its Z output is wired to (ai0..ai3,",
+             "#               or \"\" when Z is not recorded)",
+             "#   y_input     the same for its Y output",
              ""]
     for s in sorted(sensors, key=lambda x: x.number):
         lines += ["[[sensors]]",
@@ -210,31 +277,66 @@ def save_sensors(path, sensors):
                   f"label = {_toml_str(s.label)}",
                   f"usb_serial = {_toml_str(s.usb_serial)}",
                   f"location = {_toml_str(s.location)}",
+                  f"z_input = {_toml_str(s.z_input)}",
+                  f"y_input = {_toml_str(s.y_input)}",
                   ""]
     os.makedirs(os.path.dirname(os.path.abspath(path)), exist_ok=True)
     write_text_atomic(path, "\n".join(lines))
 
 
 class Selection:
-    """The sensors chosen for one run, placed into the DAQ slots."""
+    """The sensors chosen for one run, each on its own DAQ inputs.
 
-    def __init__(self, config, numbers, master=None):
+    Keyed by sensor number: sensor 2 is "s2", its Z channel "s2z"
+    (bfield.channels). The first chosen leads (set up first, and the
+    default modulation master).
+    """
+
+    def __init__(self, config, numbers, master=None, axes=None):
         known = {s.number: s for s in load_sensors(config)}
         missing = [n for n in numbers if n not in known]
         if missing:
             raise ConfigError(
                 f"sensor(s) {missing} not in the config; configured: "
                 + ", ".join(str(n) for n in known))
+        if len(set(numbers)) != len(numbers):
+            raise ConfigError(f"sensors {list(numbers)} name a sensor twice")
         self.sensors = [known[n] for n in numbers]
-        self.slots = slots(config)
-        if len(self.sensors) > len(self.slots):
+        if len(self.sensors) > MAX_SENSORS_PER_RUN:
             raise ConfigError(
-                f"{len(self.sensors)} sensors chosen, but the DAQ has "
-                f"{len(self.slots)} input slots ({self._slot_words()}) -- "
-                f"at most {len(self.slots)} dual-axis sensors per run with "
-                "this DAQ")
-        self.heads = dict(zip(SLOT_HEADS, self.sensors))
-        # the modulation master (two sensors): its slot head
+                f"{len(self.sensors)} sensors chosen -- the USB-6008 has "
+                f"{len(INPUTS)} inputs, so at most {MAX_SENSORS_PER_RUN} "
+                "sensors per run")
+        for s in self.sensors:
+            if not s.inputs:
+                raise ConfigError(f"{s.display} has no DAQ inputs set -- "
+                                  "set them in Manage sensors")
+        self.wanted = self._wanted(axes)
+        for s in self.sensors:
+            rec = [ax for ax in s.inputs if ax in self.wanted]
+            if not rec:
+                raise ConfigError(
+                    f"{s.display} is wired for {s.wiring} but this run "
+                    f"records {'+'.join(a.upper() for a in self.wanted)} -- "
+                    "choose other axes, or set its inputs in Manage sensors")
+            if len(self.sensors) == 1 and len(rec) < len(self.wanted):
+                missing = [a.upper() for a in self.wanted
+                           if a not in s.inputs]
+                raise ConfigError(f"{s.display} has no {'/'.join(missing)} "
+                                  "input set (Manage sensors)")
+        used = {}
+        for s in self.sensors:
+            for ax, pin in self.recorded(s).items():
+                if pin in used:
+                    raise ConfigError(
+                        f"{pin} is wired to both {used[pin]} and "
+                        f"{s.display} {ax.upper()} -- they cannot be "
+                        "recorded together; change an input in Manage "
+                        "sensors")
+                used[pin] = f"{s.display} {ax.upper()}"
+        # sensor key ("s2") -> Sensor, in the order chosen
+        self.heads = {sensor_key(s.number): s for s in self.sensors}
+        # the modulation master (two or more sensors): its key
         self.master_head = None
         if len(self.sensors) > 1:
             if master is None:
@@ -242,11 +344,27 @@ class Selection:
             if master not in self.numbers:
                 raise ConfigError(f"master sensor {master} is not one of "
                                   f"the chosen sensors {self.numbers}")
-            self.master_head = next(h for h, s in self.heads.items()
-                                    if s.number == master)
+            self.master_head = sensor_key(master)
 
-    def _slot_words(self):
-        return ", ".join("/".join(p) for p in self.slots)
+    def _wanted(self, axes):
+        """The axes this run records: given, or Z for one sensor (single-
+        axis mode, quieter) and every wired axis for more."""
+        if axes:
+            want = [a.strip().lower() for a in str(axes).split(",")
+                    if a.strip()]
+            bad = [a for a in want if a not in AXES]
+            if bad or not want or len(set(want)) != len(want):
+                raise ConfigError(f"axes {axes!r}: Z and/or Y")
+            return [a for a in AXES if a in want]
+        if len(self.sensors) == 1:
+            s = self.sensors[0]
+            return ["z"] if s.z_input else ["y"]
+        have = {ax for s in self.sensors for ax in s.inputs}
+        return [a for a in AXES if a in have]
+
+    def recorded(self, s):
+        """{axis: input} of sensor s in this run."""
+        return {ax: pin for ax, pin in s.inputs.items() if ax in self.wanted}
 
     @property
     def numbers(self):
@@ -254,40 +372,50 @@ class Selection:
 
     @property
     def device_name(self):
-        """The serials in the form the sensor session takes."""
-        if len(self.sensors) == 1:
-            return self.sensors[0].usb_serial
-        return ",".join(f"{h}:{s.usb_serial}" for h, s in self.heads.items())
+        """The serials in the form the sensor session takes:
+        s1:A10QHMQMA,s2:A10QHJ1ZA."""
+        return ",".join(f"{k}:{s.usb_serial}" for k, s in self.heads.items())
+
+    @property
+    def axes(self):
+        """The axes recorded ('z,y', 'z' or 'y'): the sensors' mode."""
+        return ",".join(self.wanted)
+
+    def channels(self):
+        """[(channel, sensor key, axis, input)] in map order."""
+        return [(channel_name(k, ax), k, ax, pin)
+                for k, s in self.heads.items()
+                for ax, pin in self.recorded(s).items()]
 
     @property
     def map(self):
-        """The recorder channel map: z/y for slot 1, z2/y2 for slot 2."""
-        parts = []
-        for i, (head, _s) in enumerate(self.heads.items()):
-            zin, yin = self.slots[i]
-            suffix = "" if i == 0 else str(i + 1)
-            parts += [f"z{suffix}:{head}:{zin}", f"y{suffix}:{head}:{yin}"]
-        return ",".join(parts)
+        """The recorder channel map, e.g. s1z:ai0,s1y:ai1,s2z:ai2."""
+        return ",".join(f"{name}:{pin}"
+                        for name, _k, _ax, pin in self.channels())
 
     def info(self):
         """Per-sensor records for the session json and meta.json."""
         out = []
-        for i, (head, s) in enumerate(self.heads.items()):
-            zin, yin = self.slots[i]
-            out.append({"head": head, "number": s.number, "label": s.label,
+        for key, s in self.heads.items():
+            rec = self.recorded(s)
+            out.append({"sensor": key, "number": s.number, "label": s.label,
                         "usb_serial": s.usb_serial, "location": s.location,
-                        "inputs": {"z": zin, "y": yin},
+                        "inputs": rec,
+                        "channels": [channel_name(key, ax) for ax in rec],
+                        "wired": dict(s.inputs),
                         "modulation": (None if self.master_head is None
-                                       else "master" if head ==
+                                       else "master" if key ==
                                        self.master_head else "slave")})
         return out
 
     def plug_lines(self):
         """What has to be plugged where, one line per sensor."""
         lines = []
-        for i, (head, s) in enumerate(self.heads.items()):
-            zin, yin = self.slots[i]
+        for key, s in self.heads.items():
             role = (" -- modulation master"
-                    if head == self.master_head else "")
-            lines.append(f"{s.display} -> DAQ {zin} (Z), {yin} (Y){role}")
+                    if key == self.master_head else "")
+            lines.append(f"{s.display} -> DAQ "
+                         + ", ".join(f"{p} ({a.upper()})"
+                                     for a, p in self.recorded(s).items())
+                         + role)
         return lines

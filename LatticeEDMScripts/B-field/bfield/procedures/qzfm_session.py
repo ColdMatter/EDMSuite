@@ -5,8 +5,11 @@ command-line validation). One session = one qzfm_session.json ledger
 (checkpointed atomically) + one operations log, written on every exit
 path, ports closed on every exit path.
 
-    plan = QZFMPlan(device_name="a:A10QHMQMA,b:A10QHJ1ZA", seconds=900)
+    plan = QZFMPlan.for_sensors(config, [1, 2], seconds=900)
     code = QZFMSession(ctx, lab, plan).record()
+
+Sensors are keyed by number everywhere ("s1", "s2"; channels "s1z"...,
+bfield.channels).
 
 Every exit path leaves the sensor running except standby(), which
 reboots it dark; wake it with setup().
@@ -21,8 +24,9 @@ import traceback
 from dataclasses import dataclass, field
 
 from bfield import clock
+from bfield.channels import KEY_RX, key_number, split_channel
 from bfield.constants import (COMMON_VERSION, DAQ_AGGREGATE_MAX, GAIN_TABLE,
-                              HEADS, RECORDABLE_AXES, VALID_VRANGE)
+                              RECORDABLE_AXES, VALID_VRANGE)
 from bfield.errors import (BFieldError, ConfigError, SensorAbort,
                            SessionStop, Stopped, exit_meaning)
 from bfield.heads import same_head
@@ -32,9 +36,9 @@ from bfield.operations import sensor_setup as ops
 from bfield.operations.record import (RecordSettings, head_pins, parse_map,
                                       record_run)
 from bfield.sensors import (Selection, default_map, display_of,
-                            info_for_serials)
+                            resolve_device_name)
 
-DEVICE_NAME_EXAMPLE_TWO = "a:A10QHMQMA,b:A10QHJ1ZA"
+DEVICE_NAME_EXAMPLE_TWO = "s1:A10QHMQMA,s2:A10QHJ1ZA"
 # exit 0 with no readable meta.json: samples exist, provenance does not
 NO_META_EXIT = 40
 MODES = ("status", "setup", "zero", "run", "stream", "standby")
@@ -43,18 +47,21 @@ MODES = ("status", "setup", "zero", "run", "stream", "standby")
 @dataclass
 class QZFMPlan:
     """Everything a session needs; the old qzfm_serial flags."""
-    device_name: str = ""
-    axes: str | None = None          # None = z for one head, z,y for two
+    device_name: str = ""            # s1:SERIAL,s2:SERIAL
+    axes: str | None = None          # None = z for one sensor, z,y for more
     gain: str = "1x"
     fs: float = 1200.0
     vrange: str = "2"
-    map: str = "z:a:ai0,y:a:ai1,z2:b:ai2,y2:b:ai3"
+    map: str = "s1z:ai0,s1y:ai1,s2z:ai2,s2y:ai3"
     cal_v_per_nT: float | None = None
     seconds: float = 900.0
     zero_cond: float = 100.0
     lock_timeout: float = 600.0
     poll_s: float = 2.0
     outdir: str | None = None
+    # the run's name in the dated layout (<NNN>_<name>); None = automatic,
+    # e.g. SingleSensorZ, TwoSensorsZY
+    name: str | None = None
     notes: str | None = None
     extra_args: list = field(default_factory=list)
     require_factors: bool = False
@@ -63,18 +70,30 @@ class QZFMPlan:
     child_console: bool = False
     sync: str | None = None
     zero_shift_warn: float = 200.0
-    stream_head: str = "a"
+    stream_head: str | None = None   # the sensor streamed ("s2"); None =
+                                     # the first
     stream_seconds: float | None = None
     # the physical sensors (bfield.sensors.Selection.info()); empty when
     # serials were given directly -- the session then looks them up
     sensor_info: list = field(default_factory=list)
-    # the modulation master with two sensors: its slot head ("a"/"b");
+    # the modulation master with two or more sensors: its key ("s2");
     # None = the first
     master_head: str | None = None
 
     @classmethod
     def from_config(cls, config, **overrides):
-        """Defaults from config/lab.toml, then the caller's overrides."""
+        """Defaults from config/lab.toml, then the caller's overrides.
+        Sensors given by serial (device_name) are looked up in the sensor
+        list and keyed by their numbers, as for_sensors."""
+        device = overrides.get("device_name")
+        if device and not overrides.get("sensor_info"):
+            numbers = resolve_device_name(config, device)
+            kw = {k: v for k, v in overrides.items() if k != "device_name"}
+            return cls.for_sensors(config, numbers, **kw)
+        return cls._defaults(config, **overrides)
+
+    @classmethod
+    def _defaults(cls, config, **overrides):
         q = (config.section("qzfm").get("defaults") or {})
         d = config.section("daq")
         base = dict(gain=q.get("gain", "1x"),
@@ -91,13 +110,25 @@ class QZFMPlan:
     @classmethod
     def for_sensors(cls, config, numbers, master=None, **overrides):
         """A plan for sensors chosen by number (config [[sensors]]);
-        master = the number of the modulation master (default: first)."""
-        sel = Selection(config, numbers, master=master)
+        master = the number of the modulation master (default: first);
+        axes (an override) = what to record (default: Z for one sensor,
+        Z and Y for two)."""
+        sel = Selection(config, numbers, master=master,
+                        axes=overrides.pop("axes", None))
+        info = sel.info()
+        explicit_map = overrides.get("map")
+        if explicit_map:
+            # a hand-written map: the records say what it records
+            for rec in info:
+                rec["inputs"] = head_pins(explicit_map, rec["sensor"])
+                rec["channels"] = [n for n, k, _p in parse_map(explicit_map)
+                                   if k == rec["sensor"]]
         kw = dict(device_name=sel.device_name, map=sel.map,
-                  sensor_info=sel.info(), master_head=sel.master_head)
+                  axes=sel.axes, sensor_info=info,
+                  master_head=sel.master_head)
         # an explicit override (e.g. a hand-written map) still wins
         kw.update({k: v for k, v in overrides.items() if v is not None})
-        return cls.from_config(config, **kw)
+        return cls._defaults(config, **kw)
 
     def record_settings(self):
         return RecordSettings(map=self.map, fs=self.fs, vrange=self.vrange,
@@ -126,40 +157,47 @@ def require(ok, msg):
 
 
 def parse_heads(spec):
-    """One head, or a:SERIAL,b:SERIAL for two -> {head: serial} a, b."""
+    """'s1:SERIAL,s2:SERIAL' -> {key: serial}, in that order."""
     text = (spec or "").strip()
     require(text != "", "the device name is required")
-    if ":" not in text:
-        require("," not in text,
-                "several heads need the a:SERIAL,b:SERIAL form, e.g. "
-                f"{DEVICE_NAME_EXAMPLE_TWO}")
-        return {"a": text}
     heads = {}
     for item in text.split(","):
-        head, sep, serial = (s.strip() for s in item.partition(":"))
-        require(sep and head.lower() in HEADS and serial,
-                f"bad device-name entry {item!r} (want a:SERIAL or "
-                f"b:SERIAL, e.g. {DEVICE_NAME_EXAMPLE_TWO})")
-        head = head.lower()
-        require(head not in heads, f"head {head!r} named twice")
-        heads[head] = serial
-    require("a" in heads, "the device name must name head a")
+        key, sep, serial = (s.strip() for s in item.partition(":"))
+        key = key.lower()
+        require(sep and KEY_RX.fullmatch(key) and serial,
+                f"bad device-name entry {item!r} (want sensor:SERIAL, e.g. "
+                f"{DEVICE_NAME_EXAMPLE_TWO}; QZFMPlan.from_config turns plain "
+                "serials into this)")
+        require(key not in heads, f"sensor {key_number(key)} named twice")
+        heads[key] = serial
     # one sensor named twice (FTDI serial plus its QuSpin name) fails as
     # a busy port on the second connect -- refuse it here instead
-    if len(heads) > 1:
-        a, b = heads["a"], heads["b"]
-        require(not same_head(a, b),
-                f"the device name names one sensor twice: {a!r} and {b!r} "
-                "are the same head (an FTDI serial and its QuSpin name count "
-                "as one). Give the two different heads")
-    return {h: heads[h] for h in HEADS if h in heads}
+    items = list(heads.items())
+    for i, (ka, a) in enumerate(items):
+        for kb, b in items[i + 1:]:
+            require(not same_head(a, b),
+                    f"the device name names one sensor twice: {a!r} and "
+                    f"{b!r} are the same head (an FTDI serial and its QuSpin "
+                    "name count as one)")
+    return heads
+
+
+NUMBER_WORDS = {1: "Single", 2: "Two", 3: "Three", 4: "Four"}
+
+
+def run_name(plan, mode, n_heads):
+    """The automatic run name: SingleSensorZ, TwoSensorsZY, ..."""
+    if mode == "stream":
+        return "DigitalStream"
+    axes = "".join(a.upper() for a in
+                   parse_axes(plan.axes or default_axes(n_heads)))
+    word = NUMBER_WORDS.get(n_heads, str(n_heads))
+    return f"{word}Sensor{'s' if n_heads > 1 else ''}{axes}"
 
 
 def default_axes(n_heads):
-    """One head records Z; two heads record Z and Y each."""
+    """One sensor records Z; two or more record Z and Y each."""
     return "z,y" if n_heads > 1 else "z"
-
-
 def parse_axes(spec):
     axes = [a.strip().lower() for a in str(spec).split(",") if a.strip()]
     if (not axes or any(a not in RECORDABLE_AXES for a in axes)
@@ -182,35 +220,33 @@ def validate(plan, mode):
     if plan.axes is None:
         plan.axes = default_axes(len(heads))
     want = parse_axes(plan.axes)
-    default_map = QZFMPlan.map
-    if plan.map != default_map or len(heads) > 1:
-        mapped = {h for _n, h, _p in parse_map(plan.map)}
-        require(mapped == set(heads),
-                f"the map covers heads {sorted(mapped)} but the device name "
-                f"names {sorted(heads)} -- they have to agree, or the "
-                "recorder stamps the wrong serial on a channel")
+    entries = parse_map(plan.map)
+    mapped = {k for _n, k, _p in entries}
+    require(mapped == set(heads),
+            f"the map covers sensors {sorted(mapped)} but the device name "
+            f"names {sorted(heads)} -- they have to agree, or the recorder "
+            "stamps the wrong serial on a channel")
     if len(heads) == 1:
         head = next(iter(heads))
         named = head_pins(plan.map, head)
         missing = sorted(set(want) - set(named))
         require(not missing,
-                f"the map gives head {head} no channel for {missing} -- the "
-                f"axes ask for {sorted(want)}, so every one of them needs a "
-                f"pin on the head that is open")
+                f"the map gives sensor {key_number(head)} no channel for "
+                f"{missing} -- the axes ask for {sorted(want)}, so every one "
+                "of them needs an input")
     else:
-        base = {n.rstrip("0123456789") or n
-                for n, _h, _p in parse_map(plan.map)}
+        base = {split_channel(n)[1] for n, _k, _p in entries}
         extra = sorted(base - set(want))
         require(not extra,
-                f"the map records {extra} but the axes only put the heads "
+                f"the map records {extra} but the axes only put the sensors "
                 f"into {sorted(want)} mode -- those channels would not be "
                 f"measurements. Add them to the axes, or drop them from "
                 f"the map")
         require(plan.zero_shift_warn > 0, "zero_shift_warn must be positive")
     if mode == "stream":
-        require(plan.stream_head in heads,
-                f"stream head {plan.stream_head} is not one of the heads in "
-                f"the device name ({', '.join(heads)})")
+        require(plan.stream_head is None or plan.stream_head in heads,
+                f"stream sensor {plan.stream_head} is not one of the sensors "
+                f"of this run ({', '.join(heads)})")
     try:
         v = float(plan.vrange)
     except ValueError:
@@ -222,7 +258,7 @@ def validate(plan, mode):
     require(plan.fs >= 1.0, "fs must be at least 1 Hz")
     plan.record_settings().check_extra_args()
     if mode in ("run", "setup"):
-        n_ch = (len(parse_map(plan.map)) if len(heads) > 1 else len(want))
+        n_ch = sum(1 for n, _k, _p in entries if split_channel(n)[1] in want)
         require(plan.fs * n_ch <= DAQ_AGGREGATE_MAX,
                 f"fs {plan.fs:g} Hz x {n_ch} channel(s) = "
                 f"{plan.fs * n_ch:.0f} S/s, over the USB-6008 aggregate "
@@ -244,9 +280,9 @@ def validate(plan, mode):
         require(value is None or math.isfinite(value),
                 f"{name} must be a finite number (got {value!r})")
     if plan.sync == "master-slave":
-        require(len(heads) == 2,
-                "master-slave needs two heads (first drives the "
-                "modulation, second follows)")
+        require(len(heads) >= 2,
+                "master-slave needs two or more sensors (one drives the "
+                "modulation, the others follow)")
     require(plan.sync in (None, "none", "master-slave", "independent"),
             f"sync: unknown role plan {plan.sync!r}")
     if mode == "run":
@@ -279,13 +315,23 @@ class QZFMSession:
 
     # -- harness --------------------------------------------------------
 
-    def _resolve_outdir(self, mode):
-        """--run/--stream default to <data_root>/newdata, newdata1, ...;
-        an explicit path already holding a session is numbered the same
-        way; zero/standby/status keep the given path."""
+    def _resolve_outdir(self, mode, n_heads=1):
+        """--run/--stream default to the next dated run folder
+        (<data_root>/Oct 2026/15/001_SingleSensorZ), or with the old
+        layout to <data_root>/newdata, newdata1, ...; an explicit path
+        already holding a session is numbered newdata1-style;
+        zero/standby/status keep the given path."""
         recording = mode in ("run", "setup", "stream")
         requested = self.plan.outdir
         if not requested:
+            if mode in ("run", "stream") and self.lab.dated:
+                name = self.plan.name or run_name(self.plan, mode, n_heads)
+                try:
+                    chosen = self.lab.new_run_dir(name)
+                except (ValueError, OSError) as e:
+                    raise ConfigError(f"cannot make the run folder: {e}")
+                self.ctx.say("out", chosen)
+                return chosen
             if mode in ("run", "stream"):
                 chosen = unique_outdir(self.lab.bucket("record"))
                 self.ctx.say("out", chosen)
@@ -304,17 +350,19 @@ class QZFMSession:
         """Which physical sensor is in which slot: named in every message,
         recorded in the ledger and every meta.json, shown on the UI's
         indicator cards (which then get every status frame)."""
-        info = self.plan.sensor_info or info_for_serials(
-            self.lab.config, heads,
-            {h: head_pins(self.plan.map, h) for h in heads})
-        info = [r for r in info if r.get("head") in self.sensors]
+        info = self.plan.sensor_info or [
+            {"sensor": h, "number": key_number(h), "label": None,
+             "usb_serial": serial, "location": "",
+             "inputs": head_pins(self.plan.map, h), "modulation": None}
+            for h, serial in heads.items()]
+        info = [r for r in info if r.get("sensor") in self.sensors]
         self.plan.sensor_info = info
         self.ctx.status("sensors", sensors=info)
         for sensor in self.sensors.values():
             sensor.on_frame = (lambda s, frame, ctx=self.ctx:
                                ctx.status("frame", head=s.head, frame=frame))
         for rec in info:
-            self.sensors[rec["head"]].display = display_of(rec)
+            self.sensors[rec["sensor"]].display = display_of(rec)
             pins = rec.get("inputs") or {}
             self.ctx.say("sensors", display_of(rec) + " -> DAQ "
                          + ", ".join(f"{p} ({a.upper()})"
@@ -324,7 +372,7 @@ class QZFMSession:
 
     def _open(self, mode, only_head=None):
         heads = validate(self.plan, mode)
-        self.plan.outdir = self._resolve_outdir(mode)
+        self.plan.outdir = self._resolve_outdir(mode, len(heads))
         self.ctx.reset_log()
         log_path = self.plan.log or (
             os.path.join(self.plan.outdir, "qzfm_session.log")
@@ -532,6 +580,7 @@ class QZFMSession:
         heads = parse_heads(self.plan.device_name)
         keep = self.plan.stream_head if self.plan.stream_head in heads \
             else next(iter(heads))
+        self.plan.stream_head = keep
 
         def body():
             sensor = self.sensors[keep]
@@ -546,8 +595,8 @@ class QZFMSession:
                 f.write("t_s,pT\n")
                 for ti, vi in zip(t, v):
                     f.write(f"{ti:.6g},{vi:.6g}\n")
-            self.ctx.say("stream", f"{len(t)} samples at 200 S/s from head "
-                                   f"{keep} -> {path}")
+            self.ctx.say("stream", f"{len(t)} samples at 200 S/s from "
+                                   f"{sensor.display} -> {path}")
             self.session["runs"].append(
                 {"index": 1,
                  "dir": rel_to(path, os.path.dirname(self.lab.data_root)),

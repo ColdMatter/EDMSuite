@@ -51,12 +51,15 @@ from dataclasses import dataclass, field
 from bfield import clock
 from bfield.acquisition.child import (new_process_group_kwargs,
                                       recorder_argv, stop_child_ladder)
+from bfield.channels import (key_number, label, parse_map,
+                             shared_axis_pairs, split_channel)
 from bfield.config import PROJECT_DIR
 from bfield.constants import DAQ_AGGREGATE_MAX
 from bfield.devices.scope import DEFAULT_SCOPE_CH, ScopeError
 from bfield.errors import (AbortRun, BFieldError, ConfigError, Stopped)
 from bfield.io.files import write_json_atomic
 from bfield.operations.record import write_lab_file
+from bfield.sensors import Selection, resolve_device_name
 from bfield.ui import ConsoleUI
 
 # 0.1 Hz is the generator's floor. 50 Hz and the 59.917 Hz comb sit on
@@ -101,25 +104,18 @@ AMP_SPEC_FLOOR_MA = 300.0     # 0.1 Hz bound = 1e6 exactly, at 900 s
 DEFAULT_NULL_SECONDS = 900.0
 
 # A cylinder has two shielding factors (axial / transverse), so the
-# sweep runs twice with the coil turned. Z is the bore axis. Same
-# 4-channel map both sweeps: turning the coil moves NO cable.
-ORIENTATION_MAP = {
-    "axial":      "z:a:ai0,y:a:ai1,z2:b:ai2,y2:b:ai3",
-    "transverse": "z:a:ai0,y:a:ai1,z2:b:ai2,y2:b:ai3",
-}
-# 3-channel maps for --aux mon:ai3: head b keeps only its driven axis,
-# so the operator moves head b's BNC between the two sweeps.
-ORIENTATION_MAP_MON = {
-    "axial":      "z:a:ai0,y:a:ai1,z2:b:ai2",
-    "transverse": "z:a:ai0,y:a:ai1,y2:b:ai2",
-}
-ORIENTATION_PAIR = {"axial": "z,z2", "transverse": "y,y2"}
+# sweep runs twice with the coil turned. Z is the bore axis. The map is
+# both sensors' Z and Y on their own inputs (config/sensors.toml), the
+# same in both sweeps: turning the coil moves NO cable; the orientation
+# picks the driven axis, i.e. the pair analysed (s1z,s2z axial).
+ORIENTATION_AXIS = {"axial": "z", "transverse": "y"}
+ORIENTATION_MAP = ORIENTATION_AXIS        # the orientations (old name)
 ORIENTATION_COIL = {
     "axial":      "the coil's axis ALONG the bore (its plane across it)",
     "transverse": "the coil's axis ACROSS the bore (its plane containing it)",
 }
 DEFAULT_ORIENTATION = "axial"
-DEFAULT_IDS = "a:A10QHMQMA,b:A10QHJ1ZA"
+DEFAULT_IDS = "s1:A10QHMQMA,s2:A10QHJ1ZA"
 DEFAULT_CAL_V_PER_NT = 2.7    # nominal at 1x; the sweep reads both heads
 # measured-vs-asked mismatch before the operator is told
 CURRENT_TELL_FRAC = 0.15
@@ -185,6 +181,8 @@ class SweepSettings:
     skip_setup: bool = False
     device: str | None = None
     outdir: str | None = None
+    name: str | None = None       # dated run folder name; None = e.g.
+                                  # SfSweepAxial, SfPrecheckAxial, SfDCAxial
     # filled in while running
     cal_factors: str | None = field(default=None, repr=False)
     n_points: int = field(default=0, repr=False)
@@ -200,8 +198,8 @@ class SweepSettings:
         base = {}
         if len(known) >= 2:
             # the two lowest-numbered sensors; --sensors picks others
-            base["ids"] = (f"a:{known[0].usb_serial},"
-                           f"b:{known[1].usb_serial}")
+            base["ids"] = ",".join(f"s{k.number}:{k.usb_serial}"
+                                   for k in known[:2])
         if d.get("fs_hz"):
             base["fs"] = float(d["fs_hz"])
         if d.get("vrange_V"):
@@ -300,27 +298,39 @@ def monitor_name(s):
 def sweep_axes(s):
     """Lab axes the map covers, in the sensor session's spelling."""
     seen = []
-    for pair in (p.strip() for p in s.map.split(",")):
-        if not pair:
-            continue
-        ax = pair.partition(":")[0].strip().lower().rstrip("2")
+    for name, _k, _p in parse_map(s.map):
+        ax = split_channel(name)[1]
         if ax not in seen:
             seen.append(ax)
-    return ",".join(seen)
+    return ",".join(a for a in ("z", "y") if a in seen)
+
+
+def sweep_map(config, ids, orientation, with_monitor=False):
+    """The two sensors' channel map: both axes on their own inputs; with a
+    DAQ current monitor the second keeps only the driven axis (its other
+    input carries the monitor, so its BNC moves between the sweeps)."""
+    sel = Selection(config, resolve_device_name(config, ids), axes="z,y")
+    if len(sel.sensors) != 2:
+        raise ConfigError("the S(f) sweep reads exactly two sensors")
+    driven = ORIENTATION_AXIS[orientation]
+    entries = sel.channels()
+    second = entries[-1][1]
+    return ",".join(f"{n}:{p}" for n, k, ax, p in entries
+                    if not (with_monitor and k == second and ax != driven))
 
 
 def head_pair(s):
-    """Interior pair to analyse: z,z2 axial, y,y2 transverse (checked
-    against the map so a transverse sweep is not analysed on the
-    undriven axis)."""
-    names = [pair.partition(":")[0].strip().lower()
-             for pair in (p.strip() for p in s.map.split(",")) if pair]
-    both = [n for n in names if not n.endswith("2") and n + "2" in names]
-    if len(both) == 1:
-        return f"{both[0]},{both[0]}2"
-    want = ORIENTATION_PAIR.get(s.orientation)
-    if want and all(n in names for n in want.split(",")):
-        return want
+    """Interior pair to analyse: the driven axis on both sensors (s1z,s2z
+    axial, s1y,s2y transverse; checked against the map so a transverse
+    sweep is not analysed on the undriven axis)."""
+    names = [n for n, _k, _p in parse_map(s.map)]
+    pairs = shared_axis_pairs(names)
+    driven = ORIENTATION_AXIS.get(s.orientation)
+    on_axis = [p for p in pairs if split_channel(p[0])[1] == driven]
+    if on_axis:
+        return ",".join(on_axis[0])
+    if len(pairs) == 1:
+        return ",".join(pairs[0])
     return None
 
 
@@ -492,11 +502,18 @@ class SfSweep:
         s = self.s
         require(s.mode in MODES,
                 "pass exactly one of --plan, --precheck, --go, --dc")
-        require(s.orientation in ORIENTATION_MAP,
-                f"--orientation must be one of {sorted(ORIENTATION_MAP)}")
+        require(s.orientation in ORIENTATION_AXIS,
+                f"--orientation must be one of {sorted(ORIENTATION_AXIS)}")
+        # the sensors by number: s1:SERIAL,s2:SERIAL whatever was typed
+        s.ids = Selection(self.lab.config,
+                          resolve_device_name(self.lab.config, s.ids),
+                          axes="z,y").device_name
+        mon_map = sweep_map(self.lab.config, s.ids, s.orientation,
+                            with_monitor=True)
         if not s.map:
-            s.map = (ORIENTATION_MAP_MON if monitor_name(s)
-                     else ORIENTATION_MAP)[s.orientation]
+            s.map = (mon_map if monitor_name(s) else
+                     sweep_map(self.lab.config, s.ids, s.orientation))
+        parse_map(s.map)            # refuses a malformed hand-written map
         if s.mode == "dc":
             require(s.dc_ma > 0, "--dc-ma has to be positive")
             require(s.dc_dwell > 0 and math.isfinite(s.dc_dwell),
@@ -520,27 +537,29 @@ class SfSweep:
         if not monitor_name(s):
             # operator decision 2026-08-19: no DAQ monitor -- the scope
             # watches the drive, ai3 carries head b's second axis
+            wiring = ", ".join(f"{label(n)}={p}"
+                               for n, _k, p in parse_map(s.map))
             if s.scope:
-                self.say("wiring", "no current monitor on the DAQ: ai3 "
-                                   "carries head b's second axis, and the "
-                                   "scope measures the drive over USB")
-                self.say("wiring", "all four inputs are on the heads, so "
-                                   "turning the coil moves NO cable: a.Z=ai0,"
-                                   " a.Y=ai1, b.Z=ai2, b.Y=ai3 in both "
-                                   "sweeps, and the orientation only picks "
-                                   "the pair to analyse "
-                                   f"({head_pair(s) or s.map})")
+                self.say("wiring", "no current monitor on the DAQ: every "
+                                   "input is on a sensor, and the scope "
+                                   "measures the drive over USB")
+                self.say("wiring", f"turning the coil moves NO cable: "
+                                   f"{wiring} in both sweeps, and the "
+                                   "orientation only picks the pair to "
+                                   f"analyse ({head_pair(s) or s.map})")
             else:
                 self.warn("no current monitor on the DAQ (--aux is empty) "
                           "and --no-scope: the current is whatever you type, "
                           "and nothing later can check it (S goes as 1/I). "
-                          "Drop --no-scope, or pass --aux mon:ai3 at the cost "
-                          "of head b's second axis.")
-        elif s.map == ORIENTATION_MAP_MON.get(s.orientation):
-            self.say("wiring", f"MOVE head b's BNC before this sweep: its one "
-                               f"remaining channel must carry the "
-                               f"{s.orientation} axis ({s.map}). Head a does "
-                               f"not move.")
+                          "Drop --no-scope, or pass --aux mon:aiN at the "
+                          "cost of the second sensor's other axis.")
+        elif s.map == mon_map:
+            second = parse_map(s.map)[-1]
+            self.say("wiring", f"MOVE sensor {key_number(second[1])}'s BNC "
+                               f"before this sweep: its one remaining "
+                               f"channel must carry the {s.orientation} axis "
+                               f"({label(second[0])} on {second[2]}). The "
+                               "other sensor does not move.")
         n_ch = len([p for p in s.map.split(",") if p.strip()]) \
             + len([a for a in s.aux.split(",") if a.strip()])
         total = n_ch * s.fs
@@ -602,10 +621,9 @@ class SfSweep:
             with open(path, encoding="utf-8") as fh:
                 heads = json.load(fh)["setup"]["heads"]
             parts = []
-            for spec in self.s.map.split(","):
-                chan, head, _pin = spec.split(":")
-                axis = chan.rstrip("0123456789")
-                parts.append(f"{chan}:{heads[head]['cal_factors'][axis]:g}")
+            for chan, key, _pin in parse_map(self.s.map):
+                axis = split_channel(chan)[1]
+                parts.append(f"{chan}:{heads[key]['cal_factors'][axis]:g}")
             return ",".join(parts)
         except (OSError, ValueError, KeyError, TypeError) as e:
             raise AbortSweep(
@@ -616,7 +634,7 @@ class SfSweep:
 
     def record_args(self, point, outdir, seconds=None, notes=None):
         s = self.s
-        cmd = ["--2head", "--map", s.map, "--ids", s.ids,
+        cmd = ["--numbered", "--map", s.map, "--ids", s.ids,
                "--fs", f"{s.fs:g}", "--vrange", f"{s.vrange:g}",
                "--gain", s.gain, "--cal-v-per-nT", f"{s.cal_v_per_nt:g}",
                "--seconds", f"{seconds or point.seconds:g}",
@@ -974,10 +992,23 @@ class SfSweep:
                          "prints")
         return 0
 
+    def _dated_outdir(self, kind):
+        """The next dated run folder for this mode, or None with the
+        old layout / an explicit --outdir."""
+        s = self.s
+        if s.outdir or not self.lab.dated:
+            return None
+        try:
+            return self.lab.new_run_dir(
+                s.name or f"Sf{kind}{s.orientation.capitalize()}")
+        except (OSError, ValueError) as e:
+            raise ConfigError(f"cannot make the run folder: {e}")
+
     def _open_outdir(self, prefix):
         s = self.s
         stamp = clock.strftime("%Y%m%d_%H%M%S")
-        outdir = s.outdir or os.path.join(
+        kind = {"precheck": "Precheck", "dc": "DC"}.get(prefix, prefix)
+        outdir = s.outdir or self._dated_outdir(kind) or os.path.join(
             self.lab.bucket("sf"), f"{prefix}_{stamp}_{s.orientation}")
         self.ctx.open_log(os.path.join(outdir, "sf_sweep.log"))
         return outdir
@@ -1114,7 +1145,7 @@ class SfSweep:
     def dc_analysis_command(self, outdir):
         s = self.s
         return (f"python {_q(os.path.join(ANALYSIS_DIR, 'shield_sf_dc.py'))} "
-                f"{_q(outdir)} --heads {head_pair(s) or 'z,z2'} "
+                f"{_q(outdir)} --heads {head_pair(s) or 's1z,s2z'} "
                 f"--settle {min(30.0, s.dc_dwell / 3.0):g} "
                 f"--outdir {_q(os.path.join(outdir, 'analysis'))}")
 
@@ -1295,7 +1326,7 @@ class SfSweep:
     def do_go(self):
         s, points = self.s, self.points
         stamp = clock.strftime("%Y%m%d_%H%M%S")
-        outdir = s.outdir or os.path.join(
+        outdir = s.outdir or self._dated_outdir("Sweep") or os.path.join(
             self.lab.bucket("sf"), f"sw_{stamp}_{s.orientation}")
         require(not os.path.isdir(outdir) or not os.listdir(outdir),
                 f"{self.rel(outdir)} already holds something -- a sweep wants "

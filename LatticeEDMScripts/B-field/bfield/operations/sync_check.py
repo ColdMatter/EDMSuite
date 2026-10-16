@@ -1,9 +1,9 @@
-"""Are two heads running on one modulation clock?
+"""Are the sensors running on one modulation clock?
 
 Moved from qzfm_serial.py (welch_power, carrier_lines, unalias_hz,
-check_modulation_sync). Reads the guard record's pT files: two unsynced
-heads put two carrier lines in the aliased band, and their spacing is
-the beat that lands in the data.
+check_modulation_sync). Reads the guard record's pT files: unsynced
+sensors put separate carrier lines in the aliased band, and their
+spacing is the beat that lands in the data.
 """
 
 from __future__ import annotations
@@ -86,7 +86,8 @@ def carrier_lines(series, fs):
 def check_modulation_sync(ctx, run_dir, fs, map_spec, names=None):
     """Verdicts: no beat resolved / not synced / unknown -- never
     "synced": this only upper-bounds the beat (0.5 Hz at CARRIER_SEG_S,
-    while the eEDM band starts at 0.05 Hz)."""
+    while the eEDM band starts at 0.05 Hz). `names` = {sensor key: how
+    messages name it}."""
     # keep in step with the recorder's "{session}_{CHANNEL}_pT.txt";
     # renaming those files makes the sync check go blind silently
     stems = sorted(glob.glob(os.path.join(run_dir, "*_pT.txt")))
@@ -105,7 +106,7 @@ def check_modulation_sync(ctx, run_dir, fs, map_spec, names=None):
 
     head_of = {name: head for name, head, _ in parse_map(map_spec)}
     lines = carrier_lines(series, fs)
-    # one carrier per head: the loudest channel that head owns
+    # one carrier per sensor: the loudest channel that sensor owns
     per_head = {}
     for name, (hz, amp) in lines.items():
         head = head_of.get(name)
@@ -115,25 +116,26 @@ def check_modulation_sync(ctx, run_dir, fs, map_spec, names=None):
             per_head[head] = (hz, amp)
     carriers = {h: round(v[0], 2) for h, v in sorted(per_head.items())}
 
+    def who(h):
+        return (names or {}).get(h, f"sensor {h}")
+
     if len(carriers) < 2:
         missing = sorted(set(head_of.values()) - set(carriers))
         return {"verdict": "unknown",
-                "why": ("no carrier line above the floor on head "
-                        + (", ".join(missing) or "either")
+                "why": ("no carrier line above the floor on "
+                        + (", ".join(who(h) for h in missing) or "any sensor")
                         + " -- gain too low, or the line is under the floor"),
                 "carriers_hz": carriers, "beat_hz": None,
                 "in_edm_band": False}
 
-    (ha, fa), (hb, fb) = sorted(carriers.items())
-    na = (names or {}).get(ha, f"head {ha}")
-    nb = (names or {}).get(hb, f"head {hb}")
-    beat = abs(fa - fb)
+    listing = ", ".join(f"{who(h)} at {f:.2f} Hz" for h, f in carriers.items())
+    # the widest split between any two: the worst beat in the data
+    beat = max(carriers.values()) - min(carriers.values())
     bin_hz = 1.0 / CARRIER_SEG_S
     resolution = 2 * bin_hz
     if beat <= resolution:
         return {"verdict": "no beat resolved",
-                "why": (f"{na} at {fa:.2f} Hz, {nb} at "
-                        f"{fb:.2f} Hz -- any beat is under the "
+                "why": (f"{listing} -- any beat is under the "
                         f"{resolution:.2f} Hz resolved here; an in-band "
                         f"beat (eEDM band starts {EDM_BAND_HZ[0]:g} Hz) "
                         f"would look the same"),
@@ -141,15 +143,14 @@ def check_modulation_sync(ctx, run_dir, fs, map_spec, names=None):
                 "beat_resolution_hz": resolution,
                 # False = "no in-band beat seen", never "there is none"
                 "in_edm_band": False}
-    # a sideband one head makes on its own is not a second oscillator
+    # a sideband one sensor makes on its own is not a second oscillator
     known = [k for k in KNOWN_SINGLE_HEAD_HZ
-             if any(abs(f - k) < 1.0 for f in (fa, fb))]
+             if any(abs(f - k) < 1.0 for f in carriers.values())]
     in_band = EDM_BAND_HZ[0] <= beat <= EDM_BAND_HZ[1]
     return {"verdict": "not synced",
-            "why": (f"{na} at {fa:.2f} Hz, {nb} at {fb:.2f} Hz "
-                    f"-> beat {beat:.2f} Hz"
+            "why": (f"{listing} -> beat up to {beat:.2f} Hz"
                     + (" -- IN THE eEDM BAND" if in_band else "")
-                    + (f" (known single-head lines: "
+                    + (f" (known single-sensor lines: "
                        f"{', '.join(f'{k:g}' for k in known)})"
                        if known else "")),
             "carriers_hz": carriers, "beat_hz": round(beat, 3),

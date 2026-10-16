@@ -10,12 +10,13 @@ come from config/lab.toml, so most runs need only a mode:
   python run/qzfm.py --sensors-list
   python run/qzfm.py --status --sensors 1
   python run/qzfm.py --setup  --sensors 1,2 --outdir <data_root>/labcheck/today
-  python run/qzfm.py --record --sensors 1,2 --seconds 900 --outdir ...
+  python run/qzfm.py --record --sensors 1,2 --seconds 900 --name Baseline
   python run/qzfm.py --standby --sensors 1,2
 
---sensors picks sensors by number from [[sensors]] in config/lab.toml;
-they go into the DAQ input slots in that order (the program says which
-sensor to plug where; the first is the modulation master). --device-name
+--sensors picks sensors by number from config/sensors.toml; each records
+on its own DAQ inputs (z_input / y_input there; the program says what
+goes where). The first is the modulation master unless --master says
+otherwise. --axes picks which axes are recorded. --device-name
 gives USB serials directly (the old flag). The COM port is exclusive: close
 the QuSpin GUI first. Exit codes: 0 ok, 13 config or busy port, 20
 stopped early, 40 data with no readable meta.json, 41 recorder still
@@ -54,15 +55,19 @@ def build_parser():
                    help="sensors by number from config [[sensors]], e.g. 1 "
                         "or 1,2")
     p.add_argument("--master", type=int, default=None,
-                   help="with two --sensors: the number of the modulation "
+                   help="with two or more --sensors: the number of the "
+                        "modulation "
                         "master (default: the first)")
     p.add_argument("--device-name", default=None,
-                   help="serials directly: A10QHMQMA, or a:SER,b:SER")
+                   help="sensors by serial instead of number: "
+                        "A10QHMQMA or A10QHMQMA,A10QHJ1ZA (looked up in the "
+                        "sensor list, so the data are still filed by number)")
     p.add_argument("--axes", default=None,
-                   help="z,y subset (default z for one head, z,y for two)")
+                   help="z,y subset (default z for one sensor, every "
+                        "wired axis for more)")
     p.add_argument("--map", default=None,
                    help="channel:head:aiN list (default: from the "
-                        "chosen sensors and config [daq] slots)")
+                        "chosen sensors' inputs in config/sensors.toml)")
     p.add_argument("--gain", default=None, help="0.33x, 1x, 3x")
     p.add_argument("--fs", type=float, default=None)
     p.add_argument("--vrange", default=None)
@@ -73,7 +78,13 @@ def build_parser():
     p.add_argument("--zero-cond", type=float, default=None)
     p.add_argument("--lock-timeout", type=float, default=None)
     p.add_argument("--poll-s", type=float, default=None)
-    p.add_argument("--outdir", default=None)
+    p.add_argument("--outdir", default=None,
+                   help="where the session goes (default: the next dated "
+                        "run folder, e.g. <data_root>/Oct 2026/15/"
+                        "001_SingleSensorZ)")
+    p.add_argument("--name", default=None,
+                   help="the run's name in its dated folder (default: "
+                        "automatic, e.g. SingleSensorZ, TwoSensorsZY)")
     p.add_argument("--notes", default=None)
     p.add_argument("--recorder-arg", action="append", default=[],
                    dest="extra_args", metavar="ARG",
@@ -85,7 +96,9 @@ def build_parser():
     p.add_argument("--sync", default=None,
                    choices=("none", "master-slave", "independent"))
     p.add_argument("--zero-shift-warn", type=float, default=None)
-    p.add_argument("--stream-head", default="a", choices=("a", "b"))
+    p.add_argument("--stream-sensor", type=int, default=None,
+                   help="--stream with several --sensors: which one "
+                        "(default the first)")
     p.add_argument("--validate-only", action="store_true",
                    help="check the command line and exit; opens nothing")
     add_lab_args(p)
@@ -119,15 +132,16 @@ def main(argv=None):
     mode = modes[0]
     if mode == "sensors_list":
         from bfield.config import load_config
-        from bfield.sensors import load_sensors, slots
+        from bfield.sensors import input_sharing, load_sensors
         cfg = load_config(args.config)
-        print(f"  {'NO':<4s}{'QUSPIN LABEL':<16s}{'USB SERIAL':<14s}LOCATION")
-        for s in load_sensors(cfg):
+        sensors = load_sensors(cfg)
+        print(f"  {'NO':<4s}{'QUSPIN LABEL':<16s}{'USB SERIAL':<14s}"
+              f"{'DAQ WIRING':<20s}LOCATION")
+        for s in sensors:
             print(f"  {s.number:<4d}{s.label:<16s}{s.usb_serial:<14s}"
-                  f"{s.location or '(not set)'}")
-        print("  DAQ slots, in --sensors order: "
-              + "; ".join(f"{i + 1}: {z} (Z) {y} (Y)"
-                          for i, (z, y) in enumerate(slots(cfg))))
+                  f"{s.wiring:<20s}{s.location or '(not set)'}")
+        for note in input_sharing(sensors):
+            print(f"  note: {note}")
         return 0
     if mode == "list_ports":
         ports = list_serial_ports()
@@ -148,10 +162,12 @@ def main(argv=None):
         vrange=args.vrange, cal_v_per_nT=args.cal_v_per_nT,
         seconds=args.seconds, zero_cond=args.zero_cond,
         lock_timeout=args.lock_timeout, poll_s=args.poll_s,
-        outdir=args.outdir, notes=args.notes, extra_args=args.extra_args,
+        outdir=args.outdir, name=args.name, notes=args.notes, extra_args=args.extra_args,
         require_factors=args.require_factors, force_start=args.force_start,
         log=args.log, child_console=args.child_console, sync=args.sync,
-        zero_shift_warn=args.zero_shift_warn, stream_head=args.stream_head,
+        zero_shift_warn=args.zero_shift_warn,
+        stream_head=(None if args.stream_sensor is None
+                     else f"s{args.stream_sensor}"),
         stream_seconds=args.stream)
     old_mode = {"record": "run"}.get(mode, mode)
     if args.validate_only:
@@ -160,8 +176,9 @@ def main(argv=None):
         return 0
     session = QZFMSession(ctx, lab, plan)
     if mode == "status":
+        from bfield.channels import key_number
         for head, sensor, s, blank in session.status():
-            pre = f"[status {head}]"
+            pre = f"[status sensor {key_number(head)}]"
             print(f"{pre} {'serial':<15s} {sensor.serial_id}"
                   + (f"  (on {sensor.port})" if sensor.port else ""))
             for label, key in (("laser on", "laser_on"),

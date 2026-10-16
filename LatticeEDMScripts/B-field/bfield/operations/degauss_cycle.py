@@ -108,6 +108,8 @@ class DegaussSettings:
     taper: float = DG_TAPER_DEFAULT_S
     max_amp: float = MAX_AMP_DEFAULT_A
     outdir: str | None = None     # parent for dg_<stamp>/; None = default
+    name: str | None = None       # dated run folder name; None = Degauss,
+                                  # DegaussCheck
     coil: str | None = None
     confirm_checklist: bool = False
     extra: dict = field(default_factory=dict)
@@ -604,13 +606,17 @@ class DegaussSession:
     def _make_outdir(self):
         if self.s.mode == "status" and self.s.outdir is None:
             return None
-        parent = self.s.outdir or self.lab.bucket("degauss")
         try:
+            if self.s.outdir is None and self.lab.dated:
+                # the dated run folder is the session folder itself
+                return self.lab.new_run_dir(
+                    self.s.name or ("DegaussCheck" if self.s.mode == "check"
+                                    else "Degauss"))
+            parent = self.s.outdir or self.lab.bucket("degauss")
             os.makedirs(parent, exist_ok=True)
             return stamped_dir(parent, "dg")
-        except OSError as e:
-            raise ConfigError(f"cannot create the session folder under "
-                              f"{parent}: {e}")
+        except (OSError, ValueError) as e:
+            raise ConfigError(f"cannot create the session folder: {e}")
 
     # -- the modes ------------------------------------------------------
 

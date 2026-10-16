@@ -128,7 +128,10 @@ class RelaxSettings:
     gain: str = "1x"
     fs: float = 1200.0
     vrange: str = "2"
-    outdir: str | None = None            # parent; None = the relax bucket
+    outdir: str | None = None            # parent; None = the next dated
+                                         # run folder (or the relax bucket)
+    name: str | None = None              # dated folder name; None =
+                                         # Relaxation
     notes: str | None = None
     confirm: bool = False
     leads_stay: bool = False
@@ -1199,6 +1202,14 @@ def run(ctx, lab, settings, mode):
     try:
         validate(ctx, lab, settings, mode)
         if mode == "go":
+            if settings.outdir is None and lab.dated:
+                # the dated run folder becomes the parent: the log and
+                # rx_<stamp>/ go inside it
+                try:
+                    settings.outdir = lab.new_run_dir(
+                        settings.name or "Relaxation")
+                except (OSError, ValueError) as e:
+                    raise ConfigError(f"cannot make the run folder: {e}")
             parent = settings.outdir or lab.bucket("relax")
             ctx.open_log(os.path.join(parent, "relax_session.log"))
         ctx.say("start", "bfield relaxation program, mode " + mode

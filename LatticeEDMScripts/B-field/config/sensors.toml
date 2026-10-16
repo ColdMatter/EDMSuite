@@ -4,15 +4,22 @@
 #   label       the QuSpin head ID printed on it (Z3D0-...)
 #   usb_serial  the USB ID the PC sees on its COM port (FTDI)
 #   location    free note: where it is in the experiment
+#   z_input     the DAQ input its Z output is wired to (ai0..ai3,
+#               or "" when Z is not recorded)
+#   y_input     the same for its Y output
 
 [[sensors]]
 number = 1
 label = "Z3D0-AB3Q"
 usb_serial = "A10QHMQMA"
 location = ""
+z_input = "ai0"
+y_input = "ai1"
 
 [[sensors]]
 number = 2
 label = "Z3D0-AB3S"
 usb_serial = "A10QHJ1ZA"
 location = ""
+z_input = "ai2"
+y_input = "ai3"
