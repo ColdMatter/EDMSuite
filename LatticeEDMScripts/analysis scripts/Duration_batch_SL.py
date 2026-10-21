@@ -59,7 +59,7 @@ if sys.platform == "win32":
 else:
     datadrive = os.path.expanduser("~/Library/CloudStorage/Box-Box/LatticeEDM/data")  # TODO: set Mac path
 month = "Oct 2026"
-date = "12"
+date = "15"
 #blockdrive=datadrive+"\\BlockData\\"
 #
 drive = os.path.join(datadrive, month, date, "")# + subfolder
@@ -71,12 +71,16 @@ print("Matching files: ", [os.path.basename(f) for f in files])
 
 #%% Selection
 #sele = ["001", "005", "006", "007", "008", "009", "010", "011", "014", "016"]
-sele = ["001", "002", "003", "004"]
+sele = ["001", "002", "003", "004"] # leave empty, sele = [], to load all matching files
 #%%
 LoadPasses = True
 
 if len(files) > 0:
     print("%g matching files found. Loading"%len(files))
+    if len(sele) == 0:
+        # No selection: select every matching file by its ID
+        sele = sorted(set(re.split(r'[_]', os.path.basename(f))[0] for f in files))
+        print("No selection - loading all matching files: ", sele)
     Data = {}
     fileLabels = []
     Lasers = []
@@ -206,9 +210,11 @@ print("\n Scatterint rate (MHz): %.4g +- %.3g"%(Scat, Scaterr))
 #         "+4fv1, also in OFF shots": ['016']}
 
 types = {"Up to V3": ["001"],
-         "+ 4fv0, R&Q": ["003"],
+         "+ 4fv0, R&Q": ["002", "003"],
          "+ 4fv1, R&Q": ["004"]
          }
+
+ExcludeLabels = ["003_0", "004_0"] # bad scans to discard manually, e.g. ["002_0"] for the first pass of file 002
 
 Weighted = True
 UseIndivP0 = True   # True: initial guess = mean of the individual-scan fits (cell above); False: fixed p0_default
@@ -223,7 +229,7 @@ Fit = {}
 Err = {}
 BadFit = {}
 
-tspan = np.arange(0, 8000, 1)
+tspan = np.arange(0, 6000, 1)
 
 for i in range(0, len(keys)):
     keyList = types[keys[i]]
@@ -233,9 +239,16 @@ for i in range(0, len(keys)):
     for k in keyList:    
         for f in fileLabels: 
             if f[:3] == k:
+                if f in ExcludeLabels:
+                    print("Excluding " + f + " from " + keys[i])
+                    continue
                 toAvgKeys.append(f)
                 toAvg.append(AllRatios[f])
-    
+
+    if len(toAvgKeys) == 0:
+        print(keys[i] + ": no scans left after exclusions - skipped")
+        continue
+
     avg = np.average(np.array(toAvg), axis=0)
     dur = AllDurations[toAvgKeys[0]]
     

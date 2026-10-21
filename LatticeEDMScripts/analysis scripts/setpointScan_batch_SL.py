@@ -53,13 +53,17 @@ files = glob.glob(f'{drive}{pattern}', recursive=True)
 print("Matching files: ", [os.path.basename(f) for f in files])
 
 #%% Selection
-sele = ["009"]
+sele = ["009"] # leave empty, sele = [], to load all matching files
 
 #%%
 LoadPasses = True
 
 if len(files) > 0:
     print("%g matching files found. Loading"%len(files))
+    if len(sele) == 0:
+        # No selection: select every matching file by its ID
+        sele = sorted(set(re.split(r'[_]', os.path.basename(f))[0] for f in files))
+        print("No selection - loading all matching files: ", sele)
     Data = {}
     fileLabels = []
     Lasers = []

@@ -30,7 +30,7 @@ prop_cycle = plt.rcParams['axes.prop_cycle']
 colors = prop_cycle.by_key()['color']
 
 #%%
-sele = ["003", "004"]
+sele = ["003", "004"] # leave empty, sele = [], to load all matching files
 
 #%% Load data
 #datadrive=str(os.environ["Onedrive"]+"\\Desktop\\Lattice EDM\\data")
@@ -48,29 +48,26 @@ print("Matching files: ", [os.path.basename(f) for f in files])
 
 if len(files) > 0:
     print("%g matching files found. Loading"%len(files))
+    if len(sele) == 0:
+        # No selection: select every matching file by its ID
+        sele = sorted(set(re.split(r'[_]', os.path.basename(f))[0] for f in files))
+        print("No selection - loading all matching files: ", sele)
     Data = {}
     fileLabels = []
     Lasers = []
     for i in range(0, len(files)):
         fileLabel = re.split(r'[_]', re.split(r'[\\]', files[i])[-1])[0]
         Laser = re.split(r'[.]', re.split(r'[_]', re.split(r'[\\]', files[i])[-1])[-2])[0]
-       
+
        #Use this part if have selections
-        if len(sele) > 0:
-            for j in range(0, len(sele)):
-                if fileLabel == sele[j]:
-                    print("File "+fileLabel+" selected")
-           ###
-                    Data[fileLabel] = EDM.ReadAverageScanInZippedXML(files[i])
-                    print("loaded file " + files[i])
-                    fileLabels.append(fileLabel)
-                    Lasers.append(Laser)
-        else:
-            print("No further selection applied.")
-            Data[fileLabel] = EDM.ReadAverageScanInZippedXML(files[i])
-            print("loaded file " + files[i])
-            fileLabels.append(fileLabel)
-            Lasers.append(Laser)
+        for j in range(0, len(sele)):
+            if fileLabel == sele[j]:
+                print("File "+fileLabel+" selected")
+       ###
+                Data[fileLabel] = EDM.ReadAverageScanInZippedXML(files[i])
+                print("loaded file " + files[i])
+                fileLabels.append(fileLabel)
+                Lasers.append(Laser)
 
 else:
     print("No matching files.")
