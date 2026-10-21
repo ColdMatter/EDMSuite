@@ -54,10 +54,7 @@ colors = prop_cycle.by_key()['color']
 
 ###When we are using Box:
 #datadrive=str(os.environ["Onedrive"]+"\\Desktop\\Lattice EDM\\data")
-if sys.platform == "win32":
-    datadrive = r"C:\Users\sl5119\Box\LatticeEDM\data"
-else:
-    datadrive = os.path.expanduser("~/Library/CloudStorage/Box-Box/LatticeEDM/data")  # TODO: set Mac path
+datadrive = EDM.get_datadrive()  # set per device in data_locations.json
 month = "Oct 2026"
 date = "15"
 #blockdrive=datadrive+"\\BlockData\\"

@@ -46,6 +46,33 @@ import zipfile
 
 import copy
 from scipy.optimize import curve_fit
+import json
+import platform
+
+
+#%% Data locations
+DataLocationsFile = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data_locations.json")
+
+def get_datadrive(key="datadrive"):
+    """
+    Returns the data folder for this device (or another path stored under `key`).
+    Looks in the LATTICEEDM_DATA environment variable (for key="datadrive" only),
+    then data_locations.json under this hostname, then under sys.platform.
+    """
+    if key == "datadrive" and os.environ.get("LATTICEEDM_DATA"):
+        return os.path.normpath(os.path.expanduser(os.environ["LATTICEEDM_DATA"]))
+    with open(DataLocationsFile) as f:
+        locations = json.load(f)
+    hostname = platform.node().lower()
+    machines = {name.lower(): paths for name, paths in locations.get("machines", {}).items()}
+    for source in (machines.get(hostname, {}), locations.get("defaults", {}).get(sys.platform, {})):
+        if key in source:
+            path = os.path.normpath(os.path.expanduser(source[key]))
+            if not os.path.isdir(path):
+                print("Warning: %s for this device (%s) doesn't exist: %s" % (key, hostname, path))
+            return path
+    raise KeyError("No '%s' for hostname '%s' (platform %s) in %s - add it there"
+                   % (key, hostname, sys.platform, DataLocationsFile))
 
 
 #%% Functions related to Scan objects
@@ -122,6 +149,25 @@ def GetScanSettings(Scan):
     repumpDelay = Scan.ScanSettings["pg:repumpDelay"]
     repumpDuration = Scan.ScanSettings["pg:repumpDuration"]
     shutterslowDelay = Scan.ScanSettings["pg:shutterslowdelay"]
+    v1v2aomStart = Scan.ScanSettings["pg:v1v2aomStart"] / 1000 #to ms
+    v1v2aomDuration = Scan.ScanSettings["pg:v1v2aomDuration"] / 1000 #to ms
+    v1v2aomEnd = v1v2aomStart + v1v2aomDuration
+    v3aomStart = Scan.ScanSettings["pg:v3aomStart"] /1000 #to ms
+    v3aomDuration = Scan.ScanSettings["pg:v3aomDuration"] /1000 #to ms
+    v3aomEnd = v3aomStart + v3aomDuration
+    v1_1p5_shutterStart = Scan.ScanSettings["pg:v1_1p5_Delay"] /1000 #to ms
+    v1_1p5_shutterDuration = Scan.ScanSettings["pg:v1_1p5_Duration"] /1000 #to ms
+    v1_1p5_shutterEnd = v1_1p5_shutterStart + v1_1p5_shutterDuration
+    
+    IfOnShotStatePrep = Scan.ScanSettings["pg:statePrep_OnShots"]
+    IfOffShotStatePrep = Scan.ScanSettings["pg:statePrep_OffShots"]
+    StatePrepStart = Scan.ScanSettings["pg:v0chirpTriggerDelay"] /1000 #to ms
+    StatePrepDuration = Scan.ScanSettings["pg:v0chirpTriggerDuration"] /1000 #to ms
+    StatePrepEnd = StatePrepStart + StatePrepDuration
+    
+    VacShutterStart = Scan.ScanSettings["pg:vacShutterDelay"] /1000 #to ms
+    VacShutterDuration = Scan.ScanSettings["pg:vacShutterDuration"] /1000 #to ms
+    VacShutterEnd = VacShutterStart + VacShutterDuration
 
     Switch = Scan.ScanSettings["switch:switchActive"]
 
@@ -148,11 +194,23 @@ def GetScanSettings(Scan):
                             "pg param":pgParam, \
                             "clockFreq":clockFreq, "sampleRate":sampleRate, \
                             "Tconv":Tconv, "shotsPerPoint":shotsPerPoint, \
+                            "detectors":detectors,
+                            "Vacuum shutter start": VacShutterStart,
+                            "Vacuum shutter end": VacShutterEnd, 
                             "slowing time":V0time, "slowing start":V0start, \
                             "off-shot slowing time": V0offtime, \
-                            "detectors":detectors,\
+                            "Is state-prep ON for On shots": IfOnShotStatePrep,
+                            "Is state-prep ON for Off shots": IfOffShotStatePrep,
+                            "State-prep start": StatePrepStart,
+                            "State-prep end": StatePrepEnd,
                             "repumpDelay":repumpDelay, "repumpDuration":repumpDuration,\
-                            "shutterslowDelay":shutterslowDelay, "v1 to MOT": v1toMOTdelay,\
+                            "V1 V2 slowing start": v1v2aomStart,
+                            "V1 V2 slowing end": v1v2aomEnd,
+                            "V3 slowing start": v3aomStart,
+                            "V3 slowing end": v3aomEnd,
+                            "4f shutter start": v1_1p5_shutterStart,
+                            "4f shutter end": v1_1p5_shutterEnd,
+                            "shutterslowDelay (legacy)":shutterslowDelay, "v1 to MOT (legacy)": v1toMOTdelay,\
                             "switch":Switch, "B field duration": bfieldDuration,\
                             "B field delay":bfieldDelay,
                             "Freq offset THz":F_offset,\

@@ -61,10 +61,7 @@ colors = prop_cycle.by_key()['color']
 #blockdrive=datadrive+"\\BlockData\\"
 
 ###When we are using Box:
-if sys.platform == "win32":
-    datadrive = r"C:\Users\sl5119\Box\LatticeEDM\data"
-else:
-    datadrive = os.path.expanduser("~/Library/CloudStorage/Box-Box/LatticeEDM/data")  # TODO: set Mac path
+datadrive = EDM.get_datadrive()  # set per device in data_locations.json
 month = "Oct 2026"
 date = "20"
 #blockdrive=datadrive+"\\BlockData\\"
@@ -77,7 +74,7 @@ files = glob.glob(f'{drive}{pattern}', recursive=True)
 print("Matching files: ", [os.path.basename(f) for f in files])
 
 #%% Selection
-sele = [] # leave empty, sele = [], to load all matching files
+sele = ["021"] # leave empty, sele = [], to load all matching files
 
 #%%
 LoadPasses = True
@@ -118,7 +115,7 @@ else:
 
 #%% Analysis settings
 """Can also read from scan settings (optional, for later)"""
-SigStart = 30 # in ms
+SigStart = 24 # in ms
 SigEnd = 42
 
 #Use YAG-OFF shots for background subtraction
@@ -126,7 +123,7 @@ SigEnd = 42
 angle = 45 # Angle of probe to slowing
 Resonance = 542.809124 #in THz, rest frame probe frequency
 
-showTOF = False # If true, plots an example TOF before and after bkg subtraction
+showTOF = True # If true, plots an example TOF before and after bkg subtraction
 showIntermediate = True # If true, show unnormalised data with frequency/setpoint axis
 showProcessed = True # If true, show final processed plot with fit
 
@@ -349,6 +346,14 @@ for f in range(0, len(fileLabels)):
 
 # check 2
     if showTOF:
+        plt.plot(TimeOn*1000, PMTOnYAGOffs[point], label='YAG OFF, On')
+        plt.plot(TimeOff*1000, PMTOffYAGOffs[point], label='YAG OFF, Off')
+        plt.title(title + "\n YAG OFF, PMT, file " + fileLabels[f])
+        plt.xlabel("time (ms)")
+        plt.ylabel("Signal (V)")
+        plt.legend()
+        plt.show()
+        
         plt.plot(TimeOn*1000, PMTOnYAGOns[point]-PMTOnYAGOffs[point], label='On')
         plt.plot(TimeOff*1000, PMTOffYAGOns[point]-PMTOffYAGOffs[point], label='Off')
         plt.title(title + "\n YAG ON-OFF, PMT, file " + fileLabels[f])

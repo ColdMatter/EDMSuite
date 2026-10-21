@@ -48,20 +48,19 @@ tools.set_plots()
 prop_cycle = plt.rcParams['axes.prop_cycle']
 colors = prop_cycle.by_key()['color']
 #%% Choose file
-Interactive = True   # True: pick the file in a dialog; False: use the path settings below
+'''Doesn't work'''
+
+Interactive = False   # True: pick the file in a dialog; False: use the path settings below
 
 if Interactive:
     file = EDM.get_scan()[0] #getting a list of [file_path, file_name, file_date]
     print("Selected: ", file[1], " in ", file[2])
     filePath = file[0]
 else:
-    if sys.platform == "win32":
-        datadrive = r"C:\Users\sl5119\Box\LatticeEDM\data"
-    else:
-        datadrive = os.path.expanduser("~/Library/CloudStorage/Box-Box/LatticeEDM/data")  # TODO: set Mac path
+    datadrive = EDM.get_datadrive()  # set per device in data_locations.json
     month = "Oct 2026"
     date = "20"
-    fileNumber = "009"
+    fileNumber = "021"
     drive = os.path.join(datadrive, month, date, "")
     matches = glob.glob(f'{drive}{fileNumber}_*.zip')
     print("Matching files: ", [os.path.basename(f) for f in matches])
@@ -104,12 +103,13 @@ showDiff = True
 fTHz = 542
 
 # X axis: WM frequency (default) or the TCL setpoint (ScanParameter, in V)
-UseSetpoint = False  # True: ignore the WM and process everything on TCL setpoints
+UseSetpoint = True  # True: ignore the WM and process everything on TCL setpoints
 
 # Optional setpoint calibration, used only when there is no valid WM reading
 # (UseSetpoint = True or wrong fibre). Leave as None to keep the results in volts.
-CalTCLconv = None    # TCL conversion, MHz/V
-CalRestSP = None     # zero-velocity setpoint, V
+CalTCLconv = -133.9  # TCL conversion, MHz/V
+CalTCLconverr = 6.5   # MHz/V
+CalRestSP = -0.338     # zero-velocity setpoint, V
 wavelength = 552     # nm
 #%% Grouping data
 Scan = Data[fileLabels[0]]
