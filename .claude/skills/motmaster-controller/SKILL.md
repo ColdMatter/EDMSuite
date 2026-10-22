@@ -84,6 +84,8 @@ yourself.
 | `MoleculeMOTMasterScripts/*.cs` (top-level only) | The actual pattern scripts for this experiment. |
 | `MoleculeMOTMasterScripts/globalParameters.json` | Shared parameter defaults (grouped), loaded + flattened via `LoadGlobalParameters()`. |
 | `.claude/skills/motmaster-controller/verify-scripts.ps1` | Compiles + instantiates + pattern-builds every top-level script without opening MOTMaster — "will MOTMaster accept this edit". See Verifying a change below. |
+| `DAQ/LinkRouting.cs`, `MOTMaster/Linked/*.cs`, `DAQ/MOTMasterLinkConfig.cs` | Linked mode (one script across two MOTMasters) — see Linked mode below. |
+| `MOTMasterTests/` | Hardware-free unit-test harness (`run-tests.ps1`). See Verifying a change below. |
 
 Read [references/architecture.md](references/architecture.md) first for how it all
 fits together (compilation model, machine dispatch, a run end-to-end, and the dead code
@@ -96,6 +98,30 @@ to ignore). Then:
 
 For the Spectrum DDS card (`#if DDS`, CaF only) see the separate `spectrum-dds` skill —
 this skill covers the MOTMaster side of that integration only in passing.
+
+## Linked mode (one script, two MOTMasters)
+
+A primary MOTMaster can claim a secondary over remoting and run one script across both
+machines' hardware. Design: `docs/superpowers/specs/2026-10-22-linked-motmaster-design.md`;
+first-live-run checklist: `docs/superpowers/plans/2026-10-22-linked-motmaster-live-checklist.md`.
+The essentials:
+
+- **Opt-in per machine.** A machine is a primary only if its `Hardware` class adds a
+  `MOTMasterLinkConfig` under `Info["MOTMasterLink"]` (cafmot does: secondary RbTweezer at
+  10.59.3.2, trigger channel `v0ddsSwitchD`). No config ⇒ no new UI, nothing changes.
+- **No routing context ⇒ unchanged behaviour.** The pattern builders consult
+  `LinkRouting.Current` (thread-static). When it's null — every non-linked run — they do
+  exactly the old `Environs.Hardware` lookup, including the old `NullReferenceException` on
+  an unknown name. Keep it that way: every experiment shares these builders.
+- **Linked-only code paths** in `Controller.cs`: `goClaimed` captures `var link =
+  linkedPrimary` once; `link == null` must execute exactly the old statements. The
+  secondary side is `ILinkSecondary` (`ClaimLink`, `PrepareLinkedRun`, ...) plus
+  `linkedSecondaryLoop`, which arms with `OutputPattern(pattern, false)` (see the
+  OutputPattern gotcha) so it can report "armed" before the trigger.
+- **Linked failures always throw** to the `Go` caller; non-linked runs keep their
+  MessageBox-and-return handling. No MessageBox may appear on the remoting path.
+- **The trigger channel is reserved in linked runs** — a script that drives
+  `v0ddsSwitchD` while linked is refused (two legacy cafmot scripts do drive it unlinked).
 
 ## Verifying a change
 
@@ -133,12 +159,30 @@ folder — the latter reproduces `Controller.compileFromFile` + `loadScriptFromD
 pass/fail per file. Takes `-Configuration`/`-ScriptFolder` for a different experiment's
 scripts.
 
-Last run: **15 of 19 scripts pass, 4 fail** — all four fail for the same
-real reason (`"cafOptPumpingAOM"` isn't a registered channel name in
-`MoleculeMOTHardware.cs`), not a tooling problem. See the failure text for the four
-scripts affected. Run **build step 1 first** if you've touched `MOTMaster.csproj`/
-`DAQ.csproj` — the script check references their `bin\CaF\` output, so a stale build
-there gives a false pass or a false fail unrelated to your edit.
+Last run (2026-10-22): **26 scripts, 22 pass, 4 fail** — `LambdaRecap`,
+`4. TCoil_test_back_forth_movement`, `4. TCoil_test_no_movement_1.5secHold`,
+`TweezerRESONANTlMAGE` (the last is a `KeyNotFound` in its constructor). These are real
+script problems, not tooling ones; compare against this set to spot a regression. Run
+**build step 1 first** if you've touched `MOTMaster.csproj`/`DAQ.csproj` — the script check
+references their `bin\CaF\` output, so a stale build there gives a false pass or a false
+fail unrelated to your edit.
+
+**3. Unit tests** (routing, builders under a link, link state machines, fingerprints,
+`LinkedScriptBuilder`, cafmot link config) — no hardware, no MOTMaster:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File MOTMasterTests\run-tests.ps1
+```
+
+It compiles `MOTMasterTests\*.cs` (non-recursive — `MOTMasterTests\scripts\` holds test
+scripts loaded at run time) with the VS2019 Roslyn `csc.exe` against
+`MOTMaster\bin\<Configuration>\` and runs every `public static void Test*()`.
+55 tests at last count.
+
+**If MOTMaster is running, `bin\CaF` is locked** (MSB3027 on `DAQ.dll`). Never stop the
+user's MOTMaster to get round it: build with `/p:OutDir=<scratch>\CaF\` and run the tests
+with `run-tests.ps1 -BinDir <scratch>\CaF`. `verify-scripts.ps1` has no such parameter —
+reproduce its csc + run steps (lines 54-93) against the scratch folder by hand.
 
 **`verify-scripts.ps1` must run under PowerShell, not Git Bash/the Bash tool.**
 `csc.exe`'s `/nologo`-style flags get mangled into bogus MSYS paths when invoked through
