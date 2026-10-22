@@ -506,6 +506,11 @@
     <Compile Include="LoadMoleculeMOTNoSlowingEdge.cs" />
     <Compile Include="MMDataIOHelper.cs" />
     <Compile Include="MOTMasterScript.cs" />
+    <Compile Include="Linked\BuildProvenance.cs" />
+    <Compile Include="Linked\LinkedPrimary.cs" />
+    <Compile Include="Linked\LinkedSecondaryState.cs" />
+    <Compile Include="Linked\LinkFingerprint.cs" />
+    <Compile Include="Linked\LinkMessages.cs" />
     <Compile Include="MOTMasterScriptSnippet.cs" />
     <Compile Include="MOTMasterSequence.cs" />
     <Compile Include="PreviewWindow.cs">

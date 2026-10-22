@@ -745,6 +745,7 @@
     <Compile Include="AnapicoSynth.cs" />
     <Compile Include="HP8673BSynth.cs" />
     <Compile Include="MMConfig.cs" />
+    <Compile Include="MOTMasterLinkConfig.cs" />
     <Compile Include="EDMTestCrateHardware.cs" />
     <Compile Include="EDMTestCrateFileSystem.cs" />
     <Compile Include="SerialMotorControllerBCD.cs" />
