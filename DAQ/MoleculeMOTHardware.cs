@@ -138,7 +138,7 @@ namespace DAQ.HAL
             
             AddDigitalOutputChannel("v0ddsSwitchB", digitalPatternBoardAddress2, 2, 1);
             AddDigitalOutputChannel("v0ddsSwitchC", digitalPatternBoardAddress2, 1, 5);
-            AddDigitalOutputChannel("v0ddsSwitchD", digitalPatternBoardAddress2, 1, 6); // also the linked-MOTMaster trigger to RbTweezer /PXI1Slot5/PFI5 (reserved in linked runs)
+            AddDigitalOutputChannel("rbTrigger", digitalPatternBoardAddress2, 1, 6); // trigger to RbTweezer /PXI1Slot5/PFI5; the linked-MOTMaster trigger (reserved in linked runs)
 
             AddDigitalOutputChannel("DDSTrigger", digitalPatternBoardAddress2, 2, 3);
 
@@ -404,7 +404,7 @@ namespace DAQ.HAL
             {
                 SecondaryUrl = "tcp://10.59.3.2:1187/controller.rem",
                 SecondaryHardwareType = "DAQ.HAL.RbTweezerHardware, DAQ",
-                TriggerChannel = "v0ddsSwitchD",
+                TriggerChannel = "rbTrigger",
                 AnalogStartChannels = new[] { "DDS_Analog_Trg", "aoPatternTrigger" },
             });
 

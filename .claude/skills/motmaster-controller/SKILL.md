@@ -108,7 +108,7 @@ The essentials:
 
 - **Opt-in per machine.** A machine is a primary only if its `Hardware` class adds a
   `MOTMasterLinkConfig` under `Info["MOTMasterLink"]` (cafmot does: secondary RbTweezer at
-  10.59.3.2, trigger channel `v0ddsSwitchD`). No config ⇒ no new UI, nothing changes.
+  10.59.3.2, trigger channel `rbTrigger`). No config ⇒ no new UI, nothing changes.
 - **No routing context ⇒ unchanged behaviour.** The pattern builders consult
   `LinkRouting.Current` (thread-static). When it's null — every non-linked run — they do
   exactly the old `Environs.Hardware` lookup, including the old `NullReferenceException` on
@@ -121,7 +121,7 @@ The essentials:
 - **Linked failures always throw** to the `Go` caller; non-linked runs keep their
   MessageBox-and-return handling. No MessageBox may appear on the remoting path.
 - **The trigger channel is reserved in linked runs** — a script that drives
-  `v0ddsSwitchD` while linked is refused (two legacy cafmot scripts do drive it unlinked).
+  `rbTrigger` while linked is refused; MOTMaster adds the trigger pulse itself.
 
 ## Verifying a change
 

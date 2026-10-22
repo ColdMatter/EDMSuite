@@ -6,7 +6,7 @@ This is for the person doing the first live linked run, on PH-BONESAW (primary) 
 
 1. Close MOTMaster on both PCs. Then build `MOTMaster.csproj` from `feature/linked-motmaster` into the normal `bin` folders: `CaF` on PH-BONESAW and `RbTweezer` on RbTweezer. During development a running MOTMaster held `bin\CaF` locked, so every test build went to a scratch folder instead.
 2. Make sure PH-BONESAW can reach `10.59.3.2:1187` (firewall).
-3. Wiring: `/PXI1Slot4` port 1 line 6 (`v0ddsSwitchD`) on PH-BONESAW goes to RbTweezer `/PXI1Slot5/PFI5`.
+3. Wiring: `/PXI1Slot4` port 1 line 6 (`rbTrigger`) on PH-BONESAW goes to RbTweezer `/PXI1Slot5/PFI5`.
 
 ## GUI
 
@@ -31,9 +31,7 @@ This is for the person doing the first live linked run, on PH-BONESAW (primary) 
 3. With the trigger cable pulled, a single-shot `Go` should raise "never saw the trigger". It must not report success.
 4. Kill the primary during a linked run. RbTweezer should end its armed run after about one pattern length plus 10 s, showing "no contact from the primary…". The banner stays until you press Break link.
 5. With Linked ticked, View Pattern on a CaF-only script shows a message box saying it uses no RbTweezer channels. MOTMaster must not crash.
-6. Scripts `0. DDSFourSidebands5W_noDDS` and `BX_spectroscopy` drive `v0ddsSwitchD` themselves:
-   - linked: they are refused with "reserved for the secondary trigger"
-   - unlinked: they behave exactly as before
+6. A script that drives `rbTrigger` itself is refused while linked, with "reserved for the secondary trigger". No top-level script drives it at present.
 
 ## Known limits
 
