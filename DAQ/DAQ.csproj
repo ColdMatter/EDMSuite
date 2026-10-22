@@ -686,6 +686,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AnalogPatternBuilder.cs" />
+    <Compile Include="LinkRouting.cs" />
     <Compile Include="AnalogPatternBuilderSingleBoard.cs" />
     <Compile Include="AnapicoSYN420.cs" />
     <Compile Include="AnritsuVNA.cs" />
