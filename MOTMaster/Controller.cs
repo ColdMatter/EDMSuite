@@ -39,7 +39,7 @@ namespace MOTMaster
     /// from user (either remotely or via UI), compiles it, builds a pattern and sends it
     /// to hardware.
     /// </summary>
-    public class Controller : MarshalByRefObject
+    public class Controller : MarshalByRefObject, ILinkSecondary
     {
 
         #region Class members
@@ -193,7 +193,12 @@ namespace MOTMaster
         #region Hardware control methods
 
 
-        private void run(MOTMasterSequence sequence)
+        /// <param name="sleepAfterStart">
+        /// True (every non-linked run) keeps pgMaster.OutputPattern's sleep of one pattern length after the
+        /// task starts. The linked secondary passes false so it can report "armed" as soon as its task is
+        /// waiting for the trigger.
+        /// </param>
+        private void run(MOTMasterSequence sequence, bool sleepAfterStart = true)
         {
             foreach (string address in analogs.Keys)
             {
@@ -218,13 +223,14 @@ namespace MOTMaster
                 if (sequence.DigitalPattern.Boards.ContainsKey(address))
                     pgs[address].OutputPattern(sequence.DigitalPattern.Boards[address].Pattern, false);
             }
-            pgMaster.OutputPattern(sequence.DigitalPattern.Boards[pgMasterName].Pattern);
+            pgMaster.OutputPattern(sequence.DigitalPattern.Boards[pgMasterName].Pattern, sleepAfterStart);
 
         }
 
-        private void initializeHardware(MOTMasterSequence sequence)
+        /// <param name="forceTriggered">True on the linked secondary, which always waits for the primary's trigger.</param>
+        private void initializeHardware(MOTMasterSequence sequence, bool forceTriggered = false)
         {
-            if (triggered == true)
+            if (triggered == true || forceTriggered)
             {
                 pgMaster.Configure(config.DigitalPatternClockFrequency, false, true, true, sequence.DigitalPattern.Boards[pgMasterName].Pattern.Length, true, true);
             }
@@ -384,6 +390,7 @@ namespace MOTMaster
         private string scriptPath = "";
         public void SetScriptPath(String path)
         {
+            secondaryState.ThrowIfClaimed("SetScriptPath");
             scriptPath = path;
             controllerWindow.WriteToScriptPath(path);
         }
@@ -400,6 +407,7 @@ namespace MOTMaster
 
         public void SetTriggered(System.Boolean value)
         {
+            secondaryState.ThrowIfClaimed("SetTriggered");
             triggered = value;
             controllerWindow.TriggeredCheckBoxState = value;
         }
@@ -494,6 +502,7 @@ namespace MOTMaster
 
         public void Run()
         {
+            secondaryState.ThrowIfClaimed("Run");
             runThread = new Thread(() => goReportingErrors(() => Go()));
             runThread.Name = "MOTMaster Controller";
             runThread.Priority = ThreadPriority.Normal;
@@ -503,6 +512,7 @@ namespace MOTMaster
 
         public Thread Run(Dictionary<String, Object> dict)
         {
+            secondaryState.ThrowIfClaimed("Run");
             var t = new Thread(() => goReportingErrors(() => Go(dict)));
             // status = RunningState.running;
             t.Start();
@@ -544,6 +554,7 @@ namespace MOTMaster
 
         public void Go(Dictionary<String, Object> dict)
         {
+            secondaryState.ThrowIfClaimed("Go");
             // Only one run may drive the pattern generators at a time. Go is reached
             // from the Run button (on its own thread) and directly over remoting from
             // Python, so the claim has to be atomic and live here, not in Run().
@@ -858,6 +869,281 @@ namespace MOTMaster
 
 #endregion
 
+        #region Linked runs: secondary side (remotable)
+
+        // This MOTMaster as the secondary of a linked pair: a primary claims it, sends it the script text and
+        // full parameter set for each Go, and fires it with a TTL. While claimed, local Run/Go/SetScriptPath/
+        // SetTriggered/RunReplica are refused. None of this is reached unless a primary calls ClaimLink.
+
+        private readonly LinkedSecondaryState secondaryState = new LinkedSecondaryState();
+
+        // True while a linked run's thread owns the run claim. Lets ReleaseLink end that run.
+        private volatile bool linkedRunActive = false;
+
+        public bool IsLockedByPrimary => secondaryState.IsClaimed;
+
+        public string LockedBy => secondaryState.ClaimedBy;
+
+        /// <summary>Raised (on whichever thread changed it) after every change of the link state, for the GUI.</summary>
+        public event Action LinkStateChanged
+        {
+            add { secondaryState.Changed += value; }
+            remove { secondaryState.Changed -= value; }
+        }
+
+        public string ClaimLink(string primaryName)
+        {
+            string token;
+            try
+            {
+                token = secondaryState.Claim(primaryName, IsRunning);
+            }
+            catch (Exception ex)
+            {
+                SharedCode.AppLog.Write("Controller.ClaimLink", "Refused a link claim from " + primaryName + ": " + ex.Message);
+                throw;
+            }
+            SharedCode.AppLog.Write("Controller.ClaimLink", "Linked: now controlled by " + primaryName);
+            // Describe() runs git and can take seconds the first time; warm it now, off the caller's thread,
+            // so PrepareLinkedRun does not pay for it.
+            ThreadPool.QueueUserWorkItem(_ => BuildProvenance.Describe());
+            return token;
+        }
+
+        public void ReleaseLink(string token)
+        {
+            bool valid = true;
+            try { secondaryState.Validate(token); }
+            catch (LinkedRunException) { valid = false; }
+            if (!valid) return; // a wrong or stale token does nothing
+
+            // A linked run nobody can trigger or end any more must not stay armed.
+            if (linkedRunActive) status = RunningState.stopped;
+            secondaryState.Release(token);
+            SharedCode.AppLog.Write("Controller.ReleaseLink", "Link released by the primary");
+        }
+
+        /// <summary>The secondary's "Break link" button: ends any linked run and clears the claim whoever holds it.</summary>
+        public void BreakLink()
+        {
+            status = RunningState.stopped;
+            string by = secondaryState.ClaimedBy;
+            secondaryState.Break();
+            SharedCode.AppLog.Write("Controller.BreakLink", "Link broken by the user" + (by != null ? " (was controlled by " + by + ")" : ""));
+        }
+
+        public LinkReadyInfo PrepareLinkedRun(string token, LinkRunRequest request)
+        {
+            secondaryState.Validate(token);
+            if (request == null) throw new LinkedRunException("The linked run request is empty.");
+
+            // The same run claim Go takes, so a local run cannot start mid-linked-run and vice versa.
+            lock (runLock)
+            {
+                if (runInProgress)
+                    throw new LinkedRunException("This MOTMaster (" + System.Environment.MachineName
+                        + ") is already running; the linked run was not started.");
+                runInProgress = true;
+            }
+            controllerWindow.RefreshRunControls();
+
+            bool threadStarted = false;
+            bool runStartedSignalled = false;
+            try
+            {
+                if (config.Debug)
+                    throw new LinkedRunException("This MOTMaster (" + System.Environment.MachineName
+                        + ") is in Debug mode, where it does not drive the pattern generators; linked runs are refused.");
+
+                Hardware other = (Hardware)Activator.CreateInstance(Type.GetType(request.PrimaryHardwareType, true));
+                LinkedBuild build = LinkedScriptBuilder.BuildSecondary(request, Environs.Hardware, other, compileAndLoadOrThrow);
+                LinkedScriptBuilder.BuildPatterns(build);
+
+                string[] clamped = new List<string>(build.Routing.ClampedEvents).ToArray();
+                foreach (string line in clamped) SharedCode.AppLog.Write("Controller.PrepareLinkedRun", line);
+
+                LinkReadyInfo info = new LinkReadyInfo
+                {
+                    // The text actually compiled: read back from the file BuildSecondary wrote.
+                    ScriptHash = LinkFingerprint.OfText(File.ReadAllText(LinkedScriptBuilder.ScriptPathFor(request))),
+                    ParameterHash = LinkFingerprint.OfParameters(build.Script.Parameters),
+                    Provenance = BuildProvenance.Describe(),
+                    DigitalClockFrequency = config.DigitalPatternClockFrequency,
+                    AnalogClockFrequency = config.AnalogPatternClockFrequency,
+                    ClampedEvents = clamped
+                };
+
+                // The shot loop runs while status == running; the primary may poll as soon as this returns, so
+                // the state must already say "running" before the thread starts.
+                status = RunningState.running;
+                secondaryState.RunStarted();
+                runStartedSignalled = true;
+                linkedRunActive = true;
+                Thread t = new Thread(() => linkedSecondaryLoop(request, build, info));
+                t.Name = "MOTMaster linked secondary";
+                t.Priority = ThreadPriority.Normal;
+                t.Start();
+                threadStarted = true;
+
+                SharedCode.AppLog.Write("Controller.PrepareLinkedRun", "Linked run " + request.LinkRunId + " from " + request.PrimaryName
+                    + " armed for triggering (" + request.ScriptFileName + ")");
+                return info;
+            }
+            catch (Exception ex)
+            {
+                SharedCode.AppLog.Error("Controller.PrepareLinkedRun", ex);
+                if (ex is LinkedRunException) throw;
+                // Message only: the original may not be serializable, and it has to cross remoting to the primary.
+                throw new LinkedRunException(System.Environment.MachineName + " could not prepare the linked run: "
+                    + ex.GetType().Name + ": " + ex.Message);
+            }
+            finally
+            {
+                if (!threadStarted)
+                {
+                    MOTMasterScript.LinkedParameterOverride = null;
+                    linkedRunActive = false;
+                    status = RunningState.stopped;
+                    lock (runLock) { runInProgress = false; }
+                    controllerWindow.RefreshRunControls();
+                    if (runStartedSignalled) secondaryState.RunEnded();
+                    deleteLinkedScriptFolder(request);
+                }
+            }
+        }
+
+        public LinkShotStatus GetLinkShotStatus(string token)
+        {
+            return secondaryState.Status(token);
+        }
+
+        public void EndLinkedRun(string token)
+        {
+            secondaryState.Validate(token);
+            status = RunningState.stopped;
+        }
+
+        /// <summary>
+        /// The secondary's run thread: arm in triggered mode, report armed, wait for the primary's trigger to
+        /// play the pattern, repeat until told to stop. Never touches the DDS.
+        /// </summary>
+        private void linkedSecondaryLoop(LinkRunRequest request, LinkedBuild build, LinkReadyInfo info)
+        {
+            MOTMasterSequence sequence = build.Sequence;
+            try
+            {
+                while (status == RunningState.running)
+                {
+                    initializeHardware(sequence, forceTriggered: true);
+                    // Without the one-pattern sleep, so "armed" is reported as soon as the task waits for its trigger.
+                    run(sequence, sleepAfterStart: false);
+                    secondaryState.MarkArmed();
+                    // Ends when the triggered pattern has played, or at once when the run is ended (status stopped),
+                    // abandoning a trigger that will not come; releaseHardware then stops the task.
+                    while (pgMaster.TaskRunning && status == RunningState.running) ;
+                    releaseLinkedHardware(sequence);
+                }
+
+                if (request.SaveEnable)
+                {
+                    Dictionary<String, Object> report = null;
+                    if (config.ReporterUsed)
+                    {
+                        report = GetExperimentReport();
+                    }
+
+                    var linkInfo = new Dictionary<String, Object>
+                    {
+                        { "LinkRunId", request.LinkRunId ?? "" },
+                        { "Role", "secondary" },
+                        { "Partner", request.PrimaryName ?? "" },
+                        { "ScriptHash", info.ScriptHash },
+                        { "ParameterHash", info.ParameterHash },
+                        { "SecondaryProvenance", info.Provenance ?? "" },
+                        { "AnalogOrigin", build.AnalogOrigin },
+                        { "SecondaryTriggerDelay", build.TriggerDelay },
+                        { "ClampedEvents", string.Join("; ", info.ClampedEvents ?? new string[0]) }
+                    };
+                    ioHelper.LinkInfo = linkInfo;
+                    try
+                    {
+                        // The script saved is the text this machine compiled (the temp copy), not a local file.
+                        save(sequence, build.Script, LinkedScriptBuilder.ScriptPathFor(request), report, request.BatchNumber);
+                    }
+                    finally
+                    {
+                        ioHelper.LinkInfo = null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                SharedCode.AppLog.Error("Controller.linkedSecondaryLoop", ex);
+                // As in Go: free the tasks, which setSafeOutputs only does when safe outputs are declared.
+                stopPatternTasksQuietly();
+                secondaryState.Fail(ex.Message);
+            }
+            finally
+            {
+                // Safe outputs first (this also stops any pattern task still holding its channels), and only then
+                // give up the run claim, so no other run can start in between.
+                setSafeOutputs();
+                try
+                {
+                    if (sequence != null && sequence.DigitalPattern != null && sequence.DigitalPattern.Boards.ContainsKey(pgMasterName))
+                        clearDigitalPattern(sequence);
+                }
+                catch (Exception ex)
+                {
+                    SharedCode.AppLog.Error("Controller.linkedSecondaryLoop (clearDigitalPattern)", ex);
+                }
+                status = RunningState.stopped;
+                linkedRunActive = false;
+                lock (runLock) { runInProgress = false; }
+                controllerWindow.RefreshRunControls();
+                secondaryState.RunEnded();
+                deleteLinkedScriptFolder(request);
+                SharedCode.AppLog.Write("Controller.linkedSecondaryLoop", "Linked run " + request.LinkRunId + " ended");
+            }
+        }
+
+        /// <summary>
+        /// releaseHardware for the linked secondary: stops exactly the tasks this shot started (run() and
+        /// initializeHardware only touch boards the sequence uses). releaseHardware stops every analog generator,
+        /// which throws for a board the sequence doesn't use (never configured, or already disposed) - and a
+        /// linked script may well have no analog events on this machine.
+        /// </summary>
+        private void releaseLinkedHardware(MOTMasterSequence sequence)
+        {
+            pgMaster.StopPattern();
+            foreach (KeyValuePair<string, DAQMxPatternGenerator> pg in pgs)
+            {
+                if (sequence.DigitalPattern.Boards.ContainsKey(pg.Key))
+                    pg.Value.StopPattern();
+            }
+            foreach (KeyValuePair<string, DAQMxAnalogPatternGenerator> apg in analogs)
+            {
+                if (sequence.AnalogPattern.Boards.ContainsKey(apg.Key))
+                    apg.Value.StopPattern();
+            }
+        }
+
+        /// <summary>Best effort: removes the temp folder holding a linked run's copy of the script.</summary>
+        private void deleteLinkedScriptFolder(LinkRunRequest request)
+        {
+            try
+            {
+                string folder = Path.GetDirectoryName(LinkedScriptBuilder.ScriptPathFor(request));
+                if (Directory.Exists(folder)) Directory.Delete(folder, true);
+            }
+            catch (Exception ex)
+            {
+                SharedCode.AppLog.Write("Controller.deleteLinkedScriptFolder", "Could not delete the linked script folder (ignored): " + ex.Message);
+            }
+        }
+
+        #endregion
+
         #region private stuff
 
 #if DDS
@@ -1025,14 +1311,18 @@ namespace MOTMaster
         }
 
         // ONGOING: these save functions should probably take a sequence argument
-        private void save(MOTMasterSequence sequence, MOTMasterScript script, string pathToPattern, byte[][,] imageData, Dictionary<String, Object> report)
+        // batchNumberOverride: null (every existing caller) reads the batch number from the window, as before;
+        // the linked secondary passes the primary's batch number.
+        private void save(MOTMasterSequence sequence, MOTMasterScript script, string pathToPattern, byte[][,] imageData, Dictionary<String, Object> report,
+            int? batchNumberOverride = null)
         {
-            ioHelper.StoreRun(constructSaveDirectory(), controllerWindow.GetSaveBatchNumber(), pathToPattern, hardwareClassPath,
+            ioHelper.StoreRun(constructSaveDirectory(), batchNumberOverride ?? controllerWindow.GetSaveBatchNumber(), pathToPattern, hardwareClassPath,
                 sequence, script.Parameters, report, cameraAttributesPath, imageData, externalFilesPath, config.ExternalFilePattern);
         }
-        private void save(MOTMasterSequence sequence, MOTMasterScript script, string pathToPattern, Dictionary<String, Object> report)
+        private void save(MOTMasterSequence sequence, MOTMasterScript script, string pathToPattern, Dictionary<String, Object> report,
+            int? batchNumberOverride = null)
         {
-            ioHelper.StoreRun(constructSaveDirectory(), controllerWindow.GetSaveBatchNumber(), pathToPattern, hardwareClassPath,
+            ioHelper.StoreRun(constructSaveDirectory(), batchNumberOverride ?? controllerWindow.GetSaveBatchNumber(), pathToPattern, hardwareClassPath,
                 sequence, script.Parameters, report, externalFilesPath, config.ExternalFilePattern);
         }
 
@@ -1082,7 +1372,30 @@ namespace MOTMaster
         /// "MOTMasterSequence", which comprises a PatternBuilder32 and an AnalogPatternBuilder.
         /// </summary>
 
+        // compileFromFile and loadScriptFromDLL show a MessageBox and return null on failure, as they always
+        // have. The linked secondary must never show a MessageBox (it would block the primary's remoting call
+        // indefinitely), so it uses compileFromFileOrThrow / loadScriptOrThrow, which share the same cores.
+
         private CompilerResults compileFromFile(string scriptPath)
+        {
+            CompilerParameters options = scriptCompilerOptions();
+            CodeDomProvider codeProvider = new CSharpCodeProvider();
+            CompilerResults results;
+            try
+            {
+                results = codeProvider.CompileAssemblyFromFile(options, scriptPath);
+            }
+            catch (Exception e)
+            {
+                SharedCode.AppLog.Error("Controller.compileFromFile " + scriptPath, e);
+                MessageBox.Show(e.Message);
+                return null;
+            }
+            //controllerWindow.WriteToScriptPath(results.PathToAssembly);
+            return results;
+        }
+
+        private CompilerParameters scriptCompilerOptions()
         {
             CompilerParameters options = new CompilerParameters();
 
@@ -1099,21 +1412,38 @@ namespace MOTMaster
 
             TempFileCollection tempFiles = new TempFileCollection();
             tempFiles.KeepFiles = true;
-            CompilerResults results = new CompilerResults(tempFiles);
             options.GenerateExecutable = false;                         //Creates .dll instead of .exe.
-            CodeDomProvider codeProvider = new CSharpCodeProvider();
             options.TempFiles = tempFiles;
+            return options;
+        }
+
+        /// <summary>Linked path: compiles the script, throwing LinkedRunException (with the compiler errors) on any failure.</summary>
+        private CompilerResults compileFromFileOrThrow(string scriptPath)
+        {
+            CompilerParameters options = scriptCompilerOptions();
+            CodeDomProvider codeProvider = new CSharpCodeProvider();
+            CompilerResults results;
             try
             {
                 results = codeProvider.CompileAssemblyFromFile(options, scriptPath);
             }
             catch (Exception e)
             {
-                SharedCode.AppLog.Error("Controller.compileFromFile " + scriptPath, e);
-                MessageBox.Show(e.Message);
-                return null;
+                SharedCode.AppLog.Error("Controller.compileFromFileOrThrow " + scriptPath, e);
+                throw new LinkedRunException("The script could not be compiled on " + System.Environment.MachineName + ": " + e.Message);
             }
-            //controllerWindow.WriteToScriptPath(results.PathToAssembly);
+            if (results.Errors.HasErrors)
+            {
+                var errors = new StringBuilder();
+                foreach (CompilerError error in results.Errors)
+                {
+                    if (error.IsWarning) continue;
+                    errors.AppendLine("line " + error.Line + ": " + error.ErrorNumber + ": " + error.ErrorText);
+                }
+                string message = "The script did not compile on " + System.Environment.MachineName + ":\n" + errors.ToString();
+                SharedCode.AppLog.Write("Controller.compileFromFileOrThrow", message);
+                throw new LinkedRunException(message);
+            }
             return results;
         }
 
@@ -1122,14 +1452,7 @@ namespace MOTMaster
             object loadedInstance = new object();
             try
             {
-                Assembly patternAssembly = Assembly.LoadFrom(results.PathToAssembly);
-                foreach (Type type in patternAssembly.GetTypes())
-                {
-                    if (type.IsClass == true)
-                    {
-                        loadedInstance = Activator.CreateInstance(type);
-                    }
-                }
+                loadedInstance = createScriptInstance(results);
             }
             catch (Exception e)
             {
@@ -1138,6 +1461,47 @@ namespace MOTMaster
                 return null;
             }
             return (MOTMasterScript)loadedInstance;
+        }
+
+        /// <summary>Loads the compiled script and instantiates its classes; the last one wins, as it always has.</summary>
+        private object createScriptInstance(CompilerResults results)
+        {
+            object loadedInstance = new object();
+            Assembly patternAssembly = Assembly.LoadFrom(results.PathToAssembly);
+            foreach (Type type in patternAssembly.GetTypes())
+            {
+                if (type.IsClass == true)
+                {
+                    loadedInstance = Activator.CreateInstance(type);
+                }
+            }
+            return loadedInstance;
+        }
+
+        /// <summary>Linked path: like loadScriptFromDLL, but throws LinkedRunException instead of a MessageBox.</summary>
+        private MOTMasterScript loadScriptOrThrow(CompilerResults results)
+        {
+            object loadedInstance;
+            try
+            {
+                loadedInstance = createScriptInstance(results);
+            }
+            catch (Exception e)
+            {
+                SharedCode.AppLog.Error("Controller.loadScriptOrThrow", e);
+                // A script constructor's own exception arrives wrapped in a TargetInvocationException.
+                Exception cause = (e is TargetInvocationException && e.InnerException != null) ? e.InnerException : e;
+                throw new LinkedRunException("The script could not be loaded on " + System.Environment.MachineName + ": " + cause.Message);
+            }
+            MOTMasterScript script = loadedInstance as MOTMasterScript;
+            if (script == null)
+                throw new LinkedRunException("The compiled script's last class is not a MOTMasterScript (on " + System.Environment.MachineName + ").");
+            return script;
+        }
+
+        private MOTMasterScript compileAndLoadOrThrow(string scriptPath)
+        {
+            return loadScriptOrThrow(compileFromFileOrThrow(scriptPath));
         }
 
         private MOTMasterSequence getSequenceFromScript(MOTMasterScript script)
@@ -1274,6 +1638,7 @@ namespace MOTMaster
 
         public void RunReplica()
         {
+            secondaryState.ThrowIfClaimed("RunReplica");
             // armReplicaRun repoints scriptPath, which a run in progress still uses
             // when it saves, so refuse before touching anything.
             if (IsRunning) return;
