@@ -20,10 +20,9 @@ public class Patterns : MOTMasterScript
         Parameters = new Dictionary<string, object>();
         LoadGlobalParameters();
 
-        // globalParameters.json normally provides TCLBlockStart; set it here if it does not.
-        if (!Parameters.ContainsKey("TCLBlockStart")) Parameters["TCLBlockStart"] = 4000;
-
-        // SecondaryTriggerDelay only reaches globalParameters.json in a later task, so the script sets it.
+        // The tests hardcode these values, so the script must not depend on the user's live, editable
+        // globalParameters.json: set every value the script uses unconditionally after LoadGlobalParameters().
+        Parameters["TCLBlockStart"] = 4000;
         Parameters["PatternLength"] = 50000;
         Parameters["SecondaryTriggerDelay"] = 2;
     }
