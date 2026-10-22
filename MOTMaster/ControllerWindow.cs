@@ -105,6 +105,15 @@ namespace MOTMaster
 
             // The primary's Linked box: not while a change is in flight, and not mid-run (SetLinked refuses then).
             linkedCheckBox.Enabled = !linkedChangeInProgress && !controller.IsRunning;
+
+            // SetLinked is also callable remotely (Python), so follow the controller's state; not while our own change is
+            // in flight (linkedChangeFinished resyncs then).
+            if (!linkedChangeInProgress && linkedCheckBox.Checked != controller.IsLinked)
+            {
+                syncingLinkedBox = true;
+                try { linkedCheckBox.Checked = controller.IsLinked; }
+                finally { syncingLinkedBox = false; }
+            }
         }
 
         #region Linked mode
