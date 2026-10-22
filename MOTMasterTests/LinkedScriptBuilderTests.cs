@@ -357,6 +357,45 @@ namespace MOTMasterTests
             Assert.True(!LinkedScriptBuilder.IsRunFolder(null), "null");
         }
 
+        // The real scope-check script, against the real cafmot link config and both real hardware classes.
+        public static void TestLinkedScopeTestScriptBuildsOnBothSystems(string[] args)
+        {
+            string path = Path.Combine(RepoRoot(args), "MoleculeMOTMasterScripts", "LinkedScopeTest.cs");
+            var caf = new MoleculeMOTHardware();
+            var rb = new RbTweezerHardware();
+            var config = (MOTMasterLinkConfig)caf.GetInfo(MOTMasterLinkConfig.InfoKey);
+            const int line20 = 16; // port 2 line 0 on both boards
+            const int rbTriggerBit = 14; // port 1 line 6
+
+            LinkedBuild primary = LinkedScriptBuilder.BuildPrimary(CompileAndLoad(path), caf, rb, config);
+            LinkedScriptBuilder.BuildPatterns(primary);
+            string cafBoard = (string)caf.GetInfo("PatternGeneratorBoard");
+            var cafPattern = primary.Sequence.DigitalPattern;
+            Assert.True(!cafPattern.Boards.ContainsKey(RbDigitalBoard(rb)), "no RbTweezer board on the primary");
+            Assert.True(Bit(cafPattern, cafBoard, 0, rbTriggerBit) && Bit(cafPattern, cafBoard, 9, rbTriggerBit), "rbTrigger high at 0..9");
+            Assert.True(!Bit(cafPattern, cafBoard, 10, rbTriggerBit), "rbTrigger low at 10");
+            Assert.True(!Bit(cafPattern, cafBoard, 999, line20) && Bit(cafPattern, cafBoard, 1000, line20), "v0ddsSwitchA rises at 1000");
+            Assert.True(Bit(cafPattern, cafBoard, 1999, line20) && !Bit(cafPattern, cafBoard, 2000, line20), "v0ddsSwitchA falls at 2000");
+
+            var request = new LinkRunRequest
+            {
+                LinkRunId = Guid.NewGuid().ToString("N"),
+                PrimaryName = "test",
+                PrimaryHardwareType = typeof(MoleculeMOTHardware).FullName,
+                ScriptFileName = "LinkedScopeTest.cs",
+                ScriptText = File.ReadAllText(path),
+                Parameters = new Dictionary<string, object>(primary.Script.Parameters),
+                AnalogOrigin = primary.AnalogOrigin
+            };
+            LinkedBuild secondary = LinkedScriptBuilder.BuildSecondary(request, rb, caf, CompileAndLoad);
+            LinkedScriptBuilder.BuildPatterns(secondary);
+            int d = secondary.TriggerDelay;
+            var rbPattern = secondary.Sequence.DigitalPattern;
+            Assert.True(!rbPattern.Boards.ContainsKey(cafBoard), "no CaF board on the secondary");
+            Assert.True(!Bit(rbPattern, RbDigitalBoard(rb), 999 - d, line20) && Bit(rbPattern, RbDigitalBoard(rb), 1000 - d, line20), "tScopeTest rises at 1000 - D");
+            Assert.True(Bit(rbPattern, RbDigitalBoard(rb), 1999 - d, line20) && !Bit(rbPattern, RbDigitalBoard(rb), 2000 - d, line20), "tScopeTest falls at 2000 - D");
+        }
+
         class TestHardwareWithMaster : TestHardware
         {
             public TestHardwareWithMaster()

@@ -162,7 +162,10 @@ scripts.
 Last run (2026-10-22): **26 scripts, 22 pass, 4 fail** — `LambdaRecap`,
 `4. TCoil_test_back_forth_movement`, `4. TCoil_test_no_movement_1.5secHold`,
 `TweezerRESONANTlMAGE` (the last is a `KeyNotFound` in its constructor). These are real
-script problems, not tooling ones; compare against this set to spot a regression. Run
+script problems, not tooling ones; compare against this set to spot a regression.
+`LinkedScopeTest.cs` (added later) also fails here by design: it uses an RbTweezer channel,
+so it only builds in linked mode — the unit test `TestLinkedScopeTestScriptBuildsOnBothSystems`
+covers it instead. Run
 **build step 1 first** if you've touched `MOTMaster.csproj`/`DAQ.csproj` — the script check
 references their `bin\CaF\` output, so a stale build there gives a false pass or a false
 fail unrelated to your edit.
