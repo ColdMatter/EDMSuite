@@ -21,7 +21,7 @@ namespace MOTMasterTests
             AnalogClockFrequency = 100000,
             ClampedEvents = new string[0]
         };
-        public Exception ClaimException, PrepareException, StatusException, EndException;
+        public Exception ClaimException, PrepareException, StatusException, EndException, ReleaseException;
         public Queue<LinkShotStatus> Statuses = new Queue<LinkShotStatus>();
         public LinkShotStatus LastStatus = new LinkShotStatus { ArmedShots = 0, Running = true };
         public LinkShotStatus AfterEnd = new LinkShotStatus { ArmedShots = 0, Running = false };
@@ -34,7 +34,11 @@ namespace MOTMasterTests
             if (ClaimException != null) throw ClaimException;
             return Token;
         }
-        public void ReleaseLink(string token) { ReleaseCalls++; }
+        public void ReleaseLink(string token)
+        {
+            ReleaseCalls++;
+            if (ReleaseException != null) throw ReleaseException;
+        }
         public LinkReadyInfo PrepareLinkedRun(string token, LinkRunRequest request)
         {
             if (PrepareException != null) throw PrepareException;
@@ -58,7 +62,7 @@ namespace MOTMasterTests
 
     public static class LinkStateTests
     {
-        static MOTMasterLinkConfig Config()
+        static MOTMasterLinkConfig Config(int armMs = 5000, int endMs = 5000)
         {
             return new MOTMasterLinkConfig
             {
@@ -66,8 +70,8 @@ namespace MOTMasterTests
                 SecondaryHardwareType = "DAQ.HAL.RbTweezerHardware",
                 TriggerChannel = "trig",
                 AnalogStartChannels = new[] { "ana" },
-                ArmTimeoutMs = 50,
-                EndTimeoutMs = 50
+                ArmTimeoutMs = armMs,
+                EndTimeoutMs = endMs
             };
         }
 
@@ -84,9 +88,9 @@ namespace MOTMasterTests
             };
         }
 
-        static LinkedPrimary Claimed(FakeSecondary f, List<string> log)
+        static LinkedPrimary Claimed(FakeSecondary f, List<string> log, int armMs = 5000, int endMs = 5000)
         {
-            var p = new LinkedPrimary(f, Config(), s => log.Add(s));
+            var p = new LinkedPrimary(f, Config(armMs, endMs), s => log.Add(s));
             p.Claim("PH");
             return p;
         }
@@ -242,7 +246,7 @@ namespace MOTMasterTests
             StringAssert(Assert.Throws<LinkedRunException>(() => p.WaitUntilArmed(1, () => true)).Message, "boom");
 
             var f2 = new FakeSecondary();
-            var p2 = Claimed(f2, new List<string>());
+            var p2 = Claimed(f2, new List<string>(), armMs: 50);
             StringAssert(Assert.Throws<LinkedRunException>(() => p2.WaitUntilArmed(1, () => true)).Message, "did not arm");
 
             var f3 = new FakeSecondary();
@@ -254,10 +258,7 @@ namespace MOTMasterTests
         public static void TestPrimaryWaitStopsOnUserStop()
         {
             var f = new FakeSecondary();
-            var cfg = Config();
-            cfg.ArmTimeoutMs = 5000;
-            var p = new LinkedPrimary(f, cfg, s => { });
-            p.Claim("PH");
+            var p = Claimed(f, new List<string>());
             var sw = Stopwatch.StartNew();
             bool result = p.WaitUntilArmed(1, () => sw.ElapsedMilliseconds < 20);
             Assert.True(!result, "returns false");
@@ -302,8 +303,8 @@ namespace MOTMasterTests
 
             var f3 = new FakeSecondary();
             f3.AfterEnd = new LinkShotStatus { Running = true };
-            var p3 = Claimed(f3, new List<string>());
-            Assert.Throws<LinkedRunException>(() => p3.End());
+            var p3 = Claimed(f3, new List<string>(), endMs: 50);
+            StringAssert(Assert.Throws<LinkedRunException>(() => p3.End()).Message, "did not stop");
         }
 
         public static void TestPrimaryAbortNeverThrows()
@@ -312,19 +313,28 @@ namespace MOTMasterTests
             var log = new List<string>();
             var p = Claimed(f, log);
             p.Abort();
-            Assert.True(log.Count > 0, "failure logged");
-            f.StatusException = new Exception("x");
-            p.Abort();
-            p.Release();
-            f.Token = null;
+            Assert.Equal(1, f.EndCalls);
+            Assert.True(log.Count > 0, "End failure logged");
+
+            // EndLinkedRun succeeds but polling the status fails: Abort must still not throw.
+            var f2 = new FakeSecondary { StatusException = new SocketException() };
+            var log2 = new List<string>();
+            var p2 = Claimed(f2, log2);
+            p2.Abort();
+            Assert.Equal(1, f2.EndCalls);
+            Assert.True(log2.Count > 0, "status failure logged");
         }
 
         public static void TestPrimaryReleaseSwallowsErrors()
         {
-            var f = new FakeSecondary();
-            var p = Claimed(f, new List<string>());
+            var f = new FakeSecondary { ReleaseException = new SocketException() };
+            var log = new List<string>();
+            var p = Claimed(f, log);
             p.Release();
             Assert.Equal(1, f.ReleaseCalls);
+            Assert.True(log.Count > 0, "release failure logged");
+            p.Release();
+            Assert.Equal(1, f.ReleaseCalls, "token cleared, second Release does not call the secondary");
         }
     }
 }

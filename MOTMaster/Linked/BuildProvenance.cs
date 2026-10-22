@@ -101,12 +101,17 @@ namespace MOTMaster
                 // Drain both pipes asynchronously so a full buffer can never block git.
                 var outTask = p.StandardOutput.ReadToEndAsync();
                 var errTask = p.StandardError.ReadToEndAsync();
+                var budget = Stopwatch.StartNew();
                 if (!p.WaitForExit(5000))
                 {
                     try { p.Kill(); } catch { }
                     return null;
                 }
                 if (p.ExitCode != 0) return null;
+                // A grandchild holding the pipe open would keep stdout from reaching EOF; bound the read
+                // by what is left of the 5 s budget.
+                int remaining = Math.Max(0, 5000 - (int)budget.ElapsedMilliseconds);
+                if (!outTask.Wait(remaining)) return null;
                 return outTask.Result;
             }
         }
