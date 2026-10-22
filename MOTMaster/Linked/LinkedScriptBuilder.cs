@@ -127,14 +127,47 @@ namespace MOTMaster
             b.Sequence.AnalogStatic.BuildPattern();
         }
 
+        /// <summary>The folder every linked run's temp script folder lives in.</summary>
+        public static string TempRoot
+        {
+            get { return Path.GetFullPath(Path.Combine(Path.GetTempPath(), "MOTMasterLinked")); }
+        }
+
         public static string ScriptPathFor(LinkRunRequest r)
         {
-            // GetFileName guards against a path in a remote request escaping the link's temp folder.
-            string id = Path.GetFileName(r.LinkRunId ?? "");
-            string name = Path.GetFileName(r.ScriptFileName ?? "");
-            if (id.Length == 0 || name.Length == 0)
-                throw new LinkedRunException("The linked run request has no run id or script file name");
-            return Path.Combine(Path.GetTempPath(), "MOTMasterLinked", id, name);
+            // Both names come from a remote request and the run folder is later deleted recursively, so each must be
+            // a single plain path segment that cannot escape (or alias) the link's temp folder.
+            string id = PlainName(r.LinkRunId, "run id");
+            string name = PlainName(r.ScriptFileName, "script file name");
+            return Path.Combine(TempRoot, id, name);
+        }
+
+        /// <summary>
+        /// True only for a direct child folder of <see cref="TempRoot"/> (never TempRoot itself or anything
+        /// outside it): the only folders the secondary may delete when a linked run ends.
+        /// </summary>
+        public static bool IsRunFolder(string folder)
+        {
+            if (string.IsNullOrEmpty(folder)) return false;
+            string root = TempRoot.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            string full = Path.GetFullPath(folder).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            if (string.Equals(full, root, StringComparison.OrdinalIgnoreCase)) return false;
+            string parent = Path.GetDirectoryName(full);
+            return parent != null && string.Equals(parent, root, StringComparison.OrdinalIgnoreCase);
+        }
+
+        static string PlainName(string value, string what)
+        {
+            string v = value ?? "";
+            // Windows strips trailing dots and spaces from a path segment, so "..." or ". " would alias "." / "..".
+            bool bad = v.Length == 0
+                || v.Trim().Trim('.').Length == 0
+                || v.EndsWith(".", StringComparison.Ordinal)
+                || v.EndsWith(" ", StringComparison.Ordinal)
+                || v.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0;
+            if (bad)
+                throw new LinkedRunException("The linked run request's " + what + " '" + v + "' is not a plain file name");
+            return v;
         }
 
         static int ReadDelay(IDictionary<string, object> parameters)

@@ -877,8 +877,14 @@ namespace MOTMaster
 
         private readonly LinkedSecondaryState secondaryState = new LinkedSecondaryState();
 
-        // True while a linked run's thread owns the run claim. Lets ReleaseLink end that run.
+        // True while a linked run's thread owns the run claim. Lets ReleaseLink/BreakLink end that run.
         private volatile bool linkedRunActive = false;
+
+        // Makes PrepareLinkedRun's "is the claim still held? then status = running, linkedRunActive = true" atomic
+        // with ReleaseLink/BreakLink's "the claim is gone; if a linked run is active, stop it". Those drop the claim
+        // first and then take this lock, so either Prepare's check sees the claim gone, or the run is already marked
+        // active and gets stopped. No state-change event is raised while it is held.
+        private readonly object linkStartGate = new object();
 
         public bool IsLockedByPrimary => secondaryState.IsClaimed;
 
@@ -912,14 +918,14 @@ namespace MOTMaster
 
         public void ReleaseLink(string token)
         {
-            bool valid = true;
-            try { secondaryState.Validate(token); }
-            catch (LinkedRunException) { valid = false; }
-            if (!valid) return; // a wrong or stale token does nothing
+            if (!linkHeldBy(token)) return; // a wrong or stale token does nothing
 
-            // A linked run nobody can trigger or end any more must not stay armed.
-            if (linkedRunActive) status = RunningState.stopped;
             secondaryState.Release(token);
+            // A linked run nobody can trigger or end any more must not stay armed.
+            lock (linkStartGate)
+            {
+                if (linkedRunActive) status = RunningState.stopped;
+            }
             SharedCode.AppLog.Write("Controller.ReleaseLink", "Link released by the primary");
         }
 
@@ -929,6 +935,12 @@ namespace MOTMaster
             status = RunningState.stopped;
             string by = secondaryState.ClaimedBy;
             secondaryState.Break();
+            // Again after the claim is gone, so a PrepareLinkedRun that passed its claim check just before the
+            // break (and then set status = running) is stopped too.
+            lock (linkStartGate)
+            {
+                if (linkedRunActive) status = RunningState.stopped;
+            }
             SharedCode.AppLog.Write("Controller.BreakLink", "Link broken by the user" + (by != null ? " (was controlled by " + by + ")" : ""));
         }
 
@@ -973,13 +985,20 @@ namespace MOTMaster
                     ClampedEvents = clamped
                 };
 
-                // The shot loop runs while status == running; the primary may poll as soon as this returns, so
-                // the state must already say "running" before the thread starts.
-                status = RunningState.running;
+                // The build can take seconds; the link may have been released or broken meanwhile. Re-check it
+                // atomically with marking the run started (see linkStartGate). If it is gone this throws, and the
+                // finally below undoes everything as for any other failure before the thread starts.
+                lock (linkStartGate)
+                {
+                    secondaryState.Validate(token);
+                    // The shot loop runs while status == running; the primary may poll as soon as this returns, so
+                    // the state must already say "running" before the thread starts.
+                    status = RunningState.running;
+                    linkedRunActive = true;
+                }
                 secondaryState.RunStarted();
                 runStartedSignalled = true;
-                linkedRunActive = true;
-                Thread t = new Thread(() => linkedSecondaryLoop(request, build, info));
+                Thread t = new Thread(() => linkedSecondaryLoop(token, request, build, info));
                 t.Name = "MOTMaster linked secondary";
                 t.Priority = ThreadPriority.Normal;
                 t.Start();
@@ -1027,12 +1046,14 @@ namespace MOTMaster
         /// The secondary's run thread: arm in triggered mode, report armed, wait for the primary's trigger to
         /// play the pattern, repeat until told to stop. Never touches the DDS.
         /// </summary>
-        private void linkedSecondaryLoop(LinkRunRequest request, LinkedBuild build, LinkReadyInfo info)
+        private void linkedSecondaryLoop(string token, LinkRunRequest request, LinkedBuild build, LinkReadyInfo info)
         {
             MOTMasterSequence sequence = build.Sequence;
             try
             {
-                while (status == RunningState.running)
+                // Also ends, before the next arm, if the link this run belongs to has been released or broken
+                // (backstop: ReleaseLink/BreakLink also set status = stopped for an active linked run).
+                while (status == RunningState.running && linkHeldBy(token))
                 {
                     initializeHardware(sequence, forceTriggered: true);
                     // Without the one-pattern sleep, so "armed" is reported as soon as the task waits for its trigger.
@@ -1128,12 +1149,32 @@ namespace MOTMaster
             }
         }
 
+        private bool linkHeldBy(string token)
+        {
+            try
+            {
+                secondaryState.Validate(token);
+                return true;
+            }
+            catch (LinkedRunException)
+            {
+                return false;
+            }
+        }
+
         /// <summary>Best effort: removes the temp folder holding a linked run's copy of the script.</summary>
         private void deleteLinkedScriptFolder(LinkRunRequest request)
         {
             try
             {
                 string folder = Path.GetDirectoryName(LinkedScriptBuilder.ScriptPathFor(request));
+                // The delete is recursive: only ever a direct child of the link's temp root, never the root or above.
+                if (!LinkedScriptBuilder.IsRunFolder(folder))
+                {
+                    SharedCode.AppLog.Write("Controller.deleteLinkedScriptFolder", "Not deleting '" + folder
+                        + "': it is not a run folder directly inside " + LinkedScriptBuilder.TempRoot);
+                    return;
+                }
                 if (Directory.Exists(folder)) Directory.Delete(folder, true);
             }
             catch (Exception ex)

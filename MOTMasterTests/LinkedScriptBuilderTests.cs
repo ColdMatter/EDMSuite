@@ -286,6 +286,40 @@ namespace MOTMasterTests
             StringAssert(e.Message, "no digital events on its master pattern board");
         }
 
+        // The run folder is deleted recursively when a linked run ends, so a remote request must not be able
+        // to point it at the link's temp root or anything above it.
+        public static void TestScriptPathRejectsEscapingNames()
+        {
+            foreach (string id in new[] { "..", ".", "", null, "...", ". ", "a\\b", "a/b", "c:x" })
+            {
+                var r = new LinkRunRequest { LinkRunId = id, ScriptFileName = "s.cs" };
+                Assert.Throws<LinkedRunException>(() => LinkedScriptBuilder.ScriptPathFor(r));
+            }
+            foreach (string name in new[] { "..", ".", "", null, "..\\s.cs", "sub/s.cs" })
+            {
+                var r = new LinkRunRequest { LinkRunId = "id1", ScriptFileName = name };
+                Assert.Throws<LinkedRunException>(() => LinkedScriptBuilder.ScriptPathFor(r));
+            }
+
+            string ok = LinkedScriptBuilder.ScriptPathFor(new LinkRunRequest { LinkRunId = "id1", ScriptFileName = "s.cs" });
+            Assert.Equal(Path.Combine(LinkedScriptBuilder.TempRoot, "id1", "s.cs"), ok, "plain names accepted");
+        }
+
+        public static void TestOnlyRunFoldersAreDeletable()
+        {
+            string root = LinkedScriptBuilder.TempRoot;
+            Assert.True(LinkedScriptBuilder.IsRunFolder(Path.Combine(root, "id1")), "direct child of the root");
+            Assert.True(LinkedScriptBuilder.IsRunFolder(Path.Combine(root, "id1") + "\\"), "direct child with trailing separator");
+            Assert.True(!LinkedScriptBuilder.IsRunFolder(root), "the root itself");
+            Assert.True(!LinkedScriptBuilder.IsRunFolder(root + "\\"), "the root with trailing separator");
+            Assert.True(!LinkedScriptBuilder.IsRunFolder(Path.Combine(root, "..")), "the temp folder above the root");
+            Assert.True(!LinkedScriptBuilder.IsRunFolder(Path.Combine(root, ".")), "the root via '.'");
+            Assert.True(!LinkedScriptBuilder.IsRunFolder(Path.Combine(root, "id1", "sub")), "a grandchild");
+            Assert.True(!LinkedScriptBuilder.IsRunFolder(Path.GetTempPath()), "the temp folder");
+            Assert.True(!LinkedScriptBuilder.IsRunFolder(""), "empty");
+            Assert.True(!LinkedScriptBuilder.IsRunFolder(null), "null");
+        }
+
         class TestHardwareWithMaster : TestHardware
         {
             public TestHardwareWithMaster()
