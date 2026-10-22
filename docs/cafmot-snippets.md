@@ -1,0 +1,222 @@
+# CaF MOTMaster snippets: findings so far and an open decision
+
+Branch `cafmot-snippets`, 2026-10-22. Nothing has been built yet. This note covers
+what we found in the current scripts, what has been decided, and one decision we
+want the group's view on before going further.
+
+## The goal
+
+Break the cafmot pattern scripts in `MoleculeMOTMasterScripts/` into snippets:
+chunks of a MOTMaster pattern that scripts plug in instead of copy-pasting the same
+lines. Only the scripts directly in that folder are in scope (26 today). Subfolders
+(`OLD`, `ODT_scripts_Aug26`, `Spectroscopy_Aug26`, ...) are left alone; MOTMaster
+does not list them anyway.
+
+A snippet today is a class implementing `MOTMasterScriptSnippet`
+(`MOTMaster/MOTMasterScriptSnippet.cs`), which has two methods, one for the digital
+pattern and one for the analog pattern. Scripts already use one:
+`new LoadMoleculeMOTNoSlowingEdge(p, Parameters)`.
+
+## What the 26 scripts have in common
+
+| Stage | Scripts that have it | How much it varies |
+|---|---|---|
+| Load, slowing, MOT, compressed MOT, first lambda cooling | 24 of 26 | Identical line for line, in digital, analog and DDS |
+| Blue MOT, then second lambda cooling | 20 | Barely |
+| Magtrap ending | `3.*`, `BX_*` | Same shape, some numbers differ |
+| Handover MOT coils → transfer coils, move, handover → tweezer coils | `4.*` to `8.*`, `TweezerRESONANTlMAGE` | Same shape, numbers often typed in (e.g. tweezer-coil field 1.8, 0.48, or a parameter) |
+| Tweezer-chamber ending (blue MOT, red MOT, lambda + free fall, trip back) | `5.*` to `8.*` | One-offs per script |
+| Camera triggers | all | Least uniform: about 20 different `cameraTrigger` lines |
+
+The two outliers in the first row are `0. DDSFourSidebands5W_noDDS` and
+`BX_spectroscopy`, which have no compressed MOT or lambda stage.
+
+Other repetition:
+
+- Every script works out its stage times (`lambdaCoolingStart`, `BlueMOTEnd`, ...)
+  three times, once each in the DDS, digital and analog methods. The digital copy
+  is shifted by `TCLBlockStart`.
+- 25 of the 26 scripts carry their own copy of the `addDDSPattern` helper. Only
+  `2.a DDSBlueMOT` builds its DDS pattern with `DDSPatternBuilder`.
+
+Places where the scripts have drifted apart:
+
+- Six scripts never pulse `DDS_Analog_Trg`: `1. LambdaRecap`, `3. MagTrap_withBM`,
+  `4. BM_move_coils_test`, `4. BlueMOT_transport_test`,
+  `4. TCoil_test_back_forth_movement`, `4. TCoil_test_no_movement_1.5secHold`.
+- `bXSlowingShutter` has four different versions.
+
+## Decided so far
+
+1. **Snippets are stages of the shot:** slowing/load, MOT, compressed MOT, lambda
+   cooling, blue MOT, handover/transport, optical pumping, magtrap, imaging.
+2. **Snippets cover DDS as well as digital and analog.** `MOTMasterScriptSnippet`
+   gets a third method, `AddDDSSnippet(DDSPatternBuilder p, ...)`, inside `#if DDS`,
+   so only the CaF build sees it. The four snippets already compiled into
+   MOTMaster.exe (`LoadMoleculeMOT`, `LoadMoleculeMOTDualSpecies`,
+   `LoadMoleculeMOTNoSlowingEdge`, `SHLoadMOT`) get an empty `#if DDS` stub, which
+   the CaF build needs in order to compile. Nothing changes for other experiments.
+   Scripts using DDS snippets build their DDS pattern with `DDSPatternBuilder`
+   instead of their own copy of `addDDSPattern`.
+3. **`DDS_Analog_Trg` is fired in every script.** The six scripts listed above will
+   gain it when converted.
+4. **Other drift becomes parameters.** Where scripts differ (shutter timings,
+   typed-in fields, fixed gaps like `+ 100`), the snippet reads a parameter with a
+   sensible default and each script keeps its current value. Behaviour only changes
+   where something was clearly a mistake, as with the missing trigger.
+5. **Snippets live in `MoleculeMOTMasterScripts/Snippets/`, one class per file, the
+   file named after the class.** They are compiled when a script is loaded, not
+   built into MOTMaster.exe, so editing a snippet needs no rebuild.
+6. **Only the snippets a script uses are compiled with it.** When a script loads,
+   MOTMaster removes comments and string literals from it, finds names that match
+   files in `Snippets/`, and compiles those, following snippets that use other
+   snippets. A broken snippet only affects the scripts that use it.
+
+Consequences of 5 and 6:
+
+- `Controller.compileFromFile` (shared code) changes. It is switched on by a path
+  entry that only cafmot's `PHBonesawFileSystem.cs` sets, the same way
+  `AdditionalMOTMasterAssemblies` works, so other experiments compile exactly as
+  before.
+- The runtime compiler only accepts C# 5, so snippets cannot use newer syntax
+  such as `$"..."` strings. Scripts already have this limit.
+- New snippets go in their own namespace, so they cannot clash with the ones in
+  MOTMaster.exe.
+- `verify-scripts.ps1` copies `compileFromFile`, so it needs the same change.
+
+## Open decision: how a snippet knows when it starts
+
+The interface methods are fixed at `(p, parameters)`, so a start time has to come
+in through the snippet's constructor. The question is where the timeline lives.
+
+Both options use the same snippet. Times are always counted from the Q-switch;
+digital snippets add `TCLBlockStart` themselves, so scripts never handle that
+offset.
+
+```csharp
+namespace MOTMaster.SnippetLibrary.CaF
+{
+    // Blue MOT: ramp the MOT coils to BlueMOTField and switch the DDS to the blue-MOT tones.
+    public class BlueMOT : MOTMasterScriptSnippet
+    {
+        private int start;   // ticks after the Q-switch
+        public int End;      // when the blue MOT finishes
+
+        public BlueMOT(PatternBuilder32 p, Dictionary<String, Object> parameters, int start)
+        { Init(parameters, start); AddDigitalSnippet(p, parameters); }
+        public BlueMOT(AnalogPatternBuilder p, Dictionary<String, Object> parameters, int start)
+        { Init(parameters, start); AddAnalogSnippet(p, parameters); }
+        public BlueMOT(DDSPatternBuilder p, Dictionary<String, Object> parameters, int start)
+        { Init(parameters, start); AddDDSSnippet(p, parameters); }
+
+        private void Init(Dictionary<String, Object> parameters, int start)
+        {
+            this.start = start;
+            End = start + (int)parameters["BlueMOTRampDuration"] + (int)parameters["BlueMOTDuration"];
+        }
+
+        public void AddDigitalSnippet(PatternBuilder32 p, Dictionary<String, Object> parameters) { }
+
+        public void AddAnalogSnippet(AnalogPatternBuilder p, Dictionary<String, Object> parameters)
+        {
+            p.AddLinearRamp("MOTCoilsCurrent", start, (int)parameters["BlueMOTRampDuration"], (double)parameters["BlueMOTField"]);
+            p.AddAnalogValue("MOTCoilsCurrent", End, (double)parameters["MOTCoilsOffValue"]);
+        }
+
+        public void AddDDSSnippet(DDSPatternBuilder p, Dictionary<String, Object> parameters)
+        {
+            p.AddEvent("BlueMOTRampStart", start,
+                new double[] { (double)parameters["FreqCVB1"], (double)parameters["FreqCVB2"], (double)parameters["FreqCVB3"], (double)parameters["FreqCVB4"] },
+                new double[] { (double)parameters["BMOTAmpDDS1"], (double)parameters["BMOTAmpDDS2"], (double)parameters["BMOTAmpDDS3"], (double)parameters["BMOTAmpDDS4"] });
+        }
+    }
+}
+```
+
+The script examples below are trimmed to the stages that
+`7. OP_transfer_to_tweezer_coils_blueMOT` shares with most scripts. `OPGap` is
+today's typed-in `+ 100`, made a parameter. `LambdaCooling` takes a name because it
+runs twice in one shot and DDS event names must be unique.
+
+### Option A: the script sets out the timeline once
+
+```csharp
+public class Patterns : MOTMasterScript
+{
+    // ... constructor as now ...
+
+    // The whole shot, relative to the Q-switch.
+    private int cmotStart, lambdaStart, blueMOTStart, lambda2Start, opStart, magtrapStart, handoverStart, moveStart;
+
+    private void SetTimeline()
+    {
+        cmotStart     = (int)Parameters["CompressRampDownStartTime"];
+        lambdaStart   = cmotStart + (int)Parameters["CompressRampDownDuration"] + (int)Parameters["CompressRampDownHoldDuration"];
+        blueMOTStart  = lambdaStart + (int)Parameters["LambdaCoolingDuration"];
+        lambda2Start  = blueMOTStart + (int)Parameters["BlueMOTRampDuration"] + (int)Parameters["BlueMOTDuration"];
+        opStart       = lambda2Start + (int)Parameters["LambdaCooling2Duration"] + (int)Parameters["OPGap"];
+        magtrapStart  = opStart + (int)Parameters["OpticalPumpingDuration"];
+        handoverStart = magtrapStart + (int)Parameters["Magtrap1Duration"];
+        moveStart     = handoverStart + (int)Parameters["HandoverDur"];
+    }
+
+    public override AnalogPatternBuilder GetAnalogPattern()
+    {
+        AnalogPatternBuilder p = new AnalogPatternBuilder((int)Parameters["PatternLength"]);
+        SetTimeline();
+        new LoadMOT(p, Parameters);
+        new CompressedMOT(p, Parameters, cmotStart);
+        new LambdaCooling(p, Parameters, lambdaStart, "LambdaCooling1");
+        new BlueMOT(p, Parameters, blueMOTStart);
+        new LambdaCooling(p, Parameters, lambda2Start, "LambdaCooling2");
+        new OpticalPumping(p, Parameters, opStart);
+        new Magtrap(p, Parameters, magtrapStart);
+        new HandoverToTransferCoils(p, Parameters, handoverStart);
+        // ... script-specific lines ...
+        return p;
+    }
+    // GetDigitalPattern and GetDDSPattern call SetTimeline() and the same snippets.
+}
+```
+
+- **Good:** the whole shot can be read in one place, and changing a gap between
+  stages is a one-line edit.
+- **Bad:** each stage's length is written in the script, separately from the
+  snippet that uses it, so the two can disagree.
+
+### Option B: each snippet hands its end time to the next
+
+```csharp
+public override AnalogPatternBuilder GetAnalogPattern()
+{
+    AnalogPatternBuilder p = new AnalogPatternBuilder((int)Parameters["PatternLength"]);
+    new LoadMOT(p, Parameters);
+    int t = (int)Parameters["CompressRampDownStartTime"];
+    t = new CompressedMOT(p, Parameters, t).End;
+    t = new LambdaCooling(p, Parameters, t, "LambdaCooling1").End;
+    int blueMOTEnd = t = new BlueMOT(p, Parameters, t).End;
+    t = new LambdaCooling(p, Parameters, t, "LambdaCooling2").End;
+    t = new OpticalPumping(p, Parameters, t + (int)Parameters["OPGap"]).End;
+    t = new Magtrap(p, Parameters, t).End;
+    t = new HandoverToTransferCoils(p, Parameters, t).End;
+    // ... script-specific lines, using t or blueMOTEnd ...
+    return p;
+}
+// GetDigitalPattern and GetDDSPattern repeat the same chain.
+```
+
+- **Good:** each stage knows its own length, so scripts never add up durations.
+  Moving, adding or removing a stage is a matter of moving a line.
+- **Bad:** the chain is written three times, once per pattern, and the three copies
+  must stay in the same order. Any time a later line needs (such as `blueMOTEnd`
+  for a camera trigger) has to be saved to a variable on the way.
+
+## Still to discuss after this
+
+- Which scripts get converted first, and whether all 26 do.
+- How the same stage is reused in a different place, e.g. a blue MOT in the tweezer
+  chamber, which uses `TweezerCoils` and `tBlueMOTField` instead of
+  `MOTCoilsCurrent` and `BlueMOTField`.
+- Imaging/camera triggers, which vary the most.
+- How converted scripts are checked against today's patterns before anyone runs
+  them.
