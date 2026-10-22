@@ -2,8 +2,9 @@
 
 Moved from qzfm_serial.py (run_setup, heal, check_factors,
 apply_sync_roles, wait_for_cell_lock, the --zero / --standby / --status
-bodies). Every function takes the Context, the open sensors ({head:
-QZFMSensor}, in a, b order) and a SetupSettings, and fills the session
+bodies). Every function takes the Context, the open sensors ({sensor
+key "s1": QZFMSensor}, the first leading) and a SetupSettings, and fills
+the session
 record it is given -- the same "setup" / "heals" / "standby" blocks the
 old qzfm_session.json had.
 """
@@ -28,7 +29,8 @@ from bfield.operations.sync_check import check_modulation_sync
 SETUP_STEPS = ("connect", "auto start", "gain / axis mode", "field zero",
                "calibrate", "guard record")
 SYNC_STEP = "sync check"
-# how long to watch head a's own output before and after head b is zeroed
+# how long to watch the first sensor's output before and after the
+# others are zeroed
 ZERO_SHIFT_READ_S = 2.0
 
 
@@ -39,7 +41,7 @@ class SetupSettings:
     force_start: bool = False
     require_factors: bool = False
     zero_shift_warn: float = 200.0
-    sync: str | None = None        # None = master-slave with two heads
+    sync: str | None = None        # None = master-slave with 2+ sensors
     master_head: str | None = None  # which slot head is master (None: first)
     lock_timeout: float = 600.0
     outdir: str | None = None      # where guard records go; None = no guard
@@ -225,14 +227,16 @@ def field_mean_pT(ctx, sensor, axis, seconds=ZERO_SHIFT_READ_S):
 
 
 def resolve_sync(ctx, ss, sensors):
-    """Default: master-slave with two heads, none with one (user decision
-    after QuSpin support 2026-08-06)."""
+    """Default: master-slave with two or more sensors, none with one
+    (user decision after QuSpin support 2026-08-06)."""
     if ss.sync is not None:
         return ss.sync
     if len(sensors) > 1:
-        ctx.say("sync", "two heads default to master-slave (QuSpin support "
-                        "2026-08-06; free-running pairs silenced calibrate "
-                        "on this bench 5/5). sync = none disables")
+        ctx.say("sync", "several sensors default to master-slave (QuSpin "
+                        "support 2026-08-06; free-running pairs silenced "
+                        "calibrate on this bench 5/5, and 78/73 removed the "
+                        "slave's sub-Hz sine 2026-10-15). sync = none "
+                        "disables")
         return "master-slave"
     return "none"
 
@@ -249,9 +253,9 @@ def apply_sync_roles(ctx, sensors, spec, setup=None, master_head=None):
         return ""
     heads = list(sensors)
     if spec == "master-slave":
-        if len(heads) != 2:
-            raise ConfigError("master-slave needs two heads (one drives "
-                              "the modulation, the other follows)")
+        if len(heads) < 2:
+            raise ConfigError("master-slave needs two or more sensors (one "
+                              "drives the modulation, the others follow)")
         master = master_head or heads[0]
         if master not in heads:
             raise ConfigError(f"master {master!r} is not one of the heads "
@@ -269,15 +273,24 @@ def apply_sync_roles(ctx, sensors, spec, setup=None, master_head=None):
             led[head] = bool(sensors[head].status().get("master"))
         except SensorError:
             led[head] = None
-    words = ", ".join(f"{h}={'master' if m else 'slave'}"
+    # messages name the sensor ("sensor 1"); the ledger keeps the heads
+    def short(h):
+        return getattr(sensors[h], "display", h).split(" (")[0]
+
+    def flag(v):
+        return "?" if v is None else "master" if v else "not master"
+    words = ", ".join(f"{short(h)} {'master' if m else 'slave'}"
                       for h, m in roles.items())
     if setup is not None:
         setup["sync_roles"] = {h: ("master" if m else "slave")
                                for h, m in roles.items()}
         setup["sync_roles_led"] = led
-    ctx.say("setup", f"modulation roles set: {words} (commands 78/73, QuSpin "
-                     "support 2026-08-06) -- LED master flag now reads "
-                     + ", ".join(f"{h}={led[h]}" for h in led))
+    ctx.say("setup", "modulation roles set: "
+            + ", ".join(f"{getattr(sensors[h], 'display', h)} = "
+                        f"{'master (command 78)' if m else 'slave (command 73)'}"
+                        for h, m in roles.items())
+            + " (QuSpin support 2026-08-06) -- LED master flag now reads "
+            + ", ".join(f"{short(h)} {flag(led[h])}" for h in led))
     return f", sync {words}"
 
 
@@ -438,7 +451,8 @@ def run_setup(ctx, lab, sensors, ss, session, checkpoint=None):
     st.start("field zero",
              f"settle < {sensors[lead_head].zero_cond:g} pT/s "
              f"x{ZERO_CONSECUTIVE}, give up after {ss.lock_timeout:g} s"
-             + (", in a, b order then re-read a" if two else ""))
+             + (", in sensor order, then re-read the first" if two
+                else ""))
     zero_bits, lead_before = [], None
     for head, sensor in sensors.items():
         ctx.check_stop()
@@ -462,8 +476,8 @@ def run_setup(ctx, lab, sensors, ss, session, checkpoint=None):
                                            if residual is not None
                                            else "settled"))
         if two and head == lead_head:
-            # head a is zeroed and frozen; anything that moves its reading
-            # from here on is the other head's coils, not its own
+            # the first sensor is zeroed and frozen; anything that moves
+            # its reading from here on is the others' coils, not its own
             lead_before = field_mean_pT(ctx, sensor, axes[0])
     setup["zero_residual_pT_per_s"] = \
         setup["heads"][lead_head]["zero_residual_pT_per_s"]
@@ -472,11 +486,11 @@ def run_setup(ctx, lab, sensors, ss, session, checkpoint=None):
         if after is not None:
             shift = after - lead_before
             setup["heads"][lead_head]["zero_shift_pT"] = round(shift, 1)
-            zero_bits.append(f"zeroing the other head moved "
+            zero_bits.append(f"zeroing the other sensor(s) moved "
                              f"{sensors[lead_head].display} by {shift:+.1f} pT")
             if abs(shift) > ss.zero_shift_warn:
                 note(lead_head,
-                     f"zeroing the other head moved this one by "
+                     f"zeroing the other sensor(s) moved this one by "
                      f"{shift:+.1f} pT (over zero_shift_warn "
                      f"{ss.zero_shift_warn:g}) -- move the heads further "
                      "apart, or accept the offset knowingly")
@@ -551,9 +565,9 @@ def run_setup(ctx, lab, sensors, ss, session, checkpoint=None):
         st.start(SYNC_STEP, f"modulation carrier near {MOD_CARRIER_HZ:g} Hz")
         stage(ctx, sensors, "sync check", "running")
         if gdir is None:
-            msg = ("two heads set up without an outdir: no guard record, no "
-                   "sync check -- shared clock unverified. Re-run setup "
-                   "with an outdir before recording")
+            msg = ("several sensors set up without an outdir: no guard "
+                   "record, no sync check -- shared clock unverified. Re-run "
+                   "setup with an outdir before recording")
             setup["warnings"].append(msg)
             ctx.warn(msg)
             st.done(SYNC_STEP, "no guard record to read", skipped=True,
@@ -653,10 +667,10 @@ def zero_and_calibrate(ctx, sensors, ss, session):
         if after is not None:
             shift = after - lead_before
             setup["heads"][lead_head]["zero_shift_pT"] = round(shift, 1)
-            ctx.say("zero", f"zeroing the other head moved "
+            ctx.say("zero", f"zeroing the other sensor(s) moved "
                             f"{sensors[lead_head].display} by {shift:+.1f} pT")
             if abs(shift) > ss.zero_shift_warn:
-                msg = (f"zeroing the other head moved "
+                msg = (f"zeroing the other sensor(s) moved "
                        f"{sensors[lead_head].display} "
                        f"by {shift:+.1f} pT (over zero_shift_warn "
                        f"{ss.zero_shift_warn:g}) -- move the heads "

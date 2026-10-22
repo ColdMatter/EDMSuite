@@ -9,6 +9,7 @@ import itertools
 import json
 import math
 import os
+import re
 
 from bfield import clock
 
@@ -122,6 +123,60 @@ def alloc_run_dir(outdir, index):
         n += 1
         candidate = f"{base}_{n}"
     return candidate
+
+
+# The dated layout (the main experiment's way of filing data):
+#   <data_root>/Oct 2026/15/001_SingleSensorZ
+# a folder per month, one per day (two digits, as MOTMaster), and one per
+# run, numbered through the day across every program.
+MONTHS = ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep",
+          "Oct", "Nov", "Dec")
+_RUN_ID = re.compile(r"^(\d{3,})_")
+
+
+def day_dir(root):
+    """<root>/<Mon YYYY>/<DD> for today (English month names whatever the
+    PC's language)."""
+    month = MONTHS[int(clock.strftime("%m")) - 1]
+    return os.path.join(root, f"{month} {clock.strftime('%Y')}",
+                        clock.strftime("%d"))
+
+
+def clean_run_name(name):
+    """A run name safe in a folder name: spaces become '-', anything but
+    letters, digits, '-', '_', '.' and '+' is dropped."""
+    text = re.sub(r"\s+", "-", str(name or "").strip())
+    text = re.sub(r"[^A-Za-z0-9_.+-]", "", text).strip(".-_")
+    return text[:60]
+
+
+def next_run_id(day):
+    """1 + the highest NNN_ prefix in the day folder (1 for a new day)."""
+    try:
+        names = os.listdir(day)
+    except OSError:
+        return 1
+    ids = [int(m.group(1)) for m in map(_RUN_ID.match, names) if m]
+    return max(ids, default=0) + 1
+
+
+def dated_run_dir(root, name):
+    """Create and return <root>/<Mon YYYY>/<DD>/<NNN>_<name>, NNN the next
+    free number of the day (a folder made at the same moment by another
+    program takes the next one)."""
+    name = clean_run_name(name)
+    if not name:
+        raise ValueError("a run name is needed (letters or digits)")
+    day = day_dir(root)
+    os.makedirs(day, exist_ok=True)
+    n = next_run_id(day)
+    while True:
+        path = os.path.join(day, f"{n:03d}_{name}")
+        try:
+            os.makedirs(path)
+            return path
+        except FileExistsError:
+            n += 1
 
 
 def stamped_dir(parent, prefix, *, create=True):

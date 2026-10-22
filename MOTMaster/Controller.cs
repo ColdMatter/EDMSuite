@@ -76,7 +76,7 @@ namespace MOTMaster
         TranslationStageControllable tstage = null;
         ExperimentReportable experimentReporter = null;
 
-        MMDataIOHelper ioHelper;
+        public MMDataIOHelper ioHelper;
 
 #if DDS
         /// <summary>
@@ -396,6 +396,12 @@ namespace MOTMaster
         public void SetDictionaryPath(String path)
         {
             dictionaryPath = path;
+        }
+
+        public void SetTriggered(System.Boolean value)
+        {
+            triggered = value;
+            controllerWindow.TriggeredCheckBoxState = value;
         }
 
         public Dictionary<string, List<object>> GetSwitchConfiguration()
@@ -840,7 +846,17 @@ namespace MOTMaster
             }
         }
 
-        #endregion
+        public void saveSequenceInfo(string dir)
+            // like save, but callable outside of Go() with a custom path.
+            // Intended use case is to give external libraries such as pycaf access to saving pattern info
+        {
+            MOTMasterScript script = prepareScript(scriptPath, null);
+            MOTMasterSequence sequence = getSequenceFromScript(script);
+            Dictionary <string, object> report = null;
+            ioHelper.StoreRun(dir, controllerWindow.GetSaveBatchNumber(), scriptPath, hardwareClassPath, sequence, script.Parameters, report, externalFilesPath, config.ExternalFilePattern);
+        }
+
+#endregion
 
         #region private stuff
 

@@ -14,7 +14,7 @@ public class Patterns : MOTMasterScript
         Parameters = new Dictionary<string, object>();
 
         // General
-        Parameters["PatternLength"] = 100000;
+        Parameters["PatternLength"] = 80000;
         Parameters["TCLBlockStart"] = 0;
         Parameters["tScanCount"] = 0;
 
@@ -30,40 +30,42 @@ public class Patterns : MOTMasterScript
         // Shim Coils Default
         Parameters["tShimXccValue"] = 7.5; // 8.8; //8.8; //  0.0
         Parameters["tShimYccValue"] = -2.5; // 3.8;//3.8; // -2.0
-        Parameters["tShimZccValue"] = -0.4; // 0.3; //0.3; // -0.85
+        Parameters["tShimZccValue"] = -0.3; // 0.3; //0.3; // -0.85
 
         // Shim Coils Molasses
         Parameters["tMolassesShimXccValue"] = 9.0; // 8.8 // 10.0
         Parameters["tMolassesShimYccValue"] = 3.29; // 3.8 // 3.29
-        Parameters["tMolassesShimZccValue"] = 0.48; // 0.3 // 0.52
+        Parameters["tMolassesShimZccValue"] = 0.32; // 0.3 // 0.52
 
         // Bias Field Quantisation Axis
-        Parameters["tBiasShimZccValue"] = 2.0;
+        Parameters["tBiasShimXccValue"] = 9.0;
+        Parameters["tBiasShimYccValue"] = 3.29;
+        Parameters["tBiasShimZccValue"] = 0.32;
 
         // tRb AOMs 
         // MOT Cooling and Repump VCO & VVA
-        Parameters["tMOTCool"] = 3.8; //Cool at 2.4 - 2.6
+        Parameters["tMOTCool"] = 4.2; //Cool at 2.4 - 2.6
         Parameters["tMOTRep"] = 3.0;
         Parameters["tMOTCoolVVA"] = 2.0; // between 0 and 1 V
         Parameters["tMOTRepVVA"] = 2.0;
 
         // Imaging Cooling and Repump VCO & VVA
-        Parameters["tImgCool"] = 2.0; // 3.6 - 4.0, resonance is 4.0
+        Parameters["tImgCool"] = 0.5; // 3.6 - 4.0, resonance is 4.0
         Parameters["tImgRep"] = 3.0; // 3.0
-        Parameters["tImgCoolVVA"] = 0.5;
+        Parameters["tImgCoolVVA"] = 0.50;
         Parameters["tImgRepVVA"] = 1.2;
 
         // Molasses Cooling and Repump VCO & VVA
-        Parameters["tMolCool"] = 0.0;
-        Parameters["tMolRep"] = 0.0;
-        Parameters["tMolCoolVVA"] = 1.2;
+        Parameters["tMolCool"] = 0.5;
+        Parameters["tMolRep"] = 3.0;
+        Parameters["tMolCoolVVA"] = 0.61;
         Parameters["tMolRepVVA"] = 2.0;
 
         // Pump and Push VCO & VVA
         Parameters["tPushVCO"] = 5.0;
         Parameters["tPushVVA"] = 2.0;
 
-        Parameters["tPumpVCO"] = 2.1; // 3.0
+        Parameters["tPumpVCO"] = 2.0; // 3.0
         Parameters["tPumpVVA"] = 10.0;
         Parameters["tPumpRep"] = 3.0;
         Parameters["tPumpRepVVA"] = 2.0;
@@ -80,18 +82,18 @@ public class Patterns : MOTMasterScript
         // Timing
         Parameters["tRbMOTStart"] = 10;
         Parameters["tDropTime"] = 10;
-        Parameters["tRbRedMOTDuration"] = 50000;
+        Parameters["tRbRedMOTDuration"] = 30000;
         Parameters["tMolassesDelay"] = 1;
-        Parameters["tRbRedMolassesDuration"] = 4000;
+        Parameters["tRbRedMolassesDuration"] = 5000;
         Parameters["TOF1"] = 1;
         // Image 1
         Parameters["tBiasShimRampDuration"] = 1; // should be less than TOF2
         Parameters["TOF2"] = 5000;
-        Parameters["PumpPulseDuration"] = 20;
-        Parameters["RePumpPulseDuration"] = 20;
-        Parameters["MicrowavePulseDuration"] = 100;
-        Parameters["TOF3"] = 100;
-        Parameters["PushPulseDuration"] = 1000;
+        Parameters["PumpPulseDuration"] = 50;
+        Parameters["RePumpPulseDuration"] = 50;
+        Parameters["MicrowavePulseDuration"] = 4000;
+        Parameters["TOF3"] = 1000;
+        Parameters["PushPulseDuration"] = 100;
         Parameters["TOF4"] = 5000;
         // Image 2
         Parameters["tMOTExposure"] = 200;
@@ -129,7 +131,7 @@ public class Patterns : MOTMasterScript
         p.Pulse(RedMOTStart, 0, (int)Parameters["tRbRedMOTDuration"], "tRepSwitch"); // Red MOT Repump Pulse
 
         // Red Molasses Laser
-        p.Pulse(RedMolassesStart, 0, (int)Parameters["tRbRedMolassesDuration"], "tCoolSwitch"); // Red Molasses Coolng Pulse
+        p.Pulse(RedMolassesStart, 0, (int)Parameters["tRbRedMolassesDuration"] - 1000, "tCoolSwitch"); // Red Molasses Cooling Pulse
         p.Pulse(RedMolassesStart, 0, (int)Parameters["tRbRedMolassesDuration"], "tRepSwitch"); // Red Molasses Repump Pulse
 
         // Tweezer
@@ -232,9 +234,13 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("tShimYcc", RedMolDelayStart, (double)Parameters["tMolassesShimYccValue"]); // Molasses shim coils Y
         p.AddAnalogValue("tShimZcc", RedMolDelayStart, (double)Parameters["tMolassesShimZccValue"]); // Molasses shim coils Z
 
+        p.AddLinearRamp("tShimXcc", TOF2Start, (int)Parameters["tBiasShimRampDuration"], (double)Parameters["tBiasShimXccValue"]); // Ramp up bias mag field
+        p.AddLinearRamp("tShimXcc", TOF4Start, (int)Parameters["tBiasShimRampDuration"], (double)Parameters["tMolassesShimXccValue"]); // Ramp down bias mag field
+        p.AddLinearRamp("tShimYcc", TOF2Start, (int)Parameters["tBiasShimRampDuration"], (double)Parameters["tBiasShimYccValue"]); // Ramp up bias mag field
+        p.AddLinearRamp("tShimYcc", TOF4Start, (int)Parameters["tBiasShimRampDuration"], (double)Parameters["tMolassesShimYccValue"]); // Ramp down bias mag field
         p.AddLinearRamp("tShimZcc", TOF2Start, (int)Parameters["tBiasShimRampDuration"], (double)Parameters["tBiasShimZccValue"]); // Ramp up bias mag field
         p.AddLinearRamp("tShimZcc", TOF4Start, (int)Parameters["tBiasShimRampDuration"], (double)Parameters["tMolassesShimZccValue"]); // Ramp down bias mag field
-        
+
         p.AddAnalogValue("tShimXcc", End, 0.01); // End shim coils X
         p.AddAnalogValue("tShimYcc", End, 0.01); // End shim coils Y
         p.AddAnalogValue("tShimZcc", End, 0.01); // End shim coils Z

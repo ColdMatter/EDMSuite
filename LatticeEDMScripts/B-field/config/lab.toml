@@ -10,8 +10,13 @@
 # folder; it holds a copy of the old IROP_research/result tree (copied
 # 2026-09-24) plus every new run, bucket by bucket.
 data_root = "C:/Users/cafmot/Box/LatticeEDM/EDM chamber/Magnetic shield/Test data"
-# Default bucket (sub-folder of data_root) per program. Pass --outdir to
-# file a run straight into its proper bucket instead of these.
+# Where a run goes when no --outdir is given:
+#   "dated"   <data_root>/Oct 2026/15/001_SingleSensorZ -- month, day (two
+#             digits), then the run: numbered through the day across all
+#             programs, named by --name / "Run name" or automatically
+#   "buckets" the old layout: the per-program buckets below
+layout = "dated"
+# Per-program buckets (layout = "buckets"; the old runs live in these).
 bucket_record = "newdata"
 bucket_degauss = "degaussingtest"
 bucket_relax = "degaussrelax"
@@ -30,15 +35,16 @@ poll_s = 2.0
 zero_shift_warn_pT = 200.0
 
 [daq]
-# NI USB-6008. Leave device empty to auto-detect (refused if two NI
-# devices are present).
-device = ""
+# NI USB-6008, by its NI MAX name. Empty = auto-detect (refused if two NI
+# devices are present). On the lab PC NI MAX also keeps a stale "Dev1"
+# entry (red cross) for the same card; the working one is Dev2, as in
+# every run since August 2026.
+device = "Dev2"
 fs_hz = 1200.0          # keeps the 923 Hz carrier alias off 77 Hz
 vrange_V = 2.0
-# Input slots: the (Z, Y) inputs of the 1st and 2nd sensor of a run, in the
-# order the sensors are chosen. The USB-6008 has four differential inputs,
-# so two dual-axis sensors per run; the program tells you which sensor to
-# plug into which slot.
+# Fallback wiring for a sensor list without z_input / y_input: the (Z, Y)
+# inputs of the 1st and 2nd sensor, in run order. Each sensor's own wiring
+# is in config/sensors.toml (Manage sensors in the GUI).
 slots = [["ai0", "ai1"], ["ai2", "ai3"]]
 
 [degausser]

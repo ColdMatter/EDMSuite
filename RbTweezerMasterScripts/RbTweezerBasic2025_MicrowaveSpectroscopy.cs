@@ -42,21 +42,21 @@ public class Patterns : MOTMasterScript
 
         // tRb AOMs 
         // MOT Cooling and Repump VCO & VVA
-        Parameters["tMOTCool"] = 3.8; //Cool at 2.4 - 2.6
+        Parameters["tMOTCool"] = 4.2; //Cool at 2.4 - 2.6
         Parameters["tMOTRep"] = 3.0;
         Parameters["tMOTCoolVVA"] = 2.0; // between 0 and 1 V
         Parameters["tMOTRepVVA"] = 2.0;
 
         // Imaging Cooling and Repump VCO & VVA
-        Parameters["tImgCool"] = 2.0; // 3.6 - 4.0, resonance is 4.0
+        Parameters["tImgCool"] = 0.5; // 3.6 - 4.0, resonance is 4.0
         Parameters["tImgRep"] = 3.0; // 3.0
-        Parameters["tImgCoolVVA"] = 0.5;
+        Parameters["tImgCoolVVA"] = 0.50;
         Parameters["tImgRepVVA"] = 1.2;
 
         // Molasses Cooling and Repump VCO & VVA
-        Parameters["tMolCool"] = 0.0;
-        Parameters["tMolRep"] = 0.0;
-        Parameters["tMolCoolVVA"] = 1.2;
+        Parameters["tMolCool"] = 0.5;
+        Parameters["tMolRep"] = 3.0;
+        Parameters["tMolCoolVVA"] = 0.61;
         Parameters["tMolRepVVA"] = 2.0;
 
         // Pump and Push VCO & VVA

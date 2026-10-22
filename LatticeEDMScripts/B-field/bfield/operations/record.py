@@ -15,7 +15,6 @@ from __future__ import annotations
 import contextlib
 import json
 import os
-import re
 import subprocess
 import tempfile
 import threading
@@ -25,8 +24,9 @@ from dataclasses import dataclass, field
 from bfield import clock
 from bfield.acquisition.child import (new_process_group_kwargs,
                                       recorder_argv, stop_child_ladder)
-from bfield.constants import (DAQ_DIFF_AI, HEADS, HOUSE_HEADER,
-                              HOUSE_LED_KEYS, MAP_AXIS_RX)
+from bfield.channels import (label, parse_map, pins_of, restrict,
+                             split_channel)
+from bfield.constants import HOUSE_HEADER, HOUSE_LED_KEYS
 from bfield.errors import (ConfigError, RecorderStuckError, SensorError,
                            Stopped, exit_meaning)
 from bfield.io.files import read_meta
@@ -58,21 +58,17 @@ QZFM_ARG_RESERVED = {
     "--cal-v-per-nT": "--cal-v-per-nT", "--cal-factors": "",
     "--map": "--map", "--axes": "--axes", "--ids": "--device-name",
     "--sensor-id": "--device-name", "--probe": "", "--hardware-check": "",
+    "--numbered": "", "--1head": "", "--2head": "", "--4head": "",
     # rail flags stay fenced: --no-rail-check would suppress the 30/31
     # exits the self-heal triggers on (regression guard)
     "--no-rail-check": "", "--rail-abort": "", "--rail-limit": "",
     "--lab-file": "", "--sim": "", "--speed": "", "--sensor-info": "",
 }
 
-# the recorder's default wiring; a one-head command naming exactly
-# these pins omits --map, keeping the single-head argv unchanged
-ANALOG_DEFAULT_PINS = {"z": "ai0", "y": "ai1"}
-
-
 @dataclass
 class RecordSettings:
     """How the recorder child records (one set per session)."""
-    map: str = "z:a:ai0,y:a:ai1,z2:b:ai2,y2:b:ai3"
+    map: str = "s1z:ai0,s1y:ai1,s2z:ai2,s2y:ai3"
     fs: float = 1200.0
     vrange: str = "2"
     gain: str = "1x"
@@ -100,81 +96,30 @@ class RecordSettings:
 
 
 # ------------------------------------------------------------ the map
-
-def parse_map(spec):
-    """'z:a:ai0,y:a:ai1,...' -> ordered [(channel, head, phys)].
-
-    Must refuse the same things the recorder does: a laxer parent sends
-    maps the child rejects with exit 13, three minutes of bring-up later.
-    """
-    def require(ok, msg):
-        if not ok:
-            raise ConfigError(msg)
-
-    entries = []
-    for item in (spec or "").split(","):
-        item = item.strip()
-        require(bool(item),
-                f"the map has an empty entry (stray comma?) in {spec!r}")
-        parts = [p.strip() for p in item.split(":")]
-        require(len(parts) == 3 and all(parts),
-                f"bad map entry {item!r} (want axis:head:aiN, e.g. z:a:ai0)")
-        name, head, phys = (p.lower() for p in parts)
-        require(re.fullmatch(MAP_AXIS_RX, name),
-                f"bad axis name {name!r} in the map (x, y, z, or x2/y2/z2 = "
-                f"second reading on the other head)")
-        require(head in HEADS,
-                f"bad head {head!r} in the map (two heads, a and b)")
-        require(re.fullmatch(DAQ_DIFF_AI, phys),
-                f"bad channel {phys!r} in the map; the USB-6008 has four "
-                f"differential inputs, ai0..ai3")
-        entries.append((name, head, phys))
-    require(bool(entries), "the map is empty")
-    names = [e[0] for e in entries]
-    require(len(set(names)) == len(names), "the map repeats a channel name")
-    pins = [e[2] for e in entries]
-    dupes = sorted({p for p in pins if pins.count(p) > 1})
-    require(not dupes,
-            f"the map assigns {', '.join(dupes)} to more than one channel; "
-            f"the USB-6008 has four differential inputs, ai0..ai3")
-    for head in HEADS:
-        n = sum(1 for e in entries if e[1] == head)
-        require(n <= 2,
-                f"the map gives head {head} {n} channels; a dual-axis QZFM "
-                f"has only two analog outputs")
-    for name, _h, _p in entries:
-        if name.endswith("2"):
-            require(name[:-1] in names,
-                    f"the map has {name!r} without {name[:-1]!r} -- '2' "
-                    f"means a second reading of that axis, record the first")
-    return entries
+# parse_map (bfield.channels) is re-exported here: the sync check and the
+# session import it from this module
 
 
 def head_pins(map_spec, head, axes=None):
-    """{axis: aiN} one head is wired to, the '2' suffix stripped."""
-    out = {}
-    for name, h, phys in parse_map(map_spec):
-        if h == head:
-            out[name.rstrip("0123456789") or name] = phys
-    if axes is None:
-        return out
-    return {ax: out[ax] for ax in axes if ax in out}
+    """{axis: aiN} one sensor ("s1") is wired to in the map."""
+    return pins_of(map_spec, head, axes)
 
 
 def channel_factor_flag(map_spec, factors):
-    """--cal-factors for the 4-channel child (z/y/z2/y2 names)."""
+    """--cal-factors for the recorder: s1z:0.66,s2z:0.62 from the
+    sensor-keyed factors {s1: {z: 0.66, ...}, ...}."""
     out = []
-    for name, head, _phys in parse_map(map_spec):
-        axis = name.rstrip("0123456789") or name
-        f = (factors.get(head) or {}).get(axis)
+    for name, key, _phys in parse_map(map_spec):
+        axis = split_channel(name)[1]
+        f = (factors.get(key) or {}).get(axis)
         if f is not None:
             out.append(f"{name}:{f:g}")
     return ",".join(out)
 
 
 def factors_to_flag(factors, axes=None):
-    """--cal-factors value, restricted to the recorded axes (the Dual
-    unit's Calib message includes x, which the recorder refuses)."""
+    """'z:0.66,y:0.63' for one sensor's factors, restricted to the
+    recorded axes (the Dual unit's Calib message includes x)."""
     if not factors:
         return None
     keys = [a for a in (axes or ("z", "y", "x")) if a in factors]
@@ -184,14 +129,14 @@ def factors_to_flag(factors, axes=None):
 
 
 def factors_summary(factors):
-    """Head-keyed factors for a summary table."""
+    """Sensor-keyed factors for a summary table."""
     if not factors:
         return ""
     if not all(isinstance(v, dict) for v in factors.values()):
         return factors_to_flag(factors) or ""
     if len(factors) == 1:
         return factors_to_flag(next(iter(factors.values()))) or ""
-    return "  ".join(f"{h}[{factors_to_flag(f) or '-'}]"
+    return "  ".join(f"{label(h)}[{factors_to_flag(f) or '-'}]"
                      for h, f in sorted(factors.items()))
 
 
@@ -203,38 +148,28 @@ def stop_file_path(run_dir):
 
 def child_command(rs, axes, run_dir, seconds, factors, rail_abort,
                   sensors, lab_file):
-    """The recorder invocation: --1head or --2head.
+    """The recorder invocation (--numbered: channels named by sensor).
 
-    `factors` is keyed by head. Both shapes are stamped with the serial
-    the link actually opened, never a default -- otherwise every
+    `factors` is keyed by sensor. Every sensor is stamped with the
+    serial its link actually opened, never a default -- otherwise every
     meta.json claims the child's default head.
     """
     sensors = sensors or {}
-    if len(sensors) > 1:
-        cmd = [*recorder_argv(), "--2head",
-               "--map", rs.map,
-               "--ids", ",".join(f"{h}:{s.serial_id}"
-                                 for h, s in sensors.items()),
-               "--fs", f"{rs.fs:g}", "--vrange", str(rs.vrange),
-               "--gain", rs.gain,
-               "--seconds", f"{seconds:g}", f"--outdir={run_dir}"]
-        flag = channel_factor_flag(rs.map, factors)
-    else:
-        head = next(iter(sensors)) if sensors else "a"
-        sensor = sensors.get(head)
-        cmd = [*recorder_argv(), "--1head",
-               "--axes", ",".join(axes),
-               "--fs", f"{rs.fs:g}", "--vrange", str(rs.vrange),
-               "--gain", rs.gain,
-               "--seconds", f"{seconds:g}", f"--outdir={run_dir}"]
-        # pins for the head actually opened: head b alone would
-        # otherwise get the recorder's default (a's pins) under b's serial
-        pins = head_pins(rs.map, head, axes)
-        if any(ANALOG_DEFAULT_PINS.get(ax) != p for ax, p in pins.items()):
-            cmd += ["--map", ",".join(f"{ax}:{p}" for ax, p in pins.items())]
-        if sensor is not None and sensor.serial_id:
-            cmd += ["--sensor-id", sensor.serial_id]
-        flag = factors_to_flag((factors or {}).get(head) or {}, axes)
+    keys = list(sensors) or [k for _n, k, _p in parse_map(rs.map)][:1]
+    chan_map = restrict(rs.map, keys)
+    # only the axes the sensors are in (mode z: no y channel)
+    chan_map = ",".join(
+        f"{n}:{p}" for n, _k, p in parse_map(chan_map)
+        if axes is None or split_channel(n)[1] in axes)
+    cmd = [*recorder_argv(), "--numbered", "--map", chan_map]
+    ids = ",".join(f"{k}:{s.serial_id}" for k, s in sensors.items()
+                   if getattr(s, "serial_id", None))
+    if ids:
+        cmd += ["--ids", ids]
+    cmd += ["--fs", f"{rs.fs:g}", "--vrange", str(rs.vrange),
+            "--gain", rs.gain,
+            "--seconds", f"{seconds:g}", f"--outdir={run_dir}"]
+    flag = channel_factor_flag(chan_map, factors or {})
     # operator-asserted V/nT goes to every topology or none, so the
     # banner and the record cannot disagree
     if rs.cal_v_per_nT is not None:
@@ -247,14 +182,12 @@ def child_command(rs, axes, run_dir, seconds, factors, rail_abort,
     if rail_abort:
         cmd.append("--rail-abort")
     cmd += ["--lab-file", lab_file]
-    info = [r for r in (rs.sensor_info or []) if r.get("head") in sensors] \
+    info = [r for r in (rs.sensor_info or []) if r.get("sensor") in sensors] \
         if sensors else list(rs.sensor_info or [])
     if info:
         cmd += ["--sensor-info", json.dumps(info, separators=(",", ":"))]
     cmd += list(rs.extra_args or [])
     return cmd
-
-
 def write_lab_file(lab):
     """The Lab the child must rebuild, in a temp file (not in the data)."""
     fd, path = tempfile.mkstemp(prefix="bfield_lab_", suffix=".json")
@@ -310,10 +243,8 @@ def stop_child(ctx, proc, stop_file=None):
 # ------------------------------------------------------ housekeeping
 
 def house_path(run_dir, sensors, head):
-    """house.csv for one head, house_a/house_b.csv for two."""
-    if len(sensors) > 1:
-        return os.path.join(run_dir, f"house_{head}.csv")
-    return os.path.join(run_dir, "house.csv")
+    """house_S1.csv: one per sensor, named by its number."""
+    return os.path.join(run_dir, f"house_{label(head)}.csv")
 
 
 class Poller(threading.Thread):
@@ -559,8 +490,8 @@ def record_run(ctx, lab, sensors, run_dir, rs, axes, factors, seconds,
 
 
 def guard_seconds(sensors):
-    """Two heads spend longer: the guard is also the sync check, which
-    needs bins fine enough to split two carriers."""
+    """Two or more sensors spend longer: the guard is also the sync
+    check, which needs bins fine enough to split two carriers."""
     return GUARD_SECONDS_TWO_HEAD if len(sensors) > 1 else GUARD_SECONDS
 
 

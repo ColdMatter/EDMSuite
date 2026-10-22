@@ -52,6 +52,18 @@ class Lab:
         return os.path.join(self.data_root,
                             self.config["paths"][f"bucket_{key}"])
 
+    @property
+    def dated(self):
+        """[paths] layout = "dated": a run with no --outdir goes to
+        <data_root>/<Mon YYYY>/<DD>/<NNN>_<name>. Otherwise (the old
+        layout) to the program's bucket."""
+        return self.config["paths"].get("layout", "buckets") == "dated"
+
+    def new_run_dir(self, name):
+        """Create the next dated run folder (see bfield.io.files)."""
+        from bfield.io.files import dated_run_dir
+        return dated_run_dir(self.data_root, name)
+
     # -------------------------------------------------------- devices
 
     def qzfm_backend(self):

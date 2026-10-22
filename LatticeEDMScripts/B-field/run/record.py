@@ -7,9 +7,12 @@ by run/qzfm.py --record; use this for an S(f) point, a floor check
 with the sensor off, --probe (2 s: DC and headroom) or
 --hardware-check (reads the wired channels, records nothing).
 
-  python run/record.py --probe --2head
-  python run/record.py --1head --axes z --seconds 60 --outdir ...
-  python run/record.py --2head --sim --speed 10 --seconds 30   (simulated)
+  python run/record.py --probe --numbered          (every wired input)
+  python run/record.py --numbered --map s1z:ai0 --seconds 60 --outdir ...
+  python run/record.py --numbered --sim --speed 10 --seconds 30 (simulated)
+
+--numbered names channels by sensor (S1Z, S2Y, ... as every session run
+does); the old --1head / --2head / --4head layouts still work.
 """
 
 import _path  # noqa: F401

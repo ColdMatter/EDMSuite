@@ -16,8 +16,18 @@ import sys
 import os
 import re
 
-OneDriveFolder = os.environ['onedrive']
-sys.path.append(OneDriveFolder + r"\Desktop\EDMSuite\LatticeEDMScripts")
+# On macOS, pythonnet needs pointing at Mono before anything imports clr
+if sys.platform == "darwin":
+    from pythonnet import load
+    load("mono", libmono="/Library/Frameworks/Mono.framework/Versions/Current/lib/libmonosgen-2.0.dylib")
+
+# Add LatticeEDMScripts (parent of "analysis scripts") to the path so the
+# library imports work whatever the working directory or OS
+try:
+    scriptDir = os.path.dirname(os.path.abspath(__file__))
+except NameError:  # __file__ isn't defined when running cells interactively
+    scriptDir = os.getcwd()
+sys.path.append(os.path.dirname(scriptDir))
 import LatticeEDM_analysis_library as EDM
 
 import numpy as np
@@ -44,12 +54,12 @@ colors = prop_cycle.by_key()['color']
 
 ###When we are using Box:
 #datadrive=str(os.environ["Onedrive"]+"\\Desktop\\Lattice EDM\\data")
-datadrive = r"C:\Users\sl5119\Box\LatticeEDM\data"
-month = "Sept 2026"
-date = "24"
+datadrive = EDM.get_datadrive()  # set per device in data_locations.json
+month = "Oct 2026"
+date = "15"
 #blockdrive=datadrive+"\\BlockData\\"
 #
-drive = datadrive + "\\" + month + "\\" + date + "\\"# + subfolder
+drive = os.path.join(datadrive, month, date, "")# + subfolder
 print(drive)
 
 pattern="*Duration*.zip"
@@ -58,18 +68,22 @@ print("Matching files: ", [os.path.basename(f) for f in files])
 
 #%% Selection
 #sele = ["001", "005", "006", "007", "008", "009", "010", "011", "014", "016"]
-sele = ["001", "002"]
+sele = ["001", "002", "003", "004"] # leave empty, sele = [], to load all matching files
 #%%
 LoadPasses = True
 
 if len(files) > 0:
     print("%g matching files found. Loading"%len(files))
+    if len(sele) == 0:
+        # No selection: select every matching file by its ID
+        sele = sorted(set(re.split(r'[_]', os.path.basename(f))[0] for f in files))
+        print("No selection - loading all matching files: ", sele)
     Data = {}
     fileLabels = []
     Lasers = []
     for i in range(0, len(files)):
-        fileLabel = re.split(r'[_]', re.split(r'[\\]', files[i])[-1])[0]
-        Laser = re.split(r'[.]', re.split(r'[_]', re.split(r'[\\]', files[i])[-1])[-2])[0]
+        fileLabel = re.split(r'[_]', os.path.basename(files[i]))[0]
+        Laser = re.split(r'[.]', re.split(r'[_]', os.path.basename(files[i]))[-2])[0]
        
        #Use this part if have selections
         for j in range(0, len(sele)):
@@ -94,8 +108,8 @@ else:
 
 #%% Analysis settings
 """Can also read from scan settings (optional, for later)"""
-SigStart = 22
-SigEnd = 24
+SigStart = 24
+SigEnd = 30
 BkgStart = 70
 BkgEnd = 78
 
@@ -114,6 +128,7 @@ Tau = {}
 Tauerr = {}
 Base = {}
 Baseerr = {}
+IndivFit = {}   # full best-fit [A, tau, C] of each scan, used as initial guesses later
 
 Durations = []
 Ratios = []
@@ -147,7 +162,8 @@ for i in range(0, len(fileLabels)):  #for i in range(0, len(files)):
     Tauerr[fileLabels[i]] = tauerr
     Base[fileLabels[i]] = base
     Baseerr[fileLabels[i]] = baseerr
-    
+    IndivFit[fileLabels[i]] = np.array(fit_results['best fit'])
+
     AllRatios[fileLabels[i]] = Ratio
     AllDurations[fileLabels[i]] = ScanParams
     
@@ -190,9 +206,16 @@ print("\n Scatterint rate (MHz): %.4g +- %.3g"%(Scat, Scaterr))
 #         "4fv0, also in OFF shots": ['014'],
 #         "+4fv1, also in OFF shots": ['016']}
 
-types = {"4fv0": ["002"]}
+types = {"Up to V3": ["001"],
+         "+ 4fv0, R&Q": ["002", "003"],
+         "+ 4fv1, R&Q": ["004"]
+         }
+
+ExcludeLabels = ["003_0", "004_0"] # bad scans to discard manually, e.g. ["002_0"] for the first pass of file 002
 
 Weighted = True
+UseIndivP0 = True   # True: initial guess = mean of the individual-scan fits (cell above); False: fixed p0_default
+p0_default = [0.5, 2500., 0.5]
 
 keys = list(types.keys())
 
@@ -201,6 +224,7 @@ Dur = {}
 StandardErr = {}
 Fit = {}
 Err = {}
+BadFit = {}
 
 tspan = np.arange(0, 6000, 1)
 
@@ -212,9 +236,16 @@ for i in range(0, len(keys)):
     for k in keyList:    
         for f in fileLabels: 
             if f[:3] == k:
+                if f in ExcludeLabels:
+                    print("Excluding " + f + " from " + keys[i])
+                    continue
                 toAvgKeys.append(f)
                 toAvg.append(AllRatios[f])
-    
+
+    if len(toAvgKeys) == 0:
+        print(keys[i] + ": no scans left after exclusions - skipped")
+        continue
+
     avg = np.average(np.array(toAvg), axis=0)
     dur = AllDurations[toAvgKeys[0]]
     
@@ -228,26 +259,53 @@ for i in range(0, len(keys)):
     
     sterr = std/np.sqrt(len(toAvgKeys))
     StandardErr[keys[i]] = sterr
-    
-    if len(toAvgKeys) > 1:
-        fit, cov = curve_fit(tools.exp_decay, dur, avg, 
-                             p0=[1.0, 1800., 0.3],
-                             absolute_sigma=Weighted, sigma=sterr)
-    else:
-        fit, cov = curve_fit(tools.exp_decay, dur, avg, 
-                             p0=[1.0, 1800., 0.3])
-    err = np.sqrt(np.diag(cov))
-    
+
+    # Initial guess from the individual fits of the scans being averaged (good fits only, if any)
+    p0 = p0_default
+    if UseIndivP0:
+        p0Keys = [f for f in toAvgKeys if f in GoodData and f in IndivFit]
+        if len(p0Keys) == 0:
+            p0Keys = [f for f in toAvgKeys if f in IndivFit]
+            if len(p0Keys) > 0:
+                print(keys[i] + ": no good individual fits - initial guess from all scans")
+        if len(p0Keys) > 0:
+            p0 = np.mean([IndivFit[f] for f in p0Keys], axis=0)
+        else:
+            print(keys[i] + ": no individual fits found - using p0_default")
+    print(keys[i] + " initial guess [A, tau, C]: ", p0)
+
+    try:
+        if len(toAvgKeys) > 1:
+            fit, cov = curve_fit(tools.exp_decay, dur, avg,
+                                 p0=p0,
+                                 absolute_sigma=Weighted, sigma=sterr)
+        else:
+            fit, cov = curve_fit(tools.exp_decay, dur, avg,
+                                 p0=p0)
+        err = np.sqrt(np.diag(cov))
+    except RuntimeError as e:   # fit did not converge
+        print(keys[i] + ": fit failed - " + str(e))
+        fit = np.full(3, np.nan)
+        err = np.full(3, np.nan)
+
+    # Bad fit: failed, non-finite errors, or tau error >= tau (same criterion as the individual fits)
+    badFit = not (np.all(np.isfinite(err)) and err[1] < abs(fit[1]))
+    if badFit:
+        print(keys[i] + ": bad fit, tau = %.5g +- %.4g us - fit line not plotted"%(fit[1], err[1]))
+
     Fit[keys[i]] = fit
     Err[keys[i]] = err
-    
-    plt.plot(dur, avg, '.', color=colors[i], label=keys[i])
+    BadFit[keys[i]] = badFit
+
+    plt.plot(dur, avg, '.', color=colors[i],
+             label=keys[i] + (" (bad fit)" if badFit else ""))
     if len(toAvgKeys) > 1:
         plt.fill_between(dur, y1=avg-sterr, y2=avg+sterr, alpha=0.3,
                          color=colors[i])
 
-    plt.plot(tspan, tools.exp_decay(tspan, *fit), color=colors[i],
-             label=r'$\tau=$%.5g+-%.4g $\mu$s'%(fit[1], err[1]))
+    if not badFit:
+        plt.plot(tspan, tools.exp_decay(tspan, *fit), color=colors[i],
+                 label=r'$\tau=$%.5g+-%.4g $\mu$s'%(fit[1], err[1]))
 
 plt.xlabel(r'V0 slowing duration ($\mu$s)')
 plt.ylabel('On/Off ratio')

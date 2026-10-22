@@ -26,6 +26,7 @@ from PySide6.QtWidgets import (QCheckBox, QComboBox, QDialog,
                                QSplitter, QTableWidget, QTableWidgetItem,
                                QTabWidget, QVBoxLayout, QWidget)
 
+from bfield.channels import colour as channel_colour
 from bfield.config import load_config
 from bfield.devices.simulated import World
 from bfield.errors import BFieldError
@@ -53,8 +54,7 @@ EXIT_WORDS = {
 }
 LIVE_WINDOW_S = 20.0
 NOMINAL_V_PER_NT = 2.7          # 1x gain; the plot is a rough pT view
-CHANNEL_COLOURS = {"V_z": "#1f77b4", "V_y": "#ff7f0e", "V_z2": "#2ca02c",
-                   "V_y2": "#d62728"}
+
 
 
 def exit_words(code):
@@ -89,7 +89,7 @@ class TextDialog(QDialog):
 
 class LivePlot(QWidget):
     VIEWS = ("field", "field, mean removed", "1 s block means",
-             "ASD of the window")
+             "ASD of the window", "Allan deviation of the window")
 
     def __init__(self, folder=lambda: "", say=None):
         super().__init__()
@@ -106,7 +106,11 @@ class LivePlot(QWidget):
         self.view.addItems(self.VIEWS)
         self.view.setToolTip("ASD: amplitude spectral density of the window "
                              "(4 s Hann segments). A healthy chain shows a "
-                             "white floor near 23 fT/rtHz at 30-45 Hz.")
+                             "white floor near 23 fT/rtHz at 30-45 Hz.\n"
+                             "Allan deviation: overlapping, of the window, "
+                             "tau up to a quarter of it (white noise of "
+                             "ASD S gives S / sqrt(2 tau)). The Analysis "
+                             "tab does the whole record.")
         self.view.currentTextChanged.connect(self._view_changed)
         row.addWidget(self.view)
         lay.addLayout(row)
@@ -151,10 +155,15 @@ class LivePlot(QWidget):
 
     def _view_changed(self, view):
         asd = view.startswith("ASD")
-        self.plot.setLogMode(x=asd, y=asd)
+        adev = view.startswith("Allan")
+        self.plot.setLogMode(x=asd or adev, y=asd or adev)
         if asd:
             self.plot.setLabel("left", "ASD (fT/rtHz, nominal 2.7 V/nT)")
             self.plot.setLabel("bottom", "frequency (Hz)")
+        elif adev:
+            self.plot.setLabel("left", "Allan deviation (fT, nominal "
+                                       "2.7 V/nT)")
+            self.plot.setLabel("bottom", "averaging time τ (s)")
         else:
             self.plot.setLabel("left", "field (pT, nominal 2.7 V/nT)")
             self.plot.setLabel("bottom", "time in the window (s)")
@@ -177,6 +186,12 @@ class LivePlot(QWidget):
                 return np.array([]), np.array([])
             means = y_pT[:k * n].reshape(k, n).mean(axis=1)
             return np.arange(k) + 0.5, means
+        if view.startswith("Allan"):           # fT against tau
+            from bfield.analysis.allan import overlapping_adev
+            if y_pT.size < 64:
+                return np.array([]), np.array([])
+            tau, a, _err = overlapping_adev(y_pT, fs, per_decade=8)
+            return tau, a * 1000.0
         # ASD, fT/rtHz
         from scipy.signal import welch
         nper = min(y_pT.size, int(4 * fs))
@@ -186,6 +201,19 @@ class LivePlot(QWidget):
         keep = f > 0
         return f[keep], np.sqrt(p[keep]) * 1000.0
 
+    @staticmethod
+    def _shown(name):
+        return name.replace("V_", "").upper()
+
+    def _first_z(self):
+        """The first Z channel being plotted (V_s1z, or an old V_z)."""
+        from bfield.channels import split_channel
+        for name in self.buf:
+            ch = name[2:] if name.startswith("V_") else name
+            if ch == "z" or split_channel(ch)[1] == "z":
+                return name
+        return None
+
     def redraw(self):
         import numpy as np
         if not self.buf:
@@ -194,20 +222,28 @@ class LivePlot(QWidget):
             if name not in self.curves:
                 self.curves[name] = self.plot.plot(
                     [], [], name=name.replace("V_", "").upper(),
-                    pen=CHANNEL_COLOURS.get(name, "#555555"))
+                    pen=channel_colour(name))
                 self.actions.restyle()          # the new curve's width
             y = np.asarray(dq, dtype=float) * 1000.0 / NOMINAL_V_PER_NT
             x, yy = self._series(y)
             self.curves[name].setData(x, yy)
         n = max(self.total.values())
         extra = ""
-        if self.view.currentText().startswith("ASD") and "V_z" in self.buf:
-            x, yy = self._series(np.asarray(self.buf["V_z"], dtype=float)
+        first_z = self._first_z()
+        if self.view.currentText().startswith("ASD") and first_z:
+            x, yy = self._series(np.asarray(self.buf[first_z], dtype=float)
                                  * 1000.0 / NOMINAL_V_PER_NT)
             band = (x >= 30) & (x <= 45)
             if band.any():
-                extra = (f"; Z floor 30-45 Hz median "
+                extra = (f"; {self._shown(first_z)} floor 30-45 Hz median "
                          f"{float(np.median(yy[band])):.1f} fT/rtHz")
+        if self.view.currentText().startswith("Allan") and first_z:
+            from bfield.analysis.allan import at_tau
+            x, yy = self._series(np.asarray(self.buf[first_z], dtype=float)
+                                 * 1000.0 / NOMINAL_V_PER_NT)
+            if x.size and x[-1] >= 1.0:
+                extra = (f"; {self._shown(first_z)} Allan deviation at 1 s "
+                         f"{at_tau(x, yy, 1.0):.1f} fT")
         self.info.setText(f"{len(self.buf)} channel(s), {n / self.fs:.0f} s "
                           f"received; last {LIVE_WINDOW_S:g} s (raw volts x "
                           f"nominal gain, not calibrated){extra}")
@@ -245,8 +281,8 @@ class SimPanel(QWidget):
         fl.addRow("faults on the sensor", self.f_target)
         self.f_calib = QCheckBox("answers no Calibrate")
         self.f_zero = QCheckBox("field zero never settles")
-        self.f_rail = QCheckBox("ai1 (slot 1 Y input) at the QZFM rail")
-        self.f_flat = QCheckBox("ai0 (slot 1 Z input) dead / flat")
+        self.f_rail = QCheckBox("ai1 (sensor 1's Y input) at the QZFM rail")
+        self.f_flat = QCheckBox("ai0 (sensor 1's Z input) dead / flat")
         self.f_nan = QCheckBox("a NaN in DAQ block 3")
         self.f_dg = QDoubleSpinBox()
         self.f_dg.setRange(0, 600)

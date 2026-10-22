@@ -308,6 +308,9 @@ def Inverse(x, a, b):
 def Saturation(P, A, P_sat):
     return A * (P/P_sat) / (1 + P/P_sat)
 
+def SaturationOffset(P, A, P_sat, y0):
+    return y0 + A * (P/P_sat) / (1 + P/P_sat)
+
 def FitLine(Figure, xdata, ydata, p0, xstep=0.01, display=True, Toprint=True):
     fit, cov = curve_fit(Line, xdata, ydata, p0=p0)
     

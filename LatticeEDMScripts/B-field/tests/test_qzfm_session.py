@@ -11,7 +11,7 @@ from bfield.errors import ConfigError
 from bfield.procedures.qzfm_session import QZFMPlan, QZFMSession, validate
 from conftest import heads_on
 
-TWO = "a:A10QHMQMA,b:A10QHJ1ZA"
+TWO = "A10QHMQMA,A10QHJ1ZA"     # serials -> sensors 1 and 2
 
 
 def plan(lab, tmp_path, name, **kw):
@@ -29,6 +29,10 @@ def test_validate_refusals(sim_lab):
     with pytest.raises(ConfigError):   # one sensor named twice
         validate(QZFMPlan.from_config(
             lab.config, device_name="a:A10QHMQMA,b:Z3D0-AB3Q"), "run")
+    with pytest.raises(ConfigError):   # not in the sensor list
+        QZFMPlan.from_config(lab.config, device_name="A10QHXXXA")
+    with pytest.raises(ConfigError):   # s2 is not that serial
+        QZFMPlan.from_config(lab.config, device_name="s2:A10QHMQMA")
     with pytest.raises(ConfigError):   # inf seconds
         validate(QZFMPlan.from_config(lab.config, device_name="A10QHMQMA",
                                       seconds=float("inf")), "run")
@@ -45,17 +49,32 @@ def test_two_head_record_cold_start(sim_lab, tmp_path):
     doc = ledger(p)
     assert doc["outcome"] == "completed"
     assert doc["setup"]["guard_exit"] == 0
-    assert doc["setup"]["sync_roles"] == {"a": "master", "b": "slave"}
-    assert doc["setup"]["heads"]["b"]["cal_factors"] == {
+    # everything keyed by sensor number
+    assert p.device_name == "s1:A10QHMQMA,s2:A10QHJ1ZA"
+    assert p.map == "s1z:ai0,s1y:ai1,s2z:ai2,s2y:ai3"
+    assert doc["setup"]["sync_roles"] == {"s1": "master", "s2": "slave"}
+    assert doc["setup"]["heads"]["s2"]["cal_factors"] == {
         "z": 0.82, "y": 0.79, "x": 0.99}
+    assert [r["sensor"] for r in doc["sensors"]] == ["s1", "s2"]
     run = doc["runs"][0]
     assert run["outcome"] == "ok" and run["exit_code"] == 0
     assert os.path.exists(os.path.join(p.outdir, "qzfm_session.log"))
     runs = [d for d in os.listdir(p.outdir) if d.startswith("R01_")]
     assert len(runs) == 1
     files = os.listdir(os.path.join(p.outdir, runs[0]))
-    assert "house_a.csv" in files and "house_b.csv" in files
+    assert "house_S1.csv" in files and "house_S2.csv" in files
     assert "child.log" in files
+    for ch in ("S1Z", "S1Y", "S2Z", "S2Y"):
+        assert f"{runs[0]}_{ch}_pT.txt" in files
+    meta = json.load(open(os.path.join(p.outdir, runs[0],
+                                       f"{runs[0]}.meta.json")))
+    assert meta["topology"] == "numbered"
+    assert meta["sensor_ids"] == {"s1": "A10QHMQMA", "s2": "A10QHJ1ZA"}
+    assert meta["sensor_of"]["s2y"] == "s2"
+    assert meta["cal_factors"]["s2z"] == 0.82
+    assert {tuple(pr["channels"]) for pr in meta["pairs"]} == {
+        ("s1z", "s2z"), ("s1y", "s2y")}
+    assert set(meta["rail_fraction"]) == {"s1z", "s1y", "s2z", "s2y"}
 
 
 def test_live_samples_reach_the_ui(sim_lab, tmp_path):
@@ -65,7 +84,7 @@ def test_live_samples_reach_the_ui(sim_lab, tmp_path):
     p = plan(lab, tmp_path, "live", device_name="A10QHMQMA", seconds=20)
     assert QZFMSession(ctx, lab, p).record() == 0
     # the recorder's raw volts, tailed from its csv while it records
-    assert len(ctx.ui.samples.get("V_z", [])) == 20 * 1200
+    assert len(ctx.ui.samples.get("V_s1z", [])) == 20 * 1200
 
 
 def test_guard_heal_then_stop(sim_lab, tmp_path):

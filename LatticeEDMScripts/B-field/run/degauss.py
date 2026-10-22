@@ -2,7 +2,8 @@
 """Twinleaf DG degausser: status, stepped saturation check, one cycle.
 
 Replaces IROP_research/scripts/degauss.py; same modes, same checks,
-same files (<bucket>/dg_<stamp>/degauss_session.json + stream CSVs),
+same files (degauss_session.json + stream CSVs, in the dated run folder
+or <outdir>/dg_<stamp>/),
 same exit codes: 0 verified pass / 30 QC refused or stream missing
 (walls NOT trusted) / 10 connect / 13 config / 32 readback refused the
 trigger (nothing driven) / 130 Ctrl-C / 1 crash.
@@ -48,8 +49,12 @@ def build_parser():
                    help="refuse amplitudes above this (default: config "
                         "[degausser] max_amp_A)")
     p.add_argument("--outdir", default=None,
-                   help="parent for dg_<stamp>/ (default: the degauss "
-                        "bucket); --status records only when given")
+                   help="parent for dg_<stamp>/ (default: the next "
+                        "dated run folder, e.g. <data_root>/Oct 2026/15/"
+                        "002_Degauss); --status records only when given")
+    p.add_argument("--name", default=None,
+                   help="the run's name in its dated folder (default: "
+                        "Degauss, or DegaussCheck for --check)")
     p.add_argument("--coil", default=None,
                    help="label of the connected winding, e.g. parallel4 "
                         "(required by --run)")
@@ -73,7 +78,7 @@ def main(argv=None):
         freq=args.freq, soak=args.soak, taper=args.taper,
         max_amp=(args.max_amp if args.max_amp is not None
                  else float(dcfg.get("max_amp_A", 8.0))),
-        outdir=args.outdir, coil=args.coil,
+        outdir=args.outdir, name=args.name, coil=args.coil,
         confirm_checklist=args.confirm_checklist)
     return DegaussSession(ctx, lab, s).run()
 

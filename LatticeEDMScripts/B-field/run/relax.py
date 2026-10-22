@@ -40,9 +40,9 @@ def build_parser():
     p.add_argument("--dg-port", default=None,
                    help="DG serial port (default: config [degausser] port)")
     p.add_argument("--device-name", default=None,
-                   help="sensor FTDI serial(s), e.g. A10QHMQMA or "
-                        "a:A10QHMQMA,b:A10QHJ1ZA (default: the lowest-"
-                        "numbered sensor in the config)")
+                   help="sensor serial(s), e.g. A10QHMQMA (looked up in "
+                        "the sensor list; default: the lowest-numbered "
+                        "sensor)")
     p.add_argument("--sensors", default=None,
                    help="sensors by number from config [[sensors]]: 1 or "
                         "1,2 (the first is the modulation master)")
@@ -77,12 +77,19 @@ def build_parser():
     p.add_argument("--wake-lead", type=float, default=DEFAULT_WAKE_LEAD_MIN,
                    metavar="MIN")
     p.add_argument("--axes", default="z")
-    p.add_argument("--map", default=None)
+    p.add_argument("--map", default=None,
+                   help="channel:input list, e.g. s1z:ai0 (default: the "
+                        "sensors' own inputs)")
     p.add_argument("--gain", default="1x")
     p.add_argument("--fs", type=float, default=1200.0)
     p.add_argument("--vrange", default="2")
     p.add_argument("--outdir", default=None,
-                   help="parent directory (default: the relax bucket)")
+                   help="parent directory (default: the next dated run "
+                        "folder, e.g. <data_root>/Oct 2026/15/"
+                        "003_Relaxation)")
+    p.add_argument("--name", default=None,
+                   help="the run's name in its dated folder (default: "
+                        "Relaxation)")
     p.add_argument("--notes", default=None)
     p.add_argument("--confirm", action="store_true",
                    help="skip the pre-degauss checklist, asserting 19V OFF")
@@ -97,13 +104,17 @@ def build_parser():
     return p
 
 
-def device_name_from(args, config):
+def sensors_from(args, config):
+    """(device name, channel map): --sensors uses each sensor's own DAQ
+    inputs (config/sensors.toml); --device-name keeps --map / the
+    default map."""
     if args.device_name and args.sensors:
         raise ConfigError("give --sensors or --device-name, not both")
     if not args.sensors:
-        return args.device_name
+        return args.device_name, args.map
     from bfield.sensors import Selection, parse_numbers
-    return Selection(config, parse_numbers(args.sensors)).device_name
+    sel = Selection(config, parse_numbers(args.sensors), axes=args.axes)
+    return sel.device_name, args.map or sel.map
 
 
 def main(argv=None):
@@ -121,16 +132,18 @@ def main(argv=None):
             "before the degauss and again before the first point -- run it "
             "attached (the run is logged to <bucket>/relax_session.log)")
     ctx, lab = open_from_args(args)
+    device_name, chan_map = sensors_from(args, lab.config)
     s = RelaxSettings(
-        dg_port=args.dg_port, device_name=device_name_from(args, lab.config),
+        dg_port=args.dg_port, device_name=device_name,
         winding=args.winding, amp=args.amp, freq=args.freq,
         strong=args.strong, strong_amp=args.strong_amp, soak=args.soak,
         taper=args.taper, coil=args.coil, at=args.at, every=args.every,
         span=args.span, checkout_seconds=args.checkout_seconds,
         seconds=args.seconds, sleep_between=args.sleep_between,
         no_sleep=args.no_sleep, wake_lead=args.wake_lead, axes=args.axes,
-        map=args.map, gain=args.gain, fs=args.fs, vrange=args.vrange,
-        outdir=args.outdir, notes=args.notes, confirm=args.confirm,
+        map=chan_map, gain=args.gain, fs=args.fs, vrange=args.vrange,
+        outdir=args.outdir, name=args.name, notes=args.notes,
+        confirm=args.confirm,
         leads_stay=args.leads_stay, sensor_powered=args.sensor_powered,
         allow_missing_factors=args.allow_missing_factors,
         accept_flagged_degauss=args.accept_flagged_degauss,

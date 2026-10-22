@@ -62,10 +62,11 @@ B-field/
   README.md                  install + first commands
   pyproject.toml             the package "bfield"; extras [lab] [test] [gui]
   config/
-    lab.toml                 the bench: data_root, DAQ input slots,
+    lab.toml                 the bench: data_root, DAQ defaults,
                              degausser port, scope
-    sensors.toml             the numbered sensors (head ID, USB ID,
-                             location note) -- the GUI's Manage sensors
+    sensors.toml             the numbered sensors (head ID, USB ID, DAQ
+                             inputs for Z and Y, location note) -- the
+                             GUI's Manage sensors
     lab.local.toml           (optional, git-ignored) per-machine overrides
   run/                       4. entry points -- what you type
     qzfm.py                  QZFM heads: --status --setup --zero --record
@@ -86,8 +87,10 @@ B-field/
     clock.py                 time (real, or sped up in the simulator)
     constants.py             instrument facts (gain table, rails, carrier,
                              DG recipe, USB-6008 limits)
-    sensors.py               the numbered sensors; which ones a run uses and
-                             which DAQ slot each goes into
+    sensors.py               the numbered sensors, their DAQ wiring; which
+                             ones and which axes a run records
+    channels.py              names by sensor number: s2, s2z (S2Z on
+                             disk), the channel map s1z:ai0,...
     heads.py                 head identity: FTDI serial <-> QuSpin name
     cli.py                   shared by run/*.py (lab flags, exit codes)
     devices/                 1. DEVICES
@@ -118,6 +121,7 @@ B-field/
       runs.py                loaders for run folders (analysis side)
     analysis/
       spectra.py             shared ASD / band statistics
+      allan.py               overlapping Allan deviation
   analysis_scripts/          the per-bucket analysis scripts (same bucket
                              names as the data) + run_audit.py + README.md
   tests/                     pytest, all in the simulated lab
@@ -135,21 +139,56 @@ the new sensor and pick the unowned port) or by hand.
 `run/qzfm.py --sensors-list` prints the table. The head ID cannot be
 read over USB; it is typed once from the label.
 
-A run picks sensors by number (`--sensors 1,2`, or the checklist in the
-GUI). They go into the DAQ input slots (`[daq] slots`) in that order --
-the program prints which sensor to plug into which inputs. With two, one
-is the modulation master: the first by default, or the one chosen
-(`--master 2`, or "Modulation master" in the GUI); that decides which
-head gets the master command, not where it plugs in. The USB-6008 has two slots (ai0/ai1, ai2/ai3),
-so at most two dual-axis sensors per run; more needs another DAQ, not a
-new config.
+Each sensor also records its **wiring**: `z_input` / `y_input`, the
+USB-6008 input (ai0..ai3) its Z and Y outputs go to; either may be empty
+(**Z -> DAQ** / **Y -> DAQ** in Manage sensors). A QZFM records up to two
+axes at once. Two sensors in the list may share an input (the cable is
+moved between runs); Manage sensors notes it, and a run refuses to use
+both together. Old configs without inputs fall back to `[daq] slots`.
 
-Every message names the sensor ("sensor 2 (Z3D0-AB3S)"). Inside the
-data files the two slots keep their old names, heads `a` and `b`
-(`house_a.csv`, meta.json `heads` / `head_ids`), so old data and the
-analysis scripts are unaffected; each session json gains `sensors` and
-each meta.json gains `sensor_info` with number, label, USB serial,
-location and inputs for every slot.
+A run picks sensors by number (`--sensors 1,2`, or the checklist in the
+GUI) -- as many as the DAQ has inputs for: the USB-6008 has four, so
+four sensors on one axis, or two on both. Each records on its own
+inputs; the program prints which output goes to which input. **Which
+axes** are recorded is a separate run choice ("Axes to record" on the
+QZFM tab): single-axis mode is 1.35x quieter than dual-axis (14.8 vs
+20.0 fT/rtHz, previous student's notes), so the wiring says what *can*
+be recorded and the run says what *is*. Default, as the old scripts: Z
+only for one sensor, every wired axis (Z and Y) for more.
+Relaxation records Z; the S(f) sweep needs the driven axis (Z axial, Y
+transverse) wired on both of its two sensors. Sensors can also be named
+by serial (`--device-name A10QHMQMA`); the serial is looked up in the
+list, so the data are still filed under the number (a serial not in the
+list is refused).
+
+With two or more sensors, one is the modulation master (command 78) and
+the others are slaves (command 73) -- QuSpin's fix for the slave's
+sub-Hz sine (support 2026-08-06, confirmed on the bench 2026-10-15):
+the first sensor by default, or the one chosen (`--master 2`, or
+"Modulation master" in the GUI); that decides which head gets the master
+command, not where it plugs in.
+
+**Everything is named by the sensor number** (`bfield/channels.py`):
+sensor 2 is `s2`, its Z channel `s2z` -- lower case inside the program
+and in json keys, upper case on disk and on screen, the way the old
+`z` / `Z` worked:
+
+    R01_1631/R01_1631_S1Z_pT.txt   R01_1631_S2Y_pT.txt   house_S1.csv
+    meta.json  "channels": {"s1z": "Dev2/ai0", ...}, "sensor_of":
+               {"s1z": "s1"}, "sensor_ids": {"s1": "A10QHMQMA"},
+               "pairs": [{"channels": ["s1z", "s2z"], ...}],
+               "sensor_info": [{"sensor": "s1", "number": 1, ...}]
+    qzfm_session.json  "setup": {"heads": {"s1": ...}, "sync_roles":
+               {"s1": "master", "s2": "slave"}}, "sensors": [...]
+
+The recorder runs these as its `--numbered` layout (`--map
+s1z:ai0,s2z:ai2 --ids s1:SERIAL,s2:SERIAL`); every pair of channels on
+the same axis gets a block-mean r. Runs before 2026-10-15 keep the old
+names (`z`, `y`, `z2`, `y2`, heads `a` / `b`, `house_a.csv`); the
+Analysis tab and the loaders read both, and the old per-bucket analysis
+scripts keep working on the old data. The S(f) analysis
+(`shield_sf_ac.py`, `shield_sf_dc.py`) takes the channels by name, and
+the sweep passes `--heads s1z,s2z`.
 
 ## 3b. The recorder is its own process (kept on purpose)
 
@@ -196,7 +235,7 @@ develop the GUI.
 | old (`IROP_research/scripts`) | new |
 |---|---|
 | `qzfm_serial.py --status/--setup/--zero/--run/--stream/--standby/--list-ports` | `run/qzfm.py` same modes (`--run` is also `--record`) → `procedures/qzfm_session.py` |
-| `qzfm_serial.py --device-name a:SER,b:SER` | `run/qzfm.py --sensors 1,2` (numbered sensors from `config/lab.toml`); `--device-name` still works |
+| `qzfm_serial.py --device-name a:SER,b:SER` | `run/qzfm.py --sensors 1,2` (numbered sensors from `config/sensors.toml`); `--device-name` still works and is looked up by serial |
 | `qzfm_record.py` (direct use) | `run/record.py`, same flags → `acquisition/recorder.py` |
 | `degauss.py --status/--check/--run` | `run/degauss.py` same flags; the port comes from the config → `operations/degauss_cycle.py` |
 | `degauss_relax.py --plan/--go` | `run/relax.py` → `procedures/relaxation.py` |
@@ -207,11 +246,35 @@ develop the GUI.
 | `Scope` (in sf_sweep) | `devices/scope.py` |
 | `analysis/<bucket>/*.py`, `run_audit.py` | `analysis_scripts/<bucket>/`, data found through `data_root` |
 
-Output files are the same as before: `*_pT.txt`, `*_raw.csv`,
-`*.meta.json` (same keys; `software` now names the new module,
-`software_legacy` is unchanged because `cross_spectrum.py` and
-`map_residual.py` gate on it), `house*.csv`, `qzfm_session.json`,
-`degauss_session.json`, `stream_cNN.csv`, the `rx_*` and `sw_*` trees.
+Output files are the same kinds as before: `*_pT.txt`, `*_raw.csv`,
+`*.meta.json` (`software` now names the new module), `house*.csv`,
+`qzfm_session.json`, `degauss_session.json`, `stream_cNN.csv`, the
+`rx_*` and `sw_*` trees -- with channels and sensors named by number
+since 2026-10-15 (section 3). The old layouts (`--1head` / `--2head` /
+`--4head` in `run/record.py`) still write the old names and keep
+`software_legacy`, which `cross_spectrum.py` and `map_residual.py` gate
+on.
+
+**Where new runs go.** With `[paths] layout = "dated"` (the default in
+`config/lab.toml`), a run with no `--outdir` gets its own folder, as on
+the main experiment:
+
+    <data_root>/Oct 2026/15/001_SingleSensorZ
+
+a month folder, a day folder (two digits, like MOTMaster's), then
+`NNN_<name>`: NNN counts up through the day across every program, the
+name is `--name` (the GUI's "Run name"; spaces become '-') or automatic:
+`SingleSensorZ` / `TwoSensorsZY` (QZFM record), `DigitalStream`,
+`Degauss` / `DegaussCheck`, `Relaxation`, `SfSweepAxial` /
+`SfPrecheckAxial` / `SfDCAxial`. Inside is what the program always
+wrote: a QZFM run folder holds `qzfm_session.json`, the log, `_guard/`
+and the record `R01_HHMM/`; a relaxation holds its log and `rx_<stamp>/`;
+a degauss or a sweep folder is the session itself (no `dg_` / `sw_`
+level). `--outdir` still puts a run exactly where it says, and
+`layout = "buckets"` brings back the old per-program buckets
+(`newdata`, `degaussingtest`, `degaussrelax`, `shield_sf`), where the
+previous student's runs are. The Analysis tab opens the record inside a
+run folder, and Browse starts in today's folder.
 The old analysis scripts were run on simulated relaxation and S(f)
 output and read it.
 
@@ -291,8 +354,9 @@ bench, use `run/*.py`.
   read from a head, so they work the same with real sensors.
   Right, bottom: the log (drag the divider to resize).
 * Also right, top: **Live data** (the recorder's samples as
-  they are written: raw, mean removed, 1 s block means, or the ASD of
-  the last 20 s with the 30-45 Hz floor read out); **Simulated lab**
+  they are written: raw, mean removed, 1 s block means, the ASD of
+  the last 20 s with the 30-45 Hz floor read out, or the Allan
+  deviation of the last 20 s with Z at 1 s read out); **Simulated lab**
   (the simulated heads' state, fault injection, the simulated S(f)
   coil drive, reset).
 * **Analysis** tab: the noise spectrum of any run folder (Last record,
@@ -314,6 +378,15 @@ bench, use `run/*.py`.
   warning), the recorder's warnings, the operator's notes (the Notes box
   / `--notes`), the session's setup warnings, heals and sync verdict, and
   any NOTES.md / README.md in the run folder or the one above.
+  **Calculate: Allan deviation** instead: the overlapping Allan
+  deviation of the field samples in fT against the averaging time tau
+  (`bfield.analysis.allan`; tau from 1/fs to a quarter of the record by
+  default, points per decade and an optional linear-drift removal
+  editable). Per channel: sigma at 1 s, the minimum and its tau. For
+  white noise of ASD S, sigma(tau) = S / sqrt(2 tau), but at tau ~ 1 s
+  the low-frequency noise (~0.5 Hz) usually dominates, not the 10 Hz+
+  floor. Its CSV: tau, then each channel's deviation and a rough error
+  (deviation / sqrt(independent intervals - 1)).
 * Under the Live data and Analysis plots: **lines** (curve width) and
   **text** (axis, legend, title size) -- on screen and in every export;
   **Export figure...** (PNG at 2x, or SVG vector) and **Copy to

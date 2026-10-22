@@ -97,16 +97,17 @@ class SensorPicker(QWidget):
         self.list.itemChanged.connect(self.update_plan)
         lay.addWidget(self.list)
         lay.addWidget(HeightGrip(self.list))
-        # which of two sensors drives the modulation
+        # which sensor drives the modulation (two or more)
         self.master_row = QWidget()
         mrow = QHBoxLayout(self.master_row)
         mrow.setContentsMargins(0, 0, 0, 0)
         mrow.addWidget(QLabel("Modulation master:"))
         self.master_box = QComboBox()
         self.master_box.setToolTip(
-            "With two sensors one drives the modulation and the other "
-            "follows (QuSpin: one master per bench). This only decides "
-            "which head gets the master command, not where it plugs in.")
+            "With two or more sensors one drives the modulation (command "
+            "78) and the others follow (command 73; QuSpin: one master per "
+            "bench). This only decides which head gets the master command, "
+            "not where it plugs in.")
         self.master_box.currentIndexChanged.connect(lambda *_: None)
         mrow.addWidget(self.master_box, 1)
         lay.addWidget(self.master_row)
@@ -126,6 +127,7 @@ class SensorPicker(QWidget):
         row.addStretch(1)
         lay.addLayout(row)
         self.on_manage = None         # the window sets this
+        self.axes_source = None       # the form's axes choice (callable)
         self.fill(config, default)
         # only says something when the choice cannot run (too many
         # sensors, the sweep needs two, ...)
@@ -148,7 +150,7 @@ class SensorPicker(QWidget):
         for s in self.sensors:
             item = QListWidgetItem(
                 f"{s.number}   {s.label}    USB {s.usb_serial}    "
-                + (s.location or "(location not set)"))
+                f"{s.wiring}    " + (s.location or "(location not set)"))
             item.setData(Qt.UserRole, s.number)
             item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
             item.setCheckState(Qt.Checked if s.number in checked
@@ -188,9 +190,9 @@ class SensorPicker(QWidget):
         if current in nums:
             self.set_master(current)
         self.master_box.blockSignals(False)
-        two = len(nums) == 2
-        self.master_box.setEnabled(two)
-        self.master_row.setVisible(self.with_master and two)
+        several = len(nums) >= 2
+        self.master_box.setEnabled(several)
+        self.master_row.setVisible(self.with_master and several)
 
     def numbers(self):
         from PySide6.QtCore import Qt
@@ -214,8 +216,10 @@ class SensorPicker(QWidget):
         if self.exactly and len(nums) != self.exactly:
             raise ConfigError(f"this procedure needs exactly {self.exactly} "
                               f"sensors ({len(nums)} chosen)")
+        axes = self.axes_source() if self.axes_source else None
         return Selection(self.config, nums,
-                         master=self.master() if self.with_master else None)
+                         master=self.master() if self.with_master else None,
+                         axes=axes)
 
     def update_plan(self, *_):
         self._refresh_master()
@@ -238,6 +242,14 @@ class SensorPicker(QWidget):
             return
         if self.on_apply is not None:
             self.on_apply(sel.info())
+
+
+AXES_CHOICES = {
+    "default (Z for one sensor, Z and Y for more)": None,
+    "Z only (single-axis mode)": "z",
+    "Y only (single-axis mode)": "y",
+    "Z and Y (dual-axis mode)": "z,y",
+}
 
 
 class Job:
@@ -288,9 +300,19 @@ class ProcedureForm(QWidget):
         t = self.out.text().strip()
         return t or None
 
-    def add_outdir(self):
+    def run_name(self):
+        t = self.name_edit.text().strip()
+        return t or None
+
+    def add_outdir(self, auto_name="automatic"):
+        self.name_edit = self.add(
+            "Run name", _text(placeholder=f"empty = {auto_name}"),
+            "The run's folder is <data folder>/<Mon YYYY>/<DD>/<NNN>_<name>, "
+            "NNN counting up through the day. Spaces become '-'.")
         self.out = self.add("Output folder", _text(
-            placeholder="empty = the default bucket under the data folder"))
+            placeholder="empty = the dated run folder under the data folder"),
+            "A folder here replaces the dated run folder (the run name is "
+            "then not used)")
 
     # overridden
     def build(self):
@@ -327,14 +349,26 @@ class QZFMForm(ProcedureForm):
             ["record", "setup", "zero", "standby", "status"], "record"))
         self.pick = self.add("Sensors", SensorPicker(self.config, (1, 2),
                                                      with_master=True))
+        self.axes = self.add("Axes to record", _combo(list(AXES_CHOICES)),
+                             "Single-axis mode is 1.35x quieter than dual "
+                             "(white floor 14.8 vs 20.0 fT/rtHz, previous "
+                             "student's notes): record one axis when the "
+                             "floor is the measurement. Each sensor records "
+                             "the chosen axes it is wired for.")
+        self.pick.axes_source = self.axes_value
+        self.axes.currentIndexChanged.connect(self.pick.update_plan)
         self.seconds = self.add("Record length", _num(1, 36000, 900, 0, 60,
                                                       "s"))
         self.sync = self.add("Modulation sync", _combo(
             ["default", "master-slave", "none", "independent"]),
-            "default: master-slave with two heads, none with one")
+            "default: master-slave with two or more sensors, none with "
+            "one")
         self.require = self.add("Require cal factors", QCheckBox())
         self.notes = self.add("Notes", _text(placeholder="stored in meta.json"))
-        self.add_outdir()
+        self.add_outdir("e.g. SingleSensorZ, TwoSensorsZY")
+
+    def axes_value(self):
+        return AXES_CHOICES.get(self.axes.currentText())
 
     def quick_test(self):
         self.seconds.setValue(30)
@@ -346,10 +380,11 @@ class QZFMForm(ProcedureForm):
         master = self.pick.master()
         sync = self.sync.currentText()
         plan_kw = dict(seconds=self.seconds.value(),
+                       axes=self.axes_value(),
                        sync=None if sync == "default" else sync,
                        require_factors=self.require.isChecked(),
                        notes=self.notes.text().strip() or None,
-                       outdir=self.outdir())
+                       outdir=self.outdir(), name=self.run_name())
 
         def run(ctx, lab):
             plan = QZFMPlan.for_sensors(lab.config, sel.numbers,
@@ -396,7 +431,7 @@ class DegaussForm(ProcedureForm):
                              "the connected winding -- required for a run")
         self.max_amp = self.add("Max amplitude", _num(
             0.1, 10, float(d.get("max_amp_A", 8.0)), 2, 0.5, "A"))
-        self.add_outdir()
+        self.add_outdir("Degauss (DegaussCheck for check)")
 
     def quick_test(self):
         self.taper.setValue(60)
@@ -409,7 +444,8 @@ class DegaussForm(ProcedureForm):
             amps=parse_amps(self.amps.text()) if mode == "check" else None,
             freq=self.freq.value(), soak=self.soak.value(),
             taper=self.taper.value(), max_amp=self.max_amp.value(),
-            coil=self.coil.text().strip() or None, outdir=self.outdir())
+            coil=self.coil.text().strip() or None, outdir=self.outdir(),
+            name=self.run_name())
         return Job(f"Degauss {mode}",
                    lambda ctx, lab: DegaussSession(ctx, lab, s).run())
 
@@ -426,6 +462,8 @@ class RelaxForm(ProcedureForm):
     def build(self):
         self.mode = self.add("Mode", _combo(["plan", "go"], "plan"))
         self.pick = self.add("Sensors", SensorPicker(self.config, (1,)))
+        # the relaxation records Z (single-axis), as the old program did
+        self.pick.axes_source = lambda: "z"
         self.at = self.add("Points at (min after t0)", _text("5,20,45,80,115"))
         self.seconds = self.add("Record length", _num(1, 7200, 900, 0, 60,
                                                       "s"))
@@ -436,7 +474,7 @@ class RelaxForm(ProcedureForm):
         self.taper = self.add("Taper", _num(0, 600, 0, 0, 10, "s"),
                               "0 = the winding's default (300 s)")
         self.no_sleep = self.add("No standby between points", QCheckBox())
-        self.add_outdir()
+        self.add_outdir("Relaxation")
 
     def quick_test(self):
         self.at.setText("1,3")
@@ -449,11 +487,13 @@ class RelaxForm(ProcedureForm):
         mode = self.mode.currentText()
         s = rx.RelaxSettings(
             device_name=self.pick.selection().device_name,
+            map=self.pick.selection().map,
             at=self.at.text().strip(), seconds=self.seconds.value(),
             checkout_seconds=self.checkout.value(),
             winding=self.winding.currentText(),
             taper=self.taper.value() or None,
-            no_sleep=self.no_sleep.isChecked(), outdir=self.outdir())
+            no_sleep=self.no_sleep.isChecked(), outdir=self.outdir(),
+            name=self.run_name())
         return Job(f"Relaxation {mode}",
                    lambda ctx, lab: rx.run(ctx, lab, s, mode))
 
@@ -494,8 +534,24 @@ class SweepForm(ProcedureForm):
                                                          sf.DEFAULT_DC_BLOCKS))
         self.pick = self.add("Sensors (two)",
                              SensorPicker(self.config, (1, 2), exactly=2))
+        self.pick.axes_source = lambda: "z,y"
         self.skip_setup = self.add("Skip sensor setup", QCheckBox())
-        self.add_outdir()
+        self.add_outdir("e.g. SfSweepAxial, SfPrecheckAxial")
+
+    def sweep_map(self):
+        """Both sensors' wired axes; the driven axis (Z axial, Y
+        transverse) must be recorded on both."""
+        from bfield.procedures import sf_sweep as sf
+        sel = self.pick.selection()
+        driven = sf.ORIENTATION_AXIS[self.orientation.currentText()]
+        chans = sel.channels()
+        on_driven = {k for _n, k, ax, _p in chans if ax == driven}
+        if len(on_driven) < 2:
+            raise ConfigError(
+                f"the {self.orientation.currentText()} sweep needs both "
+                f"sensors' {driven.upper()} wired (Manage sensors); recorded "
+                f"here: {', '.join(n.upper() for n, *_ in chans)}")
+        return sel.map
 
     def quick_test(self):
         self.freqs.setText("5,25")
@@ -520,7 +576,8 @@ class SweepForm(ProcedureForm):
                   dc_blocks=self.dc_blocks.value(),
                   skip_setup=self.skip_setup.isChecked(),
                   ids=self.pick.selection().device_name,
-                  outdir=self.outdir())
+                  map=self.sweep_map(),
+                  outdir=self.outdir(), name=self.run_name())
         s = sf.SweepSettings.from_config(self.config, **kw)
         return Job(f"S(f) {mode}",
                    lambda ctx, lab: sf.SfSweep(ctx, lab, s).run(), sweep=s)

@@ -19,7 +19,10 @@ from PySide6.QtWidgets import (QAbstractItemView, QDialog, QDialogButtonBox,
 from bfield.errors import ConfigError
 from bfield.sensors import Sensor, check_sensor, save_sensors
 
-COLUMNS = ("No.", "Head ID (QuSpin label)", "USB ID", "Location / note")
+COLUMNS = ("No.", "Head ID (QuSpin label)", "USB ID", "Z -> DAQ",
+           "Y -> DAQ", "Location / note")
+PIN_CHOICES = ("", "ai0", "ai1", "ai2", "ai3")   # "" = axis not recorded
+Z_COL, Y_COL, LOC_COL = 3, 4, 5
 
 
 class PortPicker(QDialog):
@@ -96,11 +99,20 @@ class SensorManager(QDialog):
         self.table.setSelectionMode(QAbstractItemView.SingleSelection)
         h = self.table.horizontalHeader()
         h.setSectionResizeMode(0, QHeaderView.ResizeToContents)
-        h.setSectionResizeMode(3, QHeaderView.Stretch)
-        self.table.setColumnWidth(1, 190)
-        self.table.setColumnWidth(2, 150)
+        h.setSectionResizeMode(LOC_COL, QHeaderView.Stretch)
+        self.table.setColumnWidth(1, 180)
+        self.table.setColumnWidth(2, 130)
+        self.table.setColumnWidth(Z_COL, 80)
+        self.table.setColumnWidth(Y_COL, 80)
+        self.table.horizontalHeaderItem(Z_COL).setToolTip(
+            "The DAQ input the sensor's Z output is wired to (empty: Z "
+            "not recorded). A QZFM records up to two axes, Z and Y.")
+        self.table.horizontalHeaderItem(Y_COL).setToolTip(
+            "The DAQ input the sensor's Y output is wired to (empty: Y "
+            "not recorded)")
         for s in sensors:
-            self._add_row(s.number, s.label, s.usb_serial, s.location)
+            self._add_row(s.number, s.label, s.usb_serial, s.location,
+                          s.z_input, s.y_input)
         lay.addWidget(self.table)
 
         row = QHBoxLayout()
@@ -120,6 +132,13 @@ class SensorManager(QDialog):
         self.msg.setWordWrap(True)
         self.msg.setStyleSheet("color:#c62828")
         lay.addWidget(self.msg)
+        # sensors sharing an input: allowed (the cable moves between
+        # runs), but they cannot be chosen together -- say so
+        self.sharing = QLabel("")
+        self.sharing.setWordWrap(True)
+        self.sharing.setStyleSheet("color:#8a4b00")
+        lay.addWidget(self.sharing)
+        self.update_sharing()
 
         box = QDialogButtonBox()
         self.save_btn = box.addButton("Save", QDialogButtonBox.AcceptRole)
@@ -130,15 +149,38 @@ class SensorManager(QDialog):
 
     # -- rows -------------------------------------------------------------
 
-    def _add_row(self, number, label="", usb="", location=""):
+    def _add_row(self, number, label="", usb="", location="", z_in="",
+                 y_in=""):
+        from PySide6.QtWidgets import QComboBox
         r = self.table.rowCount()
         self.table.insertRow(r)
-        for c, v in enumerate((str(number), label, usb, location)):
+        for c, v in ((0, str(number)), (1, label), (2, usb),
+                     (LOC_COL, location)):
             item = QTableWidgetItem(v)
             if c == 0:
                 item.setTextAlignment(Qt.AlignCenter)
             self.table.setItem(r, c, item)
+        for c, v in ((Z_COL, z_in), (Y_COL, y_in)):
+            box = QComboBox()
+            for pin in PIN_CHOICES:
+                box.addItem(pin or "--", pin)
+            box.setCurrentIndex(max(box.findData(v), 0))
+            box.currentIndexChanged.connect(self.update_sharing)
+            self.table.setCellWidget(r, c, box)
         return r
+
+    def _pin(self, r, c):
+        box = self.table.cellWidget(r, c)
+        return box.currentData() if box is not None else ""
+
+    def update_sharing(self, *_):
+        from bfield.sensors import input_sharing
+        try:
+            notes = input_sharing(self.sensors())
+        except ConfigError:
+            notes = []
+        if hasattr(self, "sharing"):
+            self.sharing.setText("\n".join(notes))
 
     def add_sensor(self):
         nums = [int(n) for n in (self._cell(r, 0) for r in
@@ -166,7 +208,8 @@ class SensorManager(QDialog):
                 raise ConfigError(f"row {r + 1}: the number must be a whole "
                                   f"number (got {num!r})")
             s = Sensor(int(num), self._cell(r, 1), self._cell(r, 2),
-                       self._cell(r, 3))
+                       self._cell(r, LOC_COL), self._pin(r, Z_COL),
+                       self._pin(r, Y_COL))
             out.append(s)
         return out
 
