@@ -76,8 +76,7 @@ namespace MOTMaster
         public static LinkedBuild BuildSecondary(LinkRunRequest request, Hardware local, Hardware other, Func<string, MOTMasterScript> compileAndLoad)
         {
             string path = ScriptPathFor(request);
-            Directory.CreateDirectory(Path.GetDirectoryName(path));
-            File.WriteAllText(path, request.ScriptText ?? "", new UTF8Encoding(true));
+            WriteScript(path, request.ScriptText);
 
             MOTMasterScript script;
             try
@@ -140,6 +139,25 @@ namespace MOTMaster
             string id = PlainName(r.LinkRunId, "run id");
             string name = PlainName(r.ScriptFileName, "script file name");
             return Path.Combine(TempRoot, id, name);
+        }
+
+        /// <summary>
+        /// The primary's own temp copy of the script for a linked run: the one text it compiles, sends, hashes and
+        /// saves. A run folder of its own (run id + "-primary") beside the secondaries', so a secondary on the same
+        /// machine never writes or deletes it.
+        /// </summary>
+        public static string PrimaryScriptPathFor(string linkRunId, string scriptFileName)
+        {
+            string id = PlainName(linkRunId, "run id");
+            string name = PlainName(scriptFileName, "script file name");
+            return Path.Combine(TempRoot, id + "-primary", name);
+        }
+
+        /// <summary>Writes a linked run's script copy (UTF-8 with BOM), creating its run folder.</summary>
+        public static void WriteScript(string path, string text)
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(path));
+            File.WriteAllText(path, text ?? "", new UTF8Encoding(true));
         }
 
         /// <summary>

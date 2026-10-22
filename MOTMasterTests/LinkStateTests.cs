@@ -293,18 +293,155 @@ namespace MOTMasterTests
         {
             var f = new FakeSecondary();
             var p = Claimed(f, new List<string>());
-            p.End();
+            p.End(0);
             Assert.Equal(1, f.EndCalls);
 
             var f2 = new FakeSecondary();
             f2.AfterEnd = new LinkShotStatus { Running = false, Error = "late failure" };
             var p2 = Claimed(f2, new List<string>());
-            StringAssert(Assert.Throws<LinkedRunException>(() => p2.End()).Message, "late failure");
+            StringAssert(Assert.Throws<LinkedRunException>(() => p2.End(0)).Message, "late failure");
 
             var f3 = new FakeSecondary();
             f3.AfterEnd = new LinkShotStatus { Running = true };
             var p3 = Claimed(f3, new List<string>(), endMs: 50);
-            StringAssert(Assert.Throws<LinkedRunException>(() => p3.End()).Message, "did not stop");
+            StringAssert(Assert.Throws<LinkedRunException>(() => p3.End(0)).Message, "did not stop");
+        }
+
+        public static void TestPrimaryEndThrowsWhenTriggerNeverSeen()
+        {
+            // The primary fired 2 shots; the secondary armed both but only ever played 1.
+            var f = new FakeSecondary();
+            f.LastStatus = new LinkShotStatus { ArmedShots = 2, PlayedShots = 1, Running = true };
+            var p = Claimed(f, new List<string>(), armMs: 50);
+            StringAssert(Assert.Throws<LinkedRunException>(() => p.End(2)).Message, "never saw the trigger", "shot 2");
+            Assert.Equal(0, f.EndCalls, "EndLinkedRun not sent: the caller aborts instead");
+
+            // A secondary that stopped without playing the shot: same verdict, without waiting out the timeout.
+            var f2 = new FakeSecondary();
+            f2.LastStatus = new LinkShotStatus { ArmedShots = 1, PlayedShots = 0, Running = false };
+            var p2 = Claimed(f2, new List<string>());
+            var sw = Stopwatch.StartNew();
+            StringAssert(Assert.Throws<LinkedRunException>(() => p2.End(1)).Message, "never saw the trigger", "shot 1");
+            Assert.True(sw.ElapsedMilliseconds < 1000, "did not wait for the timeout, took " + sw.ElapsedMilliseconds);
+
+            // A secondary error is reported as such.
+            var f3 = new FakeSecondary();
+            f3.LastStatus = new LinkShotStatus { ArmedShots = 1, PlayedShots = 0, Running = true, Error = "boom" };
+            var p3 = Claimed(f3, new List<string>());
+            StringAssert(Assert.Throws<LinkedRunException>(() => p3.End(1)).Message, "boom");
+        }
+
+        public static void TestPrimaryEndSucceedsOncePlayed()
+        {
+            var f = new FakeSecondary();
+            f.Statuses.Enqueue(new LinkShotStatus { ArmedShots = 3, PlayedShots = 2, Running = true });
+            f.Statuses.Enqueue(new LinkShotStatus { ArmedShots = 3, PlayedShots = 2, Running = true });
+            f.Statuses.Enqueue(new LinkShotStatus { ArmedShots = 3, PlayedShots = 3, Running = true });
+            var p = Claimed(f, new List<string>());
+            p.End(3);
+            Assert.Equal(1, f.EndCalls);
+        }
+
+        public static void TestPrimaryEndWithNoShotsDoesNotWait()
+        {
+            var f = new FakeSecondary();
+            f.LastStatus = new LinkShotStatus { ArmedShots = 1, PlayedShots = 0, Running = true };
+            var p = Claimed(f, new List<string>(), armMs: 5000);
+            var sw = Stopwatch.StartNew();
+            p.End(0);
+            Assert.Equal(1, f.EndCalls);
+            Assert.True(sw.ElapsedMilliseconds < 1000, "End(0) did not wait for played shots, took " + sw.ElapsedMilliseconds);
+        }
+
+        public static void TestPrimaryAbortSkipsPlayedCheck()
+        {
+            var f = new FakeSecondary();
+            f.LastStatus = new LinkShotStatus { ArmedShots = 1, PlayedShots = 0, Running = true };
+            var log = new List<string>();
+            var p = Claimed(f, log, armMs: 5000);
+            var sw = Stopwatch.StartNew();
+            p.Abort();
+            Assert.Equal(1, f.EndCalls);
+            Assert.True(sw.ElapsedMilliseconds < 1000, "Abort did not wait for played shots, took " + sw.ElapsedMilliseconds);
+            Assert.True(!log.Exists(l => l.Contains("never saw the trigger")), "no played check in Abort");
+        }
+
+        public static void TestPrimaryWaitArmedReportsMissedTrigger()
+        {
+            // Shot 2 never arms because shot 1 was never triggered on the secondary.
+            var f = new FakeSecondary();
+            f.LastStatus = new LinkShotStatus { ArmedShots = 1, PlayedShots = 0, Running = true };
+            var p = Claimed(f, new List<string>(), armMs: 50);
+            StringAssert(Assert.Throws<LinkedRunException>(() => p.WaitUntilArmed(2, () => true)).Message, "never saw the trigger", "shot 1");
+
+            // Shot 1 was played but shot 2 never armed: that is still "did not arm".
+            var f2 = new FakeSecondary();
+            f2.LastStatus = new LinkShotStatus { ArmedShots = 1, PlayedShots = 1, Running = true };
+            var p2 = Claimed(f2, new List<string>(), armMs: 50);
+            StringAssert(Assert.Throws<LinkedRunException>(() => p2.WaitUntilArmed(2, () => true)).Message, "did not arm");
+        }
+
+        public static void TestPrimaryBeginRefusesDifferentDigitalAndAnalogClocks()
+        {
+            var f = new FakeSecondary();
+            f.Ready.AnalogClockFrequency = 50000;
+            var p = Claimed(f, new List<string>());
+            StringAssert(Assert.Throws<LinkedRunException>(() => Begin(p, dc: 100000, ac: 50000)).Message,
+                "digital and analog clocks differ");
+        }
+
+        public static void TestContactTimeoutFor()
+        {
+            // 200000 ticks at 100 kHz = 2000 ms, plus the arm timeout, plus 5000 ms.
+            Assert.Equal(12000, LinkedPrimary.ContactTimeoutFor(200000, 100000, 5000));
+            Assert.Equal(5000 + 5000 + 1, LinkedPrimary.ContactTimeoutFor(1, 3000, 5000), "rounds the pattern up to whole ms");
+            Assert.Equal(int.MaxValue, LinkedPrimary.ContactTimeoutFor(int.MaxValue, 1, int.MaxValue), "saturates");
+        }
+
+        public static void TestSecondaryContactTimeout()
+        {
+            long now = 0;
+            var s = new LinkedSecondaryState(() => now);
+            string t = s.Claim("P", false);
+            s.RunStarted();
+            now = 1000;
+            Assert.True(!s.ContactLost(2000), "within the bound");
+            now = 2001;
+            Assert.True(s.ContactLost(2000), "beyond the bound");
+            Assert.Equal(2001L, s.MillisecondsSinceContact());
+            Assert.True(!s.ContactLost(0), "0 = no bound");
+            Assert.True(!s.ContactLost(-5), "negative = no bound");
+
+            s.Status(t);   // a token-validated poll from the primary is contact
+            Assert.True(!s.ContactLost(2000), "Status renews contact");
+            now = 5000;
+            Assert.True(s.ContactLost(2000), "lost again");
+            s.NoteContact();
+            Assert.True(!s.ContactLost(2000), "NoteContact renews contact");
+            now = 9000;
+            Assert.Throws<LinkedRunException>(() => s.Status("wrong"));
+            Assert.True(s.ContactLost(2000), "a rejected token is not contact");
+            s.RunStarted();
+            Assert.True(!s.ContactLost(2000), "RunStarted renews contact");
+        }
+
+        public static void TestSecondaryPlayedShots()
+        {
+            var s = new LinkedSecondaryState();
+            string t = s.Claim("P", false);
+            s.RunStarted();
+            s.MarkArmed();
+            s.MarkPlayed();
+            s.MarkArmed();
+            var st = s.Status(t);
+            Assert.Equal(2, st.ArmedShots);
+            Assert.Equal(1, st.PlayedShots);
+            s.RunStarted();
+            Assert.Equal(0, s.Status(t).PlayedShots, "RunStarted resets");
+            s.MarkPlayed();
+            s.Release(t);
+            t = s.Claim("P", false);
+            Assert.Equal(0, s.Status(t).PlayedShots, "a new claim resets");
         }
 
         public static void TestPrimaryAbortNeverThrows()

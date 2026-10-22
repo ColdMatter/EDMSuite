@@ -443,9 +443,20 @@ namespace MOTMaster
             else
             {
                 // Linked: this machine's channels only (with the trigger pulse); the secondary's channels are not shown.
-                LinkedBuild build = LinkedScriptBuilder.BuildPrimary(script, Environs.Hardware, linkedOtherHardware, LinkConfig);
-                sequence = build.Sequence;
-                buildPattern(sequence, build.DigitalLength);
+                // A script that can't run linked (no secondary channels, a routing error) is reported, not left to
+                // escape the click handler.
+                try
+                {
+                    LinkedBuild build = LinkedScriptBuilder.BuildPrimary(script, Environs.Hardware, linkedOtherHardware, LinkConfig);
+                    sequence = build.Sequence;
+                    buildPattern(sequence, build.DigitalLength);
+                }
+                catch (Exception ex) when (ex is LinkedRunException || ex is DAQ.Pattern.LinkRoutingException)
+                {
+                    SharedCode.AppLog.Write("Controller.ViewPattern", "Linked pattern could not be built: " + ex.Message);
+                    MessageBox.Show(ex.Message, "MOTMaster: View Pattern (linked)", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
             }
 
             var digitalChannels = new List<(string, uint[])>
@@ -683,6 +694,11 @@ namespace MOTMaster
                 bool linkBegun = false;
                 bool linkEnded = false;
                 int linkShot = 0;
+                // Linked: shots whose primary pattern ran to completion, for End's "did the secondary play them" check.
+                int linkShotsFired = 0;
+                // Linked: the primary's temp copy of the script (the one read of the file it compiles, sends,
+                // hashes and saves); deleted in the finally.
+                string linkScriptPath = null;
                 status = RunningState.running;
 #if DDS
                 // Declared out here so the finally can stop the shot loop however
@@ -696,8 +712,23 @@ namespace MOTMaster
                 if (link != null && config.Debug)
                     throw new LinkedRunException("This MOTMaster (" + System.Environment.MachineName
                         + ") is in Debug mode, where it does not drive the pattern generators; linked runs are refused.");
+                string linkRunId = null;
+                string linkScriptFileName = null;
+                string linkScriptText = null;
+                if (link != null)
+                {
+                    // Linked: read the script file exactly once. That text is what is compiled (from a temp copy),
+                    // sent, hashed and saved, so an editor save during the run's preparation cannot make the two
+                    // sides run different text under matching fingerprints.
+                    string sourcePath = scriptPath;
+                    linkRunId = Guid.NewGuid().ToString();
+                    linkScriptFileName = Path.GetFileName(sourcePath);
+                    linkScriptText = File.ReadAllText(sourcePath);
+                    linkScriptPath = LinkedScriptBuilder.PrimaryScriptPathFor(linkRunId, linkScriptFileName);
+                    LinkedScriptBuilder.WriteScript(linkScriptPath, linkScriptText);
+                }
                 // Linked: a compile or load failure throws (with the compiler errors) instead of a MessageBox.
-                MOTMasterScript script = link == null ? prepareScript(scriptPath, dict) : prepareScriptOrThrow(scriptPath, dict);
+                MOTMasterScript script = link == null ? prepareScript(scriptPath, dict) : prepareScriptOrThrow(linkScriptPath, dict);
                 if (link != null && script == null) throw new LinkedRunException("script did not compile or load");
                 if (script != null)
                 {
@@ -756,25 +787,28 @@ namespace MOTMaster
                     {
                         // Hand the secondary the exact text and full parameter set; it compiles and builds its side,
                         // starts its triggered run thread, and returns what it compiled. Begin throws on any mismatch.
-                        string scriptText = File.ReadAllText(scriptPath);
+                        // The text is the single read made at the start of the run (the one compiled here).
                         string provenance = BuildProvenance.Describe();
                         LinkRunRequest request = new LinkRunRequest
                         {
-                            LinkRunId = Guid.NewGuid().ToString(),
+                            LinkRunId = linkRunId,
                             PrimaryName = System.Environment.MachineName,
                             PrimaryHardwareType = Environs.Hardware.GetType().FullName + ", DAQ",
-                            ScriptFileName = Path.GetFileName(scriptPath),
-                            ScriptText = scriptText,
+                            ScriptFileName = linkScriptFileName,
+                            ScriptText = linkScriptText,
                             Parameters = script.Parameters,
                             AnalogOrigin = linkBuild.AnalogOrigin,
                             SaveEnable = saveEnable,
                             BatchNumber = controllerWindow.GetSaveBatchNumber(),
-                            PrimaryProvenance = provenance
+                            PrimaryProvenance = provenance,
+                            // The secondary ends its armed run if this primary goes quiet for longer (e.g. it died).
+                            ContactTimeoutMs = LinkedPrimary.ContactTimeoutFor(linkBuild.DigitalLength,
+                                config.DigitalPatternClockFrequency, LinkConfig.ArmTimeoutMs)
                         };
                         SharedCode.AppLog.Write("Controller.Go", "Linked run " + request.LinkRunId + ": preparing the secondary ("
                             + request.ScriptFileName + ")");
                         linkBegun = true;
-                        link.Begin(request, LinkFingerprint.OfText(scriptText), LinkFingerprint.OfParameters(script.Parameters),
+                        link.Begin(request, LinkFingerprint.OfText(linkScriptText), LinkFingerprint.OfParameters(script.Parameters),
                             config.DigitalPatternClockFrequency, config.AnalogPatternClockFrequency, provenance);
                     }
 
@@ -796,7 +830,8 @@ namespace MOTMaster
 #endif //DDS
                                 // Linked: fire only once the secondary is waiting for this shot's trigger. False = Stop.
                                 if (link != null && !link.WaitUntilArmed(++linkShot, () => status == RunningState.running)) break;
-                                runPattern(sequence);
+                                // Linked: count the shot only if its pattern ran to completion (not cut short by Stop).
+                                if (runPattern(sequence) && link != null) linkShotsFired++;
 #if DDS
                                 if (ddsInUse) ddsTriggersSent++;
 #endif //DDS
@@ -813,7 +848,7 @@ namespace MOTMaster
                                 if (ddsInUse) ddsController.WaitUntilArmed(1.0);
 #endif //DDS
                                 if (link != null && !link.WaitUntilArmed(++linkShot, () => status == RunningState.running)) break;
-                                runPattern(sequence);
+                                if (runPattern(sequence) && link != null) linkShotsFired++;
 #if DDS
                                 if (ddsInUse) ddsTriggersSent++;
 #endif //DDS
@@ -859,9 +894,10 @@ namespace MOTMaster
 
                     if (link != null)
                     {
-                        // Tell the secondary to finish and wait for it to stop (it saves first). Throws on a
-                        // secondary error or timeout, so a failed linked run never looks like a good one.
-                        link.End();
+                        // Check the secondary played every shot this machine fired (a missing trigger throws), then
+                        // tell it to finish and wait for it to stop (it saves first). Throws on a secondary error or
+                        // timeout, so a failed linked run never looks like a good one.
+                        link.End(linkShotsFired);
                         linkEnded = true;
                     }
 
@@ -889,7 +925,8 @@ namespace MOTMaster
                                 report = GetExperimentReport();
                             }
 
-                            save(sequence, script, scriptPath, imageData, report);
+                            // Linked: the zip's script is the temp copy, i.e. exactly the text compiled and sent.
+                            save(sequence, script, link == null ? scriptPath : linkScriptPath, imageData, report);
 
                         }
                         else
@@ -900,7 +937,7 @@ namespace MOTMaster
                                 report = GetExperimentReport();
                             }
 
-                            save(sequence, script, scriptPath, report);
+                            save(sequence, script, link == null ? scriptPath : linkScriptPath, report);
 
                         }
                         }
@@ -963,6 +1000,8 @@ namespace MOTMaster
                         setSafeOutputs();
                         link.Abort();
                     }
+                    // Linked only (null otherwise): best-effort removal of the primary's temp script copy.
+                    if (linkScriptPath != null) deleteLinkedScriptFolder(linkScriptPath);
                 }
                 status = RunningState.stopped;
             }
@@ -1247,6 +1286,7 @@ namespace MOTMaster
         public void EndLinkedRun(string token)
         {
             secondaryState.Validate(token);
+            secondaryState.NoteContact();
             status = RunningState.stopped;
         }
 
@@ -1263,13 +1303,20 @@ namespace MOTMaster
                 // (backstop: ReleaseLink/BreakLink also set status = stopped for an active linked run).
                 while (status == RunningState.running && linkHeldBy(token))
                 {
+                    // A primary that died mid-run never ends the run; don't stay armed for a stale trigger.
+                    throwIfPrimaryLost(request);
                     initializeHardware(sequence, forceTriggered: true);
                     // Without the one-pattern sleep, so "armed" is reported as soon as the task waits for its trigger.
                     run(sequence, sleepAfterStart: false);
                     secondaryState.MarkArmed();
-                    // Ends when the triggered pattern has played, or at once when the run is ended (status stopped),
-                    // abandoning a trigger that will not come; releaseHardware then stops the task.
-                    while (pgMaster.TaskRunning && status == RunningState.running) ;
+                    // Ends when the triggered pattern has played, or at once when the run is ended (status stopped)
+                    // or the primary has gone quiet, abandoning a trigger that will not come; releaseHardware then
+                    // stops the task.
+                    while (pgMaster.TaskRunning && status == RunningState.running
+                        && !secondaryState.ContactLost(request.ContactTimeoutMs)) ;
+                    // Played = the task completed (the trigger arrived), rather than being abandoned.
+                    if (!pgMaster.TaskRunning) secondaryState.MarkPlayed();
+                    // A wait abandoned because the primary went quiet ends the run at the top-of-loop check, next.
                     releaseLinkedHardware(sequence);
                 }
 
@@ -1358,6 +1405,19 @@ namespace MOTMaster
             }
         }
 
+        /// <summary>
+        /// Ends the linked run (as an error: the secondary records it, sets its safe outputs and does not save) when
+        /// the primary has made no call for this run for longer than its ContactTimeoutMs. The claim is kept: only
+        /// the primary's release or Break link clears it.
+        /// </summary>
+        private void throwIfPrimaryLost(LinkRunRequest request)
+        {
+            if (!secondaryState.ContactLost(request.ContactTimeoutMs)) return;
+            status = RunningState.stopped;
+            long seconds = (secondaryState.MillisecondsSinceContact() + 500) / 1000;
+            throw new LinkedRunException("no contact from the primary for " + seconds + " s; linked run ended");
+        }
+
         private bool linkHeldBy(string token)
         {
             try
@@ -1374,9 +1434,25 @@ namespace MOTMaster
         /// <summary>Best effort: removes the temp folder holding a linked run's copy of the script.</summary>
         private void deleteLinkedScriptFolder(LinkRunRequest request)
         {
+            string scriptFile;
             try
             {
-                string folder = Path.GetDirectoryName(LinkedScriptBuilder.ScriptPathFor(request));
+                scriptFile = LinkedScriptBuilder.ScriptPathFor(request);
+            }
+            catch (Exception ex)
+            {
+                SharedCode.AppLog.Write("Controller.deleteLinkedScriptFolder", "Could not delete the linked script folder (ignored): " + ex.Message);
+                return;
+            }
+            deleteLinkedScriptFolder(scriptFile);
+        }
+
+        /// <summary>Best effort: removes the run folder holding the given linked-run script copy (secondary's or primary's).</summary>
+        private void deleteLinkedScriptFolder(string scriptFile)
+        {
+            try
+            {
+                string folder = Path.GetDirectoryName(scriptFile);
                 // The delete is recursive: only ever a direct child of the link's temp root, never the root or above.
                 if (!LinkedScriptBuilder.IsRunFolder(folder))
                 {
@@ -1576,12 +1652,18 @@ namespace MOTMaster
                 sequence, script.Parameters, report, externalFilesPath, config.ExternalFilePattern);
         }
 
-        private void runPattern(MOTMasterSequence sequence)
+        /// <returns>
+        /// True if the pattern ran to completion, false if it was cut short by a stop. Only the linked primary
+        /// uses it (to count fired shots); reading the flag changes nothing for anyone else.
+        /// </returns>
+        private bool runPattern(MOTMasterSequence sequence)
         {
             initializeHardware(sequence);
             run(sequence);
             while (pgMaster.TaskRunning && status == RunningState.running) ;
+            bool completed = !pgMaster.TaskRunning;
             releaseHardware();
+            return completed;
         }
 
         private MOTMasterScript prepareScript(string pathToPattern, Dictionary<String, Object> dict)

@@ -28,6 +28,11 @@ namespace MOTMaster
         public int BatchNumber;
         /// <summary>The primary's BuildProvenance.Describe(), recorded in the secondary's _link.txt. Null from an older primary.</summary>
         public string PrimaryProvenance;
+        /// <summary>
+        /// The secondary ends the armed run (with an error) after this long without a call from the primary for
+        /// it, so a primary that died mid-run cannot leave it armed. 0 or less (and any older primary): no bound.
+        /// </summary>
+        public int ContactTimeoutMs;
     }
 
     /// <summary>The secondary's answer to PrepareLinkedRun: what it compiled and what it will run.</summary>
@@ -46,6 +51,8 @@ namespace MOTMaster
     public class LinkShotStatus
     {
         public int ArmedShots;
+        /// <summary>Shots whose triggered pattern actually played to completion (not abandoned by a stop).</summary>
+        public int PlayedShots;
         public bool Running;
         public string Error;
     }

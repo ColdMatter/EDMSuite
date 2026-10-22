@@ -84,6 +84,11 @@ namespace MOTMaster
                 throw new LinkedRunException("The primary and secondary clock frequencies differ (primary digital/analog "
                     + digitalClock + "/" + analogClock + " Hz, secondary " + info.DigitalClockFrequency + "/"
                     + info.AnalogClockFrequency + " Hz); the run was not started.");
+            // The secondary's analog mapping (t + A - delay) adds digital ticks to analog ticks.
+            if (digitalClock != analogClock || info.DigitalClockFrequency != info.AnalogClockFrequency)
+                throw new LinkedRunException("The digital and analog clocks differ (primary digital/analog "
+                    + digitalClock + "/" + analogClock + " Hz, secondary " + info.DigitalClockFrequency + "/"
+                    + info.AnalogClockFrequency + " Hz); a linked run needs them equal on both machines, so it was not started.");
 
             string[] clamped = info.ClampedEvents ?? new string[0];
             foreach (string line in clamped) log(line);
@@ -131,14 +136,56 @@ namespace MOTMaster
                 if (!s.Running)
                     throw new LinkedRunException("The secondary stopped before it armed shot " + shot + " (secondary stopped).");
                 if (timer.ElapsedMilliseconds >= config.ArmTimeoutMs)
+                {
+                    // It re-arms only after the previous shot has played, so the real fault is the missing trigger.
+                    if (shot >= 2 && s.PlayedShots < shot - 1)
+                        throw NeverSawTrigger(s.PlayedShots + 1, "it is still waiting for that trigger, so shot " + shot + " never armed");
                     throw new LinkedRunException("The secondary MOTMaster did not arm shot " + shot + " within "
                         + config.ArmTimeoutMs + " ms (it did not arm).");
+                }
                 Thread.Sleep(PollMs);
             }
         }
 
+        /// <summary>
+        /// Ends the run on the secondary. First, when the primary fired shots, waits up to ArmTimeoutMs for the
+        /// secondary to report that many played, and throws "never saw the trigger" (without ending the run there;
+        /// the caller aborts) if it does not: a secondary that sat armed through a shot must not count as a good
+        /// run. Then tells it to finish and waits for it to stop. Throws on a secondary error or timeout.
+        /// </summary>
+        /// <param name="shotsFired">Shots whose primary pattern ran to completion (a shot cut short by Stop is not counted).</param>
+        public void End(int shotsFired)
+        {
+            if (shotsFired > 0) WaitUntilPlayed(shotsFired);
+            EndRun();
+        }
+
+        void WaitUntilPlayed(int shotsFired)
+        {
+            var timer = Stopwatch.StartNew();
+            while (true)
+            {
+                LinkShotStatus s = Poll();
+                if (s.Error != null)
+                    throw new LinkedRunException("The secondary MOTMaster reported an error: " + s.Error);
+                if (s.PlayedShots >= shotsFired) return;
+                if (!s.Running)
+                    throw NeverSawTrigger(s.PlayedShots + 1, "the secondary stopped");
+                if (timer.ElapsedMilliseconds >= config.ArmTimeoutMs)
+                    throw NeverSawTrigger(s.PlayedShots + 1, "no played pattern within " + config.ArmTimeoutMs + " ms of the primary's shot "
+                        + shotsFired + " ending");
+                Thread.Sleep(PollMs);
+            }
+        }
+
+        LinkedRunException NeverSawTrigger(int shot, string detail)
+        {
+            return new LinkedRunException("The secondary MOTMaster at " + config.SecondaryUrl + " never saw the trigger for shot " + shot
+                + " (" + detail + "). Check the trigger cable and line (" + config.TriggerChannel + ").");
+        }
+
         /// <summary>Tells the secondary to finish and waits for it to stop. Throws on a secondary error or timeout.</summary>
-        public void End()
+        void EndRun()
         {
             try
             {
@@ -164,11 +211,25 @@ namespace MOTMaster
             }
         }
 
-        /// <summary>Like End, but never throws; failures are logged.</summary>
+        /// <summary>Like End, but without the played-shots check, and never throws; failures are logged.</summary>
         public void Abort()
         {
-            try { End(); }
+            try { EndRun(); }
             catch (Exception e) { log("Aborting the linked run on the secondary failed: " + e.Message); }
+        }
+
+        /// <summary>
+        /// LinkRunRequest.ContactTimeoutMs for a run: one pattern (rounded up to whole ms) + the arm timeout + 5 s,
+        /// saturating at int.MaxValue. The longest the primary goes without polling the secondary mid-run is about
+        /// one pattern (runPattern) plus the DDS arm wait, well inside this.
+        /// </summary>
+        public static int ContactTimeoutFor(int patternLengthTicks, int digitalClockHz, int armTimeoutMs)
+        {
+            long patternMs = digitalClockHz > 0
+                ? ((long)Math.Max(0, patternLengthTicks) * 1000 + digitalClockHz - 1) / digitalClockHz
+                : 0;
+            long total = patternMs + Math.Max(0, armTimeoutMs) + 5000L;
+            return total > int.MaxValue ? int.MaxValue : (int)total;
         }
 
         string RequireToken()

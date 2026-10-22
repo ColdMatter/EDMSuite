@@ -67,6 +67,32 @@ namespace MOTMasterTests
             StringAssert(Assert.Throws<LinkRoutingException>(() => r.MapAnalogPoint("aA", 3)).Message, "clamped to the trigger");
         }
 
+        public static void TestSecondaryClampCollidesWithSpanAtZero()
+        {
+            // analog: shifted = t - 3. A clamped value, then a pulse starting exactly on tick 0.
+            var r = LinkRouting.ForSecondary(Local(), Other(), 3, 0);
+            r.MapAnalogPoint("aA", 0);
+            StringAssert(Assert.Throws<LinkRoutingException>(() => r.MapAnalogSpan("aA", 3)).Message, "clamped to the trigger");
+
+            // The other order: the span first, then a value clamped onto it.
+            var r2 = LinkRouting.ForSecondary(Local(), Other(), 3, 0);
+            Assert.Equal(0, r2.MapAnalogSpan("aA", 3));
+            StringAssert(Assert.Throws<LinkRoutingException>(() => r2.MapAnalogPoint("aA", 1)).Message, "clamped to the trigger");
+
+            // Digital the same way.
+            var r3 = LinkRouting.ForSecondary(Local(), Other(), 3, 0);
+            Assert.Equal(0, r3.MapDigitalSpan("pA", 3));
+            StringAssert(Assert.Throws<LinkRoutingException>(() => r3.MapDigitalPoint("pA", 0)).Message, "clamped to the trigger");
+
+            // Unclamped events on tick 0 alongside a span there are fine, as are spans on other channels.
+            var r4 = LinkRouting.ForSecondary(Local(), Other(), 3, 0);
+            r4.MapAnalogSpan("aA", 3);
+            r4.MapAnalogPoint("aA", 3);
+            r4.MapAnalogSpan("aA", 3);
+            r4.MapDigitalPoint("pA", 0);
+            r4.MapAnalogSpan("tC", 3);
+        }
+
         public static void TestSecondaryNoClampCollisionWhenUnclamped()
         {
             var r = LinkRouting.ForSecondary(Local(), Other(), 0, 0);

@@ -305,6 +305,43 @@ namespace MOTMasterTests
             Assert.Equal(Path.Combine(LinkedScriptBuilder.TempRoot, "id1", "s.cs"), ok, "plain names accepted");
         }
 
+        // The primary compiles, sends, hashes and saves one read of the script, via its own temp copy.
+        public static void TestPrimaryScriptCopy(string[] args)
+        {
+            string id = Guid.NewGuid().ToString("N");
+            string copy = LinkedScriptBuilder.PrimaryScriptPathFor(id, "LinkedExample.cs");
+            var request = new LinkRunRequest { LinkRunId = id, ScriptFileName = "LinkedExample.cs" };
+            Assert.True(!string.Equals(copy, LinkedScriptBuilder.ScriptPathFor(request), StringComparison.OrdinalIgnoreCase),
+                "primary copy is not where a secondary on the same machine would write");
+            Assert.Equal("LinkedExample.cs", Path.GetFileName(copy));
+            string folder = Path.GetDirectoryName(copy);
+            Assert.True(LinkedScriptBuilder.IsRunFolder(folder), "primary copy folder is a deletable run folder");
+
+            foreach (string bad in new[] { "..", "", null, "..\\s.cs", "sub/s.cs" })
+                Assert.Throws<LinkedRunException>(() => LinkedScriptBuilder.PrimaryScriptPathFor(id, bad));
+            foreach (string bad in new[] { "..", "", null, "a\\b" })
+                Assert.Throws<LinkedRunException>(() => LinkedScriptBuilder.PrimaryScriptPathFor(bad, "s.cs"));
+
+            string text = File.ReadAllText(ExamplePath(args)) + "\n// éµ non-ASCII survives\n";
+            try
+            {
+                LinkedScriptBuilder.WriteScript(copy, text);
+                Assert.Equal(text, File.ReadAllText(copy), "primary copy holds exactly the text read");
+                // What the secondary writes from the same text reads back identically, so the hashes agree.
+                request.ScriptText = text;
+                string secondaryCopy = LinkedScriptBuilder.ScriptPathFor(request);
+                LinkedScriptBuilder.WriteScript(secondaryCopy, request.ScriptText);
+                Assert.Equal(LinkFingerprint.OfText(text), LinkFingerprint.OfText(File.ReadAllText(secondaryCopy)), "hashes agree");
+                Assert.Equal(LinkFingerprint.OfText(File.ReadAllText(copy)), LinkFingerprint.OfText(File.ReadAllText(secondaryCopy)), "file hashes agree");
+            }
+            finally
+            {
+                if (LinkedScriptBuilder.IsRunFolder(folder) && Directory.Exists(folder)) Directory.Delete(folder, true);
+                string secondaryFolder = Path.GetDirectoryName(LinkedScriptBuilder.ScriptPathFor(request));
+                if (LinkedScriptBuilder.IsRunFolder(secondaryFolder) && Directory.Exists(secondaryFolder)) Directory.Delete(secondaryFolder, true);
+            }
+        }
+
         public static void TestOnlyRunFoldersAreDeletable()
         {
             string root = LinkedScriptBuilder.TempRoot;

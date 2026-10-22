@@ -194,21 +194,7 @@ namespace DAQ.Pattern
             bool clamped = shifted < 0;
             int mapped = clamped ? 0 : shifted;
             if (clamped) clampedEvents.Add(name + " " + kind + " t=" + time + " -> 0 (was " + shifted + ")");
-            if (mapped == 0)
-            {
-                string key = kind + ":" + name;
-                TickZero zero;
-                if (!tickZero.TryGetValue(key, out zero))
-                {
-                    zero = new TickZero();
-                    tickZero[key] = zero;
-                }
-                if (zero.Seen && (zero.AnyClamped || clamped))
-                    throw new LinkRoutingException("Two " + kind + " events on '" + name + "' land on secondary tick 0 and at least one was clamped to the trigger, "
-                        + "so their order would be lost. Move the events apart or change SecondaryTriggerDelay");
-                zero.Seen = true;
-                zero.AnyClamped |= clamped;
-            }
+            if (mapped == 0) NoteTickZero(name, kind, clamped);
             return mapped;
         }
 
@@ -218,7 +204,25 @@ namespace DAQ.Pattern
             if (shifted < 0)
                 throw new LinkRoutingException("A " + kind + " operation on '" + name + "' starts before the secondary is triggered (t=" + start
                     + " maps to secondary tick " + shifted + "); it would be silently shifted or truncated, so it is refused");
+            // A span starting exactly on tick 0 is never clamped, but a clamped point event there would collide with it.
+            if (shifted == 0) NoteTickZero(name, kind, false);
             return shifted;
+        }
+
+        private void NoteTickZero(string name, string kind, bool clamped)
+        {
+            string key = kind + ":" + name;
+            TickZero zero;
+            if (!tickZero.TryGetValue(key, out zero))
+            {
+                zero = new TickZero();
+                tickZero[key] = zero;
+            }
+            if (zero.Seen && (zero.AnyClamped || clamped))
+                throw new LinkRoutingException("Two " + kind + " events on '" + name + "' land on secondary tick 0 and at least one was clamped to the trigger, "
+                    + "so their order would be lost. Move the events apart or change SecondaryTriggerDelay");
+            zero.Seen = true;
+            zero.AnyClamped |= clamped;
         }
 
         // ---- Analog start ----

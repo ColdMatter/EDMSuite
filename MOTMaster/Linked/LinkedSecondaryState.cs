@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 
 namespace MOTMaster
 {
@@ -9,13 +10,31 @@ namespace MOTMaster
     public sealed class LinkedSecondaryState
     {
         readonly object gate = new object();
+        readonly Func<long> nowMs;
         string token;
         string claimedBy;
         int armedShots;
+        int playedShots;
         bool running;
         string error;
+        // When the primary last made a token-validated call (nowMs() clock), for the contact timeout.
+        long lastContactMs;
 
         public event Action Changed;
+
+        public LinkedSecondaryState() : this(null) { }
+
+        /// <param name="nowMs">A millisecond clock; null uses Stopwatch. Tests pass a fake one.</param>
+        public LinkedSecondaryState(Func<long> nowMs)
+        {
+            if (nowMs == null)
+            {
+                Stopwatch clock = Stopwatch.StartNew();
+                nowMs = () => clock.ElapsedMilliseconds;
+            }
+            this.nowMs = nowMs;
+            lastContactMs = this.nowMs();
+        }
 
         public bool IsClaimed
         {
@@ -42,6 +61,7 @@ namespace MOTMaster
                 token = newToken;
                 claimedBy = primaryName;
                 armedShots = 0;
+                playedShots = 0;
                 running = false;
                 error = null;
             }
@@ -75,6 +95,7 @@ namespace MOTMaster
             token = null;
             claimedBy = null;
             armedShots = 0;
+            playedShots = 0;
             running = false;
             error = null;
         }
@@ -106,8 +127,10 @@ namespace MOTMaster
             lock (gate)
             {
                 armedShots = 0;
+                playedShots = 0;
                 running = true;
                 error = null;
+                lastContactMs = nowMs();
             }
             RaiseChanged();
         }
@@ -116,6 +139,30 @@ namespace MOTMaster
         {
             lock (gate) { armedShots++; }
             RaiseChanged();
+        }
+
+        /// <summary>The armed pattern ran to completion, i.e. the trigger arrived (not abandoned by a stop).</summary>
+        public void MarkPlayed()
+        {
+            lock (gate) { playedShots++; }
+            RaiseChanged();
+        }
+
+        /// <summary>Records a token-validated call from the primary (Status does this itself).</summary>
+        public void NoteContact()
+        {
+            lock (gate) { lastContactMs = nowMs(); }
+        }
+
+        public long MillisecondsSinceContact()
+        {
+            lock (gate) { return nowMs() - lastContactMs; }
+        }
+
+        /// <summary>True when the primary has not been in touch for longer than timeoutMs. timeoutMs &lt;= 0: never.</summary>
+        public bool ContactLost(int timeoutMs)
+        {
+            return timeoutMs > 0 && MillisecondsSinceContact() > timeoutMs;
         }
 
         public void Fail(string message)
@@ -135,7 +182,8 @@ namespace MOTMaster
             Validate(t);
             lock (gate)
             {
-                return new LinkShotStatus { ArmedShots = armedShots, Running = running, Error = error };
+                lastContactMs = nowMs();
+                return new LinkShotStatus { ArmedShots = armedShots, PlayedShots = playedShots, Running = running, Error = error };
             }
         }
 
