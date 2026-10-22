@@ -176,6 +176,17 @@ Bash — this cost real time to diagnose once already. Use the PowerShell tool.
   status` shows it as untracked forever and a normal `git add .` silently never picks it
   up — check `git check-ignore -v <path>.csproj` if a project you just added isn't
   showing up staged.
+- **`DAQMxPatternGenerator.OutputPattern(pattern)` doesn't return when the pattern
+  starts — it starts the task, then sleeps for one full pattern length
+  (`SleepOnePattern`).** `Controller.run()` uses this overload for `pgMaster`, so the
+  busy-wait in `runPattern` (and hence `Stop()`) can't take effect until that sleep is
+  over, and nothing placed after `run()` can tell you "the task has just started / is
+  now waiting for its trigger". If you need that moment, `OutputPattern(pattern, false)`
+  returns straight after `pgTask.Start()` — but it's shared DAQ code, so add a new path
+  rather than changing what the existing call does. The sleep doesn't add time to a
+  MOTMaster shot: patterns play once (not looping), so it overlaps the pattern itself,
+  and `runPattern` would wait for the task's `Done` anyway. The source comment's
+  "slowed down by a factor of two" is about looping pg scans, not MOTMaster.
 - **`LoadGlobalParameters()` must be called before any script-specific `Parameters[...]`
   assignment**, or the shared default silently wins over the script's intended override.
 - **Stray duplicate files exist and are not compiled**: `Controller - Copy*.cs`,
