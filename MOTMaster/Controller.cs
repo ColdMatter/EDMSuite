@@ -161,6 +161,27 @@ namespace MOTMaster
                 "tcp://127.0.0.1:1818/controller.rem");
 #endif //DDS
 
+            // Experiments that don't declare safe outputs get none of this, as before.
+            safeOutputs = DAQMxAnalogSafeState.FromHardware();
+            List<string> safeOutputProblems = DAQMxAnalogSafeState.Problems(safeOutputs);
+            if (safeOutputProblems.Count > 0)
+                MessageBox.Show("The safe outputs declared in the Hardware class can't be used, so they will "
+                    + "NOT be set after runs until this is fixed:\n\n" + string.Join("\n", safeOutputProblems),
+                    "MOTMaster: safe outputs", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+            // Closing the window mid-run: end the run so its finally sets the safe outputs.
+            // The run thread is a foreground thread, so the process waits for it.
+            Application.ApplicationExit += (s, e) => { status = RunningState.stopped; };
+
+            // Some other thread's exception is about to take the process down. Best
+            // effort: don't leave the coils wherever the pattern was.
+            AppDomain.CurrentDomain.UnhandledException += (s, e) =>
+            {
+                SharedCode.AppLog.Error("MOTMaster unhandled exception", e.ExceptionObject as Exception);
+                status = RunningState.stopped;
+                setSafeOutputs();
+            };
+
             ScriptLookupAndDisplay();
 
             Application.Run(controllerWindow);
@@ -467,7 +488,7 @@ namespace MOTMaster
 
         public void Run()
         {
-            runThread = new Thread(new ThreadStart(this.Go));
+            runThread = new Thread(() => goReportingErrors(() => Go()));
             runThread.Name = "MOTMaster Controller";
             runThread.Priority = ThreadPriority.Normal;
 
@@ -476,7 +497,7 @@ namespace MOTMaster
 
         public Thread Run(Dictionary<String, Object> dict)
         {
-            var t = new Thread(() => Go(dict));
+            var t = new Thread(() => goReportingErrors(() => Go(dict)));
             // status = RunningState.running;
             t.Start();
             //t.Join(); //Blocks calling thread until finished so that doesn't return until finished
@@ -501,9 +522,120 @@ namespace MOTMaster
         }
 
 
+        /// <summary>
+        /// True from the moment a run claims the hardware until it has fully finished,
+        /// including saving and clearing the patterns. Deliberately separate from
+        /// status: the Stop button sets status to stopped while the old run is still
+        /// winding down, and a second run must not start in that gap.
+        /// </summary>
+        public bool IsRunning
+        {
+            get { lock (runLock) { return runInProgress; } }
+        }
+        private readonly object runLock = new object();
+        private bool runInProgress = false;
+        private Dictionary<string, double> safeOutputs;
+
         public void Go(Dictionary<String, Object> dict)
         {
-            if (status == RunningState.stopped)
+            // Only one run may drive the pattern generators at a time. Go is reached
+            // from the Run button (on its own thread) and directly over remoting from
+            // Python, so the claim has to be atomic and live here, not in Run().
+            lock (runLock)
+            {
+                if (runInProgress)
+                {
+                    SharedCode.AppLog.Write("Controller.Go", "A run is already in progress, request ignored.");
+                    return;
+                }
+                runInProgress = true;
+            }
+            controllerWindow.RefreshRunControls();
+            try
+            {
+                goClaimed(dict);
+            }
+            catch (Exception ex)
+            {
+                // Logged here, then rethrown so a remote (Python) caller still sees it.
+                SharedCode.AppLog.Error("Controller.Go", ex);
+                // MOTMaster now survives this, so free the tasks for every experiment:
+                // left reserved, they would make the next run fail.
+                stopPatternTasksQuietly();
+                throw;
+            }
+            finally
+            {
+                // Before releasing the claim, so no new run can start in between.
+                setSafeOutputs();
+                status = RunningState.stopped;
+                lock (runLock) { runInProgress = false; }
+                controllerWindow.RefreshRunControls();
+            }
+        }
+
+        /// <summary>
+        /// Body of a thread started by Run(). An exception escaping a thread kills the
+        /// whole process, so report it instead. Go's finally has already made the
+        /// outputs safe by the time this sees it.
+        /// </summary>
+        private void goReportingErrors(Action go)
+        {
+            try
+            {
+                go();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("The run failed:\n\n" + ex.Message, "MOTMaster run error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Stop every pattern task and drive the experiment's safe outputs (if it declares
+        /// any in its Hardware class) to their safe values. A task stopped part-way leaves
+        /// its outputs at whatever value they had, so this runs however the run ended.
+        /// </summary>
+        private void setSafeOutputs()
+        {
+            if (safeOutputs == null || safeOutputs.Count == 0 || config.Debug) return;
+
+            stopPatternTasksQuietly();
+
+            try
+            {
+                DAQMxAnalogSafeState.SetSafeValues(safeOutputs);
+            }
+            catch (Exception ex)
+            {
+                SharedCode.AppLog.Error("Controller.setSafeOutputs", ex);
+                MessageBox.Show("Could not set the safe outputs (" + DAQMxAnalogSafeState.Describe(safeOutputs)
+                    + ") after the run. They may still be at their last value.\n\n" + ex.Message,
+                    "MOTMaster: outputs NOT made safe", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        /// <summary>
+        /// On an exception mid-pattern the tasks still hold their channels. After a
+        /// normal shot they are already disposed and these just throw, harmlessly.
+        /// </summary>
+        private void stopPatternTasksQuietly()
+        {
+            if (config.Debug) return;
+            try { pgMaster.StopPattern(); } catch { }
+            foreach (DAQMxPatternGenerator pg in pgs.Values)
+            {
+                try { pg.StopPattern(); } catch { }
+            }
+            foreach (DAQMxAnalogPatternGenerator apg in analogs.Values)
+            {
+                try { apg.StopPattern(); } catch { }
+            }
+        }
+
+        private void goClaimed(Dictionary<String, Object> dict)
+        {
             {
                 status = RunningState.running;
 #if DDS
@@ -1126,6 +1258,9 @@ namespace MOTMaster
 
         public void RunReplica()
         {
+            // armReplicaRun repoints scriptPath, which a run in progress still uses
+            // when it saves, so refuse before touching anything.
+            if (IsRunning) return;
             armReplicaRun();
             Run();
             disposeReplicaRun();

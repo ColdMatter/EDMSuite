@@ -62,6 +62,29 @@ namespace MOTMaster
 
         #endregion
 
+        /// <summary>
+        /// Grey out everything that starts a run while one is in progress. Called from
+        /// whichever thread the run is on, so it marshals to the UI thread. BeginInvoke,
+        /// not Invoke, so a run thread can never block on a busy UI thread. Reads
+        /// controller.IsRunning when it lands rather than taking a value, so posts from
+        /// a finishing run and the next run can't arrive out of order and leave Run lit.
+        /// </summary>
+        public void RefreshRunControls()
+        {
+            if (!IsHandleCreated || IsDisposed) return;
+            try
+            {
+                BeginInvoke(new Action(() =>
+                {
+                    bool enabled = !controller.IsRunning;
+                    runButton.Enabled = enabled;
+                    ReplicateScriptToolStripMenuItem.Enabled = enabled;
+                }));
+            }
+            // The window is closing while a run winds down; nothing left to update.
+            catch (InvalidOperationException) { }
+        }
+
         public void FillScriptComboBox(string[] s)
         {
             scriptListComboBox.Items.Clear();
