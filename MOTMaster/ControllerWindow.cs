@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace MOTMaster
@@ -74,16 +75,111 @@ namespace MOTMaster
             if (!IsHandleCreated || IsDisposed) return;
             try
             {
-                BeginInvoke(new Action(() =>
-                {
-                    bool enabled = !controller.IsRunning;
-                    runButton.Enabled = enabled;
-                    ReplicateScriptToolStripMenuItem.Enabled = enabled;
-                }));
+                BeginInvoke(new Action(applyRunControls));
             }
             // The window is closing while a run winds down; nothing left to update.
             catch (InvalidOperationException) { }
         }
+
+        // Runs on the UI thread.
+        private void applyRunControls()
+        {
+            bool locked = controller.IsLockedByPrimary;
+
+            bool enabled = !controller.IsRunning;
+            enabled &= !locked;
+            runButton.Enabled = enabled;
+            ReplicateScriptToolStripMenuItem.Enabled = enabled;
+
+            // These are not greyed by a run today; they are greyed only while another MOTMaster controls this one.
+            bool notLocked = !locked;
+            selectScriptButton.Enabled = notLocked;
+            newPatternToolStripMenuItem.Enabled = notLocked;
+            lookupScriptsButton.Enabled = notLocked;
+            scriptListComboBox.Enabled = notLocked;
+            triggeredCheckBox.Enabled = notLocked;
+
+            linkBannerLabel.Visible = locked;
+            breakLinkButton.Visible = locked;
+            if (locked) linkBannerLabel.Text = "Controlled by " + controller.LockedBy + " (linked run)";
+
+            // The primary's Linked box: not while a change is in flight, and not mid-run (SetLinked refuses then).
+            linkedCheckBox.Enabled = !linkedChangeInProgress && !controller.IsRunning;
+        }
+
+        #region Linked mode
+
+        private bool linkedChangeInProgress = false;
+        // Set while the box is being synced from controller.IsLinked, so that does not re-trigger the handler.
+        private bool syncingLinkedBox = false;
+
+        private void initLinkedControls()
+        {
+            controller.LinkStateChanged += RefreshRunControls;
+
+            if (controller.LinkConfig != null)
+            {
+                string host = controller.LinkConfig.SecondaryUrl;
+                try { host = new Uri(controller.LinkConfig.SecondaryUrl).Host; }
+                catch (UriFormatException) { }
+                linkedCheckBox.Text = "Linked to " + host;
+                linkedCheckBox.Visible = true;
+            }
+            else
+            {
+                linkedCheckBox.Visible = false;
+            }
+            applyRunControls();
+        }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            controller.LinkStateChanged -= RefreshRunControls;
+            base.OnFormClosed(e);
+        }
+
+        private void linkedCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (syncingLinkedBox) return;
+            bool want = linkedCheckBox.Checked;
+            linkedChangeInProgress = true;
+            linkedCheckBox.Enabled = false;
+            // SetLinked makes a blocking remoting call (a TCP timeout if the secondary is unreachable): keep it off the UI thread.
+            Task.Run(() =>
+            {
+                string error = null;
+                try { controller.SetLinked(want); }
+                catch (Exception ex) { error = ex.Message; }
+                if (IsDisposed || !IsHandleCreated) return;
+                try
+                {
+                    BeginInvoke(new Action(() => linkedChangeFinished(error)));
+                }
+                catch (InvalidOperationException) { } // the window closed meanwhile
+            });
+        }
+
+        private void linkedChangeFinished(string error)
+        {
+            linkedChangeInProgress = false;
+            // The truth, not an assumption: whatever happened, show what the controller says.
+            syncingLinkedBox = true;
+            try { linkedCheckBox.Checked = controller.IsLinked; }
+            finally { syncingLinkedBox = false; }
+            applyRunControls();
+            if (error != null) MessageBox.Show(this, error, "Linked mode");
+        }
+
+        private void breakLinkButton_Click(object sender, EventArgs e)
+        {
+            string by = controller.LockedBy;
+            DialogResult r = MessageBox.Show(this,
+                "Break the link to " + by + "? Only do this if the primary MOTMaster has crashed or closed.",
+                "Break link", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+            if (r == DialogResult.Yes) controller.BreakLink();
+        }
+
+        #endregion
 
         public void FillScriptComboBox(string[] s)
         {
@@ -109,6 +205,7 @@ namespace MOTMaster
 
         private void ControllerWindow_Load(object sender, EventArgs e)
         {
+            initLinkedControls();
             controller.SetScriptPath(getScriptPath());
         }
 
