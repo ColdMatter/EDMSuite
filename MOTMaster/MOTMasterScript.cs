@@ -20,14 +20,41 @@ namespace MOTMaster
         }
         public Dictionary<String, Object> Parameters;
 
+        [ThreadStatic]
+        private static Dictionary<string, object> linkedParameterOverride;
+
+        /// <summary>
+        /// Set around script construction on the secondary of a linked run so that the
+        /// script is built from the primary's parameter values. When non-null,
+        /// <see cref="LoadGlobalParameters"/> copies every entry into Parameters instead of
+        /// reading globalParameters.json. Thread-static: it affects only the calling thread.
+        /// </summary>
+        public static Dictionary<string, object> LinkedParameterOverride
+        {
+            get { return linkedParameterOverride; }
+            set { linkedParameterOverride = value; }
+        }
+
         /// <summary>
         /// Loads parameters shared between scripts from globalParameters.json in the
         /// scripts folder (edited via MOTMaster's Parameters > Edit parameter file menu).
         /// Call this after initialising Parameters and before any script-specific
         /// Parameters[...] assignments, so per-script values still take precedence.
+        /// When <see cref="LinkedParameterOverride"/> is set (a linked run's secondary
+        /// system), its entries are used instead and globalParameters.json is not read.
         /// </summary>
         protected void LoadGlobalParameters()
         {
+            Dictionary<string, object> linked = LinkedParameterOverride;
+            if (linked != null)
+            {
+                foreach (KeyValuePair<string, object> kv in linked)
+                {
+                    Parameters[kv.Key] = kv.Value;
+                }
+                return;
+            }
+
             string path = Path.Combine((string)Environs.FileSystem.Paths["scriptListPath"], "globalParameters.json");
             var groups = ParameterFileManager.ReadFile(path, typeof(double));
             foreach (ParameterEntry entry in ParameterFileManager.Flatten(groups))
@@ -70,7 +97,6 @@ namespace MOTMaster
         public class ParameterNotInOriginalDictionaryException : ApplicationException { }
     }
 
-#if DDS
     /// <summary>
     /// Builds the dictionary <see cref="MOTMasterScript.GetDDSPattern"/> returns.
     /// </summary>
@@ -95,8 +121,10 @@ namespace MOTMaster
     /// instant.
     /// </para>
     /// <para>
-    /// Gated on the DDS compile symbol, which only the CaF configuration defines, so
-    /// that experiments which do not use the DDS see no change at all.
+    /// Compiled in every configuration (it is plain data-building code and touches no
+    /// hardware), so that a linked secondary system can compile cafmot DDS scripts. The
+    /// code that actually drives the DDS card stays gated on the DDS compile symbol,
+    /// which only the CaF configuration defines.
     /// </para>
     /// </remarks>
     public class DDSPatternBuilder
@@ -151,5 +179,4 @@ namespace MOTMaster
             return row;
         }
     }
-#endif //DDS
 }
