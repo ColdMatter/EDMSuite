@@ -1,21 +1,12 @@
 # CaF MOTMaster snippets: findings so far and an open decision
 
-Branch `cafmot-snippets`, 2026-10-22. Nothing has been built yet. This note covers
-what we found in the current scripts, what has been decided, and one decision we
-want the group's view on before going further.
+Branch `cafmot-snippets`, 2026-10-22. Nothing has been built yet. This note covers what we found in the current scripts, what has been decided, and one decision we want the group's view on before going further.
 
 ## The goal
 
-Break the cafmot pattern scripts in `MoleculeMOTMasterScripts/` into snippets:
-chunks of a MOTMaster pattern that scripts plug in instead of copy-pasting the same
-lines. Only the scripts directly in that folder are in scope (26 today). Subfolders
-(`OLD`, `ODT_scripts_Aug26`, `Spectroscopy_Aug26`, ...) are left alone; MOTMaster
-does not list them anyway.
+Break the cafmot pattern scripts in `MoleculeMOTMasterScripts/` into snippets: chunks of a MOTMaster pattern that scripts plug in instead of copy-pasting the same lines. Only the scripts directly in that folder are in scope (26 today). Subfolders (`OLD`, `ODT_scripts_Aug26`, `Spectroscopy_Aug26`, ...) are left alone; MOTMaster does not list them anyway.
 
-A snippet today is a class implementing `MOTMasterScriptSnippet`
-(`MOTMaster/MOTMasterScriptSnippet.cs`), which has two methods, one for the digital
-pattern and one for the analog pattern. Scripts already use one:
-`new LoadMoleculeMOTNoSlowingEdge(p, Parameters)`.
+A snippet today is a class implementing `MOTMasterScriptSnippet` (`MOTMaster/MOTMasterScriptSnippet.cs`), which has two methods, one for the digital pattern and one for the analog pattern. Scripts already use one: `new LoadMoleculeMOTNoSlowingEdge(p, Parameters)`.
 
 ## What the 26 scripts have in common
 
@@ -28,70 +19,39 @@ pattern and one for the analog pattern. Scripts already use one:
 | Tweezer-chamber ending (blue MOT, red MOT, lambda + free fall, trip back) | `5.*` to `8.*` | One-offs per script |
 | Camera triggers | all | Least uniform: about 20 different `cameraTrigger` lines |
 
-The two outliers in the first row are `0. DDSFourSidebands5W_noDDS` and
-`BX_spectroscopy`, which have no compressed MOT or lambda stage.
+The two outliers in the first row are `0. DDSFourSidebands5W_noDDS` and `BX_spectroscopy`, which have no compressed MOT or lambda stage.
 
 Other repetition:
 
-- Every script works out its stage times (`lambdaCoolingStart`, `BlueMOTEnd`, ...)
-  three times, once each in the DDS, digital and analog methods. The digital copy
-  is shifted by `TCLBlockStart`.
-- 25 of the 26 scripts carry their own copy of the `addDDSPattern` helper. Only
-  `2.a DDSBlueMOT` builds its DDS pattern with `DDSPatternBuilder`.
+- Every script works out its stage times (`lambdaCoolingStart`, `BlueMOTEnd`, ...) three times, once each in the DDS, digital and analog methods. The digital copy is shifted by `TCLBlockStart`.
+- 25 of the 26 scripts carry their own copy of the `addDDSPattern` helper. Only `2.a DDSBlueMOT` builds its DDS pattern with `DDSPatternBuilder`.
 
 Places where the scripts have drifted apart:
 
-- Six scripts never pulse `DDS_Analog_Trg`: `1. LambdaRecap`, `3. MagTrap_withBM`,
-  `4. BM_move_coils_test`, `4. BlueMOT_transport_test`,
-  `4. TCoil_test_back_forth_movement`, `4. TCoil_test_no_movement_1.5secHold`.
+- Six scripts never pulse `DDS_Analog_Trg`: `1. LambdaRecap`, `3. MagTrap_withBM`, `4. BM_move_coils_test`, `4. BlueMOT_transport_test`, `4. TCoil_test_back_forth_movement`, `4. TCoil_test_no_movement_1.5secHold`.
 - `bXSlowingShutter` has four different versions.
 
 ## Decided so far
 
-1. **Snippets are stages of the shot:** slowing/load, MOT, compressed MOT, lambda
-   cooling, blue MOT, handover/transport, optical pumping, magtrap, imaging.
-2. **Snippets cover DDS as well as digital and analog.** `MOTMasterScriptSnippet`
-   gets a third method, `AddDDSSnippet(DDSPatternBuilder p, ...)`, inside `#if DDS`,
-   so only the CaF build sees it. The four snippets already compiled into
-   MOTMaster.exe (`LoadMoleculeMOT`, `LoadMoleculeMOTDualSpecies`,
-   `LoadMoleculeMOTNoSlowingEdge`, `SHLoadMOT`) get an empty `#if DDS` stub, which
-   the CaF build needs in order to compile. Nothing changes for other experiments.
-   Scripts using DDS snippets build their DDS pattern with `DDSPatternBuilder`
-   instead of their own copy of `addDDSPattern`.
-3. **`DDS_Analog_Trg` is fired in every script.** The six scripts listed above will
-   gain it when converted.
-4. **Other drift becomes parameters.** Where scripts differ (shutter timings,
-   typed-in fields, fixed gaps like `+ 100`), the snippet reads a parameter with a
-   sensible default and each script keeps its current value. Behaviour only changes
-   where something was clearly a mistake, as with the missing trigger.
-5. **Snippets live in `MoleculeMOTMasterScripts/Snippets/`, one class per file, the
-   file named after the class.** They are compiled when a script is loaded, not
-   built into MOTMaster.exe, so editing a snippet needs no rebuild.
-6. **Only the snippets a script uses are compiled with it.** When a script loads,
-   MOTMaster removes comments and string literals from it, finds names that match
-   files in `Snippets/`, and compiles those, following snippets that use other
-   snippets. A broken snippet only affects the scripts that use it.
+1. **Snippets are stages of the shot:** slowing/load, MOT, compressed MOT, lambda cooling, blue MOT, handover/transport, optical pumping, magtrap, imaging.
+2. **Snippets cover DDS as well as digital and analog.** `MOTMasterScriptSnippet` gets a third method, `AddDDSSnippet(DDSPatternBuilder p, ...)`, inside `#if DDS`, so only the CaF build sees it. The four snippets already compiled into MOTMaster.exe (`LoadMoleculeMOT`, `LoadMoleculeMOTDualSpecies`, `LoadMoleculeMOTNoSlowingEdge`, `SHLoadMOT`) get an empty `#if DDS` stub, which the CaF build needs in order to compile. Nothing changes for other experiments. Scripts using DDS snippets build their DDS pattern with `DDSPatternBuilder` instead of their own copy of `addDDSPattern`.
+3. **`DDS_Analog_Trg` is fired in every script.** The six scripts listed above will gain it when converted.
+4. **Other drift becomes parameters.** Where scripts differ (shutter timings, typed-in fields, fixed gaps like `+ 100`), the snippet reads a parameter with a sensible default and each script keeps its current value. Behaviour only changes where something was clearly a mistake, as with the missing trigger.
+5. **Snippets live in `MoleculeMOTMasterScripts/Snippets/`, one class per file, the file named after the class.** They are compiled when a script is loaded, not built into MOTMaster.exe, so editing a snippet needs no rebuild.
+6. **Only the snippets a script uses are compiled with it.** When a script loads, MOTMaster removes comments and string literals from it, finds names that match files in `Snippets/`, and compiles those, following snippets that use other snippets. A broken snippet only affects the scripts that use it.
 
 Consequences of 5 and 6:
 
-- `Controller.compileFromFile` (shared code) changes. It is switched on by a path
-  entry that only cafmot's `PHBonesawFileSystem.cs` sets, the same way
-  `AdditionalMOTMasterAssemblies` works, so other experiments compile exactly as
-  before.
-- The runtime compiler only accepts C# 5, so snippets cannot use newer syntax
-  such as `$"..."` strings. Scripts already have this limit.
-- New snippets go in their own namespace, so they cannot clash with the ones in
-  MOTMaster.exe.
+- `Controller.compileFromFile` (shared code) changes. It is switched on by a path entry that only cafmot's `PHBonesawFileSystem.cs` sets, the same way `AdditionalMOTMasterAssemblies` works, so other experiments compile exactly as before.
+- The runtime compiler only accepts C# 5, so snippets cannot use newer syntax such as `$"..."` strings. Scripts already have this limit.
+- New snippets go in their own namespace, so they cannot clash with the ones in MOTMaster.exe.
 - `verify-scripts.ps1` copies `compileFromFile`, so it needs the same change.
 
 ## Open decision: how a snippet knows when it starts
 
-The interface methods are fixed at `(p, parameters)`, so a start time has to come
-in through the snippet's constructor. The question is where the timeline lives.
+The interface methods are fixed at `(p, parameters)`, so a start time has to come in through the snippet's constructor. The question is where the timeline lives.
 
-Both options use the same snippet. Times are always counted from the Q-switch;
-digital snippets add `TCLBlockStart` themselves, so scripts never handle that
-offset.
+Both options use the same snippet. Times are always counted from the Q-switch; digital snippets add `TCLBlockStart` themselves, so scripts never handle that offset.
 
 ```csharp
 namespace MOTMaster.SnippetLibrary.CaF
@@ -133,10 +93,7 @@ namespace MOTMaster.SnippetLibrary.CaF
 }
 ```
 
-The script examples below are trimmed to the stages that
-`7. OP_transfer_to_tweezer_coils_blueMOT` shares with most scripts. `OPGap` is
-today's typed-in `+ 100`, made a parameter. `LambdaCooling` takes a name because it
-runs twice in one shot and DDS event names must be unique.
+The script examples below are trimmed to the stages that `7. OP_transfer_to_tweezer_coils_blueMOT` shares with most scripts. `OPGap` is today's typed-in `+ 100`, made a parameter. `LambdaCooling` takes a name because it runs twice in one shot and DDS event names must be unique.
 
 ### Option A: the script sets out the timeline once
 
@@ -179,10 +136,8 @@ public class Patterns : MOTMasterScript
 }
 ```
 
-- **Good:** the whole shot can be read in one place, and changing a gap between
-  stages is a one-line edit.
-- **Bad:** each stage's length is written in the script, separately from the
-  snippet that uses it, so the two can disagree.
+- **Good:** the whole shot can be read in one place, and changing a gap between stages is a one-line edit.
+- **Bad:** each stage's length is written in the script, separately from the snippet that uses it, so the two can disagree.
 
 ### Option B: each snippet hands its end time to the next
 
@@ -205,18 +160,12 @@ public override AnalogPatternBuilder GetAnalogPattern()
 // GetDigitalPattern and GetDDSPattern repeat the same chain.
 ```
 
-- **Good:** each stage knows its own length, so scripts never add up durations.
-  Moving, adding or removing a stage is a matter of moving a line.
-- **Bad:** the chain is written three times, once per pattern, and the three copies
-  must stay in the same order. Any time a later line needs (such as `blueMOTEnd`
-  for a camera trigger) has to be saved to a variable on the way.
+- **Good:** each stage knows its own length, so scripts never add up durations. Moving, adding or removing a stage is a matter of moving a line.
+- **Bad:** the chain is written three times, once per pattern, and the three copies must stay in the same order. Any time a later line needs (such as `blueMOTEnd` for a camera trigger) has to be saved to a variable on the way.
 
 ## Still to discuss after this
 
 - Which scripts get converted first, and whether all 26 do.
-- How the same stage is reused in a different place, e.g. a blue MOT in the tweezer
-  chamber, which uses `TweezerCoils` and `tBlueMOTField` instead of
-  `MOTCoilsCurrent` and `BlueMOTField`.
+- How the same stage is reused in a different place, e.g. a blue MOT in the tweezer chamber, which uses `TweezerCoils` and `tBlueMOTField` instead of `MOTCoilsCurrent` and `BlueMOTField`.
 - Imaging/camera triggers, which vary the most.
-- How converted scripts are checked against today's patterns before anyone runs
-  them.
+- How converted scripts are checked against today's patterns before anyone runs them.
