@@ -26,6 +26,8 @@ namespace MOTMaster
         public int AnalogOrigin;
         public bool SaveEnable;
         public int BatchNumber;
+        /// <summary>The primary's BuildProvenance.Describe(), recorded in the secondary's _link.txt. Null from an older primary.</summary>
+        public string PrimaryProvenance;
     }
 
     /// <summary>The secondary's answer to PrepareLinkedRun: what it compiled and what it will run.</summary>

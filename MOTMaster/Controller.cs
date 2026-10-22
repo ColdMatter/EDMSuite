@@ -169,9 +169,18 @@ namespace MOTMaster
                     + "NOT be set after runs until this is fixed:\n\n" + string.Join("\n", safeOutputProblems),
                     "MOTMaster: safe outputs", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
+            // Null on every machine whose Hardware declares no link: no linked mode there.
+            LinkConfig = Environs.Hardware.GetInfo(MOTMasterLinkConfig.InfoKey) as MOTMasterLinkConfig;
+
             // Closing the window mid-run: end the run so its finally sets the safe outputs.
             // The run thread is a foreground thread, so the process waits for it.
-            Application.ApplicationExit += (s, e) => { status = RunningState.stopped; };
+            // A linked primary also gives up its claim on the secondary (best effort, never throws).
+            Application.ApplicationExit += (s, e) =>
+            {
+                status = RunningState.stopped;
+                LinkedPrimary lp = linkedPrimary;
+                if (lp != null) lp.Release();
+            };
 
             // Some other thread's exception is about to take the process down. Best
             // effort: don't leave the coils wherever the pattern was.
@@ -425,8 +434,19 @@ namespace MOTMaster
         public void ViewPattern()
         {
             MOTMasterScript script = prepareScript(scriptPath, null);
-            MOTMasterSequence sequence = getSequenceFromScript(script);
-            buildPattern(sequence, (int)script.Parameters["PatternLength"]);
+            MOTMasterSequence sequence;
+            if (linkedPrimary == null)
+            {
+                sequence = getSequenceFromScript(script);
+                buildPattern(sequence, (int)script.Parameters["PatternLength"]);
+            }
+            else
+            {
+                // Linked: this machine's channels only (with the trigger pulse); the secondary's channels are not shown.
+                LinkedBuild build = LinkedScriptBuilder.BuildPrimary(script, Environs.Hardware, linkedOtherHardware, LinkConfig);
+                sequence = build.Sequence;
+                buildPattern(sequence, build.DigitalLength);
+            }
 
             var digitalChannels = new List<(string, uint[])>
             {
@@ -654,6 +674,15 @@ namespace MOTMaster
         private void goClaimed(Dictionary<String, Object> dict)
         {
             {
+                // Linked mode is decided once, here, for the whole run. When link is null (every non-linked run,
+                // and every machine without a MOTMasterLinkConfig) this method does exactly what it always did.
+                LinkedPrimary link = linkedPrimary;
+                Hardware linkOther = linkedOtherHardware;
+                // linkBegun is set just BEFORE Begin is called: the secondary starts its run thread inside
+                // PrepareLinkedRun, i.e. before Begin returns, so even a Begin that throws must be followed by Abort.
+                bool linkBegun = false;
+                bool linkEnded = false;
+                int linkShot = 0;
                 status = RunningState.running;
 #if DDS
                 // Declared out here so the finally can stop the shot loop however
@@ -664,10 +693,26 @@ namespace MOTMaster
                 try
                 {
                 Stopwatch watch = new Stopwatch();
-                MOTMasterScript script = prepareScript(scriptPath, dict);
+                if (link != null && config.Debug)
+                    throw new LinkedRunException("This MOTMaster (" + System.Environment.MachineName
+                        + ") is in Debug mode, where it does not drive the pattern generators; linked runs are refused.");
+                // Linked: a compile or load failure throws (with the compiler errors) instead of a MessageBox.
+                MOTMasterScript script = link == null ? prepareScript(scriptPath, dict) : prepareScriptOrThrow(scriptPath, dict);
+                if (link != null && script == null) throw new LinkedRunException("script did not compile or load");
                 if (script != null)
                 {
-                    MOTMasterSequence sequence = getSequenceFromScript(script);
+                    MOTMasterSequence sequence;
+                    LinkedBuild linkBuild = null;
+                    if (link == null)
+                    {
+                        sequence = getSequenceFromScript(script);
+                    }
+                    else
+                    {
+                        // This machine's channels of the linked script, plus the pulse that triggers the secondary.
+                        linkBuild = LinkedScriptBuilder.BuildPrimary(script, Environs.Hardware, linkOther, LinkConfig);
+                        sequence = linkBuild.Sequence;
+                    }
 
 #if DDS
                     // Hand the script's DDS pattern to the card and leave it armed.
@@ -697,7 +742,36 @@ namespace MOTMaster
 
                     //if (config.CameraUsed) GrabImage((int)script.Parameters["NumberOfFrames"]);
 
-                    buildPattern(sequence, (int)script.Parameters["PatternLength"]);
+                    if (link == null)
+                        buildPattern(sequence, (int)script.Parameters["PatternLength"]);
+                    else
+                        buildPattern(sequence, linkBuild.DigitalLength);
+
+                    if (link != null)
+                    {
+                        // Hand the secondary the exact text and full parameter set; it compiles and builds its side,
+                        // starts its triggered run thread, and returns what it compiled. Begin throws on any mismatch.
+                        string scriptText = File.ReadAllText(scriptPath);
+                        string provenance = BuildProvenance.Describe();
+                        LinkRunRequest request = new LinkRunRequest
+                        {
+                            LinkRunId = Guid.NewGuid().ToString(),
+                            PrimaryName = System.Environment.MachineName,
+                            PrimaryHardwareType = Environs.Hardware.GetType().FullName + ", DAQ",
+                            ScriptFileName = Path.GetFileName(scriptPath),
+                            ScriptText = scriptText,
+                            Parameters = script.Parameters,
+                            AnalogOrigin = linkBuild.AnalogOrigin,
+                            SaveEnable = saveEnable,
+                            BatchNumber = controllerWindow.GetSaveBatchNumber(),
+                            PrimaryProvenance = provenance
+                        };
+                        SharedCode.AppLog.Write("Controller.Go", "Linked run " + request.LinkRunId + ": preparing the secondary ("
+                            + request.ScriptFileName + ")");
+                        linkBegun = true;
+                        link.Begin(request, LinkFingerprint.OfText(scriptText), LinkFingerprint.OfParameters(script.Parameters),
+                            config.DigitalPatternClockFrequency, config.AnalogPatternClockFrequency, provenance);
+                    }
 
                     //if (config.CameraUsed) waitUntilCameraIsReadyForAcquisition();
 
@@ -715,6 +789,8 @@ namespace MOTMaster
                                 // let the tally at the end report the miss.
                                 if (ddsInUse) ddsController.WaitUntilArmed(1.0);
 #endif //DDS
+                                // Linked: fire only once the secondary is waiting for this shot's trigger. False = Stop.
+                                if (link != null && !link.WaitUntilArmed(++linkShot, () => status == RunningState.running)) break;
                                 runPattern(sequence);
 #if DDS
                                 if (ddsInUse) ddsTriggersSent++;
@@ -731,6 +807,7 @@ namespace MOTMaster
 #if DDS
                                 if (ddsInUse) ddsController.WaitUntilArmed(1.0);
 #endif //DDS
+                                if (link != null && !link.WaitUntilArmed(++linkShot, () => status == RunningState.running)) break;
                                 runPattern(sequence);
 #if DDS
                                 if (ddsInUse) ddsTriggersSent++;
@@ -775,9 +852,21 @@ namespace MOTMaster
                     }
 #endif //DDS
 
+                    if (link != null)
+                    {
+                        // Tell the secondary to finish and wait for it to stop (it saves first). Throws on a
+                        // secondary error or timeout, so a failed linked run never looks like a good one.
+                        link.End();
+                        linkEnded = true;
+                    }
+
                     //MessageBox.Show(watch.ElapsedMilliseconds.ToString());
                     if (saveEnable)
                     {
+                        // Linked: the run's link details go in the zip as _link.txt. Null for every non-linked run.
+                        if (link != null) ioHelper.LinkInfo = link.SaveInfo;
+                        try
+                        {
                         if (config.CameraUsed)
                         {
                             waitUntilCameraAquisitionIsDone();
@@ -785,7 +874,7 @@ namespace MOTMaster
                             {
                                 checkDataArrived();
                             }
-                            catch (DataNotArrivedFromHardwareControllerException)
+                            catch (DataNotArrivedFromHardwareControllerException) when (link == null)
                             {
                                 return;
                             }
@@ -809,6 +898,11 @@ namespace MOTMaster
                             save(sequence, script, scriptPath, report);
 
                         }
+                        }
+                        finally
+                        {
+                            if (link != null) ioHelper.LinkInfo = null;
+                        }
 
 
                     }
@@ -829,30 +923,42 @@ namespace MOTMaster
                     MessageBox.Show("Unable to load pattern. \n Check that the script file exists and that it compiled successfully");
                 }
                 }
-                catch (AnalogPatternBuilderSingleBoard.InsufficientPatternLengthException ex)
+                // Not for linked runs: those must throw to the caller (Go rethrows, so Python sees it), never
+                // end in a MessageBox.
+                catch (AnalogPatternBuilderSingleBoard.InsufficientPatternLengthException ex) when (link == null)
                 {
                     SharedCode.AppLog.Error("Controller.Go (analog pattern length)", ex);
                     MessageBox.Show("The pattern length is too short to fit all the requested analog events.\n\n"
                         + ex.Message + "\n\nIncrease PatternLength in the script and try again.",
                         "Insufficient Pattern Length", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
-                catch (DAQ.Pattern.InsufficientPatternLengthException ex)
+                catch (DAQ.Pattern.InsufficientPatternLengthException ex) when (link == null)
                 {
                     SharedCode.AppLog.Error("Controller.Go (digital pattern length)", ex);
                     MessageBox.Show("The pattern length is too short to fit all the requested digital events.\n\n"
                         + ex.Message + "\n\nIncrease PatternLength in the script and try again.",
                         "Insufficient Pattern Length", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
-#if DDS
                 finally
                 {
+#if DDS
                     // Every way out of the run leads here, including the early return
                     // when the camera data does not arrive. A DDS still arming itself
                     // after the last trigger is what leaves stale shots queued on the
                     // card for the next run to play through.
                     if (ddsInUse) stopDDS();
-                }
 #endif //DDS
+                    // Linked runs only (linkBegun is never set otherwise): any way out after Begin was called
+                    // without a completed End stops the secondary too.
+                    if (linkBegun && !linkEnded)
+                    {
+                        // Make this machine safe first: Abort can wait on the secondary for up to EndTimeoutMs
+                        // (or a remoting timeout). Go's finally sets the safe outputs again afterwards, harmlessly.
+                        stopPatternTasksQuietly();
+                        setSafeOutputs();
+                        link.Abort();
+                    }
+                }
                 status = RunningState.stopped;
             }
         }
@@ -868,6 +974,103 @@ namespace MOTMaster
         }
 
 #endregion
+
+        #region Linked runs: primary side (remotable)
+
+        // This MOTMaster as the primary of a linked pair. Only possible where the Hardware class declares a
+        // MOTMasterLinkConfig. SetLinked(true) claims the secondary; from then on every Go (GUI or Python) runs
+        // linked, and any failure of a linked run throws out of Go. Nothing here is reached until SetLinked(true).
+
+        /// <summary>The link this machine's Hardware declares; null when it declares none (no linked mode).</summary>
+        public MOTMasterLinkConfig LinkConfig { get; private set; }
+
+        // Non-null exactly while linked. goClaimed and ViewPattern read it once per call.
+        private volatile LinkedPrimary linkedPrimary;
+        // The secondary's Hardware, for routing channel names; set before linkedPrimary.
+        private volatile Hardware linkedOtherHardware;
+        // Serialises SetLinked calls (GUI and remoting).
+        private readonly object setLinkedLock = new object();
+
+        public bool IsLinked => linkedPrimary != null;
+
+        /// <summary>
+        /// Turns linked mode on (claims the secondary; throws LinkedRunException if it can't) or off (releases it).
+        /// Refused while a run is in progress. Turning it off when not linked does nothing. Turning it on when
+        /// already linked releases the old claim and claims again (re-links, e.g. after a Break link there).
+        /// Makes a blocking remoting call to the secondary.
+        /// </summary>
+        public void SetLinked(bool value)
+        {
+            lock (setLinkedLock)
+            {
+                if (!value)
+                {
+                    LinkedPrimary current = linkedPrimary;
+                    if (current == null) return;
+                    if (IsRunning)
+                        throw new LinkedRunException("A run is in progress; stop it before turning linked mode off.");
+                    linkedPrimary = null;
+                    current.Release();
+                    SharedCode.AppLog.Write("Controller.SetLinked", "Linked mode off; released " + LinkConfig.SecondaryUrl);
+                }
+                else
+                {
+                    if (LinkConfig == null)
+                        throw new LinkedRunException("no link configured in " + Environs.Hardware.GetType().Name);
+                    if (IsRunning)
+                        throw new LinkedRunException("A run is in progress; linked mode can only be turned on between runs.");
+
+                    ILinkSecondary proxy;
+                    Hardware other;
+                    try
+                    {
+                        // Only a proxy: nothing connects until Claim below.
+                        proxy = (ILinkSecondary)Activator.GetObject(typeof(Controller), LinkConfig.SecondaryUrl);
+                        other = (Hardware)Activator.CreateInstance(Type.GetType(LinkConfig.SecondaryHardwareType, true));
+                    }
+                    catch (Exception ex)
+                    {
+                        SharedCode.AppLog.Error("Controller.SetLinked", ex);
+                        throw new LinkedRunException("Linked mode could not be set up from the link configuration in "
+                            + Environs.Hardware.GetType().Name + " (secondary " + LinkConfig.SecondaryUrl + ", hardware "
+                            + LinkConfig.SecondaryHardwareType + "): " + ex.GetType().Name + ": " + ex.Message);
+                    }
+                    LinkedPrimary lp = new LinkedPrimary(proxy, LinkConfig, logLinkedPrimary);
+
+                    LinkedPrimary old = linkedPrimary;
+                    if (old != null)
+                    {
+                        linkedPrimary = null;
+                        old.Release();
+                    }
+
+                    try
+                    {
+                        lp.Claim(System.Environment.MachineName);
+                    }
+                    catch (Exception ex)
+                    {
+                        SharedCode.AppLog.Error("Controller.SetLinked", ex);
+                        throw;
+                    }
+                    linkedOtherHardware = other;
+                    linkedPrimary = lp;
+                    SharedCode.AppLog.Write("Controller.SetLinked", "Linked mode on: controlling " + LinkConfig.SecondaryUrl);
+                    // Describe() runs git and can take seconds the first time; warm it off this thread so the
+                    // first linked run does not pay for it.
+                    ThreadPool.QueueUserWorkItem(_ => BuildProvenance.Describe());
+                }
+            }
+            controllerWindow.RefreshRunControls();
+        }
+
+        private void logLinkedPrimary(string message)
+        {
+            Console.WriteLine(message);
+            SharedCode.AppLog.Write("LinkedPrimary", message);
+        }
+
+        #endregion
 
         #region Linked runs: secondary side (remotable)
 
@@ -1085,6 +1288,7 @@ namespace MOTMaster
                         { "SecondaryTriggerDelay", build.TriggerDelay },
                         { "ClampedEvents", string.Join("; ", info.ClampedEvents ?? new string[0]) }
                     };
+                    if (request.PrimaryProvenance != null) linkInfo["PrimaryProvenance"] = request.PrimaryProvenance;
                     ioHelper.LinkInfo = linkInfo;
                     try
                     {
@@ -1543,6 +1747,17 @@ namespace MOTMaster
         private MOTMasterScript compileAndLoadOrThrow(string scriptPath)
         {
             return loadScriptOrThrow(compileFromFileOrThrow(scriptPath));
+        }
+
+        /// <summary>Linked primary: prepareScript, but throwing LinkedRunException instead of a MessageBox and null.</summary>
+        private MOTMasterScript prepareScriptOrThrow(string pathToPattern, Dictionary<String, Object> dict)
+        {
+            MOTMasterScript script = compileAndLoadOrThrow(pathToPattern);
+            if (dict != null)
+            {
+                script.EditDictionary(dict);
+            }
+            return script;
         }
 
         private MOTMasterSequence getSequenceFromScript(MOTMasterScript script)
