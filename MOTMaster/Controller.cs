@@ -728,6 +728,11 @@ namespace MOTMaster
                         if (!armDDS(sequence.DDSPattern))
                         {
                             status = RunningState.stopped;
+                            // Linked runs always throw to the caller (Python sees it). Nothing has been begun on
+                            // the secondary yet, so there is nothing to abort there.
+                            if (link != null)
+                                throw new LinkedRunException("The Spectrum DDS could not be armed on "
+                                    + System.Environment.MachineName + "; the linked run was not started.");
                             return;
                         }
                         ddsInUse = true;
