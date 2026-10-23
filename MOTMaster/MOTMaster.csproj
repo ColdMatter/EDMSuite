@@ -423,6 +423,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'RbTweezer|AnyCPU'">
     <OutputPath>bin\RbTweezer\</OutputPath>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'RbTweezer|x64'">
     <OutputPath>bin\x64\RbTweezer\</OutputPath>
