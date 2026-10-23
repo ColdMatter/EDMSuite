@@ -831,7 +831,7 @@ namespace MOTMaster
                                 // Linked: fire only once the secondary is waiting for this shot's trigger. False = Stop.
                                 if (link != null && !link.WaitUntilArmed(++linkShot, () => status == RunningState.running)) break;
                                 // Linked: count the shot only if its pattern ran to completion (not cut short by Stop).
-                                if (runPattern(sequence) && link != null) linkShotsFired++;
+                                if (runPattern(sequence, link != null) && link != null) linkShotsFired++;
 #if DDS
                                 if (ddsInUse) ddsTriggersSent++;
 #endif //DDS
@@ -848,7 +848,7 @@ namespace MOTMaster
                                 if (ddsInUse) ddsController.WaitUntilArmed(1.0);
 #endif //DDS
                                 if (link != null && !link.WaitUntilArmed(++linkShot, () => status == RunningState.running)) break;
-                                if (runPattern(sequence) && link != null) linkShotsFired++;
+                                if (runPattern(sequence, link != null) && link != null) linkShotsFired++;
 #if DDS
                                 if (ddsInUse) ddsTriggersSent++;
 #endif //DDS
@@ -1656,13 +1656,18 @@ namespace MOTMaster
         /// True if the pattern ran to completion, false if it was cut short by a stop. Only the linked primary
         /// uses it (to count fired shots); reading the flag changes nothing for anyone else.
         /// </returns>
-        private bool runPattern(MOTMasterSequence sequence)
+        /// <param name="linked">True for the linked primary: release only the boards this shot used (see
+        /// releaseLinkedHardware), since a linked script may have no analog events on this machine.</param>
+        private bool runPattern(MOTMasterSequence sequence, bool linked = false)
         {
             initializeHardware(sequence);
             run(sequence);
             while (pgMaster.TaskRunning && status == RunningState.running) ;
             bool completed = !pgMaster.TaskRunning;
-            releaseHardware();
+            if (linked)
+                releaseLinkedHardware(sequence);
+            else
+                releaseHardware();
             return completed;
         }
 
