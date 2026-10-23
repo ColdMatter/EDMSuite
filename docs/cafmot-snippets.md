@@ -147,8 +147,8 @@ public class Patterns : MOTMasterScript
 }
 ```
 
-- **Good:** the whole shot can be read in one place, and changing a gap between stages is a one-line edit. The order of the snippet lines does not matter.
-- **Bad:** each stage's length is written in the script, separately from the snippet that uses it, so the two can disagree.
+- **Good:** when every stage starts can be read in one place, and changing a gap between stages is a one-line edit. The order of the snippet lines does not matter.
+- **Bad:** the script repeats how each stage's length is made up (e.g. `BlueMOTRampDuration + BlueMOTDuration`). The values cannot disagree, since script and snippet read the same parameters, but if a snippet's shape changes (say it gains a hold), every script's timeline has to be updated to match.
 
 ### Option B: each snippet writes its end time, and the script hands it to the next
 
@@ -177,8 +177,10 @@ public override AnalogPatternBuilder GetAnalogPattern()
 // GetDigitalPattern and GetDDSPattern repeat the same chain.
 ```
 
-- **Good:** each stage knows its own length, so scripts never add up durations. Every end time is in the dictionary afterwards, so later lines (such as a camera trigger at the end of the blue MOT) can use it without saving it on the way.
-- **Bad:** the chain is written three times, once per pattern, and order matters: a snippet run before the one whose end time it reads uses a missing or stale value. Every stage needs a `...StartTime`/`...EndTime` pair of names.
+- **Good:** a stage's length is defined only in its snippet, so scripts never add up durations. Every end time is in the dictionary afterwards, so later lines (such as a camera trigger at the end of the blue MOT) can use it.
+- **Bad:** there is no one place to read when each stage starts; it has to be followed through the chain. The order of the lines matters: a snippet run before the one whose end time it reads gets a missing value. Every stage needs a `...StartTime`/`...EndTime` pair of names.
+
+In both options the snippet calls are written three times, once per pattern, as scripts already do today.
 
 ## Still to discuss after this
 
