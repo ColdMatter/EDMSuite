@@ -54,6 +54,10 @@ namespace MOTMaster
         public int DigitalClockFrequency;
         public int AnalogClockFrequency;
         public string[] ClampedEvents;
+        /// <summary>32 or 64: the secondary's process bitness. 0 from an older secondary (not checked).</summary>
+        public int ProcessBits;
+        /// <summary>The secondary's running MOTMaster.exe, so a refusal can say which build it is.</summary>
+        public string ExePath;
     }
 
     [Serializable]

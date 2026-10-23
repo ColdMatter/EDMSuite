@@ -191,6 +191,24 @@ namespace MOTMasterTests
             Begin(p);
         }
 
+        public static void TestPrimaryBeginRefusesBitnessMismatchBeforeParameterHash()
+        {
+            int other = LinkedPrimary.ProcessBits == 64 ? 32 : 64;
+            var f = new FakeSecondary();
+            f.Ready.ProcessBits = other;
+            f.Ready.ExePath = @"C:\x\bin\x86\RbTweezer\MOTMaster.exe";
+            var p = Claimed(f, new List<string>());
+            // A bitness mismatch is reported as such even when the parameter hash also differs.
+            string m = Assert.Throws<LinkedRunException>(() => Begin(p, ph: "other")).Message;
+            StringAssert(m, "is running " + other + "-bit");
+            StringAssert(m, @"bin\x86\RbTweezer\MOTMaster.exe");
+            StringAssert(m, "Any CPU");
+            f.Ready.ProcessBits = LinkedPrimary.ProcessBits;
+            Begin(p);
+            f.Ready.ProcessBits = 0; // older secondary: not checked
+            Begin(p);
+        }
+
         public static void TestPrimaryBeginLinkLostWhenSecondaryTookBackControl()
         {
             // The secondary's own Validate message, as it arrives over remoting (type may change, text survives).

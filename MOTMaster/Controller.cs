@@ -1253,7 +1253,9 @@ namespace MOTMaster
                     Provenance = BuildProvenance.Describe(),
                     DigitalClockFrequency = config.DigitalPatternClockFrequency,
                     AnalogClockFrequency = config.AnalogPatternClockFrequency,
-                    ClampedEvents = clamped
+                    ClampedEvents = clamped,
+                    ProcessBits = LinkedPrimary.ProcessBits,
+                    ExePath = typeof(Controller).Assembly.Location
                 };
 
                 // The build can take seconds; the link may have been released or broken meanwhile. Re-check it

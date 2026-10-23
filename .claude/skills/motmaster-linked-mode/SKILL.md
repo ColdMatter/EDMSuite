@@ -114,12 +114,20 @@ The rule throughout: **no link means the old code path, statement for statement.
 - **Both machines run the same commit.** A difference only produces a warning, but
   it means the two sides run different code.
 - **PH-BONESAW** builds `MOTMaster.csproj` as `Configuration=CaF`.
-- **RbTweezer** builds `MOTMaster.csproj` as `Configuration=RbTweezer /p:Platform=AnyCPU`
-  from the command line:
-  - The output is `MOTMaster\bin\RbTweezer\MOTMaster.exe`, and it must run 64-bit like
-    CaF's, or the parameter hashes won't match.
-  - Its scripts compile against `DAQ\bin\x86\RbTweezer\daq.dll`, which is built from
-    `DAQ.csproj` as `RbTweezer|x86`.
+- **RbTweezer** builds as `Configuration=RbTweezer`: in Visual Studio with any platform
+  in the dropdown (the solution maps all four to `RbTweezer|Any CPU`), or
+  `MOTMaster.csproj /p:Configuration=RbTweezer /p:Platform=AnyCPU` from the command line.
+  - The solution's `RbTweezer` configuration builds only SharedCode, DAQ and MOTMaster.
+    `RbTweezerMasterScripts.csproj` is index-only (every script declares the same
+    `Patterns` class) and is not built.
+  - The output is `MOTMaster\bin\RbTweezer\MOTMaster.exe`, and its scripts compile
+    against `DAQ\bin\RbTweezer\daq.dll` (same build). It must run 64-bit like CaF's: a
+    32-bit and 64-bit MOTMaster can compute and print parameters differently. The primary
+    refuses a bitness mismatch up front (`LinkReadyInfo.ProcessBits`/`ExePath`) and names
+    the secondary's exe.
+  - `bin\x86\RbTweezer\` and `bin\ZeemanSisyphus\` are dead folders from the old, broken
+    solution mapping. A MOTMaster started from there is stale; older builds don't report
+    their bitness, so that shows up as a parameter-hash mismatch instead.
 - **Reaching RbTweezer:** `ssh cafmot@10.59.3.2`, which lands in cmd, so use `cd /d`.
   The logs are in `C:\ControlPrograms\EDMSuite\Logs\motmaster_<date>.log` on each
   machine.
