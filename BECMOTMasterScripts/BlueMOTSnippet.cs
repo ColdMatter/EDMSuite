@@ -1,0 +1,606 @@
+﻿using MOTMaster;
+using MOTMaster.SnippetLibrary;
+
+using System;
+using System.Collections.Generic;
+
+using DAQ.Pattern;
+using DAQ.Analog;
+using DAQ.Environment;
+
+
+public class Patterns : MOTMasterScript
+/*
+ * This script is designed to be stacked with different phases of the 
+ * experiment separately.
+ * */
+{
+    public Patterns()
+    {
+
+        // Load global parameters
+        string dataPath = (string)Environs.FileSystem.Paths["MOTMasterDataPath"];
+        string element = (string)Environs.Hardware.GetInfo("Element");
+        var io = new MMDataIOHelper(dataPath, element);
+        string globalParameterPath = "C:\\ControlPrograms\\EDMSuite\\BECMOTMasterScripts\\globalParameters.txt";
+        var globalParameters = io.LoadDictionary(globalParameterPath);
+        Parameters = new Dictionary<string, object>(globalParameters);
+
+        // ------------- TOGGLES -------------
+
+        Parameters["yagONorOFF"] = 10.0;
+        Parameters["SlowingONorOFF"] = 10.0;
+        Parameters["SlowingShutterONorOFF"] = 10.0;
+        Parameters["MOTONorOFF"] = 10.0;
+        Parameters["CMOTONorOFF"] = 10.0;
+        Parameters["MolassesONorOFF"] = 10.0;
+        Parameters["BlueMOTONorOFF"] = 10.0;
+        Parameters["4thSidebandONorOFF"] = 10.0;
+        Parameters["BlueMOTRampONorOFF"] = 1.0;
+        Parameters["CloudImageONorOFF"] = 10.0;
+        Parameters["BackgroundImageONorOFF"] = 1.0;
+
+        // ------------- LOCAL PARAMETERS -------------
+
+        Parameters["LambdaMolassesHoldDuration"] = 200;
+
+        Parameters["XShimCoilsLambdaMolassesValue"] = 0.0; // -0.25;
+        Parameters["YShimCoilsLambdaMolassesValue"] = 2.0; // 0.0;
+        Parameters["ZShimCoilsLambdaMolassesValue"] = 0.0; // 1.0;
+
+        //Parameters["BlueMOTFirstRampDuration"] = 5000;
+        //        Parameters["BlueMOTFirstFieldValue"] = -2.5;
+        /*Parameters["BlueMOTSecondFieldValue"] = -5.0; // not used at the moment
+        Parameters["BlueMOTHoldDuration"] = 100;*/
+
+        /*
+                // 4th sideband
+                Parameters["V00F0AOMAmpBlueMOT"] = 0.74;
+
+                Parameters["V00F2AOMAmpBlueMOT"] = 0.715;
+                Parameters["V00F1plusAOMAmpBlueMOT"] = 0.615;
+                Parameters["V00F1minusAOMAmpBlueMOT"] = 0.62;
+
+                // ramp end values for blue MOT
+                Parameters["V00F2AOMAmpBlueMOTEnd"] = 0.61;
+                Parameters["V00F1plusAOMAmpBlueMOTEnd"] = 0.615;
+                Parameters["V00F1minusAOMAmpBlueMOTEnd"] = 0.52;
+                Parameters["V00F0AOMAmpBlueMOTEnd"] = 0.59;
+        */
+        // common and finishing
+        Parameters["PatternLength"] = 60000;
+        Parameters["TCLBlockStart"] = 5000;
+        Parameters["ResetTime"] = 50000;
+
+        // imaging
+        Parameters["CameraTriggerStartDelay"] = 1; // imaging
+        Parameters["CameraTriggerDuration"] = 1000;
+        Parameters["BackgroundImageTime"] = 35000;
+
+        // dummy
+        Parameters["deltaAMHz"] = 0.0;
+        Parameters["deltaBMHz"] = 0.0;
+        Parameters["deltaCMHz"] = 0.0;
+        Parameters["onePhotonDetuningMHz"] = 0.0;
+    }
+
+    public override PatternBuilder32 GetDigitalPattern()
+    {
+        PatternBuilder32 p = new PatternBuilder32();
+
+        int patternStartBeforeQ = (int)Parameters["TCLBlockStart"];
+        int slowingAOMStart = (int)Parameters["BXAOMFreeFlightDuration"];
+        int slowingChirpStart = slowingAOMStart + (int)Parameters["BXAOMPostBunchingDuration"];
+        int slowingChirpStop = slowingChirpStart + (int)Parameters["BXAOMChirpDuration"];
+
+        int motLoadingStop = (int)Parameters["MOTLoadingDuration"];
+        int motCompressionStop = motLoadingStop + (int)Parameters["MOTCompressionRampDuration"] + (int)Parameters["MOTCompressionHoldDuration"];
+        int lambdaMolassesStart = motCompressionStop + (int)Parameters["MOTFieldDecayDuration"];
+        int lambdaMolassesRampStart = lambdaMolassesStart + (int)Parameters["LambdaMolassesHoldDuration"];
+        int lambdaMolassesStop = lambdaMolassesRampStart + (int)Parameters["LambdaMolassesRampDuration"];
+        int blueMOTSecondRampStart = lambdaMolassesStop + (int)Parameters["BlueMOTFirstRampDuration"];
+        int blueMOTHoldStart = blueMOTSecondRampStart + (int)Parameters["BlueMOTSecondRampDuration"];
+        int blueMOTStop = blueMOTHoldStart + (int)Parameters["BlueMOTHoldDuration"];
+        int imagingLightStart = blueMOTStop;
+        int imagingLightStop = imagingLightStart + (int)Parameters["CameraTriggerDuration"];
+        int cameraStart = imagingLightStart - (int)Parameters["CameraExposureDelayCCDMode"];
+        int cameraStop = cameraStart + (int)Parameters["CameraTriggerDuration"];
+        int bgCameraStart = (int)Parameters["BackgroundImageTime"] - (int)Parameters["CameraExposureDelayCCDMode"];
+
+        MOTMasterScriptSnippet loadMOT = new CaFBECLoadMOT(p, Parameters);
+        
+        // COMPRESS START
+
+        // MOT + CMOT
+        p.Pulse(
+            patternStartBeforeQ,
+            (int)Parameters["V00AOMONStartTime"],
+            motCompressionStop,
+            "V00R0AOM"
+        );
+        p.Pulse(
+            patternStartBeforeQ,
+            (int)Parameters["V00AOMONStartTime"],
+            motCompressionStop,
+            "V00R1plusAOMredMOT"
+        );
+        p.Pulse(
+            patternStartBeforeQ,
+            (int)Parameters["V00AOMONStartTime"],
+            motCompressionStop,
+            "V00B2AOMmolasses"
+        );
+        p.Pulse(
+            patternStartBeforeQ,
+            (int)Parameters["V00AOMONStartTime"],
+            motCompressionStop,
+            "V00B1minusAOM"
+        );
+
+        // COMPRESS STOP
+
+        // Lambda molasses
+        if ((double)Parameters["MolassesONorOFF"] > 5.0)
+        {
+            p.Pulse(
+                patternStartBeforeQ,
+                lambdaMolassesStart,
+                lambdaMolassesStop - lambdaMolassesStart,
+                "V00B2AOMmolasses"
+            );
+            p.Pulse(
+                patternStartBeforeQ,
+                lambdaMolassesStart,
+                lambdaMolassesStop - lambdaMolassesStart,
+                "DDSTTLP2"
+            );
+            p.Pulse(
+                patternStartBeforeQ,
+                lambdaMolassesStart,
+                lambdaMolassesStop - lambdaMolassesStart,
+                "V00B1minusAOM"
+            );
+            p.Pulse(
+                patternStartBeforeQ,
+                lambdaMolassesStart,
+                lambdaMolassesStop - lambdaMolassesStart,
+                "DDSTTLP3"
+            );
+        }
+
+        // Blue MOT and imagning
+        if ((double)Parameters["BlueMOTONorOFF"] > 5.0)
+        {
+            p.Pulse(
+                patternStartBeforeQ,
+                lambdaMolassesStop,
+                imagingLightStop - lambdaMolassesStop,
+                "V00B1minusAOM"
+            );
+            p.Pulse(
+                patternStartBeforeQ,
+                lambdaMolassesStop,
+                imagingLightStop - lambdaMolassesStop,
+                "DDSTTLP3"
+            );
+            p.Pulse(
+                patternStartBeforeQ,
+                lambdaMolassesStop,
+                imagingLightStop - lambdaMolassesStop,
+                "V00R1plusAOMredMOT"
+            );
+            p.Pulse(
+                patternStartBeforeQ,
+                lambdaMolassesStop,
+                imagingLightStop - lambdaMolassesStop,
+                "DDSTTLP1"
+            );
+            p.Pulse(
+                patternStartBeforeQ,
+                lambdaMolassesStop,
+                imagingLightStop - lambdaMolassesStop,
+                "V00B2AOMblueMOT"
+            );
+            if ((double)Parameters["4thSidebandONorOFF"] > 5.0)
+            {
+                p.Pulse(
+                    patternStartBeforeQ,
+                    lambdaMolassesStop,
+                    imagingLightStop - lambdaMolassesStop,
+                    "DDSTTLP0"
+                );
+                p.Pulse(
+                    patternStartBeforeQ,
+                    lambdaMolassesStop,
+                    imagingLightStop - lambdaMolassesStop,
+                    "V00R0AOM"
+                );
+            }
+        }
+
+
+
+        if ((double)Parameters["CloudImageONorOFF"] > 5.0)
+        {
+            p.Pulse(
+                patternStartBeforeQ,
+                cameraStart,
+                (int)Parameters["CameraTriggerDuration"],
+                "cameraTrigger"
+            );
+        }
+
+
+        // Background Imaging
+        p.Pulse(
+            patternStartBeforeQ,
+            (int)Parameters["BackgroundImageTime"],
+            (int)Parameters["CameraTriggerDuration"],
+            "V00B1minusAOM"
+        );
+        p.Pulse(
+            patternStartBeforeQ,
+            (int)Parameters["BackgroundImageTime"],
+            (int)Parameters["CameraTriggerDuration"],
+            "DDSTTLP3"
+        );
+        p.Pulse(
+            patternStartBeforeQ,
+            (int)Parameters["BackgroundImageTime"],
+            (int)Parameters["CameraTriggerDuration"],
+            "V00R1plusAOMredMOT"
+        );
+        p.Pulse(
+            patternStartBeforeQ,
+            (int)Parameters["BackgroundImageTime"],
+            (int)Parameters["CameraTriggerDuration"],
+            "DDSTTLP1"
+        );
+        p.Pulse(
+            patternStartBeforeQ,
+            (int)Parameters["BackgroundImageTime"],
+            (int)Parameters["CameraTriggerDuration"],
+            "V00B2AOMblueMOT"
+        );
+        if ((double)Parameters["4thSidebandONorOFF"] > 5.0)
+        {
+            p.Pulse(
+                patternStartBeforeQ,
+                (int)Parameters["BackgroundImageTime"],
+                (int)Parameters["CameraTriggerDuration"],
+                "DDSTTLP0"
+            );
+            p.Pulse(
+                patternStartBeforeQ,
+                (int)Parameters["BackgroundImageTime"],
+                (int)Parameters["CameraTriggerDuration"],
+                "V00R0AOM"
+            );
+        }
+        if ((double)Parameters["BackgroundImageONorOFF"] > 5.0)
+        {
+            p.Pulse(
+                patternStartBeforeQ,
+                bgCameraStart,
+                (int)Parameters["CameraTriggerDuration"],
+                "cameraTrigger"
+            );
+        }
+
+        return p;
+    }
+
+    public override AnalogPatternBuilder GetAnalogPattern()
+    {
+        AnalogPatternBuilder p = new AnalogPatternBuilder((int)Parameters["PatternLength"]);
+        p.AddChannel("BXChirp");
+        p.AddChannel("SlowingBField");
+        p.AddChannel("V00R0AOMVCOFreq");
+        p.AddChannel("V00R0AOMVCOAmp");
+        p.AddChannel("V00R1plusAOMAmp");
+        p.AddChannel("V00B2AOMAmp");
+        p.AddChannel("V00B1minusAOMAmp");
+        p.AddChannel("V00R0EOMAmp");
+        p.AddChannel("V00B2AOMAmp");
+        p.AddChannel("motCoils");
+        p.AddChannel("ShimCoilX");
+        p.AddChannel("ShimCoilY");
+        p.AddChannel("ShimCoilZ");
+        p.AddChannel("CavityRamp");
+        p.AddChannel("ODTVVAControl");
+
+        int slowingChirpStart = (int)Parameters["BXAOMFreeFlightDuration"] + (int)Parameters["BXAOMPostBunchingDuration"];
+        int slowingChirpStop = slowingChirpStart + (int)Parameters["BXAOMChirpDuration"];
+
+        int motLoadingStop = (int)Parameters["MOTLoadingDuration"];
+        int motCompressionStop = motLoadingStop + (int)Parameters["MOTCompressionRampDuration"] + (int)Parameters["MOTCompressionHoldDuration"];
+        int lambdaMolassesStart = motCompressionStop + (int)Parameters["MOTFieldDecayDuration"];
+        int lambdaMolassesRampStart = lambdaMolassesStart + (int)Parameters["LambdaMolassesHoldDuration"];
+        int lambdaMolassesStop = lambdaMolassesRampStart + (int)Parameters["LambdaMolassesRampDuration"];
+        int blueMOTSecondRampStart = lambdaMolassesStop + (int)Parameters["BlueMOTFirstRampDuration"];
+        int blueMOTHoldStart = blueMOTSecondRampStart + (int)Parameters["BlueMOTSecondRampDuration"];
+        int blueMOTStop = blueMOTHoldStart + (int)Parameters["BlueMOTHoldDuration"];
+        int imagingLightStart = blueMOTStop;
+        int imagingLightStop = imagingLightStart + (int)Parameters["CameraTriggerDuration"];
+        int cameraStart = imagingLightStart - (int)Parameters["CameraExposureDelayCCDMode"];
+        int cameraStop = cameraStart + (int)Parameters["CameraTriggerDuration"];
+        int bgCameraStart = (int)Parameters["BackgroundImageTime"] - (int)Parameters["CameraExposureDelayCCDMode"];
+
+        MOTMasterScriptSnippet loadMOT = new CaFBECLoadMOT(p, Parameters);
+
+        if ((double)Parameters["CMOTONorOFF"] > 5.0)
+        {
+            p.AddLinearRamp(
+                "motCoils",
+                motLoadingStop,
+                (int)Parameters["MOTCompressionRampDuration"],
+                (double)Parameters["MOTCompressionFieldValue"]
+            );
+            p.AddLinearRamp(
+                "V00R0AOMVCOAmp",
+                motLoadingStop,
+                (int)Parameters["MOTCompressionRampDuration"],
+                (double)Parameters["V00F0AOMAmpMOTCompression"]
+            );
+            p.AddLinearRamp(
+                "V00R1plusAOMAmp",
+                motLoadingStop,
+                (int)Parameters["MOTCompressionRampDuration"],
+                (double)Parameters["V00F1plusAOMAmpMOTCompression"]
+            );
+            p.AddLinearRamp(
+                "V00B2AOMAmp",
+                motLoadingStop,
+                (int)Parameters["MOTCompressionRampDuration"],
+                (double)Parameters["V00F2AOMAmpMOTCompression"]
+            );
+            p.AddLinearRamp(
+                "V00B1minusAOMAmp",
+                motLoadingStop,
+                (int)Parameters["MOTCompressionRampDuration"],
+                (double)Parameters["V00F1minusAOMAmpMOTCompression"]
+            );
+            p.AddLinearRamp(
+                "ShimCoilX",
+                motLoadingStop,
+                (int)Parameters["MOTCompressionRampDuration"],
+                (double)Parameters["XShimCoilsCMOTValue"]
+            );
+            p.AddLinearRamp(
+                "ShimCoilY",
+                motLoadingStop,
+                (int)Parameters["MOTCompressionRampDuration"],
+                (double)Parameters["YShimCoilsCMOTValue"]
+            );
+            p.AddLinearRamp(
+                "ShimCoilZ",
+                motLoadingStop,
+                (int)Parameters["MOTCompressionRampDuration"],
+                (double)Parameters["ZShimCoilsCMOTValue"]
+            );
+
+        }
+        p.AddAnalogValue(
+            "motCoils",
+            motCompressionStop,
+            (double)Parameters["MOTCoilsOffValue"]
+        );
+
+        if ((double)Parameters["MolassesONorOFF"] > 5.0)
+        {
+            p.AddLinearRamp(
+                "ShimCoilX",
+                motCompressionStop + 550,
+                100,
+                (double)Parameters["XShimCoilsLambdaMolassesValue"]
+            );
+            p.AddLinearRamp(
+                "ShimCoilY",
+                motCompressionStop + 550,
+                100,
+                (double)Parameters["YShimCoilsLambdaMolassesValue"]
+            );
+            p.AddLinearRamp(
+                "ShimCoilZ",
+                motCompressionStop + 550,
+                100,
+                (double)Parameters["ZShimCoilsLambdaMolassesValue"]
+            );
+            p.AddAnalogValue(
+                "V00B2AOMAmp",
+                motCompressionStop,
+                (double)Parameters["V00F2AOMAmpMolassesStart"]
+            );
+            /*p.AddLinearRamp(
+                "V00B2AOMAmp",
+                lambdaMolassesRampStart,
+                (int)Parameters["LambdaMolassesRampDuration"],
+                (double)Parameters["V00B2AOMAmpMolassesEnd"]
+            );*/
+            p.AddAnalogValue(
+                "V00B1minusAOMAmp",
+                motCompressionStop,
+                (double)Parameters["V00F1minusAOMAmpMolassesStart"]
+            );
+            /*p.AddLinearRamp(
+                "V00B2AOMAmp",
+                lambdaMolassesRampStart,
+                (int)Parameters["LambdaMolassesRampDuration"],
+                (double)Parameters["V00B1minusAOMAmpMolassesEnd"]
+            );*/
+        }
+
+        if ((double)Parameters["BlueMOTONorOFF"] > 5.0)
+        {
+            /*p.AddLinearRamp(
+                "ShimCoilX",
+                lambdaMolassesStop,
+                (int)Parameters["BlueMOTFirstRampDuration"],
+                (double)Parameters["XShimCoilsBlueMOTValue"]
+            );
+            p.AddLinearRamp(
+                "ShimCoilY",
+                lambdaMolassesStop,
+                (int)Parameters["BlueMOTFirstRampDuration"],
+                (double)Parameters["YShimCoilsBlueMOTValue"]
+            );
+            p.AddLinearRamp(
+                "ShimCoilZ",
+                lambdaMolassesStop,
+                (int)Parameters["BlueMOTFirstRampDuration"],
+                (double)Parameters["ZShimCoilsBlueMOTValue"]
+            );*/
+            p.AddLinearRamp(
+                "motCoils",
+                lambdaMolassesStop,
+                (int)Parameters["BlueMOTFirstRampDuration"],
+                (double)Parameters["BlueMOTFirstFieldValue"]
+            );
+            p.AddLinearRamp(
+                "motCoils",
+                blueMOTSecondRampStart,
+                (int)Parameters["BlueMOTSecondRampDuration"],
+                (double)Parameters["BlueMOTFirstFieldValue"] //change here if second ramp needed
+            );
+            p.AddAnalogValue(
+                "motCoils",
+                imagingLightStop,
+                (double)Parameters["MOTCoilsOffValue"]
+            );
+            p.AddAnalogValue(
+                "V00B2AOMAmp",
+                lambdaMolassesStop,
+                (double)Parameters["V00F2AOMAmpBlueMOT"]
+            );
+            
+            p.AddAnalogValue(
+                "V00R1plusAOMAmp",
+                lambdaMolassesStop,
+                (double)Parameters["V00F1plusAOMAmpBlueMOT"]
+            );
+            
+            p.AddAnalogValue(
+                "V00B1minusAOMAmp",
+                lambdaMolassesStop,
+                (double)Parameters["V00F1minusAOMAmpBlueMOT"]
+            );
+
+            if ((double)Parameters["BlueMOTRampONorOFF"] > 5.0)
+            {
+                p.AddLinearRamp(
+                    "V00B1minusAOMAmp",
+                    blueMOTHoldStart,
+                    (int)Parameters["BlueMOTHoldDuration"],
+                    (double)Parameters["V00F1minusAOMAmpBlueMOTEnd"]
+                );
+                p.AddLinearRamp(
+                    "V00R1plusAOMAmp",
+                    blueMOTHoldStart,
+                    (int)Parameters["BlueMOTHoldDuration"],
+                    (double)Parameters["V00F1plusAOMAmpBlueMOTEnd"]
+                );
+                p.AddLinearRamp(
+                    "V00B2AOMAmp",
+                    blueMOTHoldStart,
+                    (int)Parameters["BlueMOTHoldDuration"],
+                    (double)Parameters["V00F2AOMAmpBlueMOTEnd"]
+                );
+
+            }
+            if ((double)Parameters["4thSidebandONorOFF"] > 5.0)
+            {
+                p.AddAnalogValue(
+                    "V00R0AOMVCOAmp",
+                    lambdaMolassesStop,
+                    (double)Parameters["V00F0AOMAmpBlueMOT"]
+                );
+                if ((double)Parameters["BlueMOTRampONorOFF"] > 5.0)
+                {
+                    p.AddLinearRamp(
+                        "V00R0AOMVCOAmp",
+                        blueMOTHoldStart,
+                        (int)Parameters["BlueMOTHoldDuration"],
+                        (double)Parameters["V00F0AOMAmpBlueMOTEnd"]
+                    );
+                }
+            }
+        }
+
+        //if ((double)Parameters["CloudImageONorOFF"] > 5.0) //change if blue MOT values for imaging
+        //{
+        //    p.AddAnalogValue(
+        //        "V00R0AOMVCOAmp",
+        //        imagingLightStart,
+        //        (double)Parameters["V00F0AOMAmpImaging"]
+        //    );
+        //    p.AddAnalogValue(
+        //        "V00R1plusAOMAmp",
+        //        imagingLightStart,
+        //        (double)Parameters["V00F1plusAOMAmpImaging"]
+        //    );
+        //    p.AddAnalogValue(
+        //        "V00B2AOMAmp",
+        //        imagingLightStart,
+        //        (double)Parameters["V00F2AOMAmpImaging"]
+        //    );
+        //    p.AddAnalogValue(
+        //        "V00B1minusAOMAmp",
+        //        imagingLightStart,
+        //        (double)Parameters["V00F1minusAOMAmpImaging"]
+        //    );
+        //}
+
+        // Common and finishing steps
+
+        p.AddAnalogValue(
+            "V00R0AOMVCOAmp",
+            (int)Parameters["ResetTime"],
+            (double)Parameters["V00F0AOMAmpMax"]
+        );
+        p.AddAnalogValue(
+           "V00R1plusAOMAmp",
+           (int)Parameters["ResetTime"],
+           (double)Parameters["V00F1plusAOMAmpMax"]
+        );
+        p.AddAnalogValue(
+            "V00B2AOMAmp",
+            (int)Parameters["ResetTime"],
+            (double)Parameters["V00F2AOMAmpMax"]
+        );
+        p.AddAnalogValue(
+           "V00B1minusAOMAmp",
+           (int)Parameters["ResetTime"],
+           (double)Parameters["V00F1minusAOMAmpMax"]
+        );
+        p.AddAnalogValue(
+            "ShimCoilX",
+            (int)Parameters["ResetTime"],
+            (double)Parameters["XShimCoilsOffValue"]
+        );
+        p.AddAnalogValue(
+            "ShimCoilY",
+            (int)Parameters["ResetTime"],
+            (double)Parameters["YShimCoilsOffValue"]
+        );
+        p.AddAnalogValue(
+            "ShimCoilZ",
+            (int)Parameters["ResetTime"],
+            (double)Parameters["ZShimCoilsOffValue"]
+        );
+        p.AddAnalogValue(
+            "motCoils",
+            cameraStop + 100,
+            (double)Parameters["MOTCoilsOffValue"]
+        );
+
+        return p;
+    }
+
+    public override AnalogStaticBuilder GetAnalogStatic()
+    {
+        AnalogStaticBuilder p = new AnalogStaticBuilder((int)Parameters["PatternLength"]);
+
+        return p;
+    }
+
+}
