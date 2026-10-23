@@ -43,8 +43,13 @@ import sys
 import os
 import re
 
-OneDriveFolder = os.environ['onedrive']
-sys.path.append(OneDriveFolder + r"\Desktop\EDMSuite\LatticeEDMScripts")
+# Add LatticeEDMScripts (parent of "analysis scripts") to the path so the
+# library imports work whatever the working directory or OS
+try:
+    scriptDir = os.path.dirname(os.path.abspath(__file__))
+except NameError:  # __file__ isn't defined when running cells interactively
+    scriptDir = os.getcwd()
+sys.path.append(os.path.dirname(scriptDir))
 import LatticeEDM_analysis_library as EDM
 
 import numpy as np

@@ -399,6 +399,17 @@ namespace DAQ.HAL
             mmConfig.ExternalFilePattern = "*.tif";
             Info.Add("MotMasterConfiguration", mmConfig);
 
+            // Safe outputs: analog channel name -> volts. MOTMaster sets these at the end of
+            // every run, however it ends, and MOTMasterWatchdog sets them if MOTMaster
+            // exits or is killed. Add a channel here to protect it; the value must be
+            // inside the channel's range. See MOTMasterWatchdog/README.md.
+            Info.Add(DAQ.Analog.DAQMxAnalogSafeState.InfoKey, new Dictionary<string, double>
+            {
+                { "MOTCoilsCurrent", 0.0 },
+                { "transferCoils", 0.0 },
+                { "TweezerCoils", 0.0 },
+            });
+
             Info.Add("PGType", "dedicated");
             Info.Add("Element", "CaF");
 

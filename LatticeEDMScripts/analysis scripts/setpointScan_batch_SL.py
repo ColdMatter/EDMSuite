@@ -12,8 +12,13 @@ import sys
 import os
 import re
 
-OneDriveFolder = os.environ['onedrive']
-sys.path.append(OneDriveFolder + r"\Desktop\EDMSuite\LatticeEDMScripts")
+# Add LatticeEDMScripts (parent of "analysis scripts") to the path so the
+# library imports work whatever the working directory or OS
+try:
+    scriptDir = os.path.dirname(os.path.abspath(__file__))
+except NameError:  # __file__ isn't defined when running cells interactively
+    scriptDir = os.getcwd()
+sys.path.append(os.path.dirname(scriptDir))
 import LatticeEDM_analysis_library as EDM
 
 import numpy as np
@@ -40,12 +45,12 @@ colors = prop_cycle.by_key()['color']
 
 ###When we are using Box:
 #datadrive=str(os.environ["Onedrive"]+"\\Desktop\\Lattice EDM\\data")
-datadrive = r"C:\Users\sl5119\Box\LatticeEDM\data"
+datadrive = EDM.get_datadrive()  # set per device in data_locations.json
 month = "Oct 2026"
 date = "05"
 #blockdrive=datadrive+"\\BlockData\\"
 
-drive = datadrive + "\\" + month + "\\" + date + "\\"# + subfolder
+drive = os.path.join(datadrive, month, date, "")# + subfolder
 print(drive)
 
 pattern="*setpoint*.zip"
@@ -53,13 +58,17 @@ files = glob.glob(f'{drive}{pattern}', recursive=True)
 print("Matching files: ", [os.path.basename(f) for f in files])
 
 #%% Selection
-sele = ["009"]
+sele = ["009"] # leave empty, sele = [], to load all matching files
 
 #%%
 LoadPasses = True
 
 if len(files) > 0:
     print("%g matching files found. Loading"%len(files))
+    if len(sele) == 0:
+        # No selection: select every matching file by its ID
+        sele = sorted(set(re.split(r'[_]', os.path.basename(f))[0] for f in files))
+        print("No selection - loading all matching files: ", sele)
     Data = {}
     fileLabels = []
     Lasers = []

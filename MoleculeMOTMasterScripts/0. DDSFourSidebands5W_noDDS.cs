@@ -29,9 +29,6 @@ public class Patterns : MOTMasterScript
         Parameters["xShimLoadCurrent"] = -1.85;
         Parameters["yShimLoadCurrent"] = -3.0;
         Parameters["zShimLoadCurrent"] = 0.22;
-
-        Parameters["SlowingChirpStartTime"] = 250;//360; //400;// 380;
-        Parameters["SlowingChirpDuration"] = 1250;////1400;//1160; //1160
         /*
         Parameters["SlowingChirpStartTime"] = 160;//360; //400;// 380;
         Parameters["SlowingChirpDuration"] = 1400;////1400;//1160; //1160
