@@ -58,6 +58,9 @@ namespace MOTMaster
             catch (Exception e) { log("Releasing the link to " + config.SecondaryUrl + " failed (ignored): " + e.Message); }
         }
 
+        /// <summary>32 or 64: this process's bitness. Reported by the secondary as LinkReadyInfo.ProcessBits.</summary>
+        public static int ProcessBits { get { return Environment.Is64BitProcess ? 64 : 32; } }
+
         public LinkReadyInfo Begin(LinkRunRequest request, string scriptHash, string parameterHash,
             int digitalClock, int analogClock, string provenance)
         {
@@ -84,6 +87,14 @@ namespace MOTMaster
             }
             if (info == null)
                 throw new LinkedRunException("The secondary MOTMaster at " + config.SecondaryUrl + " returned no ready information.");
+
+            // Checked first: a 32-bit and a 64-bit MOTMaster can compute and print the same parameters differently,
+            // which would otherwise show up only as a puzzling parameter-hash mismatch.
+            if (info.ProcessBits != 0 && info.ProcessBits != ProcessBits)
+                throw new LinkedRunException("The primary MOTMaster is running " + ProcessBits + "-bit but the secondary at "
+                    + config.SecondaryUrl + " is running " + info.ProcessBits + "-bit (" + (info.ExePath ?? "unknown exe")
+                    + "); a linked run needs both the same, so it was not started. Rebuild the " + (info.ProcessBits == 32 ? "secondary" : "primary")
+                    + "'s MOTMaster with its experiment's configuration and platform Any CPU, and start the MOTMaster.exe from that build's output folder.");
 
             if (info.ScriptHash != scriptHash)
                 throw new LinkedRunException("The secondary's script differs from the primary's (script hash "
