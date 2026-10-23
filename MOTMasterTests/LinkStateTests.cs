@@ -191,6 +191,39 @@ namespace MOTMasterTests
             Begin(p);
         }
 
+        public static void TestPrimaryBeginLinkLostWhenSecondaryTookBackControl()
+        {
+            // The secondary's own Validate message, as it arrives over remoting (type may change, text survives).
+            var f = new FakeSecondary { PrepareException = new Exception("This MOTMaster is not linked (no claim is held); re-link from the primary.") };
+            var p = Claimed(f, new List<string>());
+            Assert.True(!p.Lost, "not lost before");
+            var e = Assert.Throws<LinkLostException>(() => Begin(p));
+            StringAssert(e.Message, "taken back control", "Tick Linked");
+            Assert.True(p.Lost, "lost after");
+            // Dead from then on: no further remote call is made with the old token.
+            f.PrepareException = null;
+            StringAssert(Assert.Throws<LinkedRunException>(() => Begin(p)).Message, "re-link first");
+            Assert.True(f.LastRequest == null, "no prepare sent after the loss");
+        }
+
+        public static void TestPrimaryBeginOtherSecondaryFailureIsNotLinkLost()
+        {
+            var f = new FakeSecondary { PrepareException = new LinkedRunException("The script did not compile on RB") };
+            var p = Claimed(f, new List<string>());
+            var e = Assert.Throws<LinkedRunException>(() => Begin(p));
+            Assert.True(!(e is LinkLostException), "not a lost link");
+            StringAssert(e.Message, "did not compile");
+            Assert.True(!p.Lost, "still linked");
+        }
+
+        public static void TestSecondaryShowsErrorsToRemoteCallers()
+        {
+            LinkRemoting.ShowErrorsToRemoteCallers();
+            LinkRemoting.ShowErrorsToRemoteCallers(); // the .NET setting can be set only once; a second call must not throw
+            Assert.True(!System.Runtime.Remoting.RemotingConfiguration.CustomErrorsEnabled(false),
+                "remote callers get the real exception");
+        }
+
         public static void TestPrimaryBeginWarnsOnProvenance()
         {
             var f = new FakeSecondary();

@@ -512,6 +512,7 @@
     <Compile Include="Linked\LinkedSecondaryState.cs" />
     <Compile Include="Linked\LinkFingerprint.cs" />
     <Compile Include="Linked\LinkMessages.cs" />
+    <Compile Include="Linked\LinkRemoting.cs" />
     <Compile Include="Linked\LinkedScriptBuilder.cs" />
     <Compile Include="MOTMasterScriptSnippet.cs" />
     <Compile Include="MOTMasterSequence.cs" />

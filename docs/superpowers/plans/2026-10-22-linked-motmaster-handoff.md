@@ -76,8 +76,9 @@ What a correct run also produces: both machines save a zip, and each zip contain
 
 - **"never saw the trigger"** from `Go`: RbTweezer armed but no edge arrived on PFI5. Check the wiring, and check that `rbTrigger` pulses on the scope.
 - **"did not arm"**: RbTweezer could not get ready within 5 s. Look at the RbTweezer MOTMaster log for the reason.
-- **"re-link"**: the link was released or broken (for example with Break link on RbTweezer). Untick and re-tick Linked.
-- **RbTweezer stuck with the banner** after PH-BONESAW crashes or closes: press **Break link** on RbTweezer and confirm. An armed run also ends by itself after about one pattern length plus 10 s with no contact from the primary.
+- **"has taken back control"**: RbTweezer pressed **Take back control**. PH-BONESAW turns Linked off by itself; tick it again to re-link.
+- **Using RbTweezer on its own**: press **Take back control** on RbTweezer whenever no linked run is in progress. There is no confirmation. The button is greyed out during a linked run.
+- **RbTweezer stuck with the banner** after PH-BONESAW crashes or closes: press **Take back control** on RbTweezer. If the crash was mid-run, the armed run first ends by itself after about one pattern length plus 10 s with no contact from the primary, and the button then becomes available.
 - **Ticking Linked takes ~20 s and then fails**: RbTweezer's MOTMaster isn't running or isn't reachable (TCP connect timeout).
 
 ## 6. Other changes on this branch you should know about

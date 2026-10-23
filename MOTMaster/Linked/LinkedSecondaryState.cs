@@ -54,7 +54,7 @@ namespace MOTMaster
             {
                 if (token != null)
                     throw new LinkedRunException("This MOTMaster is already linked to " + claimedBy
-                        + "; it can only be claimed again after that link is released (or broken here with Break link).");
+                        + "; it can only be claimed again after that link is released (or taken back here with Take back control).");
                 if (runInProgress)
                     throw new LinkedRunException("This MOTMaster is running; it cannot be linked until the run has finished.");
                 newToken = Guid.NewGuid().ToString();
@@ -80,7 +80,7 @@ namespace MOTMaster
             RaiseChanged();
         }
 
-        /// <summary>Clears any claim regardless of token (the "Break link" button on the secondary).</summary>
+        /// <summary>Clears any claim regardless of token (the "Take back control" button on the secondary).</summary>
         public void Break()
         {
             lock (gate)

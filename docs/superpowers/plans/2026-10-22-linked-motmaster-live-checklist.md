@@ -15,13 +15,16 @@ This is for the person doing the first live linked run, on PH-BONESAW (primary) 
 3. On RbTweezer, check the lock state:
    - a gold banner reads "Controlled by PH-BONESAW (linked run)"
    - Run, Replicate, Select Script (button and menu), Refresh Script List, the script list and "triggered" are greyed out
-   - a Break link button is visible
+   - a Take back control button is visible
    - Stop and View Pattern still work
 4. Tick Linked while RbTweezer MOTMaster is closed or unreachable. Expect about a 20 s wait (TCP connect timeout) with the window still responsive. Then an error box appears and the checkbox ends up unticked. This wait is expected; it is not a hang.
-5. Untick Linked. The banner and Break link button disappear on RbTweezer, and its controls re-enable.
+5. Untick Linked. The banner and Take back control button disappear on RbTweezer, and its controls re-enable.
 6. During any run on the primary, the Linked checkbox is greyed out and can't be changed.
 7. Call `SetLinked(True)` / `SetLinked(False)` from Python on the primary. The checkbox ticks and unticks itself to match.
-8. Click Break link on RbTweezer. A confirmation appears, defaulting to No. Yes clears the lock. If a linked run is active, it stops, and the primary's next `Go` raises an error saying to re-link.
+8. Take back control on RbTweezer:
+   - During a linked run the button is greyed out.
+   - Between runs, clicking it clears the lock at once (no confirmation), and RbTweezer's controls re-enable.
+   - The primary's next `Go` fails with "…has taken back control… Tick Linked again to re-link", and the primary's Linked box unticks itself.
 9. Visual check: the banner doesn't overlap "triggered" or the Stop button.
 
 ## Runs
@@ -29,7 +32,7 @@ This is for the person doing the first live linked run, on PH-BONESAW (primary) 
 1. Run a minimal linked script with one RbTweezer digital output and the trigger line on a scope. Measure the trigger-to-output delay and set `SecondaryTriggerDelay` in `globalParameters.json` from it. The value is in clock ticks, at 100 kHz.
 2. Check that both run zips contain `_link.txt` with the same `LinkRunId`, the same script and parameter hashes, and both machines' provenance.
 3. With the trigger cable pulled, a single-shot `Go` should raise "never saw the trigger". It must not report success.
-4. Kill the primary during a linked run. RbTweezer should end its armed run after about one pattern length plus 10 s, showing "no contact from the primary…". The banner stays until you press Break link.
+4. Kill the primary during a linked run. RbTweezer should end its armed run after about one pattern length plus 10 s, showing "no contact from the primary…". The banner stays until you press Take back control, which is greyed out until the armed run has ended.
 5. With Linked ticked, View Pattern on a CaF-only script shows a message box saying it uses no RbTweezer channels. MOTMaster must not crash.
 6. A script that drives `rbTrigger` itself is refused while linked, with "reserved for the secondary trigger". No top-level script drives it at present.
 

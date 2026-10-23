@@ -21,6 +21,12 @@ namespace MOTMaster
 
         public Dictionary<string, object> SaveInfo { get; private set; }
 
+        /// <summary>
+        /// True once the secondary has refused this link (it took back control, or the link was broken there).
+        /// The link is dead from then on; the Controller turns linked mode off.
+        /// </summary>
+        public bool Lost { get; private set; }
+
         public LinkedPrimary(ILinkSecondary secondary, MOTMasterLinkConfig config, Action<string> log)
         {
             this.secondary = secondary;
@@ -66,8 +72,13 @@ namespace MOTMaster
             catch (Exception e)
             {
                 if (TokenRejected(e))
-                    throw new LinkedRunException("The secondary MOTMaster at " + config.SecondaryUrl
-                        + " no longer holds this link (" + e.Message + "); re-link and run again.", e);
+                {
+                    token = null;
+                    Lost = true;
+                    throw new LinkLostException("The secondary MOTMaster at " + config.SecondaryUrl
+                        + " has taken back control (or the link was broken there), so linked mode is now off. "
+                        + "Tick Linked again to re-link. (" + e.Message + ")", e);
+                }
                 throw new LinkedRunException("The secondary MOTMaster at " + config.SecondaryUrl
                     + " failed to prepare the run: " + e.Message, e);
             }
@@ -214,6 +225,8 @@ namespace MOTMaster
         /// <summary>Like End, but without the played-shots check, and never throws; failures are logged.</summary>
         public void Abort()
         {
+            // The secondary no longer holds this link, so it has no run of ours to end.
+            if (Lost) return;
             try { EndRun(); }
             catch (Exception e) { log("Aborting the linked run on the secondary failed: " + e.Message); }
         }

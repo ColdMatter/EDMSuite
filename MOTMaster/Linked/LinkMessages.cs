@@ -13,6 +13,15 @@ namespace MOTMaster
             : base(info, context) { }
     }
 
+    /// <summary>The secondary refused the primary's link (it took back control, or the link was broken there).</summary>
+    [Serializable]
+    public class LinkLostException : LinkedRunException
+    {
+        public LinkLostException(string message, Exception inner) : base(message, inner) { }
+        protected LinkLostException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
+            : base(info, context) { }
+    }
+
     /// <summary>Everything the secondary needs to reproduce the primary's run. Remoting message: simple types only.</summary>
     [Serializable]
     public class LinkRunRequest

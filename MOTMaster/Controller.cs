@@ -607,6 +607,8 @@ namespace MOTMaster
             {
                 // Logged here, then rethrown so a remote (Python) caller still sees it.
                 SharedCode.AppLog.Error("Controller.Go", ex);
+                // Linked only: the secondary has taken back control, so turn linked mode off (the Linked box unticks).
+                if (ex is LinkLostException) dropLostLink();
                 // MOTMaster now survives this, so free the tasks for every experiment:
                 // left reserved, they would make the next run fail.
                 stopPatternTasksQuietly();
@@ -1040,7 +1042,7 @@ namespace MOTMaster
         /// <summary>
         /// Turns linked mode on (claims the secondary; throws LinkedRunException if it can't) or off (releases it).
         /// Refused while a run is in progress. Turning it off when not linked does nothing. Turning it on when
-        /// already linked releases the old claim and claims again (re-links, e.g. after a Break link there).
+        /// already linked releases the old claim and claims again (re-links, e.g. after the secondary took back control).
         /// Makes a blocking remoting call to the secondary.
         /// </summary>
         public void SetLinked(bool value)
@@ -1108,6 +1110,18 @@ namespace MOTMaster
             controllerWindow.RefreshRunControls();
         }
 
+        /// <summary>Turns linked mode off after the secondary refused the link (LinkedPrimary.Lost).</summary>
+        private void dropLostLink()
+        {
+            lock (setLinkedLock)
+            {
+                LinkedPrimary current = linkedPrimary;
+                if (current == null || !current.Lost) return;
+                linkedPrimary = null;
+            }
+            SharedCode.AppLog.Write("Controller.SetLinked", "Linked mode off: " + LinkConfig.SecondaryUrl + " has taken back control");
+        }
+
         private void logLinkedPrimary(string message)
         {
             Console.WriteLine(message);
@@ -1124,13 +1138,14 @@ namespace MOTMaster
 
         private readonly LinkedSecondaryState secondaryState = new LinkedSecondaryState();
 
-        // True while a linked run's thread owns the run claim. Lets ReleaseLink/BreakLink end that run.
+        // True while a linked run's thread owns the run claim. Lets ReleaseLink end that run.
         private volatile bool linkedRunActive = false;
 
         // Makes PrepareLinkedRun's "is the claim still held? then status = running, linkedRunActive = true" atomic
-        // with ReleaseLink/BreakLink's "the claim is gone; if a linked run is active, stop it". Those drop the claim
-        // first and then take this lock, so either Prepare's check sees the claim gone, or the run is already marked
-        // active and gets stopped. No state-change event is raised while it is held.
+        // with ReleaseLink's "the claim is gone; if a linked run is active, stop it". It drops the claim first and
+        // then takes this lock, so either Prepare's check sees the claim gone, or the run is already marked active
+        // and gets stopped. No state-change event is raised while it is held. (TakeBackControl is refused while a
+        // run holds the run claim, so it never has a run to stop.)
         private readonly object linkStartGate = new object();
 
         public bool IsLockedByPrimary => secondaryState.IsClaimed;
@@ -1146,6 +1161,8 @@ namespace MOTMaster
 
         public string ClaimLink(string primaryName)
         {
+            // So the primary sees this secondary's real error messages, including a refused claim.
+            LinkRemoting.ShowErrorsToRemoteCallers();
             string token;
             try
             {
@@ -1176,19 +1193,26 @@ namespace MOTMaster
             SharedCode.AppLog.Write("Controller.ReleaseLink", "Link released by the primary");
         }
 
-        /// <summary>The secondary's "Break link" button: ends any linked run and clears the claim whoever holds it.</summary>
-        public void BreakLink()
+        /// <summary>
+        /// The secondary's "Take back control" button: clears the claim, whoever holds it, so this MOTMaster can be
+        /// used locally again. Refused (returns false) while a linked run holds the run claim; a run whose primary
+        /// has died ends by itself (the contact timeout), and then this is allowed. The primary finds out on its
+        /// next Go, which then turns its linked mode off.
+        /// </summary>
+        public bool TakeBackControl()
         {
-            status = RunningState.stopped;
-            string by = secondaryState.ClaimedBy;
-            secondaryState.Break();
-            // Again after the claim is gone, so a PrepareLinkedRun that passed its claim check just before the
-            // break (and then set status = running) is stopped too.
-            lock (linkStartGate)
+            string by;
+            // Under the run claim's lock, so no PrepareLinkedRun can start a run between the check and the break.
+            // One that has passed its first claim check but not yet taken the run claim re-checks the claim before
+            // the run starts, finds it gone, and undoes itself.
+            lock (runLock)
             {
-                if (linkedRunActive) status = RunningState.stopped;
+                if (runInProgress) return false;
+                by = secondaryState.ClaimedBy;
+                secondaryState.Break();
             }
-            SharedCode.AppLog.Write("Controller.BreakLink", "Link broken by the user" + (by != null ? " (was controlled by " + by + ")" : ""));
+            SharedCode.AppLog.Write("Controller.TakeBackControl", "Control taken back by the user" + (by != null ? " (was controlled by " + by + ")" : ""));
+            return true;
         }
 
         public LinkReadyInfo PrepareLinkedRun(string token, LinkRunRequest request)
@@ -1300,7 +1324,7 @@ namespace MOTMaster
             try
             {
                 // Also ends, before the next arm, if the link this run belongs to has been released or broken
-                // (backstop: ReleaseLink/BreakLink also set status = stopped for an active linked run).
+                // (backstop: ReleaseLink also sets status = stopped for an active linked run).
                 while (status == RunningState.running && linkHeldBy(token))
                 {
                     // A primary that died mid-run never ends the run; don't stay armed for a stale trigger.
@@ -1408,7 +1432,7 @@ namespace MOTMaster
         /// <summary>
         /// Ends the linked run (as an error: the secondary records it, sets its safe outputs and does not save) when
         /// the primary has made no call for this run for longer than its ContactTimeoutMs. The claim is kept: only
-        /// the primary's release or Break link clears it.
+        /// the primary's release or Take back control clears it.
         /// </summary>
         private void throwIfPrimaryLost(LinkRunRequest request)
         {

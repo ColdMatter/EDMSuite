@@ -290,7 +290,7 @@
             this.breakLinkButton.Name = "breakLinkButton";
             this.breakLinkButton.Size = new System.Drawing.Size(136, 21);
             this.breakLinkButton.TabIndex = 21;
-            this.breakLinkButton.Text = "Break link";
+            this.breakLinkButton.Text = "Take back control";
             this.breakLinkButton.UseVisualStyleBackColor = true;
             this.breakLinkButton.Visible = false;
             this.breakLinkButton.Click += new System.EventHandler(this.breakLinkButton_Click);

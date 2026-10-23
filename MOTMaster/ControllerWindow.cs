@@ -101,6 +101,8 @@ namespace MOTMaster
 
             linkBannerLabel.Visible = locked;
             breakLinkButton.Visible = locked;
+            // Not during a linked run (TakeBackControl refuses then too).
+            breakLinkButton.Enabled = !controller.IsRunning;
             if (locked) linkBannerLabel.Text = "Controlled by " + controller.LockedBy + " (linked run)";
 
             // The primary's Linked box: not while a change is in flight, and not mid-run (SetLinked refuses then).
@@ -181,11 +183,10 @@ namespace MOTMaster
 
         private void breakLinkButton_Click(object sender, EventArgs e)
         {
-            string by = controller.LockedBy;
-            DialogResult r = MessageBox.Show(this,
-                "Break the link to " + by + "? Only do this if the primary MOTMaster has crashed or closed.",
-                "Break link", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
-            if (r == DialogResult.Yes) controller.BreakLink();
+            // The button is greyed during a linked run; this covers a run that started just as it was clicked.
+            if (!controller.TakeBackControl())
+                MessageBox.Show(this, "A linked run is in progress. Control can be taken back once it has finished.",
+                    "Take back control");
         }
 
         #endregion
