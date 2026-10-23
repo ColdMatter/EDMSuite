@@ -224,7 +224,7 @@
             this.freqInput.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.freqInput.Location = new System.Drawing.Point(10, 60);
             this.freqInput.Maximum = new decimal(new int[] {
-            13600,
+            26500,
             0,
             0,
             0});

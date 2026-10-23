@@ -20,7 +20,6 @@ namespace CaFBECHardwareController.Controls
         public LakeShore336TemperatureController lakeshore = (LakeShore336TemperatureController)Environs.Hardware.Instruments["Lakeshore"];
         private readonly object heater_lock = new object();
 
-
         //private System.Timers.Timer readTimer;
         public bool isCryoOn = false;
         public bool isHeaterOn = false;

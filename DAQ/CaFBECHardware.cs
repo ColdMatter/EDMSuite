@@ -244,7 +244,8 @@ namespace DAQ.HAL
             Instruments.Add("Lakeshore", new LakeShore336TemperatureController("ASRL4::INSTR"));
             Instruments.Add("Pfeiffer", new PfeifferPressureGauge("ASRL5::INSTR"));
             //Instruments.Add("Windfreak", new WindfreakSynth("ASRL30::INSTR"));
-            Instruments.Add("Gigatronics", new Gigatronics7100Synth("GPIB0::7::INSTR"));
+            //Instruments.Add("Gigatronics", new Gigatronics7100Synth("GPIB0::7::INSTR"));
+            Instruments.Add("Gigatronics", new Gigatronics7100Synth("GPIB0::19::INSTR"));
         }
 
         public override void ConnectApplications()

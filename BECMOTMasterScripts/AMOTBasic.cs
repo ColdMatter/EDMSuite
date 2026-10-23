@@ -27,7 +27,7 @@ public class Patterns : MOTMasterScript
         // ------------- TOGGLES -------------
 
         Parameters["yagONorOFF"] = 10.0;
-        Parameters["SlowingONorOFF"] = 10.0;
+        Parameters["SlowingONorOFF"] = 1.0;
         Parameters["MOTONorOFF"] = 10.0;
         Parameters["CMOTONorOFF"] = 10.0;
         Parameters["CloudImageONorOFF"] = 10.0;
@@ -37,38 +37,7 @@ public class Patterns : MOTMasterScript
 
         // Parameters["BXAOMFrequencyMHz"] = 100.0;
 
-
-        /* Parameters["V00F0AOMAmpMOTLoading"] = 0.76; // 0.97;
-        Parameters["V00F1plusAOMAmpMOTLoading"] = 0.6;
-        Parameters["V00F2AOMAmpMOTLoading"] = 0.7;
-        Parameters["V00F1minusAOMAmpMOTLoading"] = 0.58;
-
-        Parameters["V00F2DDSFrequencyMHz"] = 64.62;
-        Parameters["V00F1plusDDSFrequencyMHz"] = 76.5;
-        Parameters["V00F1minusDDSFrequencyMHz"] = 78.2;
-
-        Parameters["MOTCompressionRampDuration"] = 0;
-        Parameters["MOTCompressionHoldDuration"] = 0; // 3000;
-
-        Parameters["V00F0AOMAmpMOTCompression"] = 0.76;
-        Parameters["V00F1plusAOMAmpMOTCompression"] = 0.6;
-        Parameters["V00F2AOMAmpMOTCompression"] = 0.7;
-        Parameters["V00F1minusAOMAmpMOTCompression"] = 0.55;*/
-
-        //Parameters["V00F0AOMAmpMOTCompression"] = 0.97;
-        //Parameters["V00F1plusAOMAmpMOTCompression"] = 0.615;
-        //Parameters["V00F2AOMAmpMOTCompression"] = 0.71;
-        //Parameters["V00F1minusAOMAmpMOTCompression"] = 0.62;
-
-        /*Parameters["V00F0AOMAmpImaging"] = 0.97;
-        Parameters["V00F1plusAOMAmpImaging"] = 0.615;
-        Parameters["V00F2AOMAmpImaging"] = 0.71;
-        Parameters["V00F1minusAOMAmpImaging"] = 0.62;
-
-        Parameters["V00F0AOMAmpMax"] = 0.97;
-        Parameters["V00F1plusAOMAmpMax"] = 0.615;
-        Parameters["V00F2AOMAmpMax"] = 0.71;
-        Parameters["V00F1minusAOMAmpMax"] = 0.62;*/
+        Parameters["MOTLoadingDuration"] = 500;
 
         // common and finishing
         Parameters["PatternLength"] = 60000;
@@ -77,7 +46,7 @@ public class Patterns : MOTMasterScript
 
         // imaging
         Parameters["CameraTriggerStartDelay"] = 0; // imaging
-        Parameters["CameraTriggerDuration"] = 500;
+        Parameters["CameraTriggerDuration"] = 2000;
         Parameters["BackgroundImageTime"] = 35000;
 
     }
@@ -329,11 +298,6 @@ public class Patterns : MOTMasterScript
                 (double)Parameters["ZShimCoilsMOTValue"]
             );
             p.AddAnalogValue(
-                "V00R0AOMVCOFreq",
-                0,
-                (double)Parameters["V00F0AOMFreqMOTLoading"]
-            );
-            p.AddAnalogValue(
                 "V00R0AOMVCOAmp",
                 0,
                 (double)Parameters["V00F0AOMAmpMOTLoading"]
@@ -352,12 +316,6 @@ public class Patterns : MOTMasterScript
                "V00B1minusAOMAmp",
                0,
                (double)Parameters["V00F1minusAOMAmpMOTLoading"]
-            );
-
-            p.AddAnalogValue(
-               "V00R0EOMAmp",
-               0,
-               0.8
             );
         }
 
@@ -389,11 +347,6 @@ public class Patterns : MOTMasterScript
                 "V00B1minusAOMAmp",
                 cameraStart,
                 (double)Parameters["V00F1minusAOMAmpImaging"]
-            );
-            p.AddAnalogValue(
-                "V00R0AOMVCOFreq",
-                cameraStart,
-                (double)Parameters["V00F0AOMFreqImaging"]
             );
 
         }

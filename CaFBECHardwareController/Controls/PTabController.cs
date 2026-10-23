@@ -18,7 +18,7 @@ namespace CaFBECHardwareController.Controls
 
         private PTabView castView;
         public PfeifferPressureGauge pfeiffer = (PfeifferPressureGauge)Environs.Hardware.Instruments["Pfeiffer"];
-
+        
         protected override GenericView CreateControl()
         {
             castView = new PTabView(this);

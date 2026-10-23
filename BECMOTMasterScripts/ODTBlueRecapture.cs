@@ -32,23 +32,25 @@ public class Patterns : MOTMasterScript
         Parameters["MOTONorOFF"] = 10.0;
         Parameters["CMOTONorOFF"] = 10.0;
         Parameters["MolassesONorOFF"] = 10.0;
-        Parameters["BlueMOTONorOFF"] = 1.0;
-        Parameters["Molasses2ONorOFF"] = 1.0;
-        Parameters["ODTONorOFF"] = 10.0;
+        Parameters["BlueMOTONorOFF"] = 10.0;
+        Parameters["ODTONorOFF"] = 1.0;
+        Parameters["ODT2ONorOFF"] = 10.0;
+        Parameters["4thSidebandONorOFF"] = 10.0;
+        Parameters["V00ShutterONorOFF"] = 10.0;
         Parameters["BlueMOTRecaptureONorOFF"] = 10.0;
         Parameters["CloudImageONorOFF"] = 10.0;
-        Parameters["BackgroundImageONorOFF"] = 1.0;
+        Parameters["BackgroundImageONorOFF"] = 10.0;
 
         // ------------- LOCAL PARAMETERS -------------
-
+/*
         // initial blue MOT
         Parameters["BlueMOTFirstRampDuration"] = 1;
         Parameters["BlueMOTHoldDuration"] = 1;
-
+*/
         // ODT
-        Parameters["LambdaMolassesHoldDuration"] = 7200; 
-        Parameters["ODTStartDelay"] = 0; //from end of molasses
-        Parameters["ODTOnlyDuration"] = 10000; // 15000; // after blue MOT stop
+        Parameters["LambdaMolassesHoldDuration"] = 200;
+        Parameters["ODTStartDelay"] = 1; //from end of molasses
+        Parameters["ODTOnlyDuration"] = 20000; // after blue MOT stop
         Parameters["ODTVVAControlVoltage"] = 5.3;
 
         // Blue MOT [recapture]
@@ -57,19 +59,30 @@ public class Patterns : MOTMasterScript
         Parameters["BlueMOTRecaptureFieldValue"] = -4.0;
 
         // common and finishing
-        Parameters["PatternLength"] = 60000;
+        Parameters["PatternLength"] = 64000;
         Parameters["TCLBlockStart"] = 5000;
-        Parameters["ResetTime"] = 50000;
+        Parameters["ResetTime"] = 57000;
 
         // imaging
         Parameters["CameraTriggerStartDelay"] = 1; // imaging
         Parameters["CameraTriggerDuration"] = 1000;
-        Parameters["BackgroundImageTime"] = 40000;
+        Parameters["BackgroundImageTime"] = 50000;
 
         // dummy
         Parameters["deltaAMHz"] = 0.0;
         Parameters["deltaBMHz"] = 0.0;
         Parameters["onePhotonDetuningMHz"] = 0.0;
+
+        Parameters["ShimCoilODTDelay"] = 1000;
+        Parameters["XShimCoilsODTValue"] = 0.0;
+        Parameters["YShimCoilsODTValue"] = 0.0;
+        Parameters["ZShimCoilsODTValue"] = 0.0;
+
+
+
+        Parameters["XShimCoilsLambdaMolassesValue"] = 0.0;
+        Parameters["YShimCoilsLambdaMolassesValue"] = 2.0;
+        Parameters["ZShimCoilsLambdaMolassesValue"] = 0.0;
     }
 
     public override PatternBuilder32 GetDigitalPattern()
@@ -91,11 +104,12 @@ public class Patterns : MOTMasterScript
         int blueMOTStop = blueMOTHoldStart + (int)Parameters["BlueMOTHoldDuration"];
         // int lambdaMolasses2Start = blueMOTStop + (int)Parameters["LambdaMolasses2StartDelay"];
         // int lambdaMolasses2Stop = lambdaMolasses2Start + +(int)Parameters["LambdaMolasses2HoldDuration"];
-        int odtStart = lambdaMolassesStart + (int)Parameters["ODTStartDelay"]; //
+        int odtStart = lambdaMolassesStop + (int)Parameters["ODTStartDelay"]; //
         int odtStop = blueMOTStop + (int)Parameters["ODTOnlyDuration"];
+        int shimStop = blueMOTStop + (int)Parameters["ShimCoilODTDelay"];
         int blueMOTRecaptureStart = odtStop + (int)Parameters["BlueMOTRecaptureStartDelay"];
         int blueMOTRecaptureStop = blueMOTRecaptureStart + (int)Parameters["BlueMOTRecaptureRampDuration"];
-        int imagingLightStart = blueMOTRecaptureStop + (int)Parameters["CameraTriggerStartDelay"]; 
+        int imagingLightStart = blueMOTRecaptureStop + (int)Parameters["CameraTriggerStartDelay"];
         int imagingLightStop = imagingLightStart + (int)Parameters["CameraTriggerDuration"];
         int cameraStart = imagingLightStart - (int)Parameters["CameraExposureDelayCCDMode"];
         int cameraStop = cameraStart + (int)Parameters["CameraTriggerDuration"];
@@ -268,6 +282,23 @@ public class Patterns : MOTMasterScript
                 blueMOTStop - lambdaMolassesStop,
                 "V00B2AOMblueMOT"
             );
+
+            if ((double)Parameters["4thSidebandONorOFF"] > 5.0)
+            {
+                p.Pulse(
+                    patternStartBeforeQ,
+                    lambdaMolassesStop,
+                    blueMOTStop - lambdaMolassesStop,
+                    "DDSTTLP0"
+                );
+                p.Pulse(
+                    patternStartBeforeQ,
+                    lambdaMolassesStop,
+                    blueMOTStop - lambdaMolassesStop,
+                    "V00R0AOM"
+                );
+            }
+
         }
 
         // ODT
@@ -278,6 +309,28 @@ public class Patterns : MOTMasterScript
                 odtStart,
                 odtStop - odtStart,
                 "DipoleTrapAOM"
+            );
+        }
+
+        // ODT
+        if ((double)Parameters["ODT2ONorOFF"] > 5.0)
+        {
+            p.Pulse(
+                patternStartBeforeQ,
+                odtStart,
+                odtStop - odtStart,
+                "Rb2DCoolingAOM"
+            );
+        }
+
+        // V00 shutters
+        if ((double)Parameters["V00ShutterONorOFF"] > 5.0)
+        {
+            p.Pulse(
+                patternStartBeforeQ,
+                blueMOTStop - 10,
+                odtStop - blueMOTStop + 10 - 1500,
+                "RbPushBeamAOM"
             );
         }
 
@@ -314,6 +367,21 @@ public class Patterns : MOTMasterScript
                 imagingLightStop - blueMOTRecaptureStart,
                 "DDSTTLP3"
             );
+            if ((double)Parameters["4thSidebandONorOFF"] > 5.0)
+            {
+                p.Pulse(
+                    patternStartBeforeQ,
+                    blueMOTRecaptureStart,
+                    imagingLightStop - blueMOTRecaptureStart,
+                    "DDSTTLP0"
+                );
+                p.Pulse(
+                    patternStartBeforeQ,
+                    blueMOTRecaptureStart,
+                    imagingLightStop - blueMOTRecaptureStart,
+                    "V00R0AOM"
+                );
+            }
         }
 
         if ((double)Parameters["CloudImageONorOFF"] > 5.0)
@@ -358,6 +426,21 @@ public class Patterns : MOTMasterScript
             (int)Parameters["CameraTriggerDuration"],
             "DDSTTLP3"
         );
+        if ((double)Parameters["4thSidebandONorOFF"] > 5.0)
+        {
+            p.Pulse(
+                patternStartBeforeQ,
+                (int)Parameters["BackgroundImageTime"],
+                (int)Parameters["CameraTriggerDuration"],
+                "DDSTTLP0"
+            );
+            p.Pulse(
+                patternStartBeforeQ,
+                (int)Parameters["BackgroundImageTime"],
+                (int)Parameters["CameraTriggerDuration"],
+                "V00R0AOM"
+            );
+        }
         if ((double)Parameters["BackgroundImageONorOFF"] > 5.0)
         {
             p.Pulse(
@@ -403,8 +486,9 @@ public class Patterns : MOTMasterScript
         int blueMOTStop = blueMOTHoldStart + (int)Parameters["BlueMOTHoldDuration"];
         // int lambdaMolasses2Start = blueMOTStop + (int)Parameters["LambdaMolasses2StartDelay"];
         // int lambdaMolasses2Stop = lambdaMolasses2Start + +(int)Parameters["LambdaMolasses2HoldDuration"];
-        int odtStart = lambdaMolassesStart + (int)Parameters["ODTStartDelay"]; //
+        int odtStart = lambdaMolassesStop + (int)Parameters["ODTStartDelay"]; //
         int odtStop = blueMOTStop + (int)Parameters["ODTOnlyDuration"];
+        int shimStop = blueMOTStop + (int)Parameters["ShimCoilODTDelay"];
         int blueMOTRecaptureStart = odtStop + (int)Parameters["BlueMOTRecaptureStartDelay"];
         int blueMOTRecaptureStop = blueMOTRecaptureStart + (int)Parameters["BlueMOTRecaptureRampDuration"];
         int imagingLightStart = blueMOTRecaptureStop + (int)Parameters["CameraTriggerStartDelay"];
@@ -467,11 +551,6 @@ public class Patterns : MOTMasterScript
                 (double)Parameters["ZShimCoilsMOTValue"]
             );
             p.AddAnalogValue(
-                "V00R0AOMVCOFreq",
-                0,
-                (double)Parameters["V00F0AOMFreqMOTLoading"]
-            );
-            p.AddAnalogValue(
                 "V00R0AOMVCOAmp",
                 0,
                 (double)Parameters["V00F0AOMAmpMOTLoading"]
@@ -491,12 +570,6 @@ public class Patterns : MOTMasterScript
                0,
                (double)Parameters["V00F1minusAOMAmpMOTLoading"]
             );
-
-            p.AddAnalogValue(
-               "V00R0EOMAmp",
-               0,
-               0.8
-            );
         }
 
         if ((double)Parameters["CMOTONorOFF"] > 5.0)
@@ -506,12 +579,6 @@ public class Patterns : MOTMasterScript
                 motLoadingStop,
                 (int)Parameters["MOTCompressionRampDuration"],
                 (double)Parameters["MOTCompressionFieldValue"]
-            );
-            p.AddLinearRamp(
-                "V00R0AOMVCOFreq",
-                motLoadingStop,
-                (int)Parameters["MOTCompressionRampDuration"],
-                (double)Parameters["V00F0AOMFreqMOTCompression"]
             );
             p.AddLinearRamp(
                 "V00R0AOMVCOAmp",
@@ -644,21 +711,69 @@ public class Patterns : MOTMasterScript
                 lambdaMolassesStop,
                 (double)Parameters["V00F2AOMAmpBlueMOT"]
             );
+            p.AddLinearRamp(
+                "V00B2AOMAmp",
+                blueMOTHoldStart,
+                (int)Parameters["BlueMOTHoldDuration"],
+                (double)Parameters["V00F2AOMAmpBlueMOTEnd"]
+            );
             p.AddAnalogValue(
                 "V00R1plusAOMAmp",
                 lambdaMolassesStop,
                 (double)Parameters["V00F1plusAOMAmpBlueMOT"]
+            );
+            p.AddLinearRamp(
+                "V00R1plusAOMAmp",
+                blueMOTHoldStart,
+                (int)Parameters["BlueMOTHoldDuration"],
+                (double)Parameters["V00F1plusAOMAmpBlueMOTEnd"]
             );
             p.AddAnalogValue(
                 "V00B1minusAOMAmp",
                 lambdaMolassesStop,
                 (double)Parameters["V00F1minusAOMAmpBlueMOT"]
             );
+            p.AddLinearRamp(
+                "V00B1minusAOMAmp",
+                blueMOTHoldStart,
+                (int)Parameters["BlueMOTHoldDuration"],
+                (double)Parameters["V00F1minusAOMAmpBlueMOTEnd"]
+            );
             p.AddAnalogValue(
                 "motCoils",
                 blueMOTStop,
                 (double)Parameters["MOTCoilsOffValue"]
             );
+            p.AddAnalogValue(
+                "ShimCoilX",
+                shimStop,
+                (double)Parameters["XShimCoilsODTValue"]
+            );
+            p.AddAnalogValue(
+                "ShimCoilY",
+                shimStop,
+                (double)Parameters["YShimCoilsODTValue"]
+            );
+            p.AddAnalogValue(
+                "ShimCoilZ",
+                shimStop,
+                (double)Parameters["ZShimCoilsODTValue"]
+            );
+
+            if ((double)Parameters["4thSidebandONorOFF"] > 5.0)
+            {
+                p.AddAnalogValue(
+                    "V00R0AOMVCOAmp",
+                    lambdaMolassesStop,
+                    (double)Parameters["V00F0AOMAmpBlueMOT"]
+                );
+                p.AddLinearRamp(
+                    "V00R0AOMVCOAmp",
+                    blueMOTHoldStart,
+                    (int)Parameters["BlueMOTHoldDuration"],
+                    (double)Parameters["V00F0AOMAmpBlueMOTEnd"]
+                );
+            }
         }
 
         if ((double)Parameters["ODTONorOFF"] > 5.0)
@@ -693,6 +808,15 @@ public class Patterns : MOTMasterScript
                 blueMOTRecaptureStart,
                 (double)Parameters["V00F1minusAOMAmpBlueMOT"]
             );
+            if ((double)Parameters["4thSidebandONorOFF"] > 5.0)
+            {
+                p.AddAnalogValue(
+                    "V00R0AOMVCOAmp",
+                    blueMOTRecaptureStart,
+                    (double)Parameters["V00F0AOMAmpBlueMOT"]
+                );
+
+            }
         }
         p.AddAnalogValue(
             "motCoils",

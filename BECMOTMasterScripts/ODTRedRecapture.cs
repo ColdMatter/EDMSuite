@@ -45,12 +45,14 @@ public class Patterns : MOTMasterScript
         // ------------- LOCAL PARAMETERS -------------
 
         // MOT
-        Parameters["MOTLoadingDuration"] = 4500;
+        Parameters["XShimCoilsLambdaMolassesValue"] = 0.0; // -0.25;
+        Parameters["YShimCoilsLambdaMolassesValue"] = 0.0; // 3.0;
+        Parameters["ZShimCoilsLambdaMolassesValue"] = 0.0; // 1.0;
 
         // ODT
         Parameters["LambdaMolassesHoldDuration"] = 200;
-        Parameters["ODTStartDelay"] = 0; //from end of molasses
-        Parameters["ODTOnlyDuration"] = 15000; // 15000; // after blue MOT stop
+        Parameters["ODTStartDelay"] = 1; //from end of molasses
+        Parameters["ODTOnlyDuration"] = 20000; // after blue MOT stop
         Parameters["ODTVVAControlVoltage"] = 5.3;
 
         // Red MOT [recapture]
@@ -58,14 +60,14 @@ public class Patterns : MOTMasterScript
         Parameters["MOTRecaptureHoldDuration"] = 1000;
 
         // 4th sideband
-        Parameters["V00F0AOMAmpBlueMOT"] = 0.74;
+        // Parameters["V00F0AOMAmpBlueMOT"] = 0.74;
 
-        // ramp end values for blue MOT
+/*        // ramp end values for blue MOT
         Parameters["V00F2AOMAmpBlueMOTEnd"] = 0.61;
         Parameters["V00F1plusAOMAmpBlueMOTEnd"] = 0.615;
         Parameters["V00F1minusAOMAmpBlueMOTEnd"] = 0.52;
         Parameters["V00F0AOMAmpBlueMOTEnd"] = 0.59;
-
+*/
         // common and finishing
         Parameters["PatternLength"] = 70000;
         Parameters["TCLBlockStart"] = 5000;
@@ -73,8 +75,9 @@ public class Patterns : MOTMasterScript
 
         // imaging
         Parameters["CameraTriggerStartDelay"] = 1; // imaging
-        Parameters["CameraTriggerDuration"] = 500;
+        Parameters["CameraTriggerDuration"] = 1000;
         Parameters["MOTImageTime"] = 3450;
+        Parameters["MOTLoadingDuration"] = 4500;
         Parameters["BackgroundImageTime"] = 50000;
 
         // dummy
@@ -505,11 +508,6 @@ public class Patterns : MOTMasterScript
                 (double)Parameters["ZShimCoilsMOTValue"]
             );
             p.AddAnalogValue(
-                "V00R0AOMVCOFreq",
-                0,
-                (double)Parameters["V00F0AOMFreqMOTLoading"]
-            );
-            p.AddAnalogValue(
                 "V00R0AOMVCOAmp",
                 0,
                 (double)Parameters["V00F0AOMAmpMOTLoading"]
@@ -529,12 +527,6 @@ public class Patterns : MOTMasterScript
                0,
                (double)Parameters["V00F1minusAOMAmpMOTLoading"]
             );
-
-            p.AddAnalogValue(
-               "V00R0EOMAmp",
-               0,
-               0.8
-            );
         }
 
         if ((double)Parameters["CMOTONorOFF"] > 5.0)
@@ -544,12 +536,6 @@ public class Patterns : MOTMasterScript
                 motLoadingStop,
                 (int)Parameters["MOTCompressionRampDuration"],
                 (double)Parameters["MOTCompressionFieldValue"]
-            );
-            p.AddLinearRamp(
-                "V00R0AOMVCOFreq",
-                motLoadingStop,
-                (int)Parameters["MOTCompressionRampDuration"],
-                (double)Parameters["V00F0AOMFreqMOTCompression"]
             );
             p.AddLinearRamp(
                 "V00R0AOMVCOAmp",

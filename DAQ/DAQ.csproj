@@ -632,6 +632,7 @@
     <Compile Include="AnalogStaticBuilder.cs" />
     <Compile Include="CaFBECFileSystem.cs" />
     <Compile Include="CaFBECHardware.cs" />
+    <Compile Include="InfluxDBDataLogger.cs" />
     <Compile Include="PfeifferPressureGauge.cs" />
     <Compile Include="StepperMotorController.cs" />
     <Compile Include="DAQMxPatternGenerator.cs" />

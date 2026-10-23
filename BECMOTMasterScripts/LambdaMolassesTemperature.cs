@@ -36,7 +36,7 @@ public class Patterns : MOTMasterScript
         Parameters["BackgroundImageONorOFF"] = 10.0;
 
         // ------------- LOCAL PARAMETERS -------------
-
+/*
         Parameters["MOTCompressionRampDuration"] = 600;
         Parameters["MOTCompressionHoldDuration"] = 400;
         Parameters["LambdaMolassesHoldDuration"] = 200;
@@ -55,7 +55,7 @@ public class Patterns : MOTMasterScript
         Parameters["V00F1plusAOMAmpMax"] = 0.615;
         Parameters["V00F2AOMAmpMax"] = 0.71;
         Parameters["V00F1minusAOMAmpMax"] = 0.62;
-
+*/
         // temp for driving yshim with slowing coils
         // Parameters["YShimCoilsMOTValue"] = 2.0;
         //Parameters["YShimCoilsCMOTValue"] = 2.0;
@@ -68,7 +68,7 @@ public class Patterns : MOTMasterScript
         Parameters["ResetTime"] = 50000;
 
         // imaging
-        Parameters["CameraTriggerStartDelay"] = 10;
+        Parameters["CameraTriggerStartDelay"] = 1200;
         Parameters["CameraTriggerDuration"] = 100;
         Parameters["BackgroundImageTime"] = 35000;
 
@@ -203,7 +203,6 @@ public class Patterns : MOTMasterScript
         // Lambda molasses
         if ((double)Parameters["MolassesONorOFF"] > 5.0)
         {
-
 
             // switch F=2 frequency to lambda molasses
             p.Pulse(
@@ -403,11 +402,6 @@ public class Patterns : MOTMasterScript
                 (double)Parameters["ZShimCoilsMOTValue"]
             );
             p.AddAnalogValue(
-                "V00R0AOMVCOFreq",
-                0,
-                (double)Parameters["V00F0AOMFreqMOTLoading"]
-            );
-            p.AddAnalogValue(
                 "V00R0AOMVCOAmp",
                 0,
                 (double)Parameters["V00F0AOMAmpMOTLoading"]
@@ -427,12 +421,6 @@ public class Patterns : MOTMasterScript
                0,
                (double)Parameters["V00F1minusAOMAmpMOTLoading"]
             );
-
-            p.AddAnalogValue(
-               "V00R0EOMAmp",
-               0,
-               0.8
-            );
         }
 
         if ((double)Parameters["CMOTONorOFF"] > 5.0)
@@ -442,12 +430,6 @@ public class Patterns : MOTMasterScript
                 motLoadingStop,
                 (int)Parameters["MOTCompressionRampDuration"],
                 (double)Parameters["MOTCompressionFieldValue"]
-            );
-            p.AddLinearRamp(
-                "V00R0AOMVCOFreq",
-                motLoadingStop,
-                (int)Parameters["MOTCompressionRampDuration"],
-                (double)Parameters["V00F0AOMFreqMOTCompression"]
             );
             p.AddLinearRamp(
                 "V00R0AOMVCOAmp",
@@ -564,11 +546,6 @@ public class Patterns : MOTMasterScript
                 "V00B1minusAOMAmp",
                 imagingLightStart,
                 (double)Parameters["V00F1minusAOMAmpImaging"]
-            );
-            p.AddAnalogValue(
-                "V00R0AOMVCOFreq",
-                imagingLightStart,
-                (double)Parameters["V00F0AOMFreqImaging"]
             );
 
         }

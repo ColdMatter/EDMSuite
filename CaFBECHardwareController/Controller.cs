@@ -25,8 +25,8 @@ namespace CaFBECHardwareController
 
             { "Source", new SourceTabController() },
             { "Temperature", new TTabController() },
-            { "Pressure", new PTabController() },
-            //{ "Gigatronics", new GigatronicsTabController() }
+            { "Pressure", new PTabController() }
+           //  { "Gigatronics", new GigatronicsTabController() }
 
         };
 

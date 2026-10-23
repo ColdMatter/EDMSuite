@@ -54,7 +54,7 @@ public class Patterns : MOTMasterScript
         // Red MOT [recapture]
         Parameters["MOTRecaptureStartDelay"] = 0;
         Parameters["MOTRecaptureHoldDuration"] = 1000;
-
+/*
         // 4th sideband
         Parameters["V00F0AOMAmpBlueMOT"] = 0.74;
 
@@ -63,7 +63,7 @@ public class Patterns : MOTMasterScript
         Parameters["V00F1plusAOMAmpBlueMOTEnd"] = 0.615;
         Parameters["V00F1minusAOMAmpBlueMOTEnd"] = 0.52;
         Parameters["V00F0AOMAmpBlueMOTEnd"] = 0.59;
-
+*/
         // common and finishing
         Parameters["PatternLength"] = 460000; // should be about 500ms after reset time
         Parameters["TCLBlockStart"] = 5000;
@@ -514,11 +514,6 @@ public class Patterns : MOTMasterScript
                 (double)Parameters["ZShimCoilsMOTValue"]
             );
             p.AddAnalogValue(
-                "V00R0AOMVCOFreq",
-                0,
-                (double)Parameters["V00F0AOMFreqMOTLoading"]
-            );
-            p.AddAnalogValue(
                 "V00R0AOMVCOAmp",
                 0,
                 (double)Parameters["V00F0AOMAmpMOTLoading"]
@@ -538,12 +533,6 @@ public class Patterns : MOTMasterScript
                0,
                (double)Parameters["V00F1minusAOMAmpMOTLoading"]
             );
-
-            p.AddAnalogValue(
-               "V00R0EOMAmp",
-               0,
-               0.8
-            );
         }
 
         if ((double)Parameters["CMOTONorOFF"] > 5.0)
@@ -553,12 +542,6 @@ public class Patterns : MOTMasterScript
                 motLoadingStop,
                 (int)Parameters["MOTCompressionRampDuration"],
                 (double)Parameters["MOTCompressionFieldValue"]
-            );
-            p.AddLinearRamp(
-                "V00R0AOMVCOFreq",
-                motLoadingStop,
-                (int)Parameters["MOTCompressionRampDuration"],
-                (double)Parameters["V00F0AOMFreqMOTCompression"]
             );
             p.AddLinearRamp(
                 "V00R0AOMVCOAmp",
