@@ -31,17 +31,17 @@ Check that these files now have today's timestamp. They are the paths `PHBonesaw
 
 ### RbTweezer: `RbTweezer` configuration
 
-Build `MOTMaster.csproj` with `Configuration=RbTweezer`, the way RbTweezer is normally built. Its MSBuild path may differ from PH-BONESAW's.
+In Visual Studio, pick the `RbTweezer` configuration (any platform: all four map to `RbTweezer|Any CPU`) and build the solution. It builds only SharedCode, DAQ and MOTMaster. From the command line, build `MOTMaster.csproj` with `/p:Configuration=RbTweezer /p:Platform=AnyCPU` (the MSBuild path may differ from PH-BONESAW's).
 
-**Check that both of these files have today's timestamp.** `RbTweezerFileSystem.cs` points at a mix of two platform folders:
-- `MOTMaster\bin\RbTweezer\MOTMaster.exe` (the AnyCPU output folder)
-- `DAQ\bin\x86\RbTweezer\daq.dll` (the **x86** output folder)
+**Check that both of these files have today's timestamp.** They are the paths `RbTweezerFileSystem.cs` points MOTMaster at:
+- `MOTMaster\bin\RbTweezer\MOTMaster.exe`
+- `DAQ\bin\RbTweezer\daq.dll`
 
-If `DAQ\bin\x86\RbTweezer\daq.dll` is still old, also build `DAQ\DAQ.csproj` with `/p:Configuration=RbTweezer /p:Platform=x86`. MOTMaster compiles scripts against that `daq.dll` at run time.
+Start MOTMaster from `MOTMaster\bin\RbTweezer\`. Builds left in `bin\x86\RbTweezer\` or `bin\ZeemanSisyphus\` (from the old solution mapping) are stale and may be 32-bit; check that no shortcut points at them.
 
 ### Optional sanity check (no hardware)
 
-After the PH-BONESAW build, run `powershell -ExecutionPolicy Bypass -File MOTMasterTests\run-tests.ps1` from the repo root. Expect `56/56 passed`.
+After the PH-BONESAW build, run `powershell -ExecutionPolicy Bypass -File MOTMasterTests\run-tests.ps1` from the repo root. Expect every test to pass (60 as of 2026-10-23).
 
 ## 3. Before the first linked run
 
