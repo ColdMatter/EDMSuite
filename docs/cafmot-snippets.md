@@ -1,6 +1,6 @@
-# CaF MOTMaster snippets: findings so far and an open decision
+# CaF MOTMaster snippets: findings so far and decisions
 
-Branch `cafmot-snippets`, 2026-10-22. Nothing has been built yet. This note covers what we found in the current scripts, what has been decided, and one decision we want the group's view on before going further.
+Branch `cafmot-snippets`, 2026-10-22. Nothing has been built yet. This note covers what we found in the current scripts, and what has been decided, including how snippets get their timing.
 
 ## The goal
 
@@ -39,6 +39,7 @@ Places where the scripts have drifted apart:
 4. **Other drift becomes parameters.** Where scripts differ (shutter timings, typed-in fields, fixed gaps like `+ 100`), the snippet reads a parameter with a sensible default and each script keeps its current value. Behaviour only changes where something was clearly a mistake, as with the missing trigger.
 5. **Snippets live in `MoleculeMOTMasterScripts/Snippets/`, one class per file, the file named after the class.** They are compiled when a script is loaded, not built into MOTMaster.exe, so editing a snippet needs no rebuild.
 6. **Only the snippets a script uses are compiled with it.** When a script loads, MOTMaster removes comments and string literals from it, finds names that match files in `Snippets/`, and compiles those, following snippets that use other snippets. A broken snippet only affects the scripts that use it.
+7. **The script defines when each stage runs.** Snippets take only `(p, parameters)`; each script writes every stage's start and end time into `Parameters` and snippets read them. Details below.
 
 Consequences of 5 and 6:
 
@@ -47,20 +48,20 @@ Consequences of 5 and 6:
 - New snippets go in their own namespace, so they cannot clash with the ones in MOTMaster.exe.
 - `verify-scripts.ps1` copies `compileFromFile`, so it needs the same change.
 
-## Open decision: how a snippet knows when it starts
+## How a snippet knows when it starts
 
 A snippet is given only the pattern and the parameter dictionary. `0. DDSFourSidebands5W_noDDS` adds one with `new LoadMoleculeMOTNoSlowingEdge(p, Parameters)` and nothing else, and the snippet reads every time it needs from the dictionary (`TCLBlockStart`, `SlowingChirpStartTime`, `SlowingChirpDuration`, ...). There is no start-time argument, and new snippets keep that shape: constructors take `(p, parameters)` only.
 
-So the question is how a stage's start time gets into the parameters. For the load stage this is easy, because its times are already plain parameters. Later stages start at times the scripts work out today (`lambdaCoolingStart`, `BlueMOTEnd`, ...).
+So a stage's start time has to get into the parameters. For the load stage this is easy, because its times are already plain parameters. Later stages start at times the scripts work out today (`lambdaCoolingStart`, `BlueMOTEnd`, ...).
 
-Two facts about MOTMaster that the options rely on:
+Two facts about MOTMaster that this relies on:
 
 - Scan values are applied after the script object is built and before its patterns are built (`prepareScript` calls `EditDictionary` and then `getSequenceFromScript`). A start time written into `Parameters` in the constructor would therefore miss a scanned duration. It has to be written inside the `Get...Pattern` methods.
 - The dictionary saved with each run is `script.Parameters` after the patterns are built, so start times written during pattern building are recorded with the shot. They are not in the parameter list the GUI shows, so they cannot be scanned directly; scan the durations they come from. They must not also be set in the constructor, or the scan value would be overwritten.
 
-Each time is defined in one place only: either the script defines `BlueMOTStartTime` for the snippet (option A), or the `BlueMOT` snippet defines it itself and the script never touches it unless it uses that time for something else, such as a camera trigger (option B). Times are always counted from the Q-switch; digital snippets add `TCLBlockStart` themselves, as `LoadMoleculeMOTNoSlowingEdge` already does, so scripts never handle that offset.
+**Decided: the script defines the times.** Each script writes every stage's start and end time (`BlueMOTStartTime`, `BlueMOTEndTime`, ...) into `Parameters`, and snippets only read them. Each time is defined in one place, the script. Times are always counted from the Q-switch; digital snippets add `TCLBlockStart` themselves, as `LoadMoleculeMOTNoSlowingEdge` already does, so scripts never handle that offset.
 
-The snippet is the same in both options except for `SetTimes`, which only option B has:
+A snippet then looks like this:
 
 ```csharp
 namespace MOTMaster.SnippetLibrary.CaF
@@ -76,28 +77,16 @@ namespace MOTMaster.SnippetLibrary.CaF
         public BlueMOT(DDSPatternBuilder p, Dictionary<String, Object> parameters)
         { AddDDSSnippet(p, parameters); }
 
-        // Option B only: the snippet defines its own times. In option A the script defines them, and SetTimes and its calls are left out.
-        private static void SetTimes(Dictionary<String, Object> parameters)
-        {
-            parameters["BlueMOTStartTime"] = (int)parameters["LambdaCooling1EndTime"];
-            parameters["BlueMOTEndTime"] = (int)parameters["BlueMOTStartTime"] + (int)parameters["BlueMOTRampDuration"] + (int)parameters["BlueMOTDuration"];
-        }
-
-        public void AddDigitalSnippet(PatternBuilder32 p, Dictionary<String, Object> parameters)
-        {
-            SetTimes(parameters);
-        }
+        public void AddDigitalSnippet(PatternBuilder32 p, Dictionary<String, Object> parameters) { }
 
         public void AddAnalogSnippet(AnalogPatternBuilder p, Dictionary<String, Object> parameters)
         {
-            SetTimes(parameters);
             p.AddLinearRamp("MOTCoilsCurrent", (int)parameters["BlueMOTStartTime"], (int)parameters["BlueMOTRampDuration"], (double)parameters["BlueMOTField"]);
             p.AddAnalogValue("MOTCoilsCurrent", (int)parameters["BlueMOTEndTime"], (double)parameters["MOTCoilsOffValue"]);
         }
 
         public void AddDDSSnippet(DDSPatternBuilder p, Dictionary<String, Object> parameters)
         {
-            SetTimes(parameters);
             p.AddEvent("BlueMOTRampStart", (int)parameters["BlueMOTStartTime"],
                 new double[] { (double)parameters["FreqCVB1"], (double)parameters["FreqCVB2"], (double)parameters["FreqCVB3"], (double)parameters["FreqCVB4"] },
                 new double[] { (double)parameters["BMOTAmpDDS1"], (double)parameters["BMOTAmpDDS2"], (double)parameters["BMOTAmpDDS3"], (double)parameters["BMOTAmpDDS4"] });
@@ -106,11 +95,11 @@ namespace MOTMaster.SnippetLibrary.CaF
 }
 ```
 
-The script examples below are trimmed to the stages that `7. OP_transfer_to_tweezer_coils_blueMOT` shares with most scripts. `OPGap` is today's typed-in `+ 100`, made a parameter.
+The script example below is trimmed to the stages that `7. OP_transfer_to_tweezer_coils_blueMOT` shares with most scripts. `OPGap` is today's typed-in `+ 100`, made a parameter.
 
-Because a snippet cannot be handed a name, a stage that runs twice in one shot needs a way to tell the two apart (DDS event names must be unique, and each needs its own times). Lambda cooling runs twice, so below it is two classes, `LambdaCooling1` and `LambdaCooling2`, using `LambdaCooling1StartTime`/`EndTime` and `LambdaCooling2StartTime`/`EndTime`. How to share the code between them is part of the reuse question further down.
+Because a snippet cannot be handed a name, a stage that runs twice in one shot needs a way to tell the two apart (DDS event names must be unique, and each needs its own times). Lambda cooling runs twice, so it is two classes, `LambdaCooling1` and `LambdaCooling2`, using `LambdaCooling1StartTime`/`EndTime` and `LambdaCooling2StartTime`/`EndTime`. How to share the code between them is part of the reuse question further down.
 
-### Option A: the script defines the times
+### A script
 
 ```csharp
 public class Patterns : MOTMasterScript
@@ -151,33 +140,16 @@ public class Patterns : MOTMasterScript
 }
 ```
 
-- **Good:** the whole timeline is in one place, and changing a gap between stages is a one-line edit. A snippet does not know what comes before or after it, so the same snippet can go anywhere in a shot, and the order of the snippet lines does not matter.
-- **Bad:** every script writes out its timeline. The 24 scripts that share the load-to-lambda-cooling stages would each carry the same lines for them.
+Why this way:
 
-### Option B: each snippet defines its own times
+- The whole timeline is in one place, and changing a gap between stages is a one-line edit.
+- A snippet does not know what comes before or after it, so the same snippet can go anywhere in a shot, and the order of the snippet lines does not matter.
+- The cost is that every script writes out its timeline: the 24 scripts that share the load-to-lambda-cooling stages each carry the same lines for them.
+- The snippet calls are written three times, once per pattern, as scripts already do today.
 
-```csharp
-public override AnalogPatternBuilder GetAnalogPattern()
-{
-    AnalogPatternBuilder p = new AnalogPatternBuilder((int)Parameters["PatternLength"]);
-    new LoadMOT(p, Parameters);
-    new CompressedMOT(p, Parameters);   // starts at CompressRampDownStartTime
-    new LambdaCooling1(p, Parameters);  // starts at CMOTEndTime
-    new BlueMOT(p, Parameters);         // starts at LambdaCooling1EndTime
-    new LambdaCooling2(p, Parameters);  // starts at BlueMOTEndTime
-    new OpticalPumping(p, Parameters);  // starts at LambdaCooling2EndTime + OPGap
-    new Magtrap(p, Parameters);
-    new HandoverToTransferCoils(p, Parameters);
-    // ... script-specific lines, reading e.g. Parameters["BlueMOTEndTime"] where needed ...
-    return p;
-}
-// GetDigitalPattern and GetDDSPattern call the same snippets.
-```
+### Rejected: each snippet defines its own times
 
-- **Good:** a script is just the list of stages; it holds no timeline and reads a time only where it needs one.
-- **Bad:** each snippet names the stage before it (`BlueMOT` starts at `LambdaCooling1EndTime`), so a stage cannot be moved, dropped or used in a different place without a different snippet. Gaps between stages (`OPGap`) live in the snippets. The order of the lines matters: a snippet run before the one whose end time it reads gets a missing value.
-
-In both options the snippet calls are written three times, once per pattern, as scripts already do today.
+The alternative was for each snippet to set its own times, e.g. `BlueMOT` setting `BlueMOTStartTime = LambdaCooling1EndTime`, so that a script is only a list of snippet calls. It was rejected because each snippet then names the stage before it, so a stage cannot be moved, dropped or used in a different place without a different snippet; gaps between stages such as `OPGap` live inside snippets; and the order of the snippet lines matters.
 
 ## Still to discuss after this
 
