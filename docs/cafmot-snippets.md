@@ -58,13 +58,15 @@ Two facts about MOTMaster that the options rely on:
 - Scan values are applied after the script object is built and before its patterns are built (`prepareScript` calls `EditDictionary` and then `getSequenceFromScript`). A start time written into `Parameters` in the constructor would therefore miss a scanned duration. It has to be written inside the `Get...Pattern` methods.
 - The dictionary saved with each run is `script.Parameters` after the patterns are built, so start times written during pattern building are recorded with the shot. They are not in the parameter list the GUI shows, so they cannot be scanned directly; scan the durations they come from. They must not also be set in the constructor, or the scan value would be overwritten.
 
-Both options use the same snippet. Times are always counted from the Q-switch; digital snippets add `TCLBlockStart` themselves, as `LoadMoleculeMOTNoSlowingEdge` already does, so scripts never handle that offset.
+Each time is defined in one place only: either the script defines `BlueMOTStartTime` for the snippet (option A), or the `BlueMOT` snippet defines it itself and the script never touches it unless it uses that time for something else, such as a camera trigger (option B). Times are always counted from the Q-switch; digital snippets add `TCLBlockStart` themselves, as `LoadMoleculeMOTNoSlowingEdge` already does, so scripts never handle that offset.
+
+The snippet is the same in both options except for `SetTimes`, which only option B has:
 
 ```csharp
 namespace MOTMaster.SnippetLibrary.CaF
 {
     // Blue MOT: ramp the MOT coils to BlueMOTField and switch the DDS to the blue-MOT tones.
-    // Starts at BlueMOTStartTime (ticks after the Q-switch); writes BlueMOTEndTime.
+    // Runs from BlueMOTStartTime to BlueMOTEndTime (ticks after the Q-switch).
     public class BlueMOT : MOTMasterScriptSnippet
     {
         public BlueMOT(PatternBuilder32 p, Dictionary<String, Object> parameters)
@@ -74,32 +76,31 @@ namespace MOTMaster.SnippetLibrary.CaF
         public BlueMOT(DDSPatternBuilder p, Dictionary<String, Object> parameters)
         { AddDDSSnippet(p, parameters); }
 
-        private static int Start(Dictionary<String, Object> parameters)
+        // Option B only: the snippet defines its own times. In option A the script defines them, and SetTimes and its calls are left out.
+        private static void SetTimes(Dictionary<String, Object> parameters)
         {
-            return (int)parameters["BlueMOTStartTime"];
+            parameters["BlueMOTStartTime"] = (int)parameters["LambdaCooling1EndTime"];
+            parameters["BlueMOTEndTime"] = (int)parameters["BlueMOTStartTime"] + (int)parameters["BlueMOTRampDuration"] + (int)parameters["BlueMOTDuration"];
         }
 
-        private static int End(Dictionary<String, Object> parameters)
+        public void AddDigitalSnippet(PatternBuilder32 p, Dictionary<String, Object> parameters)
         {
-            int end = Start(parameters) + (int)parameters["BlueMOTRampDuration"] + (int)parameters["BlueMOTDuration"];
-            parameters["BlueMOTEndTime"] = end;
-            return end;
+            SetTimes(parameters);
         }
-
-        public void AddDigitalSnippet(PatternBuilder32 p, Dictionary<String, Object> parameters) { End(parameters); }
 
         public void AddAnalogSnippet(AnalogPatternBuilder p, Dictionary<String, Object> parameters)
         {
-            p.AddLinearRamp("MOTCoilsCurrent", Start(parameters), (int)parameters["BlueMOTRampDuration"], (double)parameters["BlueMOTField"]);
-            p.AddAnalogValue("MOTCoilsCurrent", End(parameters), (double)parameters["MOTCoilsOffValue"]);
+            SetTimes(parameters);
+            p.AddLinearRamp("MOTCoilsCurrent", (int)parameters["BlueMOTStartTime"], (int)parameters["BlueMOTRampDuration"], (double)parameters["BlueMOTField"]);
+            p.AddAnalogValue("MOTCoilsCurrent", (int)parameters["BlueMOTEndTime"], (double)parameters["MOTCoilsOffValue"]);
         }
 
         public void AddDDSSnippet(DDSPatternBuilder p, Dictionary<String, Object> parameters)
         {
-            p.AddEvent("BlueMOTRampStart", Start(parameters),
+            SetTimes(parameters);
+            p.AddEvent("BlueMOTRampStart", (int)parameters["BlueMOTStartTime"],
                 new double[] { (double)parameters["FreqCVB1"], (double)parameters["FreqCVB2"], (double)parameters["FreqCVB3"], (double)parameters["FreqCVB4"] },
                 new double[] { (double)parameters["BMOTAmpDDS1"], (double)parameters["BMOTAmpDDS2"], (double)parameters["BMOTAmpDDS3"], (double)parameters["BMOTAmpDDS4"] });
-            End(parameters);
         }
     }
 }
@@ -107,9 +108,9 @@ namespace MOTMaster.SnippetLibrary.CaF
 
 The script examples below are trimmed to the stages that `7. OP_transfer_to_tweezer_coils_blueMOT` shares with most scripts. `OPGap` is today's typed-in `+ 100`, made a parameter.
 
-Because a snippet cannot be handed a name, a stage that runs twice in one shot needs a way to tell the two apart (DDS event names must be unique, and each needs its own start time). Lambda cooling runs twice, so below it is two classes, `LambdaCooling1` and `LambdaCooling2`, reading `LambdaCooling1StartTime` and `LambdaCooling2StartTime`. How to share the code between them is part of the reuse question further down.
+Because a snippet cannot be handed a name, a stage that runs twice in one shot needs a way to tell the two apart (DDS event names must be unique, and each needs its own times). Lambda cooling runs twice, so below it is two classes, `LambdaCooling1` and `LambdaCooling2`, using `LambdaCooling1StartTime`/`EndTime` and `LambdaCooling2StartTime`/`EndTime`. How to share the code between them is part of the reuse question further down.
 
-### Option A: the script writes the timeline into the parameters once
+### Option A: the script defines the times
 
 ```csharp
 public class Patterns : MOTMasterScript
@@ -120,12 +121,15 @@ public class Patterns : MOTMasterScript
     private void SetTimeline()
     {
         Parameters["CMOTStartTime"]           = (int)Parameters["CompressRampDownStartTime"];
-        Parameters["LambdaCooling1StartTime"] = (int)Parameters["CMOTStartTime"] + (int)Parameters["CompressRampDownDuration"] + (int)Parameters["CompressRampDownHoldDuration"];
-        Parameters["BlueMOTStartTime"]        = (int)Parameters["LambdaCooling1StartTime"] + (int)Parameters["LambdaCoolingDuration"];
-        Parameters["LambdaCooling2StartTime"] = (int)Parameters["BlueMOTStartTime"] + (int)Parameters["BlueMOTRampDuration"] + (int)Parameters["BlueMOTDuration"];
-        Parameters["OPStartTime"]             = (int)Parameters["LambdaCooling2StartTime"] + (int)Parameters["LambdaCooling2Duration"] + (int)Parameters["OPGap"];
-        Parameters["MagtrapStartTime"]        = (int)Parameters["OPStartTime"] + (int)Parameters["OpticalPumpingDuration"];
-        Parameters["HandoverStartTime"]       = (int)Parameters["MagtrapStartTime"] + (int)Parameters["Magtrap1Duration"];
+        Parameters["CMOTEndTime"]             = (int)Parameters["CMOTStartTime"] + (int)Parameters["CompressRampDownDuration"] + (int)Parameters["CompressRampDownHoldDuration"];
+        Parameters["LambdaCooling1StartTime"] = Parameters["CMOTEndTime"];
+        Parameters["LambdaCooling1EndTime"]   = (int)Parameters["LambdaCooling1StartTime"] + (int)Parameters["LambdaCoolingDuration"];
+        Parameters["BlueMOTStartTime"]        = Parameters["LambdaCooling1EndTime"];
+        Parameters["BlueMOTEndTime"]          = (int)Parameters["BlueMOTStartTime"] + (int)Parameters["BlueMOTRampDuration"] + (int)Parameters["BlueMOTDuration"];
+        Parameters["LambdaCooling2StartTime"] = Parameters["BlueMOTEndTime"];
+        Parameters["LambdaCooling2EndTime"]   = (int)Parameters["LambdaCooling2StartTime"] + (int)Parameters["LambdaCooling2Duration"];
+        Parameters["OPStartTime"]             = (int)Parameters["LambdaCooling2EndTime"] + (int)Parameters["OPGap"];
+        // ... and so on for optical pumping, magtrap and handover ...
     }
 
     public override AnalogPatternBuilder GetAnalogPattern()
@@ -147,38 +151,31 @@ public class Patterns : MOTMasterScript
 }
 ```
 
-- **Good:** when every stage starts can be read in one place, and changing a gap between stages is a one-line edit. The order of the snippet lines does not matter.
-- **Bad:** the script repeats how each stage's length is made up (e.g. `BlueMOTRampDuration + BlueMOTDuration`). The values cannot disagree, since script and snippet read the same parameters, but if a snippet's shape changes (say it gains a hold), every script's timeline has to be updated to match.
+- **Good:** the whole timeline is in one place, and changing a gap between stages is a one-line edit. A snippet does not know what comes before or after it, so the same snippet can go anywhere in a shot, and the order of the snippet lines does not matter.
+- **Bad:** every script writes out its timeline. The 24 scripts that share the load-to-lambda-cooling stages would each carry the same lines for them.
 
-### Option B: each snippet writes its end time, and the script hands it to the next
+### Option B: each snippet defines its own times
 
 ```csharp
 public override AnalogPatternBuilder GetAnalogPattern()
 {
     AnalogPatternBuilder p = new AnalogPatternBuilder((int)Parameters["PatternLength"]);
     new LoadMOT(p, Parameters);
-    Parameters["CMOTStartTime"] = (int)Parameters["CompressRampDownStartTime"];
-    new CompressedMOT(p, Parameters);
-    Parameters["LambdaCooling1StartTime"] = Parameters["CMOTEndTime"];
-    new LambdaCooling1(p, Parameters);
-    Parameters["BlueMOTStartTime"] = Parameters["LambdaCooling1EndTime"];
-    new BlueMOT(p, Parameters);
-    Parameters["LambdaCooling2StartTime"] = Parameters["BlueMOTEndTime"];
-    new LambdaCooling2(p, Parameters);
-    Parameters["OPStartTime"] = (int)Parameters["LambdaCooling2EndTime"] + (int)Parameters["OPGap"];
-    new OpticalPumping(p, Parameters);
-    Parameters["MagtrapStartTime"] = Parameters["OPEndTime"];
+    new CompressedMOT(p, Parameters);   // starts at CompressRampDownStartTime
+    new LambdaCooling1(p, Parameters);  // starts at CMOTEndTime
+    new BlueMOT(p, Parameters);         // starts at LambdaCooling1EndTime
+    new LambdaCooling2(p, Parameters);  // starts at BlueMOTEndTime
+    new OpticalPumping(p, Parameters);  // starts at LambdaCooling2EndTime + OPGap
     new Magtrap(p, Parameters);
-    Parameters["HandoverStartTime"] = Parameters["MagtrapEndTime"];
     new HandoverToTransferCoils(p, Parameters);
-    // ... script-specific lines, using e.g. Parameters["BlueMOTEndTime"] ...
+    // ... script-specific lines, reading e.g. Parameters["BlueMOTEndTime"] where needed ...
     return p;
 }
-// GetDigitalPattern and GetDDSPattern repeat the same chain.
+// GetDigitalPattern and GetDDSPattern call the same snippets.
 ```
 
-- **Good:** a stage's length is defined only in its snippet, so scripts never add up durations. Every end time is in the dictionary afterwards, so later lines (such as a camera trigger at the end of the blue MOT) can use it.
-- **Bad:** there is no one place to read when each stage starts; it has to be followed through the chain. The order of the lines matters: a snippet run before the one whose end time it reads gets a missing value. Every stage needs a `...StartTime`/`...EndTime` pair of names.
+- **Good:** a script is just the list of stages; it holds no timeline and reads a time only where it needs one.
+- **Bad:** each snippet names the stage before it (`BlueMOT` starts at `LambdaCooling1EndTime`), so a stage cannot be moved, dropped or used in a different place without a different snippet. Gaps between stages (`OPGap`) live in the snippets. The order of the lines matters: a snippet run before the one whose end time it reads gets a missing value.
 
 In both options the snippet calls are written three times, once per pattern, as scripts already do today.
 
