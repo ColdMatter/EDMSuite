@@ -364,7 +364,8 @@ namespace MOTMasterTests
             var caf = new MoleculeMOTHardware();
             var rb = new RbTweezerHardware();
             var config = (MOTMasterLinkConfig)caf.GetInfo(MOTMasterLinkConfig.InfoKey);
-            const int line20 = 16; // port 2 line 0 on both boards
+            const int line17 = 15; // port 1 line 7 on the CaF board
+            const int line20 = 16; // port 2 line 0 on the Rb board
             const int rbTriggerBit = 14; // port 1 line 6
 
             LinkedBuild primary = LinkedScriptBuilder.BuildPrimary(CompileAndLoad(path), caf, rb, config);
@@ -374,8 +375,9 @@ namespace MOTMasterTests
             Assert.True(!cafPattern.Boards.ContainsKey(RbDigitalBoard(rb)), "no RbTweezer board on the primary");
             Assert.True(Bit(cafPattern, cafBoard, 0, rbTriggerBit) && Bit(cafPattern, cafBoard, 9, rbTriggerBit), "rbTrigger high at 0..9");
             Assert.True(!Bit(cafPattern, cafBoard, 10, rbTriggerBit), "rbTrigger low at 10");
-            Assert.True(!Bit(cafPattern, cafBoard, 999, line20) && Bit(cafPattern, cafBoard, 1000, line20), "v0ddsSwitchA rises at 1000");
-            Assert.True(Bit(cafPattern, cafBoard, 1999, line20) && !Bit(cafPattern, cafBoard, 2000, line20), "v0ddsSwitchA falls at 2000");
+            Assert.True(!Bit(cafPattern, cafBoard, 999, line17) && Bit(cafPattern, cafBoard, 1000, line17), "microwaveSwitch rises at 1000");
+            Assert.True(Bit(cafPattern, cafBoard, 1999, line17) && !Bit(cafPattern, cafBoard, 2000, line17), "microwaveSwitch falls at 2000");
+            Assert.True(!Bit(cafPattern, cafBoard, 1000, line20), "nothing on port 2 line 0 any more");
 
             var request = new LinkRunRequest
             {
@@ -394,6 +396,51 @@ namespace MOTMasterTests
             Assert.True(!rbPattern.Boards.ContainsKey(cafBoard), "no CaF board on the secondary");
             Assert.True(!Bit(rbPattern, RbDigitalBoard(rb), 999 - d, line20) && Bit(rbPattern, RbDigitalBoard(rb), 1000 - d, line20), "tScopeTest rises at 1000 - D");
             Assert.True(Bit(rbPattern, RbDigitalBoard(rb), 1999 - d, line20) && !Bit(rbPattern, RbDigitalBoard(rb), 2000 - d, line20), "tScopeTest falls at 2000 - D");
+        }
+
+        // A script that loads the MOT through a snippet compiled into MOTMaster.exe: the snippet's calls go
+        // through the same routed builders, so its CaF events stay on the primary and are dropped on the secondary.
+        public static void TestSnippetScriptBuildsOnBothSystems(string[] args)
+        {
+            string path = Path.Combine(RepoRoot(args), "MOTMasterTests", "scripts", "LinkedSnippetExample.cs");
+            var caf = new MoleculeMOTHardware();
+            var rb = new RbTweezerHardware();
+            var config = (MOTMasterLinkConfig)caf.GetInfo(MOTMasterLinkConfig.InfoKey);
+
+            LinkedBuild primary = LinkedScriptBuilder.BuildPrimary(CompileAndLoad(path), caf, rb, config);
+            LinkedScriptBuilder.BuildPatterns(primary);
+            Assert.Equal(4000, primary.AnalogOrigin, "analog origin: aoPatternTrigger (snippet) and DDS_Analog_Trg (script) both rise at TCLBlockStart");
+            var cafDigital = primary.Sequence.DigitalPattern;
+            Assert.True(!cafDigital.Boards.ContainsKey(RbDigitalBoard(rb)), "no RbTweezer digital board on the primary");
+            var qSwitch = (DigitalOutputChannel)caf.DigitalOutputChannels["qSwitch"];
+            Assert.True(!Bit(cafDigital, qSwitch.Device, 3999, qSwitch.BitNumber) && Bit(cafDigital, qSwitch.Device, 4000, qSwitch.BitNumber), "snippet's qSwitch rises at 4000");
+            Assert.True(Bit(cafDigital, qSwitch.Device, 4009, qSwitch.BitNumber) && !Bit(cafDigital, qSwitch.Device, 4010, qSwitch.BitNumber), "snippet's qSwitch falls at 4010");
+            var slave = (DigitalOutputChannel)caf.DigitalOutputChannels["slavePatternCardTrigger"];
+            Assert.True(Bit(cafDigital, slave.Device, 0, slave.BitNumber), "snippet's slavePatternCardTrigger high at 0");
+            Assert.True(!primary.Sequence.AnalogPattern.Boards.ContainsKey(Device(rb, "tMOTcc")), "no RbTweezer analog board on the primary");
+            var chirp = primary.Sequence.AnalogPattern.Boards[Device(caf, "slowingChirp")].AnalogPatterns["slowingChirp"];
+            Assert.True(chirp.ContainsKey(0), "snippet's slowingChirp value at 0 on the primary");
+
+            var request = new LinkRunRequest
+            {
+                LinkRunId = Guid.NewGuid().ToString("N"),
+                PrimaryName = "test",
+                PrimaryHardwareType = typeof(MoleculeMOTHardware).FullName,
+                ScriptFileName = "LinkedSnippetExample.cs",
+                ScriptText = File.ReadAllText(path),
+                Parameters = new Dictionary<string, object>(primary.Script.Parameters),
+                AnalogOrigin = primary.AnalogOrigin
+            };
+            LinkedBuild secondary = LinkedScriptBuilder.BuildSecondary(request, rb, caf, CompileAndLoad);
+            LinkedScriptBuilder.BuildPatterns(secondary);
+            string rbBoard = RbDigitalBoard(rb);
+            Assert.Equal(1, secondary.Sequence.DigitalPattern.Boards.Count, "secondary digital boards");
+            int cool = ((DigitalOutputChannel)rb.DigitalOutputChannels["tCoolSwitch"]).BitNumber;
+            Assert.True(!Bit(secondary.Sequence.DigitalPattern, rbBoard, 997, cool) && Bit(secondary.Sequence.DigitalPattern, rbBoard, 998, cool), "tCoolSwitch rises at 1000 - D");
+            Assert.Equal(1, secondary.Sequence.AnalogPattern.Boards.Count, "secondary analog boards");
+            var analog = secondary.Sequence.AnalogPattern.Boards[Device(rb, "tMOTcc")];
+            Assert.True(!analog.AnalogPatterns.ContainsKey("slowingChirp"), "snippet's slowingChirp not on the secondary");
+            Assert.True(analog.AnalogPatterns["tMOTcc"].ContainsKey(100 + 4000 - 2), "tMOTcc at 100 + A - D");
         }
 
         class TestHardwareWithMaster : TestHardware

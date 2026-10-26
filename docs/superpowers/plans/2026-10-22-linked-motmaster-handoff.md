@@ -59,10 +59,10 @@ Each test pulse is **10 ms long and starts 10 ms into a 200 ms pattern**.
 | Probe | Machine | Board / line | What you should see |
 |---|---|---|---|
 | `rbTrigger` | PH-BONESAW | `/PXI1Slot4` port 1 line 6 | 100 µs pulse at t = 0 (added by MOTMaster, not the script) |
-| `v0ddsSwitchA` | PH-BONESAW | `/PXI1Slot4` port 2 line 0 | 10 ms pulse from t = 10 ms |
-| `tScopeTest` | RbTweezer | `/PXI1Slot5` port 2 line 0 | 10 ms pulse from t = 10 ms, lagging `v0ddsSwitchA` by the trigger/cable delay |
+| `microwaveSwitch` | PH-BONESAW | `/PXI1Slot4` port 1 line 7 | 10 ms pulse from t = 10 ms |
+| `tScopeTest` | RbTweezer | `/PXI1Slot5` port 2 line 0 | 10 ms pulse from t = 10 ms, lagging `microwaveSwitch` by the trigger/cable delay |
 
-Trigger the scope on `rbTrigger` or `v0ddsSwitchA`. Then:
+Trigger the scope on `rbTrigger` or `microwaveSwitch`. Then:
 
 1. Measure how far the RbTweezer pulse lags the CaF pulse.
 2. Set `SecondaryTriggerDelay` (General group of `MoleculeMOTMasterScripts\globalParameters.json`) to that lag **in clock ticks of 10 µs**. It is 0 now. RbTweezer's events are then moved earlier by that amount, so the two pulses line up.

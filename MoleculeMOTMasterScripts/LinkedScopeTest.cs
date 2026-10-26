@@ -10,7 +10,7 @@ using DAQ.Analog;
 // Without linked mode this script fails, because tScopeTest is an RbTweezer channel.
 //
 // What to probe (each pulse is 10 ms, starting 10 ms into the pattern):
-//   PH-BONESAW  v0ddsSwitchA  /PXI1Slot4 port 2 line 0   (spare CaF line)
+//   PH-BONESAW  microwaveSwitch  /PXI1Slot4 port 1 line 7
 //   RbTweezer   tScopeTest    /PXI1Slot5 port 2 line 0   (spare Rb line)
 //   PH-BONESAW  rbTrigger     /PXI1Slot4 port 1 line 6   (added by MOTMaster: 100 us pulse at t = 0)
 //
@@ -34,7 +34,7 @@ public class Patterns : MOTMasterScript
         int start = (int)Parameters["PulseStart"];
         int duration = (int)Parameters["PulseDuration"];
 
-        p.Pulse(start, 0, duration, "v0ddsSwitchA");
+        p.Pulse(start, 0, duration, "microwaveSwitch");
         p.Pulse(start, 0, duration, "tScopeTest");
 
         return p;
