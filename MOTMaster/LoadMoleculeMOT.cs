@@ -91,5 +91,11 @@ namespace MOTMaster.SnippetLibrary
         {
             return startValue + (endValue - startValue) / (1 + Math.Exp( - 8.0 * (t - tDuration / 2) / tDuration));
         }
+#if DDS
+        // Only the CaF build has a DDS; this snippet adds nothing to it.
+        public void AddDDSSnippet(DDSPatternBuilder p, Dictionary<String, Object> parameters)
+        {
+        }
+#endif
     }
 }

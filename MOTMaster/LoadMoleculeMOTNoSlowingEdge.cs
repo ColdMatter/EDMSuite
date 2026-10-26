@@ -53,5 +53,11 @@ namespace MOTMaster.SnippetLibrary
             p.AddLinearRamp("slowingChirp", (int)parameters["SlowingChirpStartTime"] + (int)parameters["SlowingChirpDuration"] + 10000, (int)parameters["SlowingChirpDuration"], (double)parameters["SlowingChirpStartValue"]);
 
         }
+#if DDS
+        // Only the CaF build has a DDS; this snippet adds nothing to it.
+        public void AddDDSSnippet(DDSPatternBuilder p, Dictionary<String, Object> parameters)
+        {
+        }
+#endif
     }
 }

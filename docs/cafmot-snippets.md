@@ -1,6 +1,6 @@
-# CaF MOTMaster snippets: findings so far and decisions
+# CaF MOTMaster snippets: findings, decisions and what is built
 
-Branch `cafmot-snippets`, 2026-10-22. Nothing has been built yet. This note covers what we found in the current scripts, and what has been decided, including how snippets get their timing.
+Branch `cafmot-snippets`, started 2026-10-22. This note covers what we found in the current scripts, what has been decided, and (from 2026-10-23) what has been built: the MOTMaster changes, the snippet library and snippet versions of 23 scripts, which sit next to the originals for testing. See "Built so far" at the end.
 
 ## The goal
 
@@ -143,7 +143,7 @@ public class Patterns : MOTMasterScript
 Why this way:
 
 - The whole timeline is in one place, and changing a gap between stages is a one-line edit.
-- A snippet does not know what comes before or after it, so the same snippet can go anywhere in a shot, and the order of the snippet lines does not matter.
+- A snippet does not know what comes before or after it, so the same snippet can go anywhere in a shot. The order of the snippet lines still matters, though (corrected 2026-10-23): a linear ramp starts from whatever value its channel has at that time among the events added so far, and digital edges on a channel must be added in time order. So scripts call snippets in time order.
 - The cost is that every script writes out its timeline: the 24 scripts that share the load-to-lambda-cooling stages each carry the same lines for them.
 - The snippet calls are written three times, once per pattern, as scripts already do today.
 
@@ -151,9 +151,89 @@ Why this way:
 
 The alternative was for each snippet to set its own times, e.g. `BlueMOT` setting `BlueMOTStartTime = LambdaCooling1EndTime`, so that a script is only a list of snippet calls. It was rejected because each snippet then names the stage before it, so a stage cannot be moved, dropped or used in a different place without a different snippet; gaps between stages such as `OPGap` live inside snippets; and the order of the snippet lines matters.
 
-## Still to discuss after this
+## Built so far (2026-10-23)
 
-- Which scripts get converted first, and whether all 26 do.
-- How the same stage is reused in a different place, e.g. a blue MOT in the tweezer chamber, which uses `TweezerCoils` and `tBlueMOTField` instead of `MOTCoilsCurrent` and `BlueMOTField`. Since a snippet only gets `(p, parameters)`, the channel and field cannot be passed in; this is the same problem as running lambda cooling twice.
-- Imaging/camera triggers, which vary the most.
-- How converted scripts are checked against today's patterns before anyone runs them.
+Nothing here has been run on the experiment yet. Every converted script has been checked against its original off the experiment (see "How the conversions were checked"), but MOTMaster itself has not been rebuilt on PH-BONESAW yet.
+
+### MOTMaster (shared code, switched on only for cafmot)
+
+- `MOTMaster/ScriptSnippets.cs` (new): finds the snippet files a script uses, as in decisions 5 and 6.
+- `Controller.compileFromFile` compiles those files along with the script, and `loadScriptFromDLL` then instantiates only the `MOTMasterScript` class (previously it created every class in the file and kept the last one, which breaks as soon as snippets are compiled in).
+- `MMDataIOHelper` saves a copy of each snippet a run used (`<tag>_snippet_<Name>.cs`) next to `<tag>_script.cs`, so the zip records the code that ran. Re-running an old zip ("replica run") still compiles against today's `Snippets/` folder.
+- All three only act when `Paths["MOTMasterSnippetPath"]` is set, which only `DAQ/PHBonesawFileSystem.cs` does. Other experiments compile and save exactly as before.
+- `MOTMasterScriptSnippet` gains `AddDDSSnippet` inside `#if DDS`, with empty stubs in the four snippets compiled into MOTMaster.exe (decision 2).
+- `.claude/skills/motmaster-controller/ScriptCompileCheck.cs` (behind `verify-scripts.ps1`) does the same, using `Snippets\` next to the scripts when it exists.
+
+### The snippet library (`MoleculeMOTMasterScripts/Snippets/`, namespace `MOTMaster.SnippetLibrary.CaF`)
+
+Each snippet sets its stage's state at the stage's start time and does not switch anything off at its end: the next stage, or a script line, does that. The comment at the top of each file says which parameters it reads.
+
+| Snippet | What it does | Reads |
+|---|---|---|
+| `LoadMOT` | YAG, slowing light/chirp/coils, bX shutter, DDS_Analog_Trg, ToF trigger, shims, MOT coils on, DDS to the MOT tones. Wraps `LoadMoleculeMOTNoSlowingEdge`. | `bXSlowingShutterDuration`, `TCoolSidebandVCOValue` |
+| `CompressedMOT` | MOT coils ramp up, DDS intensity ramp down | `CMOTStartTime` |
+| `LambdaCooling1`, `LambdaCooling2` | MOT coils off, DDS to the lambda tones | `LambdaCooling1StartTime`, `LambdaCooling2StartTime` |
+| `BlueMOT`, `BlueMOT2`, `TweezerBlueMOT` | Coils ramp to the blue-MOT field, DDS to the blue-MOT tones. `TweezerBlueMOT` uses `TweezerCoils` and `tBlueMOTField`. | `BlueMOTStartTime`, `BlueMOT2StartTime`, `tBlueMOTStartTime` |
+| `LightOff1`, `LightOff2` | DDS to the resonance frequencies at `LightoffDDS1` | `LightOff1StartTime`, `LightOff2StartTime` |
+| `OpticalPumping` | QCL shutter open from the start, closed for `OpticalPumpingDuration` | `OPStartTime` |
+| `Magtrap` | MOT coils to `MOTCoilsMagtrapValue` | `MagtrapStartTime` |
+| `HandoverToTransferCoils` | MOT coils to 0 and transfer coils to 10 V over `HandoverDur` | `TransferHandoverStartTime` |
+| `HandoverToTweezerCoils` | Transfer coils to `TransferCoilsOffValue` and tweezer coils to `tMagTrapField` over `HandoverDur` | `TweezerHandoverStartTime` |
+
+`CaFDDS` is a helper giving the four DDS frequencies or amplitudes for each stage.
+
+Each snippet adds the analog channels it uses. Adding a channel that is already there is ignored: `AnalogPatternBuilderSingleBoard.AddChannel` now skips a duplicate instead of throwing, the same one-line change the `cafbec` branch made for its snippets, so the two branches merge cleanly there. This is the one change that affects every experiment: a script that adds a channel twice no longer fails.
+
+This answers the earlier question of how a stage is reused in a different place: a base class holds the code and small subclasses choose the stage name, and where needed the coils and field parameter (`LambdaCooling`, `BlueMOTStage`, `LightOff`). The stage name sets both the time parameters it reads and its DDS event name, so two uses in one shot never clash.
+
+New parameters in `globalParameters.json`, each defaulting to the value the scripts had typed in: `TCoolSidebandVCOValue` (-3.461), `TransferCoilsOffValue` (0.0; the 6.*, 7.* and 8.* scripts set -0.1), `OPGap` (100). Scripts that typed a tweezer-coil field (0.48 or 1.8) now set `tMagTrapField` to it in their constructor.
+
+### Converted scripts
+
+Each converted script is a new file, `<original name>_snippets.cs`, next to the untouched original, so both appear in MOTMaster's list. Its constructor is the original's, verbatim, plus any of the parameter lines above. Its pattern methods call `SetTimeline()` and then the snippets in time order. Lines that no snippet reproduces exactly (cameras, shutters, transport, one-off stages, the end-of-shot YAG shots) stay in the script, unchanged except that their times now come from the timeline.
+
+Converted (23): `1. LambdaRecap`, `2.a DDSBlueMOT`, `2.b DDSBlueMOT_recap - Copy`, all three `3.*`, all six `4.*`, all three `5.*`, `6. OP_transfer_to_tweezer_coils_back`, all three `7.*`, `8. OP_transfer_to_tweezer_coils_blueMOT _load_tweezer`, `BX_BMOT_OP_magtrap`, `BX_OP_lambda`, `BX_OP_magtrap`.
+
+Not converted (3):
+
+- `0. DDSFourSidebands5W_noDDS` and `BX_spectroscopy`: their load stages differ from `LoadMOT` in too many ways (bX lock block, repump and shutter timings, TCool value, DDS parameter names), and nothing else applies.
+- `TweezerRESONANTlMAGE`: broken today. Its constructor calls `LoadGlobalParameters()` and then replaces `Parameters` with a new dictionary, so it fails on `MoveTime`.
+
+Behaviour changes in the converted scripts, all deliberate:
+
+- The six scripts that never pulsed `DDS_Analog_Trg` now do (decision 3): `1. LambdaRecap`, `3. MagTrap_withBM`, `4. BM_move_coils_test`, `4. BlueMOT_transport_test`, `4. TCoil_test_back_forth_movement`, `4. TCoil_test_no_movement_1.5secHold`.
+- In the 5.* scripts, the tweezer-coil hold value and the transfer coils' hand-back value now read `tMagTrapField` and `TransferCoilsOffValue`, instead of repeating the typed-in number. This is the same at default values.
+
+Everything else, including what look like bugs, is reproduced exactly. Worth a look:
+
+- `1. LambdaRecap`, `4. TCoil_test_back_forth_movement` and `4. TCoil_test_no_movement_1.5secHold` pulse `cafOptPumpingAOM`, which is not a channel in `MoleculeMOTHardware.cs`, so they fail to build in MOTMaster, before and after conversion. The pulse is where `DDS_Analog_Trg` normally goes and is commented "DDS trigger" in the 4.* ones.
+- `1. LambdaRecap` and `2.b`: the background camera trigger and the bX shutter length count `TCLBlockStart` twice.
+- 7.* and 8.*: the MOT shutters close at the tweezer blue-MOT (or red-MOT) ramp end + `BlueMOTDuration` + 2000, where `tBlueMOTDuration` (or `RedMOTDuration`) looks meant.
+- `6.` and `BX_BMOT_OP_magtrap`: the magtrap uses `BlueMOTField`; the `MagTrapField` the script sets is never read.
+- `3. Mag_trap_density_check` works out `ShutterEdgeDur` in its constructor, so scanning the durations it depends on does not move the shutters.
+- `BX_OP_magtrap`: the MOT-shutter pulse lengths leave out `LambdaCoolingDuration`.
+- `4. TCoil_test_no_movement_1.5secHold_BMOT_image` and `BX_spectroscopy` never call `LoadGlobalParameters()`.
+
+### How the conversions were checked
+
+There is no compiler for MOTMaster scripts on the laptop, and the cafmot PC is read-only for this work, so the check ran locally with a small .NET 8 program (kept out of the repo). It:
+
+1. Compiles a script with the snippets it uses, as C# 5 (what MOTMaster's runtime compiler accepts), using the real `ScriptSnippets` code to find them.
+2. Builds the patterns with DAQ's real `PatternBuilder32`, `AnalogPatternBuilder` and `MOTMasterScript` code, and a channel table read from `MoleculeMOTHardware.cs`.
+3. Compares old and new: every digital channel's edges, every analog channel's values, every DDS event's time and values, and the saved parameters.
+
+It compares at default parameters, then 500 times with random subsets of the parameters scaled by 0.5 to 1.5, as a scan would set them. A run counts when both scripts build, or both fail in the same way. Every converted script is identical in every such run, apart from `DDS_Analog_Trg` in the six scripts above. A deliberate one-tick change in a snippet is caught.
+
+What this cannot check: MOTMaster's real compiler and assembly loading, the NI hardware and the DDS card itself. `verify-scripts.ps1` on PH-BONESAW covers the first, after MOTMaster is rebuilt.
+
+## Still to do
+
+- Rebuild MOTMaster (CaF) on PH-BONESAW and run `verify-scripts.ps1`. Then try the `_snippets` versions against the originals on the experiment.
+- Once a converted script is trusted, delete the original and drop the `_snippets` suffix.
+- Candidate snippets the conversion turned up:
+  - the end-of-shot YAG compensating shots;
+  - the MOT shutter pulses (`BlueMOTEnd` − 1600 / 600 / 800);
+  - a recapture/imaging stage;
+  - hand-back from the tweezer coils to the MOT coils;
+  - a DDS-only lambda/imaging event.
+- Imaging and camera triggers, which vary the most, are still script lines.

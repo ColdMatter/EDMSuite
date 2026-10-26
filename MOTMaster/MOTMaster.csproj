@@ -488,6 +488,7 @@
     <Compile Include="ParameterFileManager.cs" />
     <Compile Include="ParameterEntry.cs" />
     <Compile Include="ParameterGroup.cs" />
+    <Compile Include="ScriptSnippets.cs" />
     <Compile Include="ParameterWindow.cs">
       <SubType>Form</SubType>
     </Compile>

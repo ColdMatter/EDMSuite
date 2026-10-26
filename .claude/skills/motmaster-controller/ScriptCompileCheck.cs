@@ -55,11 +55,20 @@ namespace MOTMasterScriptCheck
             options.GenerateExecutable = false;
             options.GenerateInMemory = true;
 
+            // Snippets: Controller compiles the snippets a script uses along with it, when
+            // the machine's FileSystem sets a snippet folder. On cafmot that is Snippets\
+            // next to the scripts, so use it whenever it exists.
+            string snippetFolder = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(scriptPath)), "Snippets");
+            bool snippets = Directory.Exists(snippetFolder);
+            var sources = new List<string> { scriptPath };
+            if (snippets)
+                sources.AddRange(ScriptSnippets.FilesUsedBy(scriptPath, snippetFolder));
+
             var provider = new CSharpCodeProvider();
             CompilerResults results;
             try
             {
-                results = provider.CompileAssemblyFromFile(options, scriptPath);
+                results = provider.CompileAssemblyFromFile(options, sources.ToArray());
             }
             catch (Exception ex)
             {
@@ -71,7 +80,7 @@ namespace MOTMasterScriptCheck
                 var lines = new List<string>();
                 foreach (CompilerError err in results.Errors)
                     if (!err.IsWarning)
-                        lines.Add(string.Format("line {0}: {1} {2}", err.Line, err.ErrorNumber, err.ErrorText));
+                        lines.Add(string.Format("{0} line {1}: {2} {3}", Path.GetFileName(err.FileName), err.Line, err.ErrorNumber, err.ErrorText));
                 return "did not compile:\n" + string.Join("\n", lines);
             }
 
@@ -81,7 +90,7 @@ namespace MOTMasterScriptCheck
             {
                 Assembly assembly = results.CompiledAssembly;
                 foreach (Type type in assembly.GetTypes())
-                    if (type.IsClass)
+                    if (type.IsClass && (!snippets || typeof(MOTMasterScript).IsAssignableFrom(type)))
                         loadedInstance = Activator.CreateInstance(type);
             }
             catch (Exception ex)

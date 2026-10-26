@@ -9,6 +9,8 @@ namespace DAQ.Environment
         {
             Paths.Add("MOTMasterDataPath", "C:\\Users\\cafmot\\Box\\Working folder\\cafmot\\datasync\\mot_master_data\\");
             Paths.Add("scriptListPath", "C:\\ControlPrograms\\EDMSuite\\MoleculeMOTMasterScripts");
+            // Snippets compiled with the scripts that use them (see MOTMaster/ScriptSnippets.cs).
+            Paths.Add("MOTMasterSnippetPath", "C:\\ControlPrograms\\EDMSuite\\MoleculeMOTMasterScripts\\Snippets");
             Paths.Add("daqDLLPath", "C:\\ControlPrograms\\EDMSuite\\DAQ\\bin\\CaF\\daq.dll");
             Paths.Add("MOTMasterExePath", "C:\\ControlPrograms\\EDMSuite\\MOTMaster\\bin\\CaF\\");
             Paths.Add("ExternalFilesPath", "C:\\Users\\cafmot\\Documents\\TempCameraImages");

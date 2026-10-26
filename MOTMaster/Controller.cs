@@ -1105,7 +1105,13 @@ namespace MOTMaster
             options.TempFiles = tempFiles;
             try
             {
-                results = codeProvider.CompileAssemblyFromFile(options, scriptPath);
+                // Experiments with a snippet folder compile the snippets the script uses along with it.
+                List<string> sources = new List<string> { scriptPath };
+                if (Environs.FileSystem.Paths.ContainsKey(ScriptSnippets.PathKey))
+                {
+                    sources.AddRange(ScriptSnippets.FilesUsedBy(scriptPath, (string)Environs.FileSystem.Paths[ScriptSnippets.PathKey]));
+                }
+                results = codeProvider.CompileAssemblyFromFile(options, sources.ToArray());
             }
             catch (Exception e)
             {
@@ -1123,9 +1129,11 @@ namespace MOTMaster
             try
             {
                 Assembly patternAssembly = Assembly.LoadFrom(results.PathToAssembly);
+                // With snippets compiled in, the assembly has more than one class, so pick the script itself.
+                bool scriptOnly = Environs.FileSystem.Paths.ContainsKey(ScriptSnippets.PathKey);
                 foreach (Type type in patternAssembly.GetTypes())
                 {
-                    if (type.IsClass == true)
+                    if (type.IsClass == true && (!scriptOnly || typeof(MOTMasterScript).IsAssignableFrom(type)))
                     {
                         loadedInstance = Activator.CreateInstance(type);
                     }

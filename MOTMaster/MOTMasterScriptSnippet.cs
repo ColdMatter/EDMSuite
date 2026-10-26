@@ -11,5 +11,8 @@ namespace MOTMaster.SnippetLibrary
     {
         void AddDigitalSnippet(PatternBuilder32 p, Dictionary<String, Object> parameters);
         void AddAnalogSnippet(AnalogPatternBuilder p, Dictionary<String, Object> parameters);
+#if DDS
+        void AddDDSSnippet(DDSPatternBuilder p, Dictionary<String, Object> parameters);
+#endif
     }
 }

@@ -57,5 +57,11 @@ namespace MOTMaster.SnippetLibrary
             //(int)parameters["MOTLoadTime"] + (int)parameters["CMOTCoilsCurrentRampDuration"]
 
         }
+#if DDS
+        // Only the CaF build has a DDS; this snippet adds nothing to it.
+        public void AddDDSSnippet(DDSPatternBuilder p, Dictionary<String, Object> parameters)
+        {
+        }
+#endif
     }
 }

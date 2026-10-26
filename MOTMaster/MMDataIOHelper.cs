@@ -121,6 +121,13 @@ namespace MOTMaster
 #endif //DDS
             storeDictionary(saveFolder + fileTag + "_parameters.txt", dict);
             File.Copy(pathToPattern, saveFolder + fileTag + "_script.cs");
+            if (Environs.FileSystem.Paths.ContainsKey(ScriptSnippets.PathKey))
+            {
+                foreach (string snippet in ScriptSnippets.FilesUsedBy(pathToPattern, (string)Environs.FileSystem.Paths[ScriptSnippets.PathKey]))
+                {
+                    File.Copy(snippet, saveFolder + fileTag + "_snippet_" + Path.GetFileName(snippet));
+                }
+            }
             File.Copy(pathToHardwareClass, saveFolder + fileTag + "_hardwareClass.cs");
             storeDictionary(saveFolder + fileTag + "_hardwareReport.txt", report);
         }
