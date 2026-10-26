@@ -6,9 +6,9 @@ One script runs on two machines. PH-BONESAW (primary) runs it as usual and trigg
 
 ```mermaid
 flowchart TD
-    F["Script file on PH-BONESAW"] --> C1["PH-BONESAW compiles the C#<br>parameters from its globalParameters.json<br>+ any values passed to Go"]
-    F --> T["Script text + PH-BONESAW's parameters<br>sent to RbTweezer"]
-    T --> C2["RbTweezer compiles the same C#<br>LoadGlobalParameters() returns PH-BONESAW's values,<br>not RbTweezer's own json"]
+    F["Script file + parameters on PH-BONESAW<br>(globalParameters.json + any values passed to Go)"]
+    F --> C1["PH-BONESAW compiles the C#"]
+    F -- "script text + parameters<br>sent to RbTweezer" --> C2["RbTweezer compiles the same C#<br>LoadGlobalParameters() returns PH-BONESAW's values,<br>not RbTweezer's own json"]
     C1 --> G1["GetSequence() builds the patterns<br>channel names looked up here"]
     C2 --> G2["GetSequence() builds the patterns<br>channel names looked up here"]
     G1 --> Q1{"Each channel used:<br>in MoleculeMOTHardware<br>or RbTweezerHardware?"}
