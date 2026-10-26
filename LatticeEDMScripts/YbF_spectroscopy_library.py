@@ -3572,12 +3572,12 @@ def run_isotope_refit(
 if __name__ == "__main__":
     print("--- Running Local YbF Spectroscopy Library Tests ---")
 #% Example run for getting hyperfine structures of X under rotational
-#   levels N = 0-2 for each vibrational levels v = 0-3
+#   levels N = 0-3 for each vibrational levels v = 0-3
 # 3. Create an empty list to accumulate row dictionaries
     results_list = []
 
     # Define the range of rotational quantum numbers you want to calculate
-    n_values = range(0, 3)  # Example: n from 0 to 2
+    n_values = range(0, 4)  # Example: n from 0 to 3
 
     # 4. Run the nested loop and collect data
     for n in n_values:
@@ -3606,6 +3606,39 @@ if __name__ == "__main__":
     # Print a preview of the structured dataset (first 8 rows)
     #print(df.head(8))
     print(df)
+    
+    #% Calculate A Pi 1/2
+    results_list2 = []
+
+    # Define the range of rotational quantum numbers you want to calculate
+    j_values = np.arange(0.5, 3.5, 1)  # Example: j from 0 to 3
+
+    # 4. Run the nested loop and collect data
+    for j in j_values:
+        for iso, rules in A_Pi_12["v0"].items():
+            # Evaluate functions (returns numpy arrays of [term1, term2])
+            e_levels = Ue(j, **rules)
+            f_levels = Uf(j, **rules)
+            
+            # Flatten assignments to match your specific state notations
+            row = {
+                "j": j,
+                "isotope": iso,
+                "e (cm^-1)": e_levels,
+                "e (GHz)": e_levels * CM_INV_TO_THZ * 1e3,
+                "f (cm^-1)": f_levels,
+                "f (GHz)": f_levels * CM_INV_TO_THZ * 1e3,
+                "e-f (GHz)": (e_levels-f_levels)* CM_INV_TO_THZ * 1e3,
+            }
+            
+            results_list2.append(row)
+
+    # 5. Convert the accumulated list of dictionaries into a Pandas DataFrame
+    df2 = pd.DataFrame(results_list2)
+
+    # Print a preview of the structured dataset (first 8 rows)
+    #print(df.head(8))
+    print(df2)
     
     #% Example to get list of spectra lines
     # 1. Generate A 2Pi_1/2 spectrum

@@ -69,12 +69,12 @@ date = "20"
 drive = os.path.join(datadrive, month, date, "")# + subfolder
 print(drive)
 
-pattern="*V0setpointScan*.zip"
+pattern="*setpointScan*.zip"
 files = glob.glob(f'{drive}{pattern}', recursive=True)
 print("Matching files: ", [os.path.basename(f) for f in files])
 
 #%% Selection
-sele = ["021"] # leave empty, sele = [], to load all matching files
+sele = [] # leave empty, sele = [], to load all matching files
 
 #%%
 LoadPasses = True
@@ -116,23 +116,30 @@ else:
 #%% Analysis settings
 """Can also read from scan settings (optional, for later)"""
 SigStart = 24 # in ms
-SigEnd = 42
+SigEnd = 30
 
 #Use YAG-OFF shots for background subtraction
 
 angle = 45 # Angle of probe to slowing
 Resonance = 542.809124 #in THz, rest frame probe frequency
 
-showTOF = True # If true, plots an example TOF before and after bkg subtraction
-showIntermediate = True # If true, show unnormalised data with frequency/setpoint axis
-showProcessed = True # If true, show final processed plot with fit
+showTOF = False # If true, plots an example TOF before and after bkg subtraction
+showIntermediate = False # If true, show unnormalised data with frequency/setpoint axis
+showProcessed = False # If true, show final processed plot with fit
 
 WeightedFit = True # If true, Gaussian fits of averaged scans are weighted by their standard error
                     # (only when more than 2 scans are averaged; others are fitted unweighted)
 
+# Manual initial guess, tried only if the fits with the automatic guess fail.
+# [amplitude, centre, FWHM, offset] of the unnormalised gated TOFs, with centre
+# and FWHM in x axis units (m/s, or V if the x axis stays in setpoint).
+# None: no retry.
+ManualP0 = None
+# ManualP0 = {"On": [10., 30., 60., 0.], "Off": [10., 40., 60., 0.]}
+
 fTHz = 542
 
-point = 1 # This is for TOF check
+point = 20 # This is for TOF check
 
 # X axis: WM frequency (default) or the TCL setpoint (ScanParameter, in V)
 UseSetpoint = True  # True: ignore the WM and process everything on TCL setpoints
@@ -143,7 +150,7 @@ UseSetpoint = True  # True: ignore the WM and process everything on TCL setpoint
 # with CalRestSP as well, the x axis is converted to velocity too.
 CalTCLconv = -133.9  # TCL conversion, MHz/V
 CalTCLconverr = 6.5   # MHz/V
-CalRestSP = -0.338     # zero-velocity setpoint, V
+CalRestSP = -0.3     # zero-velocity setpoint, V
 wavelength = 552     # nm
 
 #%% Fitting functions, used for single scans and for averaged groups of scans
@@ -177,14 +184,14 @@ def FitSlowing(x, OnMeanCounts, OffMeanCounts, InVolts, tSlow, name, show=True,\
     if Weighted:
         print(name + ": weighted fit")
 
-    try:
+    def FitAll(p0On, p0Off, p0OnNorm, p0OffNorm):
         fitOn, covOn = curve_fit(tools.Gaussian_FWHM, x, OnMeanCounts, \
-                                 p0=[200., peakOn, width0, 100.],\
+                                 p0=p0On,\
                                  sigma=OnErr if Weighted else None, absolute_sigma=Weighted)
         errOn = np.sqrt(np.diag(covOn))
 
         fitOff, covOff = curve_fit(tools.Gaussian_FWHM, x, OffMeanCounts, \
-                                 p0=[200., peakOff, width0, 100.],\
+                                 p0=p0Off,\
                                  sigma=OffErr if Weighted else None, absolute_sigma=Weighted)
         errOff = np.sqrt(np.diag(covOff))
 
@@ -193,19 +200,38 @@ def FitSlowing(x, OnMeanCounts, OffMeanCounts, InVolts, tSlow, name, show=True,\
         NormOn = (OnMeanCounts - fitOn[3])/fitOff[0]
 
         fitOnNorm, covOnNorm = curve_fit(tools.Gaussian_FWHM, x, NormOn, \
-                                 p0=[0.2, peakOn, width0, 0.],\
+                                 p0=p0OnNorm(fitOff),\
                                  sigma=np.abs(OnErr/fitOff[0]) if Weighted else None,\
                                  absolute_sigma=Weighted)
         errOnNorm = np.sqrt(np.diag(covOnNorm))
 
         fitOffNorm, covOffNorm = curve_fit(tools.Gaussian_FWHM, x, NormOff, \
-                                 p0=[0.2, peakOff, width0, 0.],\
+                                 p0=p0OffNorm(fitOff),\
                                  sigma=np.abs(OffErr/fitOff[0]) if Weighted else None,\
                                  absolute_sigma=Weighted)
         errOffNorm = np.sqrt(np.diag(covOffNorm))
+        return fitOff, NormOn, NormOff, fitOnNorm, errOnNorm, fitOffNorm, errOffNorm
+
+    try:
+        fitOff, NormOn, NormOff, fitOnNorm, errOnNorm, fitOffNorm, errOffNorm =\
+            FitAll([200., peakOn, width0, 100.], [200., peakOff, width0, 100.],\
+                   lambda fitOff: [0.2, peakOn, width0, 0.],\
+                   lambda fitOff: [0.2, peakOff, width0, 0.])
     except RuntimeError as e:   # fit did not converge
         print(name + ": fit failed - " + str(e))
-        return None
+        if ManualP0 is None:
+            return None
+        # Retry with the manual guess; the normalised fits are scaled by the Off fit amplitude
+        print(name + ": retrying with ManualP0")
+        p0On, p0Off = ManualP0["On"], ManualP0["Off"]
+        try:
+            fitOff, NormOn, NormOff, fitOnNorm, errOnNorm, fitOffNorm, errOffNorm =\
+                FitAll(p0On, p0Off,\
+                       lambda fitOff: [p0On[0]/fitOff[0], p0On[1], p0On[2], 0.],\
+                       lambda fitOff: [p0Off[0]/fitOff[0], p0Off[1], p0Off[2], 0.])
+        except RuntimeError as e:
+            print(name + ": fit with ManualP0 failed too - " + str(e))
+            return None
 
     print("Central ON %s = %.4g +- %.3g %s"%(xname, fitOnNorm[1], errOnNorm[1], xunit) +\
           "\n with FWHM = %.4g +- %.3g %s"%(fitOnNorm[2], errOnNorm[2], xunit))
@@ -266,9 +292,13 @@ def FitSlowing(x, OnMeanCounts, OffMeanCounts, InVolts, tSlow, name, show=True,\
     fit_results_OFF = {"Variables":["amplitude", "mean", "FWHM", "shift"],
                    "best fit":fitOffNorm, "error":errOffNorm}
 
+    # Normalised data and errors (None if no errors were given), for comparison plots
     return {"fit ON":fit_results_ON, "fit OFF":fit_results_OFF,
             "peak shift":[peakShift, peakShifterr],
-            "x unit":xunit, "shift unit":shiftUnit}
+            "x unit":xunit, "shift unit":shiftUnit,
+            "norm On":NormOn, "norm Off":NormOff,
+            "norm On err":None if OnErr is None else np.abs(OnErr/fitOff[0]),
+            "norm Off err":None if OffErr is None else np.abs(OffErr/fitOff[0])}
 
 #%%
 FitResNormON = {}
@@ -346,6 +376,14 @@ for f in range(0, len(fileLabels)):
 
 # check 2
     if showTOF:
+        plt.plot(TimeOn*1000, PMTOnYAGOns[point], label='YAG ON, On')
+        plt.plot(TimeOff*1000, PMTOffYAGOns[point], label='YAG ON, Off')
+        plt.title(title + "\n YAG OFF, PMT, file " + fileLabels[f])
+        plt.xlabel("time (ms)")
+        plt.ylabel("Signal (V)")
+        plt.legend()
+        plt.show()
+        
         plt.plot(TimeOn*1000, PMTOnYAGOffs[point], label='YAG OFF, On')
         plt.plot(TimeOff*1000, PMTOffYAGOffs[point], label='YAG OFF, Off')
         plt.title(title + "\n YAG OFF, PMT, file " + fileLabels[f])
@@ -469,21 +507,33 @@ for f in PeakShifts.keys():
 '''Group files by condition. Scans of a file are matched by the first
    3 characters of the label, so with LoadPasses every pass is included.
    File IDs in the nested list means they have the same slowing duration.'''
-types = {
-         "MW + 4fv0": [["004", "005"]],
-         "MW + 4fv0v1": [["008", "010"], ["012"], ["013"], ["014"]], #012, 013 are >10ms
-         "4fv0v1 only": [["009"], ["011"]],
-         "MW only": [["015"], ["016"], ["001", "002"], ["018"], ["020"], ["021"]] #018, 021 are >10ms
-        }
 
-FitExcludeTypes = ["MW repumps only", "MW + 4fv0"]
+#Use this block for Oct 20 2026 data
+types = {
+          "MW + 4fv0": [["004", "005"]],
+          "MW + 4fv0v1": [["008", "010"], ["012"], ["013"], ["014"]], #012, 013 are >10ms
+          "4fv0v1 only": [["009"], ["011"]],
+          "MW only": [["015"], ["016"], ["001", "002"], ["018"], ["020"], ["021"]] #018, 021 are >10ms
+         }
+
+#Remember to exclude "010_1"
+
+#For Oct 21 2026
+# =============================================================================
+# types = {
+#           "MW + 4fv0v1": [["007"]], #012, 013 are >10ms
+#           "4fv0v1 only": [["008"], ["010"]],
+#          }
+# =============================================================================
+
+FitExcludeTypes = ["MW + 4fv0v1", "4fv0v1 only"]
 
 ExcludeLabels = ["010_1"] # bad scans to discard manually, e.g. ["009_0"] for the first pass of file 009
 
 FitLine = True
 WeightedLineFit = True # If true, line fits are weighted by the peak shift error bars
 FixOrigin = True # If true, line fits go through 0 (no peak shift at 0 ms slowing); only the slope is fitted
-sSpan = np.arange(0., 18, 0.1)
+sSpan = np.arange(0., 20, 0.1)
 
 keys = list(types.keys())
 units = set()
@@ -565,7 +615,32 @@ for i in range(0, len(keys)):
                              OnErr=errOnAvg, OffErr=errOffAvg,\
                              AllowWeighted=AllowWeighted)
             if res is None:
+                # Fit failed: still show the averaged data, unnormalised as
+                # normalising needs the Off fit amplitude
+                if showProcessed:
+                    if errOffAvg is not None:
+                        plt.fill_between(avgX, avgOff - errOffAvg, avgOff + errOffAvg,\
+                                         color=colors[0], alpha=0.3)
+                    if errOnAvg is not None:
+                        plt.fill_between(avgX, avgOn - errOnAvg, avgOn + errOnAvg,\
+                                         color=colors[1], alpha=0.3)
+                    plt.plot(avgX, avgOff, '.', color=colors[0], label="Slowing Off")
+                    plt.plot(avgX, avgOn, '.', color=colors[1], label="Slowing On")
+                    plt.xlabel(XAxisInfo(InVolts)[2])
+                    plt.ylabel("Gated TOF (ms.V)")
+                    plt.title(str(np.mean(times)) + " ms slowing, " +\
+                              str(SigStart) + "ms to " + str(SigEnd) + "ms gate,\n " +\
+                              name + ", fit failed")
+                    plt.legend()
+                    plt.show()
                 continue
+            res["x"] = avgX  # kept for the comparison plot below
+            res["slowing time"] = np.mean(times)
+            # Averaged (unnormalised) gated TOFs and setpoints, for the export cell
+            res["setpoint"] = sp0
+            res["avg On"], res["avg Off"] = avgOn, avgOff
+            res["avg On err"], res["avg Off err"] = errOnAvg, errOffAvg
+            res["scans"] = scans
             GroupFits[keys[i] + " " + "+".join(k)] = res
 
             X.append(np.mean(times))
@@ -634,32 +709,209 @@ if len(units) > 1:
 
 plt.xlabel("Slowing duration (ms)")
 plt.ylabel("Peak shift (%s)"%"/".join(sorted(units)))
-plt.ylim(-30, 0)
+#plt.ylim(-50, 0)
 plt.title(month + " " + date + " slowing summary, \n Gate: "+\
           str(SigStart) + "ms to " + str(SigEnd) + "ms")
 plt.legend(bbox_to_anchor=(1, 1))
 plt.show()
 
+#%% Export GroupFits
+'''Two files from the averaged groups of the Summary cell:
+   - <name>: one row per group, the normalised Gaussian fits (amplitude, mean,
+     FWHM, offset) of the On and Off shots and the peak shift, with errors.
+   - <name>_GatedTOFs: one row per scan point of each group, the averaged gated
+     TOFs (unnormalised, and normalised as plotted) with their standard errors
+     (empty for a single scan), sorted by setpoint.
+   Opens one save dialog for the first file, the second is saved next to it.
+   .csv is comma separated, any other extension (e.g. .txt) is tab separated.'''
+import pandas as pd
+
+Rows = []
+for g, res in GroupFits.items():
+    typeName, fileIDs = g.rsplit(" ", 1)
+    row = {"type":typeName, "file IDs":fileIDs,
+           "slowing time (ms)":res["slowing time"], "x unit":res["x unit"]}
+    for shot in ["ON", "OFF"]:
+        fit = res["fit " + shot]
+        # fit["Variables"] calls the 4th parameter "shift", but it is the offset
+        for j, var in enumerate(["amplitude", "mean", "FWHM", "offset"]):
+            row["%s %s"%(shot, var)] = fit["best fit"][j]
+            row["%s %s err"%(shot, var)] = fit["error"][j]
+    row["peak shift (%s)"%res["shift unit"]] = res["peak shift"][0]
+    row["peak shift err (%s)"%res["shift unit"]] = res["peak shift"][1]
+    Rows.append(row)
+
+GroupFitsTable = pd.DataFrame(Rows)
+print(GroupFitsTable)
+
+TOFTables = []
+for g, res in GroupFits.items():
+    typeName, fileIDs = g.rsplit(" ", 1)
+    n = len(res["x"])
+    NoErr = np.full(n, np.nan)   # single scan: no standard error
+    TOFTables.append(pd.DataFrame({
+        "type":typeName, "file IDs":fileIDs, "scans":"+".join(res["scans"]),
+        "slowing time (ms)":res["slowing time"],
+        "setpoint (V)":res["setpoint"],
+        "x (%s)"%res["x unit"]:res["x"],
+        "On gated TOF (ms.V)":res["avg On"],
+        "On gated TOF err (ms.V)":NoErr if res["avg On err"] is None else res["avg On err"],
+        "Off gated TOF (ms.V)":res["avg Off"],
+        "Off gated TOF err (ms.V)":NoErr if res["avg Off err"] is None else res["avg Off err"],
+        "On normalised":res["norm On"],
+        "On normalised err":NoErr if res["norm On err"] is None else res["norm On err"],
+        "Off normalised":res["norm Off"],
+        "Off normalised err":NoErr if res["norm Off err"] is None else res["norm Off err"]}))
+# Groups with different x units get separate x columns, empty for the others
+GatedTOFTable = pd.concat(TOFTables, ignore_index=True) if len(TOFTables) > 0 else pd.DataFrame()
+
+if len(Rows) > 0:
+    root = tools.tk.Tk()
+    root.withdraw()
+    root.attributes("-topmost", True)
+    SavePath = tools.filedialog.asksaveasfilename(
+        title="Save GroupFits",
+        initialdir=drive,
+        initialfile=month.replace(" ", "") + date + "_GroupFits.csv",
+        defaultextension=".csv",
+        filetypes=[("CSV Files", "*.csv"), ("Text Files", "*.txt"), ("All Files", "*.*")])
+    root.destroy()
+    if SavePath:
+        sep = "," if SavePath.lower().endswith(".csv") else "\t"
+        GroupFitsTable.to_csv(SavePath, index=False, sep=sep)
+        print("Saved %g groups to: %s"%(len(Rows), SavePath))
+        stem, ext = os.path.splitext(SavePath)
+        TOFPath = stem + "_GatedTOFs" + ext
+        GatedTOFTable.to_csv(TOFPath, index=False, sep=sep)
+        print("Saved %g points to: %s"%(len(GatedTOFTable), TOFPath))
+    else:
+        print("Export cancelled.")
+else:
+    print("No group fits to export - run the Summary cell first.")
+
 #%% Compare normalised gated TOFs of chosen files
 '''Normalised by the off-shot's amplitudes to correct for source fluctuation.
-   Off-shot fits are dashed black lines.'''
-compare = {"009": "009", "010": "010"}   # file label : legend label
+   Uses the averaged group fits from the Summary cell (GroupFits), so run that first.
+   Groups are named by their file IDs as in types, joined with "+" if averaged
+   together, e.g. "008" or "008+010". Each group has its own colour: on-shots
+   are filled points with solid fits, off-shots open points with dash-dot fits.
+   Error bars are the standard error of the averaged scans (none for one scan).'''
+compare = {"007": "MW + 4f, 15ms", "008": "4f only, 11ms"}   # group file IDs : legend label
 
+xunit = None
 for i, s in enumerate(compare.keys()):
-    if s not in FitResNormON:
-        print(s + ": no fit results - skipped")
+    # GroupFits keys are "<type> <file IDs>"
+    matches = [g for g in GroupFits if g.split(" ")[-1] == s]
+    if len(matches) == 0:
+        print(s + ": no group fit results - skipped")
         continue
-    fitON = FitResNormON[s]["best fit"]
-    fitOFF = FitResNormOFF[s]["best fit"]
-    xspan = np.linspace(np.min(XAxis[s]), np.max(XAxis[s]), 1000)
+    if len(matches) > 1:
+        print(s + ": in more than one type " + str(matches) + " - using " + matches[0])
+    res = GroupFits[matches[0]]
+    fitON = res["fit ON"]["best fit"]
+    fitOFF = res["fit OFF"]["best fit"]
+    xspan = np.linspace(np.min(res["x"]), np.max(res["x"]), 1000)
+    if xunit is not None and res["x unit"] != xunit:
+        print("WARNING: " + s + " mixes velocity and setpoint x axes with the groups before it")
+    xunit = res["x unit"]
 
+    plt.errorbar(res["x"], res["norm On"], yerr=res["norm On err"], fmt='o',\
+                 color=colors[i], markersize=4, capsize=2, elinewidth=1)
+    plt.errorbar(res["x"], res["norm Off"], yerr=res["norm Off err"], fmt='o',\
+                 color=colors[i], markerfacecolor='none', markersize=4, capsize=2,\
+                 elinewidth=1, alpha=0.7)
     plt.plot(xspan, tools.Gaussian_FWHM(xspan, *fitON), color=colors[i], \
-             label = compare[s] + ", %g ms"%SlowTimes[s])
+             label = compare[s] + ", %g ms"%res["slowing time"])
     plt.plot(xspan, tools.Gaussian_FWHM(xspan, *fitOFF),\
-             '-.', color='black')
+             '-.', color=colors[i])
 
-plt.xlabel("Velocity (m/s)" if XUnits.get(s) == "m/s" else "TCL setpoint (V)")
+plt.xlabel(XAxisInfo(xunit == "V")[2])
 plt.ylabel("Normalised gated TOF")
-plt.title("Normalised gated TOFs, accounting for source fluctuation.")
+plt.title("Slowing comparison with normalised gated TOFs")
+plt.legend()
+plt.show()
+
+#%% Averaged TOFs over a range of scanned points
+'''YAG On-Off subtracted TOFs, averaged over the scan points whose x value
+   (velocity in m/s, or setpoint in V, as in the plots above) is inside
+   TOFxRange, and over all passes of the chosen files (minus ExcludeLabels).
+   Groups are named by their file IDs, joined with "+" to average files
+   together, e.g. "008" or "008+010". Run the Process all cell first.
+   Shaded regions are the standard error over the passes (none for one pass).'''
+TOFgroups = {"007": "MW + 4f", "008": "4f only"}   # group file IDs : legend label
+TOFxRange = (20, 40)   # (min, max) of x, in the x axis units of the files
+showGate = True        # If true, mark the SigStart-SigEnd gate
+TOFtlim = None         # e.g. (25, 50) to zoom in on the time axis (ms); None = full TOF
+
+AvgTOFs = {} # averaged TOFs of each group, keyed by its file IDs
+
+for i, s in enumerate(TOFgroups.keys()):
+    scans = ScansOf(s.split("+"), s)
+    if len(scans) == 0:
+        print(s + ": no processed scans - skipped")
+        continue
+    if len(set(GatedTOFs[f]["x unit"] for f in scans)) > 1:
+        print("WARNING: " + s + " mixes velocity and setpoint x axes - skipped")
+        continue
+
+    OnTOFs = []
+    OffTOFs = []
+    for f in scans:
+        TimeOn, DataOn, TimeOff, DataOff = EDM.GetTOFs(Data[f])
+        SPP = EDM.GetScanSettings(Data[f])['shotsPerPoint']
+        # YAG On-Off subtraction, then average the shots of each scan point
+        PMTOns = (DataOn[0] - DataOn[1]).reshape(-1, SPP, len(TimeOn)).mean(axis=1)
+        PMTOffs = (DataOff[0] - DataOff[1]).reshape(-1, SPP, len(TimeOff)).mean(axis=1)
+
+        x = np.asarray(GatedTOFs[f]["x"])   # in scan order, same as the points
+        inRange = (x >= min(TOFxRange)) & (x <= max(TOFxRange))
+        if not np.any(inRange):
+            print(f + ": no scan points in TOFxRange - not included")
+            continue
+        print(f + ": averaging %g points, x = %.4g to %.4g %s"%(np.sum(inRange),\
+              np.min(x[inRange]), np.max(x[inRange]), GatedTOFs[f]["x unit"]))
+        OnTOFs.append(PMTOns[inRange].mean(axis=0))
+        OffTOFs.append(PMTOffs[inRange].mean(axis=0))
+
+    if len(OnTOFs) == 0:
+        continue
+    n = len(OnTOFs)
+    avgOn = np.mean(OnTOFs, axis=0)
+    avgOff = np.mean(OffTOFs, axis=0)
+    errOn = np.std(OnTOFs, axis=0, ddof=1)/np.sqrt(n) if n > 1 else None
+    errOff = np.std(OffTOFs, axis=0, ddof=1)/np.sqrt(n) if n > 1 else None
+    AvgTOFs[s] = {"time On":TimeOn*1000, "On":avgOn, "On err":errOn,
+                  "time Off":TimeOff*1000, "Off":avgOff, "Off err":errOff,
+                  "passes":n, "x unit":GatedTOFs[scans[0]]["x unit"]}
+
+    if errOn is not None:
+        plt.fill_between(TimeOn*1000, avgOn - errOn, avgOn + errOn, color=colors[i], alpha=0.3)
+        plt.fill_between(TimeOff*1000, avgOff - errOff, avgOff + errOff, color=colors[i], alpha=0.15)
+    plt.plot(TimeOn*1000, avgOn, color=colors[i],\
+             label=TOFgroups[s] + ", slowing On (%g passes)"%n)
+    plt.plot(TimeOff*1000, avgOff, '-.', color=colors[i],\
+             label=TOFgroups[s] + ", slowing Off")
+
+if showGate:
+    plt.axvline(SigStart, color='grey', linestyle=':')
+    plt.axvline(SigEnd, color='grey', linestyle=':')
+units = sorted(set(AvgTOFs[s]["x unit"] for s in AvgTOFs))
+plt.xlabel("time (ms)")
+if TOFtlim is not None and len(AvgTOFs) > 0:
+    plt.xlim(TOFtlim)
+    # Rescale y to the visible part of the TOFs
+    visible = []
+    for r in AvgTOFs.values():
+        for t, key in [("time On", "On"), ("time Off", "Off")]:
+            inT = (r[t] >= min(TOFtlim)) & (r[t] <= max(TOFtlim))
+            err = r[key + " err"] if r[key + " err"] is not None else 0
+            visible += [(r[key] - err)[inT], (r[key] + err)[inT]]
+    visible = np.concatenate(visible)
+    if len(visible) > 0:
+        margin = 0.05 * (np.max(visible) - np.min(visible))
+        plt.ylim(np.min(visible) - margin, np.max(visible) + margin)
+plt.ylabel("Signal (V)")
+plt.title("TOFs averaged over x = %g to %g %s"%(min(TOFxRange), max(TOFxRange),\
+          "/".join(units)))
 plt.legend()
 plt.show()
