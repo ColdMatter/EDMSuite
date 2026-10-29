@@ -682,7 +682,8 @@ namespace MOTMaster
             {
                 if (endValuesFailed) return;
                 if (pendingValues == null)
-                    pendingValues = LastRunOutputs.EndValues(sequence, Environs.Hardware.DigitalOutputChannels);
+                    pendingValues = LastRunOutputs.EndValues(sequence, Environs.Hardware.DigitalOutputChannels,
+                        Environs.Hardware.Calibrations);
                 lastShotCompleted = true;
             }
             catch (Exception ex)

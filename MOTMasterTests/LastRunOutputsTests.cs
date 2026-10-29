@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using DAQ.Analog;
+using DAQ.HAL;
 using DAQ.Pattern;
 using MOTMaster;
 
@@ -17,11 +19,16 @@ namespace MOTMasterTests
             board.AddAnalogValue("aA", 0, 1.0);
             board.AddAnalogValue("aA", 100, 3.0);
             board.AddAnalogValue("aA", 50, 2.0);
+            board.AddChannel("aCalibrated");
+            board.AddAnalogValue("aCalibrated", 0, 1.0);
+            var calibrations = new Hashtable { { "aCalibrated", new LinearCalibration(2.0, 0.0, 0.0) } };
             var sequence = new MOTMasterSequence { DigitalPattern = new PatternBuilder32(), AnalogPattern = analog };
 
-            Dictionary<String, Object> values = LastRunOutputs.EndValues(sequence, new TestHardware().DigitalOutputChannels);
+            Dictionary<String, Object> values = LastRunOutputs.EndValues(sequence, new TestHardware().DigitalOutputChannels,
+                calibrations);
 
             Assert.Equal<object>(3.0, values["aA"], "value at the latest event");
+            Assert.True(!values.ContainsKey("aCalibrated"), "a calibrated channel is left out");
         }
 
         public static void TestDigitalEndValueIsTheLastSample()
@@ -37,7 +44,8 @@ namespace MOTMasterTests
             digital.BuildPattern(50);
             var sequence = new MOTMasterSequence { DigitalPattern = digital, AnalogPattern = new AnalogPatternBuilder(50) };
 
-            Dictionary<String, Object> values = LastRunOutputs.EndValues(sequence, hardware.DigitalOutputChannels);
+            Dictionary<String, Object> values = LastRunOutputs.EndValues(sequence, hardware.DigitalOutputChannels,
+                new Hashtable());
 
             Assert.Equal<object>(true, values["high"], "bit 3");
             Assert.Equal<object>(false, values["low"], "bit 4");

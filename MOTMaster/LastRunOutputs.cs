@@ -15,11 +15,13 @@ namespace MOTMaster
         static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         /// <summary>
-        /// Each analogue channel's value (a double, as the script set it, before any calibration) at its latest
-        /// event, and each registered digital channel's bit (a bool) in the last sample of its board's built
-        /// pattern. Analogue channels with no events, and boards with no built pattern, are left out.
+        /// Each analogue channel's value (a double, in volts as the script set it) at its latest event, and each
+        /// registered digital channel's bit (a bool) in the last sample of its board's built pattern. Analogue
+        /// channels with no events or with a calibration in calibrations, and boards with no built pattern, are
+        /// left out, so every analogue value is the voltage on the output.
         /// </summary>
-        public static Dictionary<String, Object> EndValues(MOTMasterSequence sequence, Hashtable digitalOutputChannels)
+        public static Dictionary<String, Object> EndValues(MOTMasterSequence sequence, Hashtable digitalOutputChannels,
+            Hashtable calibrations)
         {
             Dictionary<String, Object> values = new Dictionary<String, Object>();
             if (sequence.AnalogPattern != null)
@@ -28,6 +30,7 @@ namespace MOTMaster
                 {
                     foreach (KeyValuePair<String, Dictionary<Int32, Double>> channel in board.AnalogPatterns)
                     {
+                        if (calibrations != null && calibrations.ContainsKey(channel.Key)) continue;
                         bool anyEvent = false;
                         int latestTime = 0;
                         foreach (int time in channel.Value.Keys)
