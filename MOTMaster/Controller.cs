@@ -618,9 +618,90 @@ namespace MOTMaster
             {
                 // Before releasing the claim, so no new run can start in between.
                 setSafeOutputs();
+                publishRunOutputs();
                 status = RunningState.stopped;
                 lock (runLock) { runInProgress = false; }
                 controllerWindow.RefreshRunControls();
+            }
+        }
+
+        // Last-run bookkeeping, for GetLastRunOutputs only: nothing in MOTMaster reads it. Every step catches
+        // and logs its own exceptions, so it can never fail a run. The pending fields belong to the run thread
+        // (Go's or the linked secondary's; the run claim keeps them apart).
+        private bool lastShotCompleted;
+        private bool endValuesFailed;
+        private Dictionary<String, Object> pendingValues;
+        private string pendingScript;
+        private int runNumber;
+        // Replaced, never mutated, so a remoting caller always reads a whole record.
+        private volatile Dictionary<String, Object> lastRunOutputs;
+
+        /// <summary>
+        /// The record of the most recent finished run (see <see cref="LastRunOutputs.Record"/>), or null if no
+        /// run has finished since MOTMaster started. Its outputs are known only if the run's last shot played
+        /// its pattern to the end, outside Debug mode.
+        /// </summary>
+        public Dictionary<String, Object> GetLastRunOutputs()
+        {
+            return lastRunOutputs;
+        }
+
+        private void beginRunOutputs(string scriptFileName)
+        {
+            try
+            {
+                lastShotCompleted = false;
+                endValuesFailed = false;
+                pendingValues = null;
+                pendingScript = null;
+                pendingScript = Path.GetFileNameWithoutExtension(scriptFileName ?? "");
+            }
+            catch (Exception ex)
+            {
+                SharedCode.AppLog.Error("Controller.beginRunOutputs", ex);
+            }
+        }
+
+        private void noteShotStarted()
+        {
+            try
+            {
+                lastShotCompleted = false;
+            }
+            catch (Exception ex)
+            {
+                SharedCode.AppLog.Error("Controller.noteShotStarted", ex);
+            }
+        }
+
+        // Every shot of a run plays the same sequence object, so its end values are taken once, at the first
+        // shot that completes; after a failure the run's outputs stay unknown.
+        private void noteShotCompleted(MOTMasterSequence sequence)
+        {
+            try
+            {
+                if (endValuesFailed) return;
+                if (pendingValues == null)
+                    pendingValues = LastRunOutputs.EndValues(sequence, Environs.Hardware.DigitalOutputChannels);
+                lastShotCompleted = true;
+            }
+            catch (Exception ex)
+            {
+                endValuesFailed = true;
+                SharedCode.AppLog.Error("Controller.noteShotCompleted", ex);
+            }
+        }
+
+        private void publishRunOutputs()
+        {
+            try
+            {
+                lastRunOutputs = LastRunOutputs.Record(++runNumber, pendingScript, DateTime.UtcNow,
+                    lastShotCompleted && !endValuesFailed && !config.Debug, pendingValues);
+            }
+            catch (Exception ex)
+            {
+                SharedCode.AppLog.Error("Controller.publishRunOutputs", ex);
             }
         }
 
@@ -701,6 +782,7 @@ namespace MOTMaster
                 // Linked: the primary's temp copy of the script (the one read of the file it compiles, sends,
                 // hashes and saves); deleted in the finally.
                 string linkScriptPath = null;
+                beginRunOutputs(scriptPath);
                 status = RunningState.running;
 #if DDS
                 // Declared out here so the finally can stop the shot loop however
@@ -1323,6 +1405,7 @@ namespace MOTMaster
         private void linkedSecondaryLoop(string token, LinkRunRequest request, LinkedBuild build, LinkReadyInfo info)
         {
             MOTMasterSequence sequence = build.Sequence;
+            beginRunOutputs(request.ScriptFileName);
             try
             {
                 // Also ends, before the next arm, if the link this run belongs to has been released or broken
@@ -1331,6 +1414,7 @@ namespace MOTMaster
                 {
                     // A primary that died mid-run never ends the run; don't stay armed for a stale trigger.
                     throwIfPrimaryLost(request);
+                    noteShotStarted();
                     initializeHardware(sequence, forceTriggered: true);
                     // Without the one-pattern sleep, so "armed" is reported as soon as the task waits for its trigger.
                     run(sequence, sleepAfterStart: false);
@@ -1341,7 +1425,11 @@ namespace MOTMaster
                     while (pgMaster.TaskRunning && status == RunningState.running
                         && !secondaryState.ContactLost(request.ContactTimeoutMs)) ;
                     // Played = the task completed (the trigger arrived), rather than being abandoned.
-                    if (!pgMaster.TaskRunning) secondaryState.MarkPlayed();
+                    if (!pgMaster.TaskRunning)
+                    {
+                        secondaryState.MarkPlayed();
+                        noteShotCompleted(sequence);
+                    }
                     // A wait abandoned because the primary went quiet ends the run at the top-of-loop check, next.
                     releaseLinkedHardware(sequence);
                 }
@@ -1391,6 +1479,7 @@ namespace MOTMaster
                 // Safe outputs first (this also stops any pattern task still holding its channels), and only then
                 // give up the run claim, so no other run can start in between.
                 setSafeOutputs();
+                publishRunOutputs();
                 try
                 {
                     if (sequence != null && sequence.DigitalPattern != null && sequence.DigitalPattern.Boards.ContainsKey(pgMasterName))
@@ -1686,6 +1775,7 @@ namespace MOTMaster
         /// releaseLinkedHardware), since a linked script may have no analog events on this machine.</param>
         private bool runPattern(MOTMasterSequence sequence, bool linked = false)
         {
+            noteShotStarted();
             initializeHardware(sequence);
             run(sequence);
             while (pgMaster.TaskRunning && status == RunningState.running) ;
@@ -1694,6 +1784,7 @@ namespace MOTMaster
                 releaseLinkedHardware(sequence);
             else
                 releaseHardware();
+            if (completed) noteShotCompleted(sequence);
             return completed;
         }
 
