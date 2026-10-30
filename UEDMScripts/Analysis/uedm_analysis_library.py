@@ -1191,3 +1191,46 @@ def ShotNoiseAsymmetryWithCorrelation(PhotonF1, PhotonF0, corr):
     
     return Asy, sAsy
 
+#FC functions for analysis of CCD images
+
+def expected_noise(N_A, N_B, sigma_background_A=230, sigma_background_B=300):
+    # Calculate the expected noise considering both signal and background
+    total_A = N_A 
+    total_B = N_B 
+    sigma_A=np.sqrt(total_A*2*2+(1+1/np.sqrt(10))*sigma_background_A**2)
+    sigma_B=np.sqrt(total_B*2*2+(1+1/np.sqrt(10))*sigma_background_B**2)
+    return 2*np.sqrt(total_A**2*sigma_B**2 + total_B**2*sigma_A**2) / (total_A + total_B)**2
+
+def expected_naive_noise(N_A, N_B):
+    return 2*np.sqrt(N_A**2*N_B+N_B**2*N_A)/(N_A+N_B)**2
+
+def read_CCD_csv(file):
+    df = pd.read_csv(file)
+    data = df.values
+    return data
+
+def remove_background_csv(Image_binned):
+    background=Image_binned[10:19,:]
+    background_mean=np.mean(background, axis=0)
+    Image_binned_bg=np.zeros(Image_binned.shape)
+    for i in range(Image_binned.shape[1]):
+        Image_binned_bg[:,i]=Image_binned[:,i]-background_mean[i]
+    return Image_binned_bg, background
+
+def partition_by_time_bin(arr, n):
+    return np.array([arr[np.arange(i, len(arr), n)] for i in range(n)])
+def partition_by_time_bin_ONOFF(arr, n):
+    
+    return np.array([arr[np.arange(i, len(arr), int(2*n))] for i in range(n)]), np.array([arr[np.arange(i, len(arr), 2*n)] for i in range(int(n), int(2*n))])
+
+def  binned_total_photons_csv(Mean_bg_removed, TOTAL_FACTOR):
+    return Mean_bg_removed*TOTAL_FACTOR
+
+def eEDM_perday(sigma_N, sigma_d,tau):
+    return sigma_d * sigma_N / np.sqrt(12*3600*5) /tau # 5 hours per day
+
+def integrated_x_profile(Mean_bg_removed,CCDdx):
+    return np.linspace(0,CCDdx*128,128) ,Mean_bg_removed.sum(axis=3)
+
+def integrated_y_profile(Mean_bg_removed,CCDdx):
+    return np.linspace(0,CCDdx*128,128) ,  Mean_bg_removed.sum(axis=2)
