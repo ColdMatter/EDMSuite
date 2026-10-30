@@ -488,6 +488,7 @@
       <DependentUpon>ParameterWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Controller.cs" />
+    <Compile Include="LastRunOutputs.cs" />
     <Compile Include="ControllerWindow.cs">
       <SubType>Form</SubType>
     </Compile>
