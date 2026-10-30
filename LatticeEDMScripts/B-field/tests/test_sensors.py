@@ -76,12 +76,17 @@ def test_refusals():
     more["sensors"] = cfg["sensors"] + [
         {"number": 3, "label": "Z3D0-XXXX", "usb_serial": "A10QHXXXXA",
          "z_input": "ai0"}]
-    many = with_overrides(cfg, {})
+    many = with_overrides(cfg, {"daq": {"model": "pcie6321"}})
     many["sensors"] = [
         {"number": n, "label": f"Z3D0-AAA{n}", "usb_serial": f"A10QHAA{n}A",
-         "z_input": f"ai{(n - 1) % 4}"} for n in range(1, 6)]
-    with pytest.raises(ConfigError, match="at most 4"):
-        Selection(many, [1, 2, 3, 4, 5])          # four DAQ inputs
+         "z_input": f"ai{(n - 1) % 8}"} for n in range(1, 10)]
+    with pytest.raises(ConfigError, match="PCIe-6321 has 8 inputs"):
+        Selection(many, list(range(1, 10)))       # eight DAQ inputs
+    few = with_overrides(cfg, {"daq": {"model": "usb6008"}})
+    few["sensors"] = [dict(r, z_input=f"ai{(r['number'] - 1) % 4}")
+                      for r in many["sensors"][:5]]
+    with pytest.raises(ConfigError, match="USB-6008 has 4 inputs"):
+        Selection(few, [1, 2, 3, 4, 5])           # four DAQ inputs
     # sensors 1 and 3 share ai0: fine in the list, refused together
     from bfield.sensors import input_sharing
     assert any("ai0" in n for n in input_sharing(load_sensors(more)))
@@ -92,10 +97,16 @@ def test_refusals():
         {"number": 4, "label": "Z3D0-WWWW", "usb_serial": "A10QHWWWWA"}]
     with pytest.raises(ConfigError, match="no DAQ inputs"):
         Selection(nowire, [4])
-    bad = with_overrides(cfg, {})
+    bad = with_overrides(cfg, {"daq": {"model": "pcie6321"}})
+    bad["sensors"] = [dict(cfg["sensors"][0], z_input="ai8")]
+    with pytest.raises(ConfigError, match="ai8"):
+        load_sensors(bad)                         # ai8 is ai0's minus pin
     bad["sensors"] = [dict(cfg["sensors"][0], z_input="ai7")]
+    assert load_sensors(bad)[0].z_input == "ai7"
+    old = with_overrides(cfg, {"daq": {"model": "usb6008"}})
+    old["sensors"] = bad["sensors"]
     with pytest.raises(ConfigError, match="ai7"):
-        load_sensors(bad)
+        load_sensors(old)
     dup = with_overrides(cfg, {})
     dup["sensors"] = cfg["sensors"] + [
         {"number": 1, "label": "Z3D0-YYYY", "usb_serial": "A10QHYYYYA"}]

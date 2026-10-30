@@ -1,4 +1,4 @@
-"""The recorder: QZFM analog outputs on the NI USB-6008.
+"""The recorder: QZFM analog outputs on the NI DAQ (bfield.daq_models).
 
 Moved from IROP_research/scripts/qzfm_record.py with its behaviour and
 its output files unchanged (pT files, raw volts CSV, meta.json, quality
@@ -51,12 +51,13 @@ from dataclasses import dataclass, field
 from bfield import clock
 from bfield.constants import (
     CAL_FACTOR_MAX, CAL_FACTOR_MIN, CAL_FACTOR_WARN, COMMON_VERSION,
-    DAQ_AGGREGATE_MAX, DAQ_DIFF_AI, GAIN_TABLE, HEADS, LF_BAND_HZ,
+    GAIN_TABLE, HEADS, LF_BAND_HZ,
     MAP_AXIS_RX, PINNED_BLOCK_LIMIT, PINNED_DOMINANT_FRAC, PROBE_HEADROOM,
     QZFM_LINEAR_NT, QZFM_MOD_HZ, QZFM_RAIL_THRESH_V, QZFM_RAIL_V,
-    RAIL_LEVEL, VALID_AXES, VALID_VRANGE, WIZARD_GAIN_V_PER_NT,
-    mod_alias_hz, smallest_vrange,
+    RAIL_LEVEL, VALID_AXES, WIZARD_GAIN_V_PER_NT,
+    mod_alias_hz,
 )
+from bfield.daq_models import active as daq_model
 from bfield.errors import (
     BadDataError, BFieldError as AcqError, ConfigError, DaqDeviceNotFound,
     DaqSetupError, NoSignalError, OutputIOError, SaturationError,
@@ -639,10 +640,10 @@ def parse_axis_map(spec, axes, device):
                 "comma); write e.g. z:ai0,y:ai1")
         ax, sep, phys = (s.strip() for s in pair.partition(":"))
         phys, ax = phys.lower(), ax.lower()
-        if not sep or not re.fullmatch(DAQ_DIFF_AI, phys):
+        if not sep or not re.fullmatch(daq_model().input_rx, phys):
             raise ConfigError(
-                f"bad --map entry {pair!r} (want 'z:ai0'; USB-6008 "
-                f"differential inputs are ai0..ai3)")
+                f"bad --map entry {pair!r} (want 'z:ai0'; "
+                f"{daq_model().inputs_text})")
         if ax not in VALID_AXES:
             raise ConfigError(
                 f"--map names {ax!r}, which is not an axis "
@@ -663,11 +664,11 @@ def parse_aux(specs, axes, device):
     for spec in specs or []:
         name, sep, phys = (s.strip() for s in str(spec).partition(":"))
         name, phys = name.lower(), phys.lower()
-        if (not sep or not re.fullmatch(DAQ_DIFF_AI, phys)
+        if (not sep or not re.fullmatch(daq_model().input_rx, phys)
                 or not re.fullmatch(r"[a-z][a-z0-9_]{0,15}", name)):
             raise ConfigError(
-                f"bad --aux {spec!r} (want e.g. mon:ai3; USB-6008 "
-                f"differential inputs are ai0..ai3)")
+                f"bad --aux {spec!r} (want e.g. mon:ai3; "
+                f"{daq_model().inputs_text})")
         # x2/y2/z2 and s1z... stay reserved in every topology: an aux
         # named y2 or s2y would read as a sensor axis in the file listings
         reserved = set(axes) | set(VALID_AXES) | {a + "2" for a in VALID_AXES}
@@ -700,10 +701,9 @@ def parse_head_map(spec, device):
             raise ConfigError(
                 f"bad head {head!r} in --map (--2head drives two heads, "
                 f"a and b)")
-        if not re.fullmatch(DAQ_DIFF_AI, phys):
+        if not re.fullmatch(daq_model().input_rx, phys):
             raise ConfigError(
-                f"bad channel in {item!r}; USB-6008 differential inputs "
-                f"are ai0..ai3")
+                f"bad channel in {item!r}; {daq_model().inputs_text}")
         if name in entries:
             raise ConfigError(f"axis {name!r} mapped twice")
         entries[name] = (head, f"{device}/{phys}")
@@ -800,8 +800,9 @@ def parse_sensors(spec, device):
         label, sep, phys = (s.strip().lower() for s in pair.partition(":"))
         if not sep or not re.fullmatch(r"s[1-4]", label):
             raise ConfigError(f"bad sensor entry {pair!r} (want s1:ai0)")
-        if not re.fullmatch(DAQ_DIFF_AI, phys):
-            raise ConfigError(f"bad sensor channel {pair!r}; use ai0..ai3")
+        if not re.fullmatch(daq_model().input_rx, phys):
+            raise ConfigError(f"bad sensor channel {pair!r}; use "
+                              f"{daq_model().input_span}")
         if label in sensors:
             raise ConfigError(f"duplicate sensor label {label!r}")
         sensors[label] = f"{device}/{phys}"
@@ -886,7 +887,7 @@ def timing_cmrr_ceiling_db(skew_s, f_hz=30.0):
 
 
 def pair_skew_s(cfg, pair):
-    # mux scan skew (USB-6008 samples channels in turn) + analog delay
+    # mux scan skew (the card samples channels in turn) + analog delay
     # spread; the gap is a distance in scan order, not in ai numbers
     order = cfg.names
     mux = (abs(order.index(pair.a) - order.index(pair.b))
@@ -946,7 +947,7 @@ class Cfg:
         # --allow-sim (the old recorder's simulator wrote it too)
         if self.lab is not None and self.lab.sim:
             return "simulate"
-        return "analog(USB-6008)"
+        return f"analog({daq_model().title})"
 
     @property
     def v_per_nT(self):
@@ -1015,8 +1016,10 @@ def build_cfg(args):
         vrange = float(str(args.vrange).strip())
     except ValueError:
         vrange = -1.0
-    if vrange not in VALID_VRANGE:
-        raise ConfigError(f"--vrange must be one of {VALID_VRANGE}")
+    daq = daq_model()
+    if vrange not in daq.vranges:
+        raise ConfigError(f"--vrange must be one of {daq.vranges} "
+                          f"(the {daq.title}'s ranges)")
     if not (args.fs >= 1) or not math.isfinite(args.fs):
         raise ConfigError("--fs must be >= 1 (one read block = int(fs) samples)")
     # nan/inf pass plain ">" tests: --seconds nan runs unbounded,
@@ -1065,17 +1068,17 @@ def build_cfg(args):
     fields = topo.parse(args, device)
 
     n_ch = len(fields["pt_names"]) + len(fields.get("aux") or {})
-    if args.fs * n_ch > DAQ_AGGREGATE_MAX:
+    if args.fs * n_ch > daq.aggregate_max:
         raise ConfigError(
-            f"aggregate rate {args.fs * n_ch:.0f} S/s exceeds the USB-6008 "
-            f"limit of {DAQ_AGGREGATE_MAX} (fs x n_channels); lower --fs or "
-            f"drop a channel")
+            f"aggregate rate {args.fs * n_ch:.0f} S/s exceeds the "
+            f"{daq.title} limit of {daq.aggregate_max:g} (fs x n_channels); "
+            f"lower --fs or drop a channel")
     phys = [*fields["channel_map"].values(), *(fields.get("aux") or {}).values()]
     dupes = sorted({p for p in phys if phys.count(p) > 1})
     if dupes:
         raise ConfigError(
             f"physical channel(s) assigned more than once: {', '.join(dupes)} "
-            f"(the USB-6008 has 4 differential inputs, ai0..ai3)")
+            f"({daq.inputs_text})")
 
     outdir = args.outdir
     session = ""
@@ -1161,7 +1164,7 @@ class Recorder:
         self.codes = {n: set() for n in cfg.pt_names}
         self.pin_blocks = {n: 0 for n in cfg.pt_names}
         self.n_blocks = 0
-        self._lsb = cfg.vrange / 2048.0  # 12 bit over +/-vrange
+        self._lsb = daq_model().lsb(cfg.vrange)  # one ADC code
         # running sums for the block-mean Pearson r, one set per pair;
         # every key must sum over the same n blocks
         self._pair = {(a, b): {"n": 0, "sum_a": 0.0, "sum_b": 0.0,
@@ -1418,7 +1421,9 @@ class Recorder:
             "adc_unique_codes": {n: self.code_count(n) for n in cfg.pt_names},
             "pinned_block_fraction": {n: self.pin_fraction(n)
                                       for n in cfg.pt_names},
-            "mux_skew_note": "USB-6008 multiplexed; <135 Hz negligible",
+            "mux_skew_note": f"{daq_model().title} multiplexed; <135 Hz "
+                             "negligible",
+            "daq_model": daq_model().key,
             "source": cfg.source,
             "software": SOFTWARE,
             # old program name for this topology; analyses gate on it
@@ -1491,7 +1496,7 @@ def probe_volts(cfg, vrange, seconds=PROBE_SECONDS):
 
 def range_probe(cfg):
     import numpy as np
-    data = probe_volts(cfg, max(VALID_VRANGE))
+    data = probe_volts(cfg, daq_model().max_vrange)
     if not np.isfinite(data).all():
         raise BadDataError("non-finite samples in the range probe -- "
                            "check wiring and driver, then rerun")
@@ -1499,12 +1504,13 @@ def range_probe(cfg):
     railed = [n for n, row in zip(cfg.pt_names, data)
               if qzfm_output_railed(row).any()]
     return {"data": data, "railed": railed, "peak_v": peak_v,
-            "chosen_vrange": smallest_vrange(peak_v)}
+            "chosen_vrange": daq_model().smallest_vrange(peak_v)}
 
 
 def run_probe(cfg):
     result = range_probe(cfg)
-    print(f"=== probe: {PROBE_SECONDS:.0f} s at +/-{max(VALID_VRANGE):g} V "
+    print(f"=== probe: {PROBE_SECONDS:.0f} s at "
+          f"+/-{daq_model().max_vrange:g} V "
           f"({cfg.source}, {cfg.topo.label}) ===")
     for i, name in enumerate(cfg.names):
         v = result["data"][i]
@@ -1827,9 +1833,10 @@ def build_parser():
                         "keeps the 923 Hz carrier alias off 77 Hz)")
     p.add_argument("--seconds", type=float, default=900.0,
                    help="duration in s (default 900); <=0 runs until Ctrl-C")
-    p.add_argument("--vrange", default="2",
-                   help="input range in V: 1,2,5,10,20 (default 2; use 1 "
-                        "only for floor-verification runs)")
+    p.add_argument("--vrange", default=None,
+                   help="input range in V, one of the card's: USB-6008 "
+                        "1,2,5,10,20; PCIe-6321 0.2,1,5,10 (default: [daq] "
+                        "vrange_V in config/lab.toml)")
     p.add_argument("--gain", default="1x",
                    help="QZFM analog gain: 0.33x, 1x, 3x")
     p.add_argument("--device", default=None,
@@ -1917,6 +1924,9 @@ def main(argv=None):
         if args.device is None:
             args.device = (args.lab.config.section("daq").get("device")
                            or None)
+        if args.vrange is None:
+            d = args.lab.config.section("daq")
+            args.vrange = f"{d.get('vrange_V', 2.0):g}"
         if args.hardware_check and args.probe:
             raise ConfigError("pick one mode: --hardware-check or --probe")
         if args.hardware_check:

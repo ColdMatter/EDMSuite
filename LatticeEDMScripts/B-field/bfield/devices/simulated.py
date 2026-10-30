@@ -403,12 +403,16 @@ def coil_field_pT(coil, axis, t):
 # --------------------------------------------------------------- fake DAQ
 
 class SimUSB6008:
-    """Imitates USB6008: volts the QZFM heads in the world would put out."""
+    """Imitates NIDaq: volts the QZFM heads in the world would put out,
+    digitised like the configured card (bfield.daq_models)."""
 
     name = "simulated"
 
-    def __init__(self, world):
+    def __init__(self, world, model=None, device="Dev2"):
+        from bfield.daq_models import active
         self.world = world
+        self.model = model or active()
+        self.device = device or "Dev2"
         self.channels = []
         self.vrange = 2.0
         self.fs = 1200.0
@@ -416,14 +420,14 @@ class SimUSB6008:
         self._rw = {}
 
     def list_devices(self):
-        return ["Dev2"]
+        return [self.device]
 
     def resolve_device(self, requested, hardware_check=False):
         if requested and requested not in self.list_devices():
             raise DaqDeviceNotFound(
                 f"device {requested!r} not found; available: "
                 f"{self.list_devices()}")
-        return requested or "Dev2"
+        return requested or self.device
 
     def open(self, channels, vrange, fs):
         self.channels = list(channels)
@@ -472,8 +476,8 @@ class SimUSB6008:
             doc = self.world.read()
             t = (self._n + np.arange(block_n)) / self.fs
             blk = np.vstack([self._volts(p, t, doc) for p in self.channels])
-            # 12-bit ADC over +/-vrange, clipped at the rail
-            lsb = self.vrange / 2048.0
+            # the card's ADC over +/-vrange, clipped at the rail
+            lsb = self.model.lsb(self.vrange)
             blk = np.clip(np.rint(blk / lsb) * lsb, -self.vrange, self.vrange)
             self._n += block_n
             if doc.get("inject", {}).get("nonfinite_block") == \

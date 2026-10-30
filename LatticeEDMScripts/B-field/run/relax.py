@@ -82,7 +82,9 @@ def build_parser():
                         "sensors' own inputs)")
     p.add_argument("--gain", default="1x")
     p.add_argument("--fs", type=float, default=1200.0)
-    p.add_argument("--vrange", default="2")
+    p.add_argument("--vrange", default=None,
+                   help="DAQ input range, +/- V (default: [daq] vrange_V "
+                        "in config/lab.toml)")
     p.add_argument("--outdir", default=None,
                    help="parent directory (default: the next dated run "
                         "folder, e.g. <data_root>/Oct 2026/15/"

@@ -35,13 +35,21 @@ poll_s = 2.0
 zero_shift_warn_pT = 200.0
 
 [daq]
-# NI USB-6008, by its NI MAX name. Empty = auto-detect (refused if two NI
-# devices are present). On the lab PC NI MAX also keeps a stale "Dev1"
-# entry (red cross) for the same card; the working one is Dev2, as in
-# every run since August 2026.
-device = "Dev2"
+# The card: "pcie6321" (NI PCIe-6321, 8 differential inputs ai0..ai7,
+# +/-0.2/1/5/10 V, 16 bit, 250 kS/s aggregate; installed 2026-10-20) or
+# "usb6008" (NI USB-6008, 4 differential inputs ai0..ai3, +/-1/2/5/10/20 V,
+# 12 bit, 10 kS/s; every run before 2026-10-20). See bfield/daq_models.py.
+model = "pcie6321"
+# The card's NI MAX name. Empty = auto-detect (refused if two NI devices
+# are present). The PCIe-6321 is Dev3. The USB-6008 was Dev2 (NI MAX also
+# keeps a stale "Dev1" entry, red cross, for it); to record on it again
+# set model = "usb6008", device = "Dev2" and vrange_V = 2.0.
+device = "Dev3"
 fs_hz = 1200.0          # keeps the 923 Hz carrier alias off 77 Hz
-vrange_V = 2.0
+# +/- V; must be one of the card's ranges. +/-5 V holds the whole QZFM
+# output (soft rail ~4.3 V); at 16 bit one code is 153 uV (~57 fT at 1x),
+# finer than the USB-6008's 977 uV at +/-2 V.
+vrange_V = 5.0
 # Fallback wiring for a sensor list without z_input / y_input: the (Z, Y)
 # inputs of the 1st and 2nd sensor, in run order. Each sensor's own wiring
 # is in config/sensors.toml (Manage sensors in the GUI).

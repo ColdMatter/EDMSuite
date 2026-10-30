@@ -1,7 +1,8 @@
 # B-field — layout of the code
 
 Control and analysis code for characterising the lattice eEDM magnetic
-shield: QuSpin QZFM magnetometers read through an NI USB-6008, the
+shield: QuSpin QZFM magnetometers read through an NI DAQ card (the
+PCIe-6321 since 2026-10-20, the USB-6008 before; `[daq] model`), the
 Twinleaf DG degausser, and the S(f) shielding-factor sweep with a
 Tektronix scope on the drive current.
 
@@ -86,7 +87,9 @@ B-field/
     errors.py                the exception family and its exit codes
     clock.py                 time (real, or sped up in the simulator)
     constants.py             instrument facts (gain table, rails, carrier,
-                             DG recipe, USB-6008 limits)
+                             DG recipe)
+    daq_models.py            the DAQ cards (PCIe-6321, USB-6008): inputs,
+                             ranges, rate limit, ADC bits; [daq] model
     sensors.py               the numbered sensors, their DAQ wiring; which
                              ones and which axes a run records
     channels.py              names by sensor number: s2, s2z (S2Z on
@@ -96,7 +99,7 @@ B-field/
     devices/                 1. DEVICES
       qzfm.py                QZFMSensor (serial link, zero, calibrate,
                              standby), HealthTracker
-      daq.py                 USB6008 (nidaqmx)
+      daq.py                 NIDaq (nidaqmx), any model in daq_models
       degausser.py           TwinleafDG (tio)
       scope.py               TBS1052B (pyvisa)
       watchdog.py            deadlines for vendor calls that can hang
@@ -140,15 +143,17 @@ the new sensor and pick the unowned port) or by hand.
 read over USB; it is typed once from the label.
 
 Each sensor also records its **wiring**: `z_input` / `y_input`, the
-USB-6008 input (ai0..ai3) its Z and Y outputs go to; either may be empty
+DAQ input (ai0..ai7 on the PCIe-6321, ai0..ai3 on the USB-6008) its Z
+and Y outputs go to; either may be empty
 (**Z -> DAQ** / **Y -> DAQ** in Manage sensors). A QZFM records up to two
 axes at once. Two sensors in the list may share an input (the cable is
 moved between runs); Manage sensors notes it, and a run refuses to use
 both together. Old configs without inputs fall back to `[daq] slots`.
 
 A run picks sensors by number (`--sensors 1,2`, or the checklist in the
-GUI) -- as many as the DAQ has inputs for: the USB-6008 has four, so
-four sensors on one axis, or two on both. Each records on its own
+GUI) -- as many as the DAQ has inputs for: the PCIe-6321 has eight
+(eight sensors on one axis, or four on both), the USB-6008 four. Each
+records on its own
 inputs; the program prints which output goes to which input. **Which
 axes** are recorded is a separate run choice ("Axes to record" on the
 QZFM tab): single-axis mode is 1.35x quieter than dual-axis (14.8 vs

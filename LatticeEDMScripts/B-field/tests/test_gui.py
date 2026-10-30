@@ -369,7 +369,8 @@ def test_analysis_shows_why_a_run_was_flagged(app, win):
     assert code == 30, win.log.toPlainText()[-1500:]
     an = win.analysis
     an.last_btn.click()
-    assert "ADC input rail" in an.info.text()
+    # the +/-5 V window holds the sensor's soft rail: the QZFM-rail verdict
+    assert "QZFM analog output rail" in an.info.text()
     assert not an.chan_checks["s1y"].isChecked()
     assert "⚠" in an.chan_checks["s1y"].text()
     assert an.chan_checks["s1z"].isChecked()

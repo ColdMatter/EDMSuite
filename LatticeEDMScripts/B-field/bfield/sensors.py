@@ -29,8 +29,8 @@ Everything is named by the sensor number (bfield.channels): sensor 2 is
 meta.json and R01_1631_S2Z_pT.txt. Each run also records the full
 mapping (number, label, USB serial, location, inputs) in its session
 json and in every meta.json ("sensor_info"). A run takes as many
-sensors as the DAQ has inputs for (four on the USB-6008: four on one
-axis, or two on both).
+sensors as the DAQ has inputs for (eight on the PCIe-6321, four on the
+USB-6008: one axis each, or half as many on both).
 """
 
 from __future__ import annotations
@@ -41,6 +41,7 @@ import os
 import re
 
 from bfield.channels import channel_name, key_number, sensor_key
+from bfield.daq_models import model_of
 from bfield.errors import ConfigError
 from bfield.heads import FTDI_SERIAL_RX, same_head
 
@@ -48,8 +49,8 @@ DEFAULT_SLOTS = (("ai0", "ai1"), ("ai2", "ai3"))
 
 
 AXES = ("z", "y")                 # what a dual-axis QZFM can record
-INPUTS = ("ai0", "ai1", "ai2", "ai3")   # the USB-6008's differential inputs
-MAX_SENSORS_PER_RUN = len(INPUTS)  # each needs at least one input
+# the DAQ inputs (and so the sensors per run: each needs at least one
+# input) are the card's -- bfield.daq_models, [daq] model
 
 
 @dataclass(frozen=True)
@@ -100,13 +101,15 @@ def load_sensors(config):
                  "z_input": sl[i][0] if i < len(sl) else "",
                  "y_input": sl[i][1] if i < len(sl) else ""}
                 for i, h in enumerate(sorted(heads))]
+    inputs = model_of(config).inputs
     out, seen = [], {}
     for r in rows:
         try:
             s = Sensor(int(r["number"]), str(r["label"]).strip(),
                        str(r["usb_serial"]).strip(),
                        str(r.get("location", "") or "").strip(),
-                       _pin(r.get("z_input")), _pin(r.get("y_input")))
+                       _pin(r.get("z_input"), inputs),
+                       _pin(r.get("y_input"), inputs))
         except (KeyError, TypeError, ValueError) as e:
             raise ConfigError(f"bad [[sensors]] entry {r!r} in the config "
                               f"({type(e).__name__}: {e}) -- each needs "
@@ -121,11 +124,11 @@ def load_sensors(config):
     return sorted(out, key=lambda s: s.number)
 
 
-def _pin(value):
+def _pin(value, inputs):
     pin = str(value or "").strip().lower()
-    if pin and pin not in INPUTS:
+    if pin and pin not in inputs:
         raise ConfigError(f"DAQ input {value!r} is not one of "
-                          f"{', '.join(INPUTS)} (or empty)")
+                          f"{', '.join(inputs)} (or empty)")
     return pin
 
 
@@ -267,7 +270,8 @@ def save_sensors(path, sensors):
              "#   label       the QuSpin head ID printed on it (Z3D0-...)",
              "#   usb_serial  the USB ID the PC sees on its COM port (FTDI)",
              "#   location    free note: where it is in the experiment",
-             "#   z_input     the DAQ input its Z output is wired to (ai0..ai3,",
+             "#   z_input     the DAQ input its Z output is wired to (ai0..ai7",
+             "#               on the PCIe-6321, ai0..ai3 on the USB-6008;",
              "#               or \"\" when Z is not recorded)",
              "#   y_input     the same for its Y output",
              ""]
@@ -302,10 +306,11 @@ class Selection:
         if len(set(numbers)) != len(numbers):
             raise ConfigError(f"sensors {list(numbers)} name a sensor twice")
         self.sensors = [known[n] for n in numbers]
-        if len(self.sensors) > MAX_SENSORS_PER_RUN:
+        daq = model_of(config)
+        if len(self.sensors) > daq.n_inputs:
             raise ConfigError(
-                f"{len(self.sensors)} sensors chosen -- the USB-6008 has "
-                f"{len(INPUTS)} inputs, so at most {MAX_SENSORS_PER_RUN} "
+                f"{len(self.sensors)} sensors chosen -- the {daq.title} has "
+                f"{daq.n_inputs} inputs, so at most {daq.n_inputs} "
                 "sensors per run")
         for s in self.sensors:
             if not s.inputs:
