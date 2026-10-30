@@ -375,7 +375,7 @@ class QZFMSensor:
                 heartbeat=beat, heartbeat_s=BRINGUP_REPORT_S)
         except LinkTimeout as e:
             raise LinkTimeout(
-                f"{e}. State at start: laser_on={snap['laser_on']}, "
+                f"{self.display}: {e}. State at start: laser_on={snap['laser_on']}, "
                 f"cellT_lock={snap['cellT_lock']}, "
                 f"laser_lock={snap['laser_lock']}, "
                 f"cellT_err={snap['cellT_err']}. A cold head locks in "
