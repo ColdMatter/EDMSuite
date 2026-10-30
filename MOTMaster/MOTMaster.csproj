@@ -423,14 +423,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'RbTweezer|AnyCPU'">
     <OutputPath>bin\RbTweezer\</OutputPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'RbTweezer|x64'">
-    <OutputPath>bin\x64\RbTweezer\</OutputPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'RbTweezer|x86'">
-    <OutputPath>bin\x86\RbTweezer\</OutputPath>
-    <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL" />
@@ -495,6 +488,7 @@
       <DependentUpon>ParameterWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Controller.cs" />
+    <Compile Include="LastRunOutputs.cs" />
     <Compile Include="ControllerWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -506,6 +500,13 @@
     <Compile Include="LoadMoleculeMOTNoSlowingEdge.cs" />
     <Compile Include="MMDataIOHelper.cs" />
     <Compile Include="MOTMasterScript.cs" />
+    <Compile Include="Linked\BuildProvenance.cs" />
+    <Compile Include="Linked\LinkedPrimary.cs" />
+    <Compile Include="Linked\LinkedSecondaryState.cs" />
+    <Compile Include="Linked\LinkFingerprint.cs" />
+    <Compile Include="Linked\LinkMessages.cs" />
+    <Compile Include="Linked\LinkRemoting.cs" />
+    <Compile Include="Linked\LinkedScriptBuilder.cs" />
     <Compile Include="MOTMasterScriptSnippet.cs" />
     <Compile Include="MOTMasterSequence.cs" />
     <Compile Include="PreviewWindow.cs">

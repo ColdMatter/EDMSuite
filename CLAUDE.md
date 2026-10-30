@@ -15,7 +15,7 @@ The code is not terribly pretty, but it does the job. There is minimal documenta
 
 MOTMaster experiments use NI digital and analogue pattern generators to control experiment hardware. 
 The patterns are created in .cs scripts e.g. MoleculeMOTMasterScripts\0. DDSBlueMOT.cs. 
-The DDS board fires first and triggers the analogue pattern and any other devices.  
+The digital pattern generator starts first; at the Q-switch instant it pulses `DDS_Analog_Trg`, which triggers both the DDS and the analogue pattern. So in cafmot scripts digital times count from the pattern generator start, while analogue and DDS times count from the `DDS_Analog_Trg` pulse (`TCLBlockStart`).  
 MOTMaster experiments are fired by the MOTMaster Controller.
 Patterns live inside a sequence.
 
