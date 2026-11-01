@@ -43,19 +43,50 @@ namespace DAQ.Pattern
 
         public void AddEdge(string channelName, int time, bool sense)
         {
-            DigitalOutputChannel channel = (DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels[channelName];
+            LinkRouting routing = LinkRouting.Current;
+            if (routing != null)
+            {
+                if (!routing.IsLocalDigital(channelName)) return;
+                if (sense) routing.NoteDigitalRise(channelName, time);
+                time = routing.MapDigitalPoint(channelName, time);
+            }
+            DigitalOutputChannel channel = LinkRouting.LookupDigital(channelName);
             GetBoard(channel).AddEdge(channel.BitNumber, time, sense);
         }
 
         public int Pulse(int startTime, int delay, int duration, string channelName)
         {
-            DigitalOutputChannel channel = (DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels[channelName];
+            LinkRouting routing = LinkRouting.Current;
+            if (routing != null)
+            {
+                if (!routing.IsLocalDigital(channelName)) return delay + duration;
+                routing.NoteDigitalRise(channelName, startTime + delay);
+                int start = routing.MapDigitalSpan(channelName, startTime + delay);
+                DigitalOutputChannel linkedChannel = LinkRouting.LookupDigital(channelName);
+                PatternBuilder32SingleBoard linkedBoard = GetBoard(linkedChannel);
+                linkedBoard.AddEdge(linkedChannel.BitNumber, start, true);
+                linkedBoard.AddEdge(linkedChannel.BitNumber, start + duration, false);
+                return delay + duration;
+            }
+            DigitalOutputChannel channel = LinkRouting.LookupDigital(channelName);
             return GetBoard(channel).Pulse(startTime, delay, duration, channel.BitNumber);
         }
 
         public int DownPulse(int startTime, int delay, int duration, string channelName)
         {
-            DigitalOutputChannel channel = (DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels[channelName];
+            LinkRouting routing = LinkRouting.Current;
+            if (routing != null)
+            {
+                if (!routing.IsLocalDigital(channelName)) return delay + duration;
+                routing.NoteDigitalRise(channelName, startTime + delay + duration);
+                int start = routing.MapDigitalSpan(channelName, startTime + delay);
+                DigitalOutputChannel linkedChannel = LinkRouting.LookupDigital(channelName);
+                PatternBuilder32SingleBoard linkedBoard = GetBoard(linkedChannel);
+                linkedBoard.AddEdge(linkedChannel.BitNumber, start, false);
+                linkedBoard.AddEdge(linkedChannel.BitNumber, start + duration, true);
+                return delay + duration;
+            }
+            DigitalOutputChannel channel = LinkRouting.LookupDigital(channelName);
             return GetBoard(channel).DownPulse(startTime, delay, duration, channel.BitNumber);
         }
 
@@ -114,6 +145,7 @@ namespace DAQ.Pattern
          */
         public void AddEdge(int channel, int time, bool sense)
         {
+            LinkRouting.ThrowIfActive("PatternBuilder32 legacy int-channel call");
             PatternBuilder32SingleBoard board = GetDefaultBoard();
             board.AddEdge(channel, time, sense);
         }
@@ -121,6 +153,7 @@ namespace DAQ.Pattern
         /** Convenience method to add two edges. */
         public int Pulse(int startTime, int delay, int duration, int channel)
         {
+            LinkRouting.ThrowIfActive("PatternBuilder32 legacy int-channel call");
             PatternBuilder32SingleBoard board = GetDefaultBoard();
             board.AddEdge(channel, startTime + delay, true);
             board.AddEdge(channel, startTime + delay + duration, false);
@@ -131,6 +164,7 @@ namespace DAQ.Pattern
         /** Adds a downward going pulse **/
         public int DownPulse(int startTime, int delay, int duration, int channel)
         {
+            LinkRouting.ThrowIfActive("PatternBuilder32 legacy int-channel call");
             PatternBuilder32SingleBoard board = GetDefaultBoard();
             board.AddEdge(channel, startTime + delay, false);
             board.AddEdge(channel, startTime + delay + duration, true);
@@ -141,6 +175,7 @@ namespace DAQ.Pattern
         /** Clear the pattern. */
         public void Clear()
         {
+            LinkRouting.ThrowIfActive("PatternBuilder32 legacy int-channel call");
             PatternBuilder32SingleBoard board = GetDefaultBoard();
             board.Clear();
         }

@@ -86,6 +86,8 @@ def load_config(path=None, *, local=True, install_aliases=True):
     cfg.sensors_path = sensors_path
     cfg.sources = sources
     if install_aliases:
+        from bfield.daq_models import set_active
+        set_active(cfg)
         from bfield.sensors import aliases
         heads.set_aliases(aliases(cfg))
     return cfg

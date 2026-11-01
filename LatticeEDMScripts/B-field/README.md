@@ -1,7 +1,7 @@
 # B-field
 
 Magnetic shield characterisation for the lattice eEDM experiment:
-QZFM magnetometers, NI USB-6008 recording, Twinleaf DG degausser,
+QZFM magnetometers, NI PCIe-6321 (or USB-6008) recording, Twinleaf DG degausser,
 S(f) sweeps, and the analysis scripts. **See [LAYOUT.md](LAYOUT.md)
 for how the code is organised and where each old IROP_research script
 went.**
@@ -15,7 +15,7 @@ py -3.14 -m venv .venv
 ```
 
 The `[lab]` extra needs vendor runtimes pip cannot install: the
-**NI-DAQmx** driver (USB-6008) and a **VISA** runtime (TekVISA or
+**NI-DAQmx** driver (PCIe-6321 / USB-6008) and a **VISA** runtime (TekVISA or
 NI-VISA, for the scope). On any other machine `pip install -e ".[test]"`
 is enough to run everything in the simulator.
 

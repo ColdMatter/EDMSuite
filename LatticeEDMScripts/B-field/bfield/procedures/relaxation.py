@@ -127,7 +127,7 @@ class RelaxSettings:
     map: str | None = None               # None = config [daq] two_head_map
     gain: str = "1x"
     fs: float = 1200.0
-    vrange: str = "2"
+    vrange: str | None = None            # None = config [daq] vrange_V
     outdir: str | None = None            # parent; None = the next dated
                                          # run folder (or the relax bucket)
     name: str | None = None              # dated folder name; None =
@@ -302,6 +302,8 @@ def resolve(s, lab):
         s.taper = wd["taper"]
     if s.coil is None:
         s.coil = wd["coil"]
+    if s.vrange is None:
+        s.vrange = f"{lab.config.section('daq').get('vrange_V', 2.0):g}"
     return s
 
 
@@ -375,8 +377,9 @@ def validate(ctx, lab, s, mode):
     if str(s.vrange) == "1" and s.seconds >= LONG_POINT_S:
         ctx.warn(f"--vrange 1 with {s.seconds:g} s points: a 900 s record "
                  f"drifted ~200 pT on 2026-08-07 and clipped the +/-1 V "
-                 f"window at t=199 s -- use --vrange 2 unless this shield "
-                 f"is known quieter")
+                 f"window at t=199 s -- use a wider --vrange (2 on the "
+                 f"USB-6008, 5 on the PCIe-6321) unless this shield is "
+                 f"known quieter")
     for label, v in (("--amp", s.amp), ("--strong-amp", s.strong_amp),
                      ("--taper", s.taper), ("--soak", s.soak),
                      ("--freq", s.freq), ("--fs", s.fs)):

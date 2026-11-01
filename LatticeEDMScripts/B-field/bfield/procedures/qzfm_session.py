@@ -25,8 +25,8 @@ from dataclasses import dataclass, field
 
 from bfield import clock
 from bfield.channels import KEY_RX, key_number, split_channel
-from bfield.constants import (COMMON_VERSION, DAQ_AGGREGATE_MAX, GAIN_TABLE,
-                              RECORDABLE_AXES, VALID_VRANGE)
+from bfield.constants import COMMON_VERSION, GAIN_TABLE, RECORDABLE_AXES
+from bfield.daq_models import active as daq_model
 from bfield.errors import (BFieldError, ConfigError, SensorAbort,
                            SessionStop, Stopped, exit_meaning)
 from bfield.heads import same_head
@@ -251,18 +251,19 @@ def validate(plan, mode):
         v = float(plan.vrange)
     except ValueError:
         v = -1.0
-    require(v in VALID_VRANGE, "vrange must be one of "
-            + ", ".join(f"{r:g}" for r in VALID_VRANGE))
+    daq = daq_model()
+    require(v in daq.vranges, f"vrange must be one of the {daq.title}'s "
+            + ", ".join(f"{r:g}" for r in daq.vranges))
     require(plan.gain in GAIN_TABLE,
             f"gain must be one of {sorted(GAIN_TABLE)}")
     require(plan.fs >= 1.0, "fs must be at least 1 Hz")
     plan.record_settings().check_extra_args()
     if mode in ("run", "setup"):
         n_ch = sum(1 for n, _k, _p in entries if split_channel(n)[1] in want)
-        require(plan.fs * n_ch <= DAQ_AGGREGATE_MAX,
+        require(plan.fs * n_ch <= daq.aggregate_max,
                 f"fs {plan.fs:g} Hz x {n_ch} channel(s) = "
-                f"{plan.fs * n_ch:.0f} S/s, over the USB-6008 aggregate "
-                f"limit of {DAQ_AGGREGATE_MAX} -- lower fs or record "
+                f"{plan.fs * n_ch:.0f} S/s, over the {daq.title} aggregate "
+                f"limit of {daq.aggregate_max:g} -- lower fs or record "
                 f"fewer channels")
     require(plan.cal_v_per_nT is None or plan.cal_v_per_nT > 0,
             "cal_v_per_nT must be positive")

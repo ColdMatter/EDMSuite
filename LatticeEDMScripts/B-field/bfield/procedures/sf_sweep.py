@@ -54,7 +54,7 @@ from bfield.acquisition.child import (new_process_group_kwargs,
 from bfield.channels import (key_number, label, parse_map,
                              shared_axis_pairs, split_channel)
 from bfield.config import PROJECT_DIR
-from bfield.constants import DAQ_AGGREGATE_MAX
+from bfield.daq_models import active as daq_model
 from bfield.devices.scope import DEFAULT_SCOPE_CH, ScopeError
 from bfield.errors import (AbortRun, BFieldError, ConfigError, Stopped)
 from bfield.io.files import write_json_atomic
@@ -563,9 +563,10 @@ class SfSweep:
         n_ch = len([p for p in s.map.split(",") if p.strip()]) \
             + len([a for a in s.aux.split(",") if a.strip()])
         total = n_ch * s.fs
-        require(total <= DAQ_AGGREGATE_MAX,
+        daq = daq_model()
+        require(total <= daq.aggregate_max,
                 f"{n_ch} channels at {s.fs:g} Hz is {total:g} S/s, over the "
-                f"USB-6008 aggregate limit of {DAQ_AGGREGATE_MAX} -- drop a "
+                f"{daq.title} aggregate limit of {daq.aggregate_max:g} -- drop a "
                 f"channel or lower --fs (then re-check what folds into the "
                 f"band)")
         v_mon = s.amp_ma * 1e-3 * s.rmon_ohm

@@ -208,8 +208,6 @@ public class Patterns : MOTMasterScript
         int patternStartBeforeQ = (int)Parameters["TCLBlockStart"];
 
         p.AddEdge("QCLShutter", 0, true);
-        p.AddEdge("v0ddsSwitchD", 0, true);
-        p.AddEdge("v0ddsSwitchD", (int)Parameters["PatternLength"] - 1000, false); //trigger for rb experiment
 
         //  SETUP //
 
