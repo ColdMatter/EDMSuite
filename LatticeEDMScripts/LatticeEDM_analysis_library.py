@@ -128,6 +128,16 @@ def GetSetting(Scan, *keys):
             return value
     return None
 
+def _us_to_ms(value):
+    """Convert a pg time setting from us to ms; None (setting not saved) stays None."""
+    return None if value is None else value / 1000
+
+def _end_time(start, duration):
+    """start + duration, or None if either is missing."""
+    if start is None or duration is None:
+        return None
+    return start + duration
+
 def GetScanSettings(Scan):
     """Extract scan settings. Key names checked against ScanMaster files
     from Oct 2026; older names are kept as fallbacks for older data.
@@ -149,25 +159,26 @@ def GetScanSettings(Scan):
     repumpDelay = Scan.ScanSettings["pg:repumpDelay"]
     repumpDuration = Scan.ScanSettings["pg:repumpDuration"]
     shutterslowDelay = Scan.ScanSettings["pg:shutterslowdelay"]
-    v1v2aomStart = Scan.ScanSettings["pg:v1v2aomStart"] / 1000 #to ms
-    v1v2aomDuration = Scan.ScanSettings["pg:v1v2aomDuration"] / 1000 #to ms
-    v1v2aomEnd = v1v2aomStart + v1v2aomDuration
-    v3aomStart = Scan.ScanSettings["pg:v3aomStart"] /1000 #to ms
-    v3aomDuration = Scan.ScanSettings["pg:v3aomDuration"] /1000 #to ms
-    v3aomEnd = v3aomStart + v3aomDuration
-    v1_1p5_shutterStart = Scan.ScanSettings["pg:v1_1p5_Delay"] /1000 #to ms
-    v1_1p5_shutterDuration = Scan.ScanSettings["pg:v1_1p5_Duration"] /1000 #to ms
-    v1_1p5_shutterEnd = v1_1p5_shutterStart + v1_1p5_shutterDuration
-    
+    # Times below are None if the setting isn't in the file (e.g. older data)
+    v1v2aomStart = _us_to_ms(Scan.ScanSettings["pg:v1v2aomStart"])
+    v1v2aomDuration = _us_to_ms(Scan.ScanSettings["pg:v1v2aomDuration"])
+    v1v2aomEnd = _end_time(v1v2aomStart, v1v2aomDuration)
+    v3aomStart = _us_to_ms(Scan.ScanSettings["pg:v3aomStart"])
+    v3aomDuration = _us_to_ms(Scan.ScanSettings["pg:v3aomDuration"])
+    v3aomEnd = _end_time(v3aomStart, v3aomDuration)
+    v1_1p5_shutterStart = _us_to_ms(Scan.ScanSettings["pg:v1_1p5_Delay"])
+    v1_1p5_shutterDuration = _us_to_ms(Scan.ScanSettings["pg:v1_1p5_Duration"])
+    v1_1p5_shutterEnd = _end_time(v1_1p5_shutterStart, v1_1p5_shutterDuration)
+
     IfOnShotStatePrep = Scan.ScanSettings["pg:statePrep_OnShots"]
     IfOffShotStatePrep = Scan.ScanSettings["pg:statePrep_OffShots"]
-    StatePrepStart = Scan.ScanSettings["pg:v0chirpTriggerDelay"] /1000 #to ms
-    StatePrepDuration = Scan.ScanSettings["pg:v0chirpTriggerDuration"] /1000 #to ms
-    StatePrepEnd = StatePrepStart + StatePrepDuration
-    
-    VacShutterStart = Scan.ScanSettings["pg:vacShutterDelay"] /1000 #to ms
-    VacShutterDuration = Scan.ScanSettings["pg:vacShutterDuration"] /1000 #to ms
-    VacShutterEnd = VacShutterStart + VacShutterDuration
+    StatePrepStart = _us_to_ms(Scan.ScanSettings["pg:v0chirpTriggerDelay"])
+    StatePrepDuration = _us_to_ms(Scan.ScanSettings["pg:v0chirpTriggerDuration"])
+    StatePrepEnd = _end_time(StatePrepStart, StatePrepDuration)
+
+    VacShutterStart = _us_to_ms(Scan.ScanSettings["pg:vacShutterDelay"])
+    VacShutterDuration = _us_to_ms(Scan.ScanSettings["pg:vacShutterDuration"])
+    VacShutterEnd = _end_time(VacShutterStart, VacShutterDuration)
 
     Switch = Scan.ScanSettings["switch:switchActive"]
 
@@ -187,7 +198,7 @@ def GetScanSettings(Scan):
     outputPlugin = Scan.ScanSettings["out:pluginName"]
     shotPlugin = Scan.ScanSettings["shot:pluginName"]
 
-    Tconv = 1/sampleRate * 1000 #convert to ms
+    Tconv = None if sampleRate is None else 1/sampleRate * 1000 #convert to ms
 
     Settings = {"pointsPerScan":pointsPerScan, "start":ScanStart, \
                              "end":ScanEnd, "channel":channel, "param":param, \
