@@ -25,6 +25,35 @@ DEFAULT_LINE_WIDTH = 2.0
 DEFAULT_FONT_PT = 11
 
 
+def legend_outside(plot_widget):
+    """The plot's legend in its own column right of the axes, so it hides
+    no trace however many there are. Curves added with a name land in it
+    as with addLegend(), and exports and copies include it."""
+    import pyqtgraph as pg
+    from PySide6.QtCore import Qt
+    from PySide6.QtWidgets import QSizePolicy
+
+    class SideLegend(pg.LegendItem):
+        # LegendItem.updateSize() puts itself at (0, 0) of its parent; in
+        # a layout cell, say the size changed so the layout places it again
+        def updateSize(self):
+            super().updateSize()
+            self.layout.invalidate()
+            self.updateGeometry()
+
+        def mouseDragEvent(self, ev):
+            ev.ignore()          # it lives in the layout, not on the view
+
+    item = plot_widget.plotItem
+    legend = SideLegend(offset=None)
+    legend.setBrush(pg.mkBrush(255, 255, 255, 220))
+    legend.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+    item.layout.addItem(legend, 2, 3)        # row of the view, past the
+    item.layout.setAlignment(legend, Qt.AlignTop)   # right axis
+    item.legend = legend
+    return legend
+
+
 def style_plot(plot_widget, line_width=DEFAULT_LINE_WIDTH,
                font_pt=DEFAULT_FONT_PT):
     """Line width, text size and a full black frame (all four sides)."""

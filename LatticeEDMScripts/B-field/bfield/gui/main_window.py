@@ -33,7 +33,7 @@ from bfield.errors import BFieldError
 from bfield.gui.forms import FORMS
 from bfield.gui.qt_ui import Bridge, QtUI
 from bfield.gui.analysis_panel import AnalysisPanel
-from bfield.gui.plot_export import PlotActions
+from bfield.gui.plot_export import PlotActions, legend_outside
 from bfield.gui.sensor_panel import SensorPanel
 from bfield.gui.sim_operator import SimOperator
 from bfield.lab import SIM_DATA_DIR, open_lab
@@ -117,8 +117,7 @@ class LivePlot(QWidget):
         self.plot = pg.PlotWidget()
         self.plot.setLabel("left", "field (pT, nominal 2.7 V/nT)")
         self.plot.setLabel("bottom", "time in the window (s)")
-        legend = self.plot.addLegend()
-        legend.setBrush(pg.mkBrush(255, 255, 255, 220))
+        legend_outside(self.plot)
         self.plot.showGrid(x=True, y=True, alpha=0.3)
         self.plot.setDownsampling(auto=True, mode="peak")
         self.plot.setClipToView(True)
