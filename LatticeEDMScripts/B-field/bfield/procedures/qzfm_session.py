@@ -73,6 +73,9 @@ class QZFMPlan:
     stream_head: str | None = None   # the sensor streamed ("s2"); None =
                                      # the first
     stream_seconds: float | None = None
+    # setup / run: hold the locked sensors this long before the field
+    # zero, watching that they stay on; 0 = no wait
+    settle: float = 0.0
     # the physical sensors (bfield.sensors.Selection.info()); empty when
     # serials were given directly -- the session then looks them up
     sensor_info: list = field(default_factory=list)
@@ -146,7 +149,7 @@ class QZFMPlan:
             zero_shift_warn=self.zero_shift_warn, sync=self.sync,
             master_head=self.master_head,
             lock_timeout=self.lock_timeout, outdir=self.outdir,
-            rs=self.record_settings())
+            settle_s=self.settle or 0.0, rs=self.record_settings())
 
 
 # ---------------------------------------------------------- validation
@@ -277,7 +280,8 @@ def validate(plan, mode):
                         ("lock_timeout", plan.lock_timeout),
                         ("poll_s", plan.poll_s),
                         ("cal_v_per_nT", plan.cal_v_per_nT),
-                        ("stream_seconds", plan.stream_seconds)):
+                        ("stream_seconds", plan.stream_seconds),
+                        ("settle", plan.settle)):
         require(value is None or math.isfinite(value),
                 f"{name} must be a finite number (got {value!r})")
     if plan.sync == "master-slave":
@@ -286,6 +290,11 @@ def validate(plan, mode):
                 "modulation, the others follow)")
     require(plan.sync in (None, "none", "master-slave", "independent"),
             f"sync: unknown role plan {plan.sync!r}")
+    require(plan.settle is None or plan.settle >= 0,
+            "settle must be zero or positive")
+    require(not plan.settle or mode in ("setup", "run"),
+            "the settle wait belongs to a setup or a record (it comes "
+            "before the field zero)")
     if mode == "run":
         require(plan.seconds > 0, "seconds must be positive")
     if mode == "stream":

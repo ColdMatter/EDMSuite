@@ -11,10 +11,13 @@ old qzfm_session.json had.
 
 from __future__ import annotations
 
+import csv
 import math
+import os
 from dataclasses import dataclass, field
 
 from bfield import clock
+from bfield.channels import key_number
 from bfield.constants import (CAL_FACTOR_MAX, CAL_FACTOR_MIN,
                               CAL_FACTOR_WARN, MOD_CARRIER_HZ)
 from bfield.devices.qzfm import (CELL_RELOCK_S, LOCK_RECHECK_S,
@@ -29,9 +32,16 @@ from bfield.operations.sync_check import check_modulation_sync
 SETUP_STEPS = ("connect", "auto start", "gain / axis mode", "field zero",
                "calibrate", "guard record")
 SYNC_STEP = "sync check"
+SETTLE_STEP = "settle"
 # how long to watch the first sensor's output before and after the
 # others are zeroed
 ZERO_SHIFT_READ_S = 2.0
+SETTLE_POLL_S = 5.0          # one status read per sensor this often
+SETTLE_REPORT_S = 60.0       # progress line this often
+SETTLE_FILE = "settle_house.csv"
+SETTLE_COLUMNS = ("time", "elapsed_s", "sensor", "laser_on", "laser_lock",
+                  "cellT_lock", "cellT_err", "B0_pT", "By_pT", "Bz_pT",
+                  "read_error")
 
 
 @dataclass
@@ -45,6 +55,7 @@ class SetupSettings:
     master_head: str | None = None  # which slot head is master (None: first)
     lock_timeout: float = 600.0
     outdir: str | None = None      # where guard records go; None = no guard
+    settle_s: float = 0.0          # locked wait before zeroing; 0 = none
     rs: RecordSettings = field(default_factory=RecordSettings)
 
 
@@ -69,10 +80,15 @@ def mode_from_axes(axes):
     return "dual" if len(axes) > 1 else axes[0]
 
 
-def setup_steps(n_heads):
+def setup_steps(n_heads, settle=False):
     """Two heads add reading the modulation clocks off the guard record;
-    last, because it needs that record."""
-    return SETUP_STEPS + ((SYNC_STEP,) if n_heads > 1 else ())
+    last, because it needs that record. A settle wait goes in just before
+    the field zero."""
+    steps = SETUP_STEPS
+    if settle:
+        i = steps.index("field zero")
+        steps = steps[:i] + (SETTLE_STEP,) + steps[i:]
+    return steps + ((SYNC_STEP,) if n_heads > 1 else ())
 
 
 class StepTimer:
@@ -198,6 +214,116 @@ def wait_for_cell_lock(ctx, sensors, st=None):
                 + ", ".join(f"{sensors[h].display} {v:g} s"
                             for h, v in waited.items()))
     return waited
+
+
+def settle(ctx, sensors, seconds, outdir=None, record=None):
+    """Hold the locked heads for `seconds`, reading each one as it goes.
+
+    For warm-up before a zero and a record: sensor 2 switched itself off
+    while sitting idle after setup, twice (2026-10-30, 2026-11-02), and
+    nobody saw it until the next auto start timed out. Ends the session
+    when a head's laser goes off, or when its laser or cell temperature
+    lock (or its status read) stays lost longer than CELL_RELOCK_S -- the
+    cell lock drops for ~16 s after a mode change, so a short gap is
+    normal. Every reading goes to settle_house.csv in outdir. `record`
+    (a dict) is filled as it goes, so an abort still leaves the account.
+    """
+    two = len(sensors) > 1
+    record = {} if record is None else record
+    path = os.path.join(outdir, SETTLE_FILE) if outdir else None
+    record.update({"seconds": seconds, "file": SETTLE_FILE if path else None,
+                   "reads": 0, "worst_gap_s": {h: 0.0 for h in sensors},
+                   "cellT_err_range": {}, "fault": None, "summary": None})
+    fh = open(path, "w", newline="") if path else None
+    writer = csv.writer(fh) if fh else None
+    if writer:
+        writer.writerow(SETTLE_COLUMNS)
+    t0 = clock.monotonic()
+    lost_since = {h: None for h in sensors}
+    next_report = SETTLE_REPORT_S
+
+    def who(head):
+        return sensors[head].display if two else "the sensor"
+
+    def fail(head, el, why):
+        record["fault"] = {"sensor": head, "elapsed_s": round(el, 1),
+                           "why": why}
+        stage(ctx, [head], SETTLE_STEP, "failed", why)
+        raise SensorAbort(
+            f"{who(head)}: {why}, {el:.0f} s into the {seconds:g} s settle "
+            "wait. Readings are in "
+            + (SETTLE_FILE if path else "the session json")
+            + ". A standby (reboot) then a setup brings it back")
+
+    stage(ctx, sensors, SETTLE_STEP, "running", f"{seconds:g} s")
+    try:
+        while True:
+            el = clock.monotonic() - t0
+            if el >= seconds:
+                break
+            for head, sensor in sensors.items():
+                ctx.check_stop()
+                try:
+                    snap, err = sensor.status(), None
+                except SensorError as e:
+                    snap, err = None, str(e)
+                el = clock.monotonic() - t0
+                record["reads"] += 1
+                if writer:
+                    s = snap or {}
+                    writer.writerow(
+                        [clock.iso_now(), f"{el:.1f}", head]
+                        + [int(bool(s.get(k))) if snap else ""
+                           for k in ("laser_on", "laser_lock", "cellT_lock")]
+                        + [f"{s[k]:g}" if snap else ""
+                           for k in ("cellT_err", "B0_pT", "By_pT", "Bz_pT")]
+                        + [err or ""])
+                    fh.flush()
+                blank = snap is not None and frame_is_blank(snap)
+                if snap is not None and not blank and not snap["laser_on"]:
+                    fail(head, el, "the laser went off (LED1)")
+                if (snap is not None and not blank
+                        and math.isfinite(snap["cellT_err"])):
+                    v = snap["cellT_err"]
+                    lo, hi = record["cellT_err_range"].get(head, (v, v))
+                    record["cellT_err_range"][head] = (min(lo, v),
+                                                       max(hi, v))
+                ok = (snap is not None and not blank and snap["laser_lock"]
+                      and snap["cellT_lock"])
+                if ok:
+                    lost_since[head] = None
+                    continue
+                if lost_since[head] is None:
+                    lost_since[head] = el
+                gap = el - lost_since[head]
+                record["worst_gap_s"][head] = round(
+                    max(record["worst_gap_s"][head], gap), 1)
+                if gap > CELL_RELOCK_S:
+                    why = (f"status reads failing ({err})" if snap is None
+                           else "contentless status frames" if blank
+                           else f"laser lock {snap['laser_lock']}, cell "
+                                f"temperature lock {snap['cellT_lock']}")
+                    fail(head, el, f"lock lost for {gap:.0f} s -- {why}")
+            if el >= next_report:
+                next_report += SETTLE_REPORT_S
+                errs = ", ".join(
+                    (f"sensor {key_number(h)} " if two else "")
+                    + f"{r[0]:.3g}..{r[1]:.3g}" for h, r in
+                    record["cellT_err_range"].items())
+                ctx.say("settle", f"  {el:.0f} / {seconds:g} s -- locked"
+                        + (f"; cell T error {errs}" if errs else ""))
+            ctx.progress(min(el / seconds, 1.0), "settle")
+            ctx.sleep(max(0.0, min(SETTLE_POLL_S, seconds - el)))
+    finally:
+        if fh:
+            fh.close()
+    gaps = [f"{who(h)} {g:g} s" for h, g in record["worst_gap_s"].items()
+            if g > 0]
+    record["summary"] = (f"stayed on and locked for {seconds:g} s"
+                         + (f" (lock gaps: {', '.join(gaps)})" if gaps
+                            else ""))
+    stage(ctx, sensors, SETTLE_STEP, "passed", record["summary"])
+    return record
 
 
 def field_mean_pT(ctx, sensor, axis, seconds=ZERO_SHIFT_READ_S):
@@ -368,7 +494,7 @@ def run_setup(ctx, lab, sensors, ss, session, checkpoint=None):
     two = len(sensors) > 1
     lead_head = next(iter(sensors))
     axes = ss.axes
-    st = StepTimer(ctx, setup_steps(len(sensors)))
+    st = StepTimer(ctx, setup_steps(len(sensors), settle=ss.settle_s > 0))
     setup = {"warm_start": None, "mode": None, "steps": st.rows,
              "zero_residual_pT_per_s": None, "cal_factors": {},
              "raw_calib_message": "", "warnings": [], "guard_exit": None,
@@ -447,6 +573,15 @@ def run_setup(ctx, lab, sensors, ss, session, checkpoint=None):
         stage(ctx, [head], "gain / mode", "passed",
               f"gain {ss.gain}, {mode}" + (f", modulation {role}"
                                            if role else ""), role=role)
+
+    if ss.settle_s > 0:
+        # after the mode and clock roles, so the heads settle as they
+        # will record; before the zero, so the zero sees settled heads
+        st.start(SETTLE_STEP, f"{ss.settle_s:g} s, reading every sensor "
+                              f"every {SETTLE_POLL_S:g} s")
+        setup["settle"] = {}
+        settle(ctx, sensors, ss.settle_s, ss.outdir, setup["settle"])
+        st.done(SETTLE_STEP, setup["settle"]["summary"])
 
     st.start("field zero",
              f"settle < {sensors[lead_head].zero_cond:g} pT/s "
