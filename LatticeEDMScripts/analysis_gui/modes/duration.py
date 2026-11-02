@@ -44,7 +44,8 @@ class DurationTab(ModeTab):
         self.add_tof_page()
         page = self.add_page("Scan", self.render_scan)
         page.add_combo("scan", "Scan")
-        self.add_page("All scans", self.render_all)
+        page = self.add_page("All scans", self.render_all)
+        page.add_combo("file", "File", arrows=True)
         self.add_page("Groups", self.render_groups)
         self.add_table("scans", "Scan fits")
         self.add_table("groups", "Group fits")
@@ -77,6 +78,16 @@ class DurationTab(ModeTab):
             print("%s: tau = %.5g +- %.4g us%s" % (label, fit["best fit"][1], fit["error"][1],
                                                   "" if fit["ok"] else "  (bad fit, not averaged)"))
 
+        # The passes of each file, averaged and fitted (All scans page)
+        files = {}
+        for label in scans:
+            files.setdefault(data.label_id(label), []).append(label)
+        file_results = {}
+        for fid, labels in files.items():
+            members = [l for l in labels if l not in exclude]
+            file_results[fid] = dict(labels=labels, excluded=[l for l in labels if l in exclude],
+                                     average=self._average(members, scans, s, p0_default, BR, quiet=True))
+
         if s["groups"]:
             groups = [(name, data.parse_ids(ids)) for name, ids in s["groups"]]
         else:
@@ -93,24 +104,36 @@ class DurationTab(ModeTab):
             if not members:
                 print(name + ": no scans left - skipped")
                 continue
-            n_points = {len(scans[m]["x"]) for m in members}
-            if len(n_points) > 1:
-                print(name + ": scans have different numbers of points %s - skipped" % sorted(n_points))
+            g = self._average(members, scans, s, p0_default, BR, name)
+            if g is None:
                 continue
-            x = scans[members[0]]["x"]
-            p0 = p0_default
-            if s["UseIndivP0"]:
-                good = [m for m in members if scans[m]["fit"]["ok"]] or \
-                       [m for m in members if np.all(np.isfinite(scans[m]["fit"]["best fit"]))]
-                if good:
-                    p0 = np.mean([scans[m]["fit"]["best fit"] for m in good], axis=0)
-            avg, sem, fit = EDM.AverageDecayGroup([scans[m]["ratio"] for m in members], x, p0,
-                                                  s["Weighted"])
-            rate = EDM.ScatteringRate(fit["best fit"][1], fit["error"][1], BR)
-            group_results[name] = dict(members=members, x=x, avg=avg, sem=sem, fit=fit, rate=rate)
+            group_results[name] = g
+            fit = g["fit"]
             print("%s (%s): tau = %.5g +- %.4g us%s" % (name, ", ".join(members), fit["best fit"][1],
                                                        fit["error"][1], "" if fit["ok"] else " (bad fit)"))
-        return {"scans": scans, "groups": group_results, "BR": BR}
+        return {"scans": scans, "files": file_results, "groups": group_results, "BR": BR}
+
+    @staticmethod
+    def _average(members, scans, s, p0_default, BR, name="", quiet=False):
+        """Mean ratio of the scans members, its standard error and decay fit;
+        None if there are none or they have different scan points"""
+        if not members:
+            return None
+        n_points = {len(scans[m]["x"]) for m in members}
+        if len(n_points) > 1:
+            if not quiet:
+                print(name + ": scans have different numbers of points %s - skipped" % sorted(n_points))
+            return None
+        x = scans[members[0]]["x"]
+        p0 = p0_default
+        if s["UseIndivP0"]:
+            good = [m for m in members if scans[m]["fit"]["ok"]] or \
+                   [m for m in members if np.all(np.isfinite(scans[m]["fit"]["best fit"]))]
+            if good:
+                p0 = np.mean([scans[m]["fit"]["best fit"] for m in good], axis=0)
+        avg, sem, fit = EDM.AverageDecayGroup([scans[m]["ratio"] for m in members], x, p0, s["Weighted"])
+        rate = EDM.ScatteringRate(fit["best fit"][1], fit["error"][1], BR)
+        return dict(members=members, x=x, avg=avg, sem=sem, fit=fit, rate=rate)
 
     def fill_tables(self):
         rows = []
@@ -168,15 +191,56 @@ class DurationTab(ModeTab):
         ax.plot(span, tools.exp_decay(span, *f), color=c, linestyle="-" if fit["ok"] else ":",
                 label=prefix + r"$\tau$ = %.5g ± %.3g μs%s" % (f[1], e[1], "" if fit["ok"] else " (bad fit)"))
 
+    def selector_items(self, name):
+        if name == "file" and self.results is not None:
+            return list(self.results["files"].keys())
+        return super().selector_items(name)
+
     def render_all(self, page, fig):
+        """The passes of one file in grey, their average with its standard
+        error band and fit in colour"""
+        fid = page.value("file")
+        if fid not in self.results["files"]:
+            show_message(fig, "No file")
+            return
+        f = self.results["files"][fid]
+        scans = self.results["scans"]
         ax = fig.add_subplot()
-        for i, (label, r) in enumerate(self.results["scans"].items()):
-            ax.plot(r["x"], r["ratio"], ".", color=color(i), label=label)
-            self._fit_line(ax, r["x"], r["fit"], color(i))
-        ax.set_xlabel(self.xlabel(next(iter(self.results["scans"]))))
+        if len(f["labels"]) > 1:
+            passes = [l for l in f["labels"] if l not in f["excluded"]]
+            for k, label in enumerate(passes):
+                ax.plot(scans[label]["x"], scans[label]["ratio"], ".-", color="0.75", lw=0.8, ms=5, zorder=1,
+                        label="passes" if k == 0 else None)
+        for k, label in enumerate(f["excluded"]):
+            ax.plot(scans[label]["x"], scans[label]["ratio"], "x", color="0.75", ms=5, zorder=1,
+                    label="excluded" if k == 0 else None)
+        avg = f["average"]
+        if avg is not None:
+            n = len(avg["members"])
+            if n > 1:
+                ax.plot(avg["x"], avg["avg"], "o", ms=4, color=color(0), zorder=3, label="average of %d passes" % n)
+                ax.fill_between(avg["x"], avg["avg"] - avg["sem"], avg["avg"] + avg["sem"], color=color(0),
+                                alpha=0.3, lw=0, zorder=2, label="standard error")
+            else:
+                # one scan (e.g. loaded without passes): error bars from the shots
+                r = scans[avg["members"][0]]
+                ax.errorbar(r["x"], r["ratio"], yerr=r["ratio err"], fmt="o", ms=4, color=color(0), zorder=3,
+                            label=avg["members"][0])
+            self._fit_line(ax, avg["x"], avg["fit"], color(0))
+            rate, rate_err = avg["rate"]
+            if avg["fit"]["ok"]:
+                ax.text(0.98, 0.98, "scattering rate %.4g ± %.2g MHz (BR = %.5f)" % (rate, rate_err, self.results["BR"]),
+                        transform=ax.transAxes, ha="right", va="top", fontsize=9)
+        elif len(f["excluded"]) < len(f["labels"]):
+            ax.text(0.5, 0.98, "Passes have different scan points - not averaged", transform=ax.transAxes,
+                    ha="center", va="top", fontsize=9, color="0.3")
+        ax.set_xlabel(self.xlabel(f["labels"][0]))
         ax.set_ylabel("On/Off ratio")
-        ax.set_title("All scans, %g-%g ms gate" % (self.last_settings["SigStart"], self.last_settings["SigEnd"]))
-        ax.legend(fontsize=8, ncol=2)
+        ax.set_title("%s: %d pass%s%s, %g-%g ms gate" % (
+            fid, len(f["labels"]), "" if len(f["labels"]) == 1 else "es",
+            " (%d excluded)" % len(f["excluded"]) if f["excluded"] else "",
+            self.last_settings["SigStart"], self.last_settings["SigEnd"]))
+        ax.legend(fontsize=8, loc="lower left")
 
     def render_groups(self, page, fig):
         groups = self.results["groups"]

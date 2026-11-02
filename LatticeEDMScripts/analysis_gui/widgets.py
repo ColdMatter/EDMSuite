@@ -403,6 +403,7 @@ class PlotPage(QtWidgets.QWidget):
         self.dirty = True
         self.last_error = None
         self.selectors = {}
+        self.arrows = {}
         layout = QtWidgets.QVBoxLayout(self)
         layout.setContentsMargins(2, 2, 2, 2)
         self.header = QtWidgets.QHBoxLayout()
@@ -420,14 +421,41 @@ class PlotPage(QtWidgets.QWidget):
             self.header.insertWidget(self.header.count() - 1, QtWidgets.QLabel(label))
         self.header.insertWidget(self.header.count() - 1, widget)
 
-    def add_combo(self, name, label):
+    def add_combo(self, name, label, arrows=False):
+        """A combo box; with arrows, also previous/next buttons beside it"""
         combo = QtWidgets.QComboBox()
         combo.setMinimumContentsLength(14)
         combo.setSizeAdjustPolicy(QtWidgets.QComboBox.AdjustToContents)
         combo.currentTextChanged.connect(lambda _: self.refresh())
         self.selectors[name] = combo
         self._add_header(label, combo)
+        if arrows:
+            buttons = []
+            for arrow, step, tip in [(QtCore.Qt.LeftArrow, -1, "Previous"), (QtCore.Qt.RightArrow, 1, "Next")]:
+                button = QtWidgets.QToolButton()
+                button.setArrowType(arrow)
+                button.setToolTip(tip)
+                button.clicked.connect(lambda _, n=name, k=step: self.step(n, k))
+                self._add_header("", button)
+                buttons.append(button)
+            self.arrows[name] = buttons
+            combo.currentIndexChanged.connect(lambda _, n=name: self._update_arrows(n))
+            self._update_arrows(name)
         return combo
+
+    def step(self, name, k):
+        """Go to the previous (k = -1) or next (k = 1) item of a combo"""
+        combo = self.selectors[name]
+        i = combo.currentIndex() + k
+        if 0 <= i < combo.count():
+            combo.setCurrentIndex(i)
+
+    def _update_arrows(self, name):
+        if name in self.arrows:
+            combo = self.selectors[name]
+            back, forward = self.arrows[name]
+            back.setEnabled(combo.currentIndex() > 0)
+            forward.setEnabled(combo.currentIndex() < combo.count() - 1)
 
     def add_spin(self, name, label, minimum, maximum, value, special=None, tip=""):
         spin = QtWidgets.QSpinBox()
@@ -460,6 +488,7 @@ class PlotPage(QtWidgets.QWidget):
         if current in items:
             combo.setCurrentText(current)
         combo.blockSignals(False)
+        self._update_arrows(name)
 
     def value(self, name):
         w = self.selectors[name]

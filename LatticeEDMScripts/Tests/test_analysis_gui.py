@@ -68,6 +68,16 @@ def test_duration_tab(make_tab):
     r = run_and_draw(tab, scans, {"Exclude": "002_1"}, [("first", "001"), ("both", "001, 002")])
     assert r["groups"]["both"]["members"] == ["001_0", "001_1", "002_0"]
     assert len(tab.tables["groups"].rows) == 2
+    # All scans page: the passes of one file, averaged; arrows step through the files
+    assert r["files"]["001"]["average"]["members"] == ["001_0", "001_1"]
+    assert r["files"]["002"]["excluded"] == ["002_1"]
+    assert r["files"]["002"]["average"]["members"] == ["002_0"]
+    page = next(p for p in tab.pages if p.title == "All scans")
+    back, forward = page.arrows["file"]
+    assert page.value("file") == "001" and not back.isEnabled() and forward.isEnabled()
+    forward.click()
+    assert page.value("file") == "002" and back.isEnabled() and not forward.isEnabled()
+    assert page.last_error is None, page.last_error
 
 
 @pytest.mark.parametrize("xaxis", ["native", "frequency", "velocity"])
