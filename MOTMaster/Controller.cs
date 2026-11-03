@@ -431,6 +431,12 @@ namespace MOTMaster
             return prepareScript(scriptPath, new Dictionary<string, object> { }).Parameters;
         }
 
+        /// <summary>GetParameters, but through the opt-in script compile cache (see GoCached).</summary>
+        public Dictionary<string, object> GetParametersCached()
+        {
+            return prepareScript(scriptPath, new Dictionary<string, object> { }, true).Parameters;
+        }
+
         public void ViewPattern()
         {
             MOTMasterScript script = prepareScript(scriptPath, null);
@@ -585,6 +591,21 @@ namespace MOTMaster
 
         public void Go(Dictionary<String, Object> dict)
         {
+            go(dict, false);
+        }
+
+        /// <summary>
+        /// Go, but reusing the compiled script when its text is unchanged since an earlier cached call, which
+        /// saves the compile on every run. Opt-in for remote callers such as pytweezer: Go, Run and
+        /// the Run button never use the cache.
+        /// </summary>
+        public void GoCached(Dictionary<String, Object> dict)
+        {
+            go(dict, true);
+        }
+
+        private void go(Dictionary<String, Object> dict, bool useScriptCache)
+        {
             secondaryState.ThrowIfClaimed("Go");
             // Only one run may drive the pattern generators at a time. Go is reached
             // from the Run button (on its own thread) and directly over remoting from
@@ -601,7 +622,7 @@ namespace MOTMaster
             controllerWindow.RefreshRunControls();
             try
             {
-                goClaimed(dict);
+                goClaimed(dict, useScriptCache);
             }
             catch (Exception ex)
             {
@@ -766,7 +787,7 @@ namespace MOTMaster
             }
         }
 
-        private void goClaimed(Dictionary<String, Object> dict)
+        private void goClaimed(Dictionary<String, Object> dict, bool useScriptCache)
         {
             {
                 // Linked mode is decided once, here, for the whole run. When link is null (every non-linked run,
@@ -813,7 +834,7 @@ namespace MOTMaster
                     LinkedScriptBuilder.WriteScript(linkScriptPath, linkScriptText);
                 }
                 // Linked: a compile or load failure throws (with the compiler errors) instead of a MessageBox.
-                MOTMasterScript script = link == null ? prepareScript(scriptPath, dict) : prepareScriptOrThrow(linkScriptPath, dict);
+                MOTMasterScript script = link == null ? prepareScript(scriptPath, dict, useScriptCache) : prepareScriptOrThrow(linkScriptPath, dict, useScriptCache);
                 if (link != null && script == null) throw new LinkedRunException("script did not compile or load");
                 if (script != null)
                 {
@@ -1789,10 +1810,10 @@ namespace MOTMaster
             return completed;
         }
 
-        private MOTMasterScript prepareScript(string pathToPattern, Dictionary<String, Object> dict)
+        private MOTMasterScript prepareScript(string pathToPattern, Dictionary<String, Object> dict, bool useScriptCache = false)
         {
             MOTMasterScript script;
-            CompilerResults results = compileFromFile(pathToPattern);
+            CompilerResults results = compileFromFile(pathToPattern, useScriptCache);
             if (results != null)
             {
                 script = loadScriptFromDLL(results);
@@ -1831,14 +1852,12 @@ namespace MOTMaster
         // have. The linked secondary must never show a MessageBox (it would block the primary's remoting call
         // indefinitely), so it uses compileFromFileOrThrow / loadScriptOrThrow, which share the same cores.
 
-        private CompilerResults compileFromFile(string scriptPath)
+        private CompilerResults compileFromFile(string scriptPath, bool useScriptCache = false)
         {
-            CompilerParameters options = scriptCompilerOptions();
-            CodeDomProvider codeProvider = new CSharpCodeProvider();
             CompilerResults results;
             try
             {
-                results = codeProvider.CompileAssemblyFromFile(options, scriptPath);
+                results = compileScript(scriptPath, useScriptCache);
             }
             catch (Exception e)
             {
@@ -1848,6 +1867,31 @@ namespace MOTMaster
             }
             //controllerWindow.WriteToScriptPath(results.PathToAssembly);
             return results;
+        }
+
+        // The opt-in compile cache (GoCached, GetParametersCached), keyed on a hash of the script text, so an
+        // edited script, or the linked primary's fresh temp copy of an unchanged one, is a miss or a hit as it
+        // should be. Each run still gets a fresh script instance, but a static field in a script class would now
+        // keep its value between cached runs (no top-level script in RbTweezer/MoleculeMOTMasterScripts has one).
+        // A rebuilt DLL the scripts reference (DAQ, SharedCode) is not seen; that needs a MOTMaster restart anyway.
+        private readonly Dictionary<string, CompilerResults> scriptCompileCache = new Dictionary<string, CompilerResults>();
+        private readonly object scriptCompileCacheLock = new object();
+
+        private CompilerResults compileScript(string scriptPath, bool useScriptCache)
+        {
+            if (!useScriptCache)
+                return new CSharpCodeProvider().CompileAssemblyFromFile(scriptCompilerOptions(), scriptPath);
+
+            string text = File.ReadAllText(scriptPath);
+            string key = LinkFingerprint.OfText(text);
+            lock (scriptCompileCacheLock)
+            {
+                CompilerResults cached;
+                if (scriptCompileCache.TryGetValue(key, out cached)) return cached;
+                CompilerResults results = new CSharpCodeProvider().CompileAssemblyFromSource(scriptCompilerOptions(), text);
+                if (!results.Errors.HasErrors) scriptCompileCache[key] = results;
+                return results;
+            }
         }
 
         private CompilerParameters scriptCompilerOptions()
@@ -1873,14 +1917,12 @@ namespace MOTMaster
         }
 
         /// <summary>Linked path: compiles the script, throwing LinkedRunException (with the compiler errors) on any failure.</summary>
-        private CompilerResults compileFromFileOrThrow(string scriptPath)
+        private CompilerResults compileFromFileOrThrow(string scriptPath, bool useScriptCache = false)
         {
-            CompilerParameters options = scriptCompilerOptions();
-            CodeDomProvider codeProvider = new CSharpCodeProvider();
             CompilerResults results;
             try
             {
-                results = codeProvider.CompileAssemblyFromFile(options, scriptPath);
+                results = compileScript(scriptPath, useScriptCache);
             }
             catch (Exception e)
             {
@@ -1956,13 +1998,18 @@ namespace MOTMaster
 
         private MOTMasterScript compileAndLoadOrThrow(string scriptPath)
         {
-            return loadScriptOrThrow(compileFromFileOrThrow(scriptPath));
+            return compileAndLoadOrThrow(scriptPath, false);
+        }
+
+        private MOTMasterScript compileAndLoadOrThrow(string scriptPath, bool useScriptCache)
+        {
+            return loadScriptOrThrow(compileFromFileOrThrow(scriptPath, useScriptCache));
         }
 
         /// <summary>Linked primary: prepareScript, but throwing LinkedRunException instead of a MessageBox and null.</summary>
-        private MOTMasterScript prepareScriptOrThrow(string pathToPattern, Dictionary<String, Object> dict)
+        private MOTMasterScript prepareScriptOrThrow(string pathToPattern, Dictionary<String, Object> dict, bool useScriptCache)
         {
-            MOTMasterScript script = compileAndLoadOrThrow(pathToPattern);
+            MOTMasterScript script = compileAndLoadOrThrow(pathToPattern, useScriptCache);
             if (dict != null)
             {
                 script.EditDictionary(dict);
