@@ -49,6 +49,9 @@ The GUI (simulation only for now):
 .venv\Scripts\python run\gui.py
 ```
 
+For a desktop shortcut to the GUI on this PC, right-click `make_shortcut.ps1`
+and choose "Run with PowerShell" (once per PC, after the `.venv` is set up).
+
 Every script has `--help`. Tests: `.venv\Scripts\python -m pytest`.
 
 The operating notes (how the sensors behave, what went wrong before)
