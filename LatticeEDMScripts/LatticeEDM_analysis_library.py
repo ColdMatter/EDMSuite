@@ -128,6 +128,16 @@ def GetSetting(Scan, *keys):
             return value
     return None
 
+def _us_to_ms(value):
+    """Convert a pg time setting from us to ms; None (setting not saved) stays None."""
+    return None if value is None else value / 1000
+
+def _end_time(start, duration):
+    """start + duration, or None if either is missing."""
+    if start is None or duration is None:
+        return None
+    return start + duration
+
 def GetScanSettings(Scan):
     """Extract scan settings. Key names checked against ScanMaster files
     from Oct 2026; older names are kept as fallbacks for older data.
@@ -149,25 +159,26 @@ def GetScanSettings(Scan):
     repumpDelay = Scan.ScanSettings["pg:repumpDelay"]
     repumpDuration = Scan.ScanSettings["pg:repumpDuration"]
     shutterslowDelay = Scan.ScanSettings["pg:shutterslowdelay"]
-    v1v2aomStart = Scan.ScanSettings["pg:v1v2aomStart"] / 1000 #to ms
-    v1v2aomDuration = Scan.ScanSettings["pg:v1v2aomDuration"] / 1000 #to ms
-    v1v2aomEnd = v1v2aomStart + v1v2aomDuration
-    v3aomStart = Scan.ScanSettings["pg:v3aomStart"] /1000 #to ms
-    v3aomDuration = Scan.ScanSettings["pg:v3aomDuration"] /1000 #to ms
-    v3aomEnd = v3aomStart + v3aomDuration
-    v1_1p5_shutterStart = Scan.ScanSettings["pg:v1_1p5_Delay"] /1000 #to ms
-    v1_1p5_shutterDuration = Scan.ScanSettings["pg:v1_1p5_Duration"] /1000 #to ms
-    v1_1p5_shutterEnd = v1_1p5_shutterStart + v1_1p5_shutterDuration
-    
+    # Times below are None if the setting isn't in the file (e.g. older data)
+    v1v2aomStart = _us_to_ms(Scan.ScanSettings["pg:v1v2aomStart"])
+    v1v2aomDuration = _us_to_ms(Scan.ScanSettings["pg:v1v2aomDuration"])
+    v1v2aomEnd = _end_time(v1v2aomStart, v1v2aomDuration)
+    v3aomStart = _us_to_ms(Scan.ScanSettings["pg:v3aomStart"])
+    v3aomDuration = _us_to_ms(Scan.ScanSettings["pg:v3aomDuration"])
+    v3aomEnd = _end_time(v3aomStart, v3aomDuration)
+    v1_1p5_shutterStart = _us_to_ms(Scan.ScanSettings["pg:v1_1p5_Delay"])
+    v1_1p5_shutterDuration = _us_to_ms(Scan.ScanSettings["pg:v1_1p5_Duration"])
+    v1_1p5_shutterEnd = _end_time(v1_1p5_shutterStart, v1_1p5_shutterDuration)
+
     IfOnShotStatePrep = Scan.ScanSettings["pg:statePrep_OnShots"]
     IfOffShotStatePrep = Scan.ScanSettings["pg:statePrep_OffShots"]
-    StatePrepStart = Scan.ScanSettings["pg:v0chirpTriggerDelay"] /1000 #to ms
-    StatePrepDuration = Scan.ScanSettings["pg:v0chirpTriggerDuration"] /1000 #to ms
-    StatePrepEnd = StatePrepStart + StatePrepDuration
-    
-    VacShutterStart = Scan.ScanSettings["pg:vacShutterDelay"] /1000 #to ms
-    VacShutterDuration = Scan.ScanSettings["pg:vacShutterDuration"] /1000 #to ms
-    VacShutterEnd = VacShutterStart + VacShutterDuration
+    StatePrepStart = _us_to_ms(Scan.ScanSettings["pg:v0chirpTriggerDelay"])
+    StatePrepDuration = _us_to_ms(Scan.ScanSettings["pg:v0chirpTriggerDuration"])
+    StatePrepEnd = _end_time(StatePrepStart, StatePrepDuration)
+
+    VacShutterStart = _us_to_ms(Scan.ScanSettings["pg:vacShutterDelay"])
+    VacShutterDuration = _us_to_ms(Scan.ScanSettings["pg:vacShutterDuration"])
+    VacShutterEnd = _end_time(VacShutterStart, VacShutterDuration)
 
     Switch = Scan.ScanSettings["switch:switchActive"]
 
@@ -187,7 +198,7 @@ def GetScanSettings(Scan):
     outputPlugin = Scan.ScanSettings["out:pluginName"]
     shotPlugin = Scan.ScanSettings["shot:pluginName"]
 
-    Tconv = 1/sampleRate * 1000 #convert to ms
+    Tconv = None if sampleRate is None else 1/sampleRate * 1000 #convert to ms
 
     Settings = {"pointsPerScan":pointsPerScan, "start":ScanStart, \
                              "end":ScanEnd, "channel":channel, "param":param, \
@@ -1690,4 +1701,497 @@ def MovingAverage(data,N):
             datacut = data[ind-int(N/2):ind+int(N/2)]
             ma[ind] = np.mean(datacut[~np.isnan(datacut)])
     return ma
+
+
+#%% Shared processing functions (used by the analysis GUI, also usable in scripts)
+'''These work on numpy arrays read out of a Scan once with ExtractScanArrays,
+   make no plots and return their results, so the analysis GUI (analysis_gui/)
+   and scripts can plot the same numbers however they like. They follow the
+   calculations of the *_SL.py analysis scripts, which are left unchanged.
+   TOF arrays are [scan point, time sample, shot] for one detector, or
+   [detector, scan point, time sample, shot] as GetTOFsSPP returns them.'''
+from scipy.stats import binned_statistic
+
+def ExtractScanArrays(Scan):
+    """Reads everything the shared processing functions need out of a Scan,
+    as numpy arrays (the .NET Scan is slow to read, so do it once per scan).
+    "wm THz" is analog input 0 plus the analog offset at each scan point
+    (as GetScanFreqArrayTHz), or None if no analog inputs were recorded."""
+    Settings = GetScanSettings(Scan)
+    TimeOn, DataOn, TimeOff, DataOff = GetTOFsSPP(Scan)
+    NrPoints = len(Scan.Points)
+    if len(Scan.Points[0].Analogs) > 0:
+        offset = Scan.ScanSettings["analog:offset"]
+        WM = np.array([Scan.Points[i].Analogs[0] for i in range(NrPoints)])
+        WM = WM + (0 if offset is None else offset)
+    else:
+        WM = None
+    HasOff = not isinstance(DataOff, list)  # GetTOFsSPP returns [] without Off shots
+    return {"settings": Settings,
+            "scan params": GetScanParameterArray(Scan),
+            "wm THz": WM,
+            "time on": np.asarray(TimeOn), "on": DataOn,
+            "time off": np.asarray(TimeOff) if HasOff else None,
+            "off": DataOff if HasOff else None}
+
+def ScanTconv(Arrays):
+    """Sample period in ms, to turn summed TOF samples into ms.V"""
+    Tconv = Arrays["settings"]["Tconv"]
+    if Tconv is None:
+        raise ValueError("No shot:sampleRate saved in this scan - can't convert TOFs to ms.V")
+    return Tconv
+
+def DetectorTOFs(Arrays, shot, detector=0):
+    """TOFs [point, time, shot] of one detector, for shot = "on" or "off"."""
+    if Arrays[shot] is None:
+        raise ValueError("This scan has no Off shots")
+    NrDetectors = Arrays[shot].shape[0]
+    if detector >= NrDetectors:
+        raise ValueError("Detector %d asked for, but this scan has %d detector(s)"
+                         % (detector, NrDetectors))
+    return Arrays[shot][detector]
+
+def GateMask(Time, Start, Stop):
+    """Samples of a TOF inside the gate (Start, Stop), in ms, and the gate
+    length in s measured from the first to the last sample in it, as
+    GetGatedAvgCounts does."""
+    Indi = (Time*1000 > Start) & (Time*1000 < Stop)
+    IndiArray = np.where(Indi)[0]
+    if len(IndiArray) == 0:
+        raise ValueError("No TOF samples between %g ms and %g ms (the TOF runs from %g to %g ms)"
+                         % (Start, Stop, Time[0]*1000, Time[-1]*1000))
+    return Indi, Time[IndiArray[-1]] - Time[IndiArray[0]]
+
+def GatedShots(TOFData, Time, SigStart, SigEnd, BkgStart=None, BkgEnd=None, Tconv=1.):
+    """Gated TOF of every shot, [point, shot]: the sum over the signal gate
+    minus the sum over the background gate scaled by the ratio of the gate
+    lengths (as GatedAvgCountsOnOff), times Tconv. TOFData is [point, time, shot].
+    No background subtraction if BkgStart is None."""
+    Indi, Window = GateMask(Time, SigStart, SigEnd)
+    Gated = np.sum(TOFData[:, Indi, :], axis=1)
+    if BkgStart is not None:
+        BkgIndi, BkgWindow = GateMask(Time, BkgStart, BkgEnd)
+        Gated = Gated - np.sum(TOFData[:, BkgIndi, :], axis=1) * Window/BkgWindow
+    return Gated * Tconv
+
+def MeanAndSEM(Values, axis=0, ddof=0):
+    """Mean and standard error of the mean along axis. The SEM is 0 when
+    there is only one value."""
+    Values = np.asarray(Values, dtype=float)
+    n = Values.shape[axis]
+    Mean = np.mean(Values, axis=axis)
+    if n < 2:
+        return Mean, np.zeros_like(Mean)
+    return Mean, np.std(Values, axis=axis, ddof=ddof)/np.sqrt(n)
+
+def RatioWithError(Num, NumErr, Den, DenErr):
+    """Num/Den with the relative errors added in quadrature"""
+    Ratio = Num/Den
+    return Ratio, np.abs(Ratio)*np.sqrt((NumErr/Num)**2 + (DenErr/Den)**2)
+
+def GatedOnOff(Arrays, SigStart, SigEnd, BkgStart, BkgEnd, detector=0):
+    """Background-subtracted gated TOFs (ms.V) of the On and Off shots at each
+    scan point, averaged over the shots of the point, with their standard
+    errors. The means are the same as GatedAvgCountsOnOff."""
+    Tconv = ScanTconv(Arrays)
+    Result = {}
+    for shot in ["on", "off"]:
+        Gated = GatedShots(DetectorTOFs(Arrays, shot, detector), Arrays["time " + shot],
+                           SigStart, SigEnd, BkgStart, BkgEnd, Tconv)
+        Result[shot], Result[shot + " err"] = MeanAndSEM(Gated, axis=1)
+    Result["ratio"], Result["ratio err"] = RatioWithError(Result["on"], Result["on err"],
+                                                          Result["off"], Result["off err"])
+    return Result
+
+def FitModel(Model, x, y, p0, Variables, sigma=None, absolute_sigma=False):
+    """curve_fit that returns a failed fit instead of raising:
+    {"Variables", "best fit", "error", "ok", "message"}, NaNs if it failed."""
+    try:
+        fit, cov = curve_fit(Model, x, y, p0=p0, sigma=sigma, absolute_sigma=absolute_sigma)
+        err = np.sqrt(np.diag(cov))
+        ok = bool(np.all(np.isfinite(err)))
+        message = "" if ok else "fit errors could not be estimated"
+    except (RuntimeError, ValueError, TypeError) as e:
+        fit = np.full(len(p0), np.nan)
+        err = np.full(len(p0), np.nan)
+        ok = False
+        message = str(e)
+    return {"Variables": Variables, "best fit": np.asarray(fit), "error": np.asarray(err),
+            "ok": ok, "message": message}
+
+def FitDecay(x, y, p0, sigma=None, absolute_sigma=False):
+    """Exponential decay fit (tools.exp_decay: amplitude, lifetime, offset).
+    "ok" is False if the fit failed or the lifetime error isn't smaller than
+    the lifetime, the bad-fit test of Duration_batch_SL.py."""
+    Fit = FitModel(tools.exp_decay, x, y, p0, ["amplitude", "lifetime", "offset"],
+                   sigma=sigma, absolute_sigma=absolute_sigma)
+    Fit["ok"] = Fit["ok"] and Fit["error"][1] < abs(Fit["best fit"][1])
+    return Fit
+
+def AverageDecayGroup(Ratios, x, p0, Weighted=True):
+    """Point-by-point mean of the On/Off ratio curves of a group of Duration
+    scans (same scan points) and an exponential decay fit, as the "Selectively
+    average and fit" cell of Duration_batch_SL.py: the standard error is
+    np.std/sqrt(n), and with more than one curve it is the fit's sigma
+    (absolute if Weighted)."""
+    Ratios = np.asarray(Ratios, dtype=float)
+    Avg, SEM = MeanAndSEM(Ratios, axis=0)
+    sigma = None
+    if len(Ratios) > 1 and np.all(SEM > 0):
+        sigma = SEM
+    Fit = FitDecay(x, Avg, p0, sigma=sigma, absolute_sigma=Weighted and sigma is not None)
+    Fit["weighted"] = sigma is not None and Weighted
+    return Avg, SEM, Fit
+
+def ScatteringRate(tau, tauerr, BR):
+    """Photon scattering rate (1/time unit of tau, so MHz for tau in us) from the
+    lifetime of the population in the cycle, with branching ratio BR back into it"""
+    Scat = -1 / (tau * np.log(BR))
+    Scaterr = tauerr / (tau**2 * abs(np.log(BR)))
+    return Scat, Scaterr
+
+def SetpointScanAxis(Arrays, fTHz, Mode="auto", TCLcal=None, TCLcalerr=None, ManualTCL=False):
+    """How the x axis of a setpoint scan is read, following setpointScan_batch_SL.py.
+    Returns a dict with "mode":
+      "WM":       the wavemeter reading of the scanned laser (THz)
+      "WM lock":  the scan parameter, in GHz from the lock offset "offset" (THz)
+      "setpoint": the TCL setpoint (V), with "TCLconv" in MHz/V
+    Mode "auto" decides as the script: if the WM channel is at fTHz, fit the
+    TCL-WM calibration; a slope under 800 means the WM doesn't follow the scan
+    (then WM lock if the scan saved a frequency offset, otherwise setpoint).
+    Without the WM at fTHz: WM lock with an offset, otherwise setpoint with the
+    manual calibration TCLcal. Mode "WM", "WM lock" or "setpoint" forces it.
+    ManualTCL: always use TCLcal for setpoints, even with a WM calibration."""
+    Settings = Arrays["settings"]
+    WM = Arrays["wm THz"]
+    Offset = Settings["Freq offset THz"]
+    Axis = {"mode": None, "offset": Offset, "cal": None, "note": "",
+            "TCLconv": TCLcal, "TCLconverr": TCLcalerr, "WM channel THz": None}
+
+    WMatF = WM is not None and int(WM[0]) == fTHz
+    if WM is not None:
+        Axis["WM channel THz"] = WM[0]
+    if WMatF:
+        # TCL-WM calibration as TCL_WM_Calibration: MHz from the first point vs scan parameter
+        Axis["cal"] = FitModel(tools.Line, Arrays["scan params"], (WM - WM[0])*1e6,
+                               [-150., 0.], ["slope", "shift"])
+        if not ManualTCL:
+            Axis["TCLconv"] = Axis["cal"]["best fit"][0]
+            Axis["TCLconverr"] = Axis["cal"]["error"][0]
+
+    if Mode == "auto":
+        if WMatF and Axis["cal"]["best fit"][0] >= 800:
+            Axis["mode"] = "WM"
+        elif Offset is not None:
+            Axis["mode"] = "WM lock"
+        else:
+            Axis["mode"] = "setpoint"
+        if WMatF and Axis["mode"] != "WM":
+            Axis["note"] = ("WM at %.7g THz, TCL-WM slope %.4g < 800: WM not following the scan"
+                            % (WM[0], Axis["cal"]["best fit"][0]))
+        elif WM is not None and not WMatF:
+            Axis["note"] = "WM channel at %.7g THz, not %g THz" % (WM[0], fTHz)
+    elif Mode == "WM":
+        if WM is None:
+            raise ValueError("X axis forced to WM, but this scan has no WM reading")
+        Axis["mode"] = "WM"
+    elif Mode == "WM lock":
+        if Offset is None:
+            raise ValueError("X axis forced to WM lock, but this scan has no frequency offset (out:offset)")
+        Axis["mode"] = "WM lock"
+    elif Mode == "setpoint":
+        Axis["mode"] = "setpoint"
+    else:
+        raise ValueError("Unknown x axis mode " + str(Mode))
+    return Axis
+
+def SetpointScanCurves(Arrays, Axis, SigStart, SigEnd, BkgStart, BkgEnd, detector=0):
+    """Gated On/Off TOFs of a setpoint scan and their ratio, sorted by the scan
+    parameter (up-down scans run alternate passes in decreasing order).
+    "X" is the WM reading (THz) in WM mode and the scan parameter otherwise,
+    as X_f_THz in setpointScan_batch_SL.py."""
+    Gated = GatedOnOff(Arrays, SigStart, SigEnd, BkgStart, BkgEnd, detector)
+    ScanParams = Arrays["scan params"]
+    order = np.argsort(ScanParams, kind='stable')
+    Curves = {key: np.asarray(Gated[key])[order] for key in Gated}
+    Curves["setpoint"] = ScanParams[order]
+    if Axis["mode"] == "WM":
+        Curves["X"] = Arrays["wm THz"][order]
+    else:
+        Curves["X"] = ScanParams[order]
+    return Curves
+
+def SetpointToFreqTHz(X, Axis, SET=None, SETfreq=None):
+    """Absolute laser frequency (THz) of x values of SetpointScanCurves:
+    the WM reading, the WM lock offset + scan parameter (GHz), or for setpoints
+    SETfreq at SET (V) and the TCL calibration (MHz/V). None if unknown."""
+    X = np.asarray(X, dtype=float)
+    if Axis["mode"] == "WM":
+        return X
+    elif Axis["mode"] == "WM lock":
+        return Axis["offset"] + X*1e-3
+    elif SET is None or SETfreq is None or Axis["TCLconv"] is None:
+        return None
+    return SETfreq + (X - SET)*Axis["TCLconv"]*1e-6
+
+def FreqToVelocity(FreqTHz, RestFreq, wavelength):
+    """Velocity (m/s) addressed by a counter-propagating slowing beam: red
+    detuning from RestFreq (THz) means molecules moving towards the beam.
+    wavelength in m."""
+    return -(np.asarray(FreqTHz) - RestFreq)*1e12*wavelength
+
+def BinXY(X, Y, step):
+    """Mean of Y in bins of X of width step, with the SEM and number of points
+    of each bin; empty bins dropped. Bins with a single point (or no spread)
+    get the mean SEM of the others, as setpointScan_batch_SL.py.
+    The bins are centred on min(X) + k*step, so passes taken at the same scan
+    points with step = the scan step put each scan point in its own bin."""
+    X = np.asarray(X, dtype=float)
+    Y = np.asarray(Y, dtype=float)
+    edges = np.arange(np.min(X) - step/2, np.max(X) + step, step)
+    if len(edges) < 2:
+        edges = np.array([np.min(X) - step/2, np.min(X) + step/2])
+    means, _, _ = binned_statistic(X, Y, statistic='mean', bins=edges)
+    counts, _, _ = binned_statistic(X, Y, statistic='count', bins=edges)
+    stds, _, _ = binned_statistic(X, Y, statistic=lambda v: np.std(v, ddof=1) if len(v) > 1 else np.nan,
+                                  bins=edges)
+    centres = (edges[:-1] + edges[1:])/2
+    valid = ~np.isnan(means)
+    BinnedX, BinnedY, BinnedN = centres[valid], means[valid], counts[valid].astype(int)
+    BinnedYerr = stds[valid]/np.sqrt(BinnedN)
+    no_sem = ~(np.isfinite(BinnedYerr) & (BinnedYerr > 0))
+    if np.any(no_sem) and np.any(~no_sem):
+        BinnedYerr[no_sem] = np.mean(BinnedYerr[~no_sem])
+    return BinnedX, BinnedY, BinnedYerr, BinnedN
+
+def GaussianPeakFit(X, Y, Yerr=None):
+    """Gaussian (tools.Gaussian: mean, std, amplitude, offset) fitted to a peak
+    or dip, whichever deviates most from the median, as the Fitting cell of
+    setpointScan_batch_SL.py. Weighted by Yerr (absolute) if given. Adds the
+    FWHM with its error and the reduced chi^2 (weighted fits only)."""
+    X = np.asarray(X, dtype=float)
+    Y = np.asarray(Y, dtype=float)
+    baseline = np.median(Y)
+    iPeak = np.argmax(np.abs(Y - baseline))
+    p0 = [X[iPeak], (np.max(X) - np.min(X))/10, Y[iPeak] - baseline, baseline]
+    Fit = FitModel(tools.Gaussian, X, Y, p0, ["mean", "std", "amplitude", "offset"],
+                   sigma=Yerr, absolute_sigma=Yerr is not None)
+    FWHMfac = 2*np.sqrt(2*np.log(2))
+    Fit["FWHM"] = abs(Fit["best fit"][1])*FWHMfac
+    Fit["FWHM err"] = Fit["error"][1]*FWHMfac
+    Fit["reduced chi2"] = np.nan
+    if Yerr is not None and Fit["ok"] and len(Y) > 4:
+        Fit["reduced chi2"] = np.sum(((Y - tools.Gaussian(X, *Fit["best fit"]))/Yerr)**2)/(len(Y) - 4)
+    return Fit
+
+def FourShotGated(Arrays, SigStart, SigEnd, YAGOnDetector=0, YAGOffDetector=1):
+    """Gated TOFs of a 4-shot scan at each scan point, slowing On and Off:
+    the YAG Off shot is subtracted from the YAG On shot (saved as detectors 0
+    and 1), summed over the gate (not converted to ms.V, as
+    GetGatedAvgCounts4Shot) and averaged over the shots of the point."""
+    Result = {}
+    for shot in ["on", "off"]:
+        TOFs = DetectorTOFs(Arrays, shot, YAGOnDetector) - DetectorTOFs(Arrays, shot, YAGOffDetector)
+        Gated = GatedShots(TOFs, Arrays["time " + shot], SigStart, SigEnd)
+        Result[shot], Result[shot + " err"] = MeanAndSEM(Gated, axis=1)
+    return Result
+
+def FourShotPointTOFs(Arrays, shot, YAGOnDetector=0, YAGOffDetector=1):
+    """YAG On - YAG Off TOFs of a 4-shot scan averaged over the shots of each
+    point, [point, time]"""
+    TOFs = DetectorTOFs(Arrays, shot, YAGOnDetector) - DetectorTOFs(Arrays, shot, YAGOffDetector)
+    return np.mean(TOFs, axis=2)
+
+def SlowingXAxis(Arrays, UseSetpoint, fTHz, Resonance, angle,
+                 CalTCLconv=None, CalRestSP=None, wavelength=552.):
+    """x axis of a 4-shot slowing scan, as setpointScanONOFF_4shot_batch_SL.py:
+    velocity (m/s) from the WM reading when the WM is on the probe (fTHz) and
+    UseSetpoint is False; otherwise velocity from the setpoint if both CalTCLconv
+    (MHz/V) and CalRestSP (V) are given; otherwise the setpoint (V).
+    Resonance: rest frame probe frequency (THz); angle of the probe to the
+    slowing beam (degrees); wavelength in nm. Returns x, "in volts",
+    "from setpoint" (velocity converted with CalTCLconv) and a note."""
+    ScanParams = Arrays["scan params"]
+    WM = Arrays["wm THz"]
+    if not UseSetpoint and WM is not None and int(WM[0]) == fTHz:
+        x = tools.VelocityfromFshift((WM - Resonance)*1e6, Resonance, angle)
+        return {"x": x, "in volts": False, "from setpoint": False, "source": "WM"}
+    if UseSetpoint:
+        note = "setpoint (WM ignored)"
+    elif WM is None:
+        note = "setpoint (no WM reading)"
+    else:
+        note = "setpoint (WM channel at %.7g THz, not %g THz)" % (WM[0], fTHz)
+    if CalTCLconv is not None and CalRestSP is not None:
+        x, _ = VelocityfromSetpoint(ScanParams, 0, CalRestSP, 0, CalTCLconv, 0, wavelength, angle)
+        return {"x": x, "in volts": False, "from setpoint": True,
+                "source": note + ", converted to velocity"}
+    return {"x": ScanParams, "in volts": True, "from setpoint": False, "source": note}
+
+def SlowingAxisInfo(InVolts):
+    """Unit, name, axis label and initial FWHM guess of a slowing x axis"""
+    if InVolts:
+        return "V", "setpoint", "TCL setpoint (V)", 0.03 # V
+    else:
+        return "m/s", "velocity", "Velocity (m/s)", 20. # m/s
+
+def FitSlowingOnOff(x, OnMeanCounts, OffMeanCounts, InVolts, FromSetpoint=False,
+                    OnErr=None, OffErr=None, Weighted=False, ManualP0=None,
+                    CalTCLconv=None, CalTCLconverr=None, angle=45., wavelength=552.):
+    """FitSlowing of setpointScanONOFF_4shot_batch_SL.py without the plot: fits
+    the slowing On and Off gated TOFs with Gaussians (tools.Gaussian_FWHM),
+    normalises both to the amplitude of the Off fit, fits again and gets the
+    peak shift (On-Off). Weighted: weight the fits by OnErr/OffErr (falls back
+    to unweighted if any error is zero). ManualP0 = {"On": [...], "Off": [...]}
+    ([amplitude, centre, FWHM, offset]) is tried if the automatic guess fails.
+    CalTCLconv/CalTCLconverr: TCL calibration (MHz/V); with x from setpoints
+    (FromSetpoint) its error is added to the shift, and with x in volts the
+    shift is converted to m/s. Returns a dict, or None if the fits failed."""
+    xunit, xname, xlabel, width0 = SlowingAxisInfo(InVolts)
+    x = np.asarray(x, dtype=float)
+    OnMeanCounts = np.asarray(OnMeanCounts, dtype=float)
+    OffMeanCounts = np.asarray(OffMeanCounts, dtype=float)
+
+    peakOn = x[np.argmax(OnMeanCounts)]
+    peakOff = x[np.argmax(OffMeanCounts)]
+
+    Weighted = Weighted and OnErr is not None and OffErr is not None
+    if Weighted and (np.any(np.asarray(OnErr) <= 0) or np.any(np.asarray(OffErr) <= 0)):
+        print("some errors are zero - fitted unweighted")
+        Weighted = False
+
+    def FitAll(p0On, p0Off, p0OnNorm, p0OffNorm):
+        fitOn, covOn = curve_fit(tools.Gaussian_FWHM, x, OnMeanCounts, p0=p0On,
+                                 sigma=OnErr if Weighted else None, absolute_sigma=Weighted)
+        fitOff, covOff = curve_fit(tools.Gaussian_FWHM, x, OffMeanCounts, p0=p0Off,
+                                   sigma=OffErr if Weighted else None, absolute_sigma=Weighted)
+        # Normalise to amplitude of Off fit & correct shift to 0
+        NormOff = (OffMeanCounts - fitOff[3])/fitOff[0]
+        NormOn = (OnMeanCounts - fitOn[3])/fitOff[0]
+        fitOnNorm, covOnNorm = curve_fit(tools.Gaussian_FWHM, x, NormOn, p0=p0OnNorm(fitOff),
+                                         sigma=np.abs(OnErr/fitOff[0]) if Weighted else None,
+                                         absolute_sigma=Weighted)
+        fitOffNorm, covOffNorm = curve_fit(tools.Gaussian_FWHM, x, NormOff, p0=p0OffNorm(fitOff),
+                                           sigma=np.abs(OffErr/fitOff[0]) if Weighted else None,
+                                           absolute_sigma=Weighted)
+        return (fitOff, NormOn, NormOff, fitOnNorm, np.sqrt(np.diag(covOnNorm)),
+                fitOffNorm, np.sqrt(np.diag(covOffNorm)))
+
+    try:
+        fitOff, NormOn, NormOff, fitOnNorm, errOnNorm, fitOffNorm, errOffNorm =\
+            FitAll([200., peakOn, width0, 100.], [200., peakOff, width0, 100.],
+                   lambda fitOff: [0.2, peakOn, width0, 0.],
+                   lambda fitOff: [0.2, peakOff, width0, 0.])
+    except RuntimeError as e:   # fit did not converge
+        print("fit failed - " + str(e))
+        if ManualP0 is None:
+            return None
+        print("retrying with the manual initial guess")
+        p0On, p0Off = ManualP0["On"], ManualP0["Off"]
+        try:
+            fitOff, NormOn, NormOff, fitOnNorm, errOnNorm, fitOffNorm, errOffNorm =\
+                FitAll(p0On, p0Off,
+                       lambda fitOff: [p0On[0]/fitOff[0], p0On[1], p0On[2], 0.],
+                       lambda fitOff: [p0Off[0]/fitOff[0], p0Off[1], p0Off[2], 0.])
+        except RuntimeError as e:
+            print("fit with the manual initial guess failed too - " + str(e))
+            return None
+
+    peakShift = fitOnNorm[1] - fitOffNorm[1]
+    # Fit errors of the two peak centres in quadrature
+    peakShifterr = np.sqrt(errOnNorm[1]**2 + errOffNorm[1]**2)
+    if FromSetpoint and CalTCLconv is not None:
+        # The TCL calibration scales the whole shift
+        peakShifterr = np.sqrt(peakShifterr**2 + (peakShift * CalTCLconverr / CalTCLconv)**2)
+
+    # A shift only needs the TCL conversion, not the zero-velocity setpoint
+    shiftUnit = xunit
+    if InVolts and CalTCLconv is not None:
+        fac = -1 / np.cos(angle*np.pi/180) * wavelength * 1e-3 # (m/s)/MHz, same as VelocityfromSetpoint
+        peakShiftV, peakShiftVerr = peakShift, peakShifterr
+        peakShift = peakShiftV * CalTCLconv * fac
+        peakShifterr = np.sqrt((peakShiftVerr * CalTCLconv * fac)**2 +
+                               (peakShiftV * CalTCLconverr * fac)**2)
+        shiftUnit = "m/s"
+
+    Variables = ["amplitude", "mean", "FWHM", "offset"]
+    return {"fit ON": {"Variables": Variables, "best fit": fitOnNorm, "error": errOnNorm},
+            "fit OFF": {"Variables": Variables, "best fit": fitOffNorm, "error": errOffNorm},
+            "peak shift": [peakShift, peakShifterr],
+            "x": x, "x unit": xunit, "shift unit": shiftUnit, "weighted": Weighted,
+            "norm On": NormOn, "norm Off": NormOff,
+            "norm On err": None if OnErr is None else np.abs(OnErr/fitOff[0]),
+            "norm Off err": None if OffErr is None else np.abs(OffErr/fitOff[0])}
+
+def AverageSlowingScans(Scans):
+    """Point-by-point average of the gated TOFs of several 4-shot scans, each a
+    dict with "On", "Off", "x", "setpoint" and "x unit", as the Summary cell of
+    setpointScanONOFF_4shot_batch_SL.py: every scan sorted by setpoint (up-down
+    scans reverse every other pass), standard errors (ddof=1) only with more
+    than one scan. Raises ValueError if the scans can't be averaged."""
+    if len(set(s["x unit"] for s in Scans)) > 1:
+        raise ValueError("the scans mix velocity and setpoint x axes")
+    Sorted = []
+    for s in Scans:
+        order = np.argsort(s["setpoint"])
+        Sorted.append({key: np.asarray(s[key])[order] for key in ["On", "Off", "x", "setpoint"]})
+    sp0 = Sorted[0]["setpoint"]
+    if any(len(s["setpoint"]) != len(sp0) or not np.allclose(s["setpoint"], sp0) for s in Sorted):
+        raise ValueError("the scans were not taken over the same setpoints")
+    Result = {"setpoint": sp0, "x unit": Scans[0]["x unit"], "n": len(Scans)}
+    for key in ["On", "Off", "x"]:
+        Result[key] = np.mean([s[key] for s in Sorted], axis=0)
+    for key in ["On", "Off"]:
+        if len(Scans) > 1:
+            Result[key + " err"] = np.std([s[key] for s in Sorted], axis=0, ddof=1)/np.sqrt(len(Scans))
+        else:
+            Result[key + " err"] = None
+    return Result
+
+def FitShiftVsTime(X, Y, Yerr, FixOrigin=True, Weighted=True):
+    """Line fit of peak shift against slowing duration, as the Summary cell of
+    setpointScanONOFF_4shot_batch_SL.py. FixOrigin: through 0, only the slope
+    is fitted. Weighted by Yerr if all are > 0. Returns {"best fit": [slope,
+    intercept], "error", "ok", ...}, or None if there aren't enough points."""
+    X, Y, Yerr = np.asarray(X, float), np.asarray(Y, float), np.abs(np.asarray(Yerr, float))
+    EnoughPoints = np.any(X != 0) if FixOrigin else len(np.unique(X)) > 1
+    if not EnoughPoints:
+        return None
+    sigma = Yerr if (Weighted and np.all(Yerr > 0)) else None
+    if FixOrigin:
+        Fit = FitModel(lambda x, a: a*x, X, Y, [-1.], ["slope"], sigma=sigma,
+                       absolute_sigma=sigma is not None)
+        Fit["best fit"] = np.array([Fit["best fit"][0], 0.])
+        Fit["error"] = np.array([Fit["error"][0], 0.])
+        Fit["Variables"] = ["slope", "intercept"]
+    else:
+        Fit = FitModel(tools.Line, X, Y, [-1., 0.], ["slope", "intercept"], sigma=sigma,
+                       absolute_sigma=sigma is not None)
+    Fit["weighted"] = sigma is not None
+    return Fit
+
+def TOFTraces(Arrays, shot, detector=0, BkgStart=None, BkgEnd=None, FourShot=False):
+    """Every TOF of the On or Off shots as [shot number, time], in the order
+    taken (scan point by scan point). FourShot: the YAG Off detector (1) is
+    subtracted from the YAG On one (0) instead of using detector. With
+    BkgStart/BkgEnd (ms), each TOF has its mean over that window subtracted."""
+    if FourShot:
+        TOFs = DetectorTOFs(Arrays, shot, 0) - DetectorTOFs(Arrays, shot, 1)
+    else:
+        TOFs = DetectorTOFs(Arrays, shot, detector)
+    Traces = np.transpose(TOFs, (0, 2, 1)).reshape(-1, TOFs.shape[1])
+    if BkgStart is not None:
+        BkgIndi, _ = GateMask(Arrays["time " + shot], BkgStart, BkgEnd)
+        Traces = Traces - np.mean(Traces[:, BkgIndi], axis=1, keepdims=True)
+    return Traces
+
+def ChunkMeans(Traces, ChunkLength):
+    """Mean and SEM of consecutive chunks of ChunkLength TOFs ([shot, time]);
+    a last, shorter chunk is kept. Returns a list of (first, last+1, mean, sem)."""
+    Chunks = []
+    for Start in range(0, len(Traces), ChunkLength):
+        Part = Traces[Start:Start + ChunkLength]
+        Mean, SEM = MeanAndSEM(Part, axis=0, ddof=1)
+        Chunks.append((Start, Start + len(Part), Mean, SEM))
+    return Chunks
 

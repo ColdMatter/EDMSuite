@@ -63,18 +63,18 @@ colors = prop_cycle.by_key()['color']
 ###When we are using Box:
 datadrive = EDM.get_datadrive()  # set per device in data_locations.json
 month = "Oct 2026"
-date = "20"
+date = "26"
 #blockdrive=datadrive+"\\BlockData\\"
 
 drive = os.path.join(datadrive, month, date, "")# + subfolder
 print(drive)
 
-pattern="*setpointScan*.zip"
+pattern="*angledprobe*.zip"
 files = glob.glob(f'{drive}{pattern}', recursive=True)
 print("Matching files: ", [os.path.basename(f) for f in files])
 
 #%% Selection
-sele = [] # leave empty, sele = [], to load all matching files
+sele = ["011", "012", "013", "014"] # leave empty, sele = [], to load all matching files
 
 #%%
 LoadPasses = True
@@ -115,8 +115,8 @@ else:
 
 #%% Analysis settings
 """Can also read from scan settings (optional, for later)"""
-SigStart = 24 # in ms
-SigEnd = 30
+SigStart = 27 # in ms
+SigEnd = 37
 
 #Use YAG-OFF shots for background subtraction
 
@@ -125,10 +125,10 @@ Resonance = 542.809124 #in THz, rest frame probe frequency
 
 showTOF = False # If true, plots an example TOF before and after bkg subtraction
 showIntermediate = False # If true, show unnormalised data with frequency/setpoint axis
-showProcessed = False # If true, show final processed plot with fit
+showProcessed = True # If true, show final processed plot with fit
 
 WeightedFit = True # If true, Gaussian fits of averaged scans are weighted by their standard error
-                    # (only when more than 2 scans are averaged; others are fitted unweighted)
+                    # (only when more than 2 scans are averaged; others are fitted unweightede)
 
 # Manual initial guess, tried only if the fits with the automatic guess fail.
 # [amplitude, centre, FWHM, offset] of the unnormalised gated TOFs, with centre
@@ -150,7 +150,7 @@ UseSetpoint = True  # True: ignore the WM and process everything on TCL setpoint
 # with CalRestSP as well, the x axis is converted to velocity too.
 CalTCLconv = -133.9  # TCL conversion, MHz/V
 CalTCLconverr = 6.5   # MHz/V
-CalRestSP = -0.3     # zero-velocity setpoint, V
+CalRestSP = -1.7     # zero-velocity setpoint, V
 wavelength = 552     # nm
 
 #%% Fitting functions, used for single scans and for averaged groups of scans
@@ -508,13 +508,21 @@ for f in PeakShifts.keys():
    3 characters of the label, so with LoadPasses every pass is included.
    File IDs in the nested list means they have the same slowing duration.'''
 
+types = {"chirp Vpp = 2V": [["011"]],
+         "chirp OFF": [["012"]],
+         "chirp Vpp = 3V": [["013"]],
+         "chirp Vpp = -3V": [["014"]]
+        }
+
 #Use this block for Oct 20 2026 data
-types = {
-          "MW + 4fv0": [["004", "005"]],
-          "MW + 4fv0v1": [["008", "010"], ["012"], ["013"], ["014"]], #012, 013 are >10ms
-          "4fv0v1 only": [["009"], ["011"]],
-          "MW only": [["015"], ["016"], ["001", "002"], ["018"], ["020"], ["021"]] #018, 021 are >10ms
-         }
+# =============================================================================
+# types = {
+#           "MW + 4fv0": [["004", "005"]],
+#           "MW + 4fv0v1": [["008", "010"], ["012"], ["013"], ["014"]], #012, 013 are >10ms
+#           "4fv0v1 only": [["009"], ["011"]],
+#           "MW only": [["015"], ["016"], ["001", "002"], ["018"], ["020"], ["021"]] #018, 021 are >10ms
+#          }
+# =============================================================================
 
 #Remember to exclude "010_1"
 
@@ -526,9 +534,9 @@ types = {
 #          }
 # =============================================================================
 
-FitExcludeTypes = ["MW + 4fv0v1", "4fv0v1 only"]
+FitExcludeTypes = []#["chirp Vpp = 2V"]
 
-ExcludeLabels = ["010_1"] # bad scans to discard manually, e.g. ["009_0"] for the first pass of file 009
+ExcludeLabels = [] # bad scans to discard manually, e.g. ["009_0"] for the first pass of file 009
 
 FitLine = True
 WeightedLineFit = True # If true, line fits are weighted by the peak shift error bars
@@ -789,25 +797,43 @@ if len(Rows) > 0:
 else:
     print("No group fits to export - run the Summary cell first.")
 
+#%% Keep group fits across settings (temporary)
+'''Copies the current GroupFits into SavedGroupFits, which is not reset when
+   the cells above are re-run. Run this after the Summary cell for each set of
+   files/settings (e.g. WM files, then setpoint-only files with UseSetpoint = True),
+   then set CompareFits = SavedGroupFits in the Compare cell.
+   A group with the same "<type> <file IDs>" key is overwritten.
+   Set ResetSaved = True (or del SavedGroupFits) to start again.'''
+ResetSaved = False
+
+if ResetSaved or "SavedGroupFits" not in globals():
+    SavedGroupFits = {}
+SavedGroupFits.update(GroupFits)
+for g, res in SavedGroupFits.items():
+    print("%s: %g ms slowing, x in %s"%(g, res["slowing time"], res["x unit"]))
+
 #%% Compare normalised gated TOFs of chosen files
 '''Normalised by the off-shot's amplitudes to correct for source fluctuation.
-   Uses the averaged group fits from the Summary cell (GroupFits), so run that first.
+   Uses the averaged group fits from the Summary cell (GroupFits), so run that first,
+   or SavedGroupFits from the cell above to compare groups processed with different settings.
    Groups are named by their file IDs as in types, joined with "+" if averaged
    together, e.g. "008" or "008+010". Each group has its own colour: on-shots
    are filled points with solid fits, off-shots open points with dash-dot fits.
-   Error bars are the standard error of the averaged scans (none for one scan).'''
-compare = {"007": "MW + 4f, 15ms", "008": "4f only, 11ms"}   # group file IDs : legend label
+   Shaded regions are the standard error of the averaged scans (none for one scan).'''
+compare = {"011": "chirp Vpp = 2V", "012": "chirp OFF",
+           "013": "chirp Vpp = 3V", "014": "chirp Vpp = -3V"}   # group file IDs : legend label
+CompareFits = GroupFits   # or SavedGroupFits, from the cell above
 
 xunit = None
 for i, s in enumerate(compare.keys()):
     # GroupFits keys are "<type> <file IDs>"
-    matches = [g for g in GroupFits if g.split(" ")[-1] == s]
+    matches = [g for g in CompareFits if g.split(" ")[-1] == s]
     if len(matches) == 0:
         print(s + ": no group fit results - skipped")
         continue
     if len(matches) > 1:
         print(s + ": in more than one type " + str(matches) + " - using " + matches[0])
-    res = GroupFits[matches[0]]
+    res = CompareFits[matches[0]]
     fitON = res["fit ON"]["best fit"]
     fitOFF = res["fit OFF"]["best fit"]
     xspan = np.linspace(np.min(res["x"]), np.max(res["x"]), 1000)
@@ -815,11 +841,15 @@ for i, s in enumerate(compare.keys()):
         print("WARNING: " + s + " mixes velocity and setpoint x axes with the groups before it")
     xunit = res["x unit"]
 
-    plt.errorbar(res["x"], res["norm On"], yerr=res["norm On err"], fmt='o',\
-                 color=colors[i], markersize=4, capsize=2, elinewidth=1)
-    plt.errorbar(res["x"], res["norm Off"], yerr=res["norm Off err"], fmt='o',\
-                 color=colors[i], markerfacecolor='none', markersize=4, capsize=2,\
-                 elinewidth=1, alpha=0.7)
+    if res["norm On err"] is not None:
+        plt.fill_between(res["x"], res["norm On"] - res["norm On err"],\
+                         res["norm On"] + res["norm On err"], color=colors[i], alpha=0.3)
+    if res["norm Off err"] is not None:
+        plt.fill_between(res["x"], res["norm Off"] - res["norm Off err"],\
+                         res["norm Off"] + res["norm Off err"], color=colors[i], alpha=0.15)
+    plt.plot(res["x"], res["norm On"], 'o', color=colors[i], markersize=4)
+    plt.plot(res["x"], res["norm Off"], 'o', color=colors[i],\
+             markerfacecolor='none', markersize=4, alpha=0.7)
     plt.plot(xspan, tools.Gaussian_FWHM(xspan, *fitON), color=colors[i], \
              label = compare[s] + ", %g ms"%res["slowing time"])
     plt.plot(xspan, tools.Gaussian_FWHM(xspan, *fitOFF),\
@@ -828,7 +858,7 @@ for i, s in enumerate(compare.keys()):
 plt.xlabel(XAxisInfo(xunit == "V")[2])
 plt.ylabel("Normalised gated TOF")
 plt.title("Slowing comparison with normalised gated TOFs")
-plt.legend()
+plt.legend(bbox_to_anchor = (1.0, 1.0))
 plt.show()
 
 #%% Averaged TOFs over a range of scanned points
