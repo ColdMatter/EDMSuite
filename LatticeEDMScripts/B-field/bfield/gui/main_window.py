@@ -1,8 +1,11 @@
 """The B-field main window.
 
 Left: one tab per procedure, Start / Abort. Right: the operations log,
-a live plot of what the recorder is recording, and the simulated lab
-(its state, fault injection, the simulated bench).
+a live plot of what the recorder is recording, the analysis panel, and
+the simulated lab (its state, fault injection, the simulated bench).
+With the Degauss tab selected on the left, the live plot shows the
+degausser's current, voltage and I-V loop instead, and the analysis
+panel replays saved degauss streams.
 
 SIMULATION ONLY for now: the bench option is shown but disabled
 (GUI_ALLOW_HARDWARE). Nothing the window can start touches hardware.
@@ -23,7 +26,8 @@ from PySide6.QtWidgets import (QCheckBox, QComboBox, QDialog,
                                QMainWindow, QMessageBox, QPlainTextEdit,
                                QProgressBar, QPushButton, QRadioButton,
                                QScrollArea, QSizePolicy,
-                               QSplitter, QTableWidget, QTableWidgetItem,
+                               QSplitter, QStackedWidget, QTableWidget,
+                               QTableWidgetItem,
                                QTabWidget, QVBoxLayout, QWidget)
 
 from bfield.channels import colour as channel_colour
@@ -33,6 +37,7 @@ from bfield.errors import BFieldError
 from bfield.gui.forms import FORMS
 from bfield.gui.qt_ui import Bridge, QtUI
 from bfield.gui.analysis_panel import AnalysisPanel
+from bfield.gui.dg_live import DgReplay, DgTraces
 from bfield.gui.plot_export import PlotActions, legend_outside
 from bfield.gui.sensor_panel import SensorPanel
 from bfield.gui.sim_operator import SimOperator
@@ -53,6 +58,11 @@ EXIT_WORDS = {
     130: "stopped by the operator",
 }
 LIVE_WINDOW_S = 20.0
+DG_REDRAW_MS = 250              # degauss traces: redraws coalesced to this
+# the right-hand tabs (indices) and their titles in each mode
+TAB_LIVE, TAB_ANALYSIS = 1, 2
+TAB_TITLES = {False: ("Live data", "Analysis"),
+              True: ("Degauss live", "Degauss replay")}
 NOMINAL_V_PER_NT = 2.7          # 1x gain; the plot is a rough pT view
 
 
@@ -465,6 +475,7 @@ class MainWindow(QMainWindow):
         self.bridge.ask.connect(self.on_ask)
         self.bridge.data.connect(self.on_data)
         self.bridge.status.connect(self.on_status)
+        self.bridge.degauss.connect(self.on_degauss)
         self.stop_event = None
         self.worker = None
         self.last_code = None
@@ -476,6 +487,9 @@ class MainWindow(QMainWindow):
         self.done_timer = QTimer(self)
         self.done_timer.timeout.connect(self.poll_worker)
         self.done_timer.start(200)
+        self.dg_timer = QTimer(self)
+        self.dg_timer.timeout.connect(self.dg_traces.flush)
+        self.dg_timer.start(DG_REDRAW_MS)
 
     # -- layout ---------------------------------------------------------
 
@@ -567,11 +581,22 @@ class MainWindow(QMainWindow):
         right.addTab(self.sensor_panel, "Sensors")
         self.live = LivePlot(folder=lambda: self.sim_dir,
                              say=lambda m: self.append(m, "info"))
-        right.addTab(self.live, "Live data")
+        # each of these two tabs is a stack: the recorder's view, or the
+        # degausser's (switched with the left tab, see on_form_changed)
+        self.dg_traces = DgTraces()
+        self.live_stack = QStackedWidget()
+        self.live_stack.addWidget(self.live)
+        self.live_stack.addWidget(self.dg_traces)
+        right.addTab(self.live_stack, TAB_TITLES[False][0])
         # Browse opens in the data folder (the Box Test data)
         self.analysis = AnalysisPanel(data_root=lambda: self.config.data_root,
                                       say=lambda m: self.append(m, "info"))
-        right.addTab(self.analysis, "Analysis")
+        self.dg_replay = DgReplay(data_root=lambda: self.config.data_root,
+                                  say=lambda m: self.append(m, "info"))
+        self.analysis_stack = QStackedWidget()
+        self.analysis_stack.addWidget(self.analysis)
+        self.analysis_stack.addWidget(self.dg_replay)
+        right.addTab(self.analysis_stack, TAB_TITLES[False][1])
         self.sim_panel = SimPanel(self.world, load_sensors(self.config))
         # scrollable, so the tall panel does not pin the top half's height
         # (a tab widget is as tall as its tallest tab; the divider to the
@@ -597,6 +622,8 @@ class MainWindow(QMainWindow):
         split.addWidget(right_split)
         split.setSizes([500, 900])
         outer.addWidget(split, 1)
+        self.forms.currentChanged.connect(self.on_form_changed)
+        self.on_form_changed(self.forms.currentIndex())
 
         self.progress = QProgressBar()
         self.progress.setRange(0, 1000)
@@ -622,6 +649,23 @@ class MainWindow(QMainWindow):
         self.resize(w, h)
         self.move(area.x() + (area.width() - w) // 2,
                   area.y() + (area.height() - h) // 2)
+
+    def degauss_mode(self):
+        """True while the Degauss tab is selected on the left."""
+        from bfield.gui.forms import DegaussForm
+        i = self.forms.currentIndex()
+        return 0 <= i < len(self.form_list) and isinstance(
+            self.form_list[i], DegaussForm)
+
+    def on_form_changed(self, _index):
+        """The Degauss tab shows the degausser's traces and replay on the
+        right; every other tab the recorder's live plot and analysis."""
+        dg = self.degauss_mode()
+        self.live_stack.setCurrentIndex(1 if dg else 0)
+        self.analysis_stack.setCurrentIndex(1 if dg else 0)
+        live_title, analysis_title = TAB_TITLES[dg]
+        self.right.setTabText(TAB_LIVE, live_title)
+        self.right.setTabText(TAB_ANALYSIS, analysis_title)
 
     def hook_pickers(self):
         """Point every sensor checklist's Apply button at the panel (also
@@ -706,6 +750,7 @@ class MainWindow(QMainWindow):
         speed = self.speed.value()
         auto = self.auto_op.isChecked()
         self.live.clear()
+        self.dg_traces.clear()
         self.progress.setValue(0)
         self.progress_label.setText("")
         self.append(f"\n===== {job.title} -- simulated, x{speed:g}"
@@ -820,6 +865,24 @@ class MainWindow(QMainWindow):
 
     def on_data(self, name, samples, fs):
         self.live.add(name, samples, fs)
+
+    def on_degauss(self, event, payload):
+        """A degauss session's live display (qt_ui.DgBridge)."""
+        try:
+            if event == "outdir":
+                self.dg_replay.set_last_run(payload)
+            elif event == "start":
+                self.dg_traces.start_cycle(*payload)
+                if self.degauss_mode():
+                    self.right.setCurrentIndex(TAB_LIVE)
+            elif event == "rows":
+                rows, columns = payload
+                self.dg_traces.add_rows(rows, columns, draw=False)
+            elif event == "end":
+                self.dg_traces.end_cycle(payload)
+        except Exception as e:      # a display must never stop a run
+            self.append(f"[plot] degauss traces: {type(e).__name__}: {e}",
+                        "warn")
 
     def on_status(self, kind, data):
         if kind == "record" and data.get("run_dir"):

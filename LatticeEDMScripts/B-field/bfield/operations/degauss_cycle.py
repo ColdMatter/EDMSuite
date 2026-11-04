@@ -33,22 +33,35 @@ from __future__ import annotations
 
 import math
 import os
+import subprocess
+import time
 from dataclasses import dataclass, field
 
+import numpy as np
+
 from bfield import clock
-from bfield.constants import (DG_RECIPE_AMP_A, DG_RECIPE_FREQ_HZ,
+from bfield.analysis.dg_waveform import (cycle_title, figure_command,
+                                        rows_to_arrays)
+from bfield.constants import (DG_BENCH_FREQ_HZ, DG_RECIPE_AMP_A,
                               DG_TAPER_FALLBACK_S, dg_cycle_plan_s)
 from bfield.devices.degausser import (DG_FREQ_HARD_HZ, DG_OUTPUT_MAX_A,
                                       DG_OUTPUT_MAX_V, DG_PHASE_CODES,
                                       DG_PHASE_NAMES, DG_SOAK_HARD_S,
                                       DG_TAPER_HARD_S, WAVEFORM_KEYS,
                                       fmt_status, rpc_name, status_is_idle)
+from bfield.config import PROJECT_DIR
 from bfield.errors import (BFieldError, ConfigError, DgError, ReadbackError,
                            Stopped)
 from bfield.io.files import sanitize, stamped_dir, write_json_atomic
 
-DG_FREQ_DEFAULT_HZ = DG_RECIPE_FREQ_HZ  # vendor recipe
-DG_FREQ_GOOD_HZ = (3.0, DG_RECIPE_FREQ_HZ)  # firmware floor .. recipe
+FIGURE_TIMEOUT_S = 120.0    # real s for the child process drawing a PNG
+RPC_PROBE_S = 10.0          # a timed read-only RPC this often in a cycle
+
+DG_FREQ_DEFAULT_HZ = DG_BENCH_FREQ_HZ   # 20 Hz; vendor recipe 15 fails
+# firmware floor .. 20 Hz: the vendor recipe is 15 Hz, but on this
+# winding 15 Hz dropped the drive near the end of the soak and 20 Hz ran
+# clean (bench 2026-11-03 VI, 2026-11-04 python)
+DG_FREQ_GOOD_HZ = (3.0, 20.0)
 DG_SOAK_DEFAULT_S = 15.0
 DG_TAPER_DEFAULT_S = 300.0
 DG_TAPER_GUIDE_S = (100.0, 300.0)   # vendor guide: 100-300 s, longer better
@@ -112,6 +125,8 @@ class DegaussSettings:
                                   # DegaussCheck
     coil: str | None = None
     confirm_checklist: bool = False
+    decimation: int | None = None # degauss.data.decimation for the run
+                                  # (restored afterwards); None = untouched
     extra: dict = field(default_factory=dict)
 
 
@@ -127,8 +142,13 @@ def validate_settings(s):
     glo, ghi = DG_FREQ_GOOD_HZ
     if not (glo <= s.freq <= ghi):
         notes.append(f"freq {s.freq:g} Hz is outside {glo:g}-{ghi:g} Hz "
-                     f"(firmware floor {glo:g}; vendor recipe "
-                     f"{DG_FREQ_DEFAULT_HZ:g}); make sure this is deliberate")
+                     f"(firmware floor {glo:g}; tested up to {ghi:g}); make "
+                     f"sure this is deliberate")
+    if s.decimation is not None:
+        require(s.mode in ("check", "run"),
+                "decimation applies to --check / --run")
+        require(isinstance(s.decimation, int) and 1 <= s.decimation <= 64,
+                f"decimation {s.decimation!r} must be a whole number 1-64")
     lo, hi = DG_SOAK_HARD_S
     require(lo <= s.soak <= hi, f"soak {s.soak:g} outside {lo:g}-{hi:g} s")
     lo, hi = DG_TAPER_HARD_S
@@ -337,14 +357,18 @@ def qc_metrics(rows, columns, expected=None):
                                      else round(taper_s, 2)))
 
 
-def phase_timeline(rows, columns, rate_hz=None):
-    """Ordered phase segments [{status, phase, n_rows, seconds}, ...]
-    from the stream's status column, or None without one."""
+def phase_timeline(rows, columns, rate_hz=None, arrivals=None):
+    """Ordered phase segments [{status, phase, n_rows, seconds,
+    pc_seconds}, ...] from the stream's status column, or None without
+    one. `seconds` counts rows at the stream rate (the unit's own time);
+    `pc_seconds` is the computer's clock, from when the rows arrived
+    (`arrivals`: [[pc s since trigger, rows received so far], ...] per
+    poll; good to about a poll, 0.5 s)."""
     si = find_status_column(columns)
     if si is None:
         return None
     segs = []
-    for row in rows:
+    for k, row in enumerate(rows):
         try:
             code = int(float(row[si]))
         except (TypeError, ValueError, IndexError):
@@ -353,11 +377,73 @@ def phase_timeline(rows, columns, rate_hz=None):
             segs[-1]["n_rows"] += 1
         else:
             segs.append({"status": code, "phase": DG_PHASE_NAMES.get(code),
-                         "n_rows": 1})
+                         "n_rows": 1, "first_row": k})
+    pc_at = arrival_clock(arrivals)
     for seg in segs:
         seg["seconds"] = (round(seg["n_rows"] / rate_hz, 2)
                           if rate_hz else None)
+        first = seg.pop("first_row")
+        seg["pc_seconds"] = (round(pc_at(first + seg["n_rows"])
+                                   - pc_at(first), 2) if pc_at else None)
     return segs or None
+
+
+def arrival_clock(arrivals):
+    """f(row index) -> PC seconds since trigger, interpolated between
+    polls; None without at least two polls that brought rows."""
+    pts, seen = [], set()
+    for t, n in arrivals or []:
+        if n not in seen:
+            seen.add(n)
+            pts.append((float(t), float(n)))
+    if len(pts) < 2:
+        return None
+    ts = np.array([p[0] for p in pts])
+    ns = np.array([p[1] for p in pts])
+    return lambda r: float(np.interp(r, ns, ts))
+
+
+def pc_timing(arrivals, rpc_ms, skip_s=2.0):
+    """{arrival_rate_hz, rpc_ms_median, rpc_ms_max, ...}: how fast rows
+    really came in by the PC clock, and whether the link's reply time
+    grew (a backlog) during the cycle."""
+    out = {"arrival_rate_hz": None, "rpc_ms_median": None,
+           "rpc_ms_max": None, "rpc_ms_first": None, "rpc_ms_last": None,
+           "rpc_probes": len(rpc_ms or [])}
+    pts = [(t, n) for t, n in arrivals or [] if t >= skip_s]
+    if len(pts) >= 3 and pts[-1][0] > pts[0][0]:
+        t = np.array([p[0] for p in pts])
+        n = np.array([p[1] for p in pts])
+        out["arrival_rate_hz"] = round(float(np.polyfit(t, n, 1)[0]), 1)
+    ms = [m for _t, m in rpc_ms or [] if m is not None]
+    if ms:
+        out.update(rpc_ms_median=round(float(np.median(ms)), 1),
+                   rpc_ms_max=round(max(ms), 1), rpc_ms_first=ms[0],
+                   rpc_ms_last=ms[-1])
+    return out
+
+
+def timing_line(timeline, timing):
+    """One console line: PC time vs unit time per phase."""
+    parts = []
+    for seg in timeline or []:
+        if (seg["phase"] in ("soaking", "taper", "cooldown")
+                and seg.get("pc_seconds") is not None):
+            unit = (f"{seg['seconds']:g}" if seg.get("seconds") is not None
+                    else "?")
+            parts.append(f"{seg['phase']} {seg['pc_seconds']:g} s "
+                         f"(rows: {unit} s)")
+    rate = timing.get("arrival_rate_hz")
+    line = "PC clock: "
+    if rate:
+        line += f"rows arrived at {rate:g}/s; "
+    line += "; ".join(parts)
+    if timing.get("rpc_ms_median") is not None:
+        line += (f"; unit reply {timing['rpc_ms_median']:g} ms median, "
+                 f"{timing['rpc_ms_max']:g} ms max "
+                 f"({timing['rpc_ms_first']:g} first, "
+                 f"{timing['rpc_ms_last']:g} last)")
+    return line
 
 
 def column_rms(rows, idx):
@@ -499,10 +585,15 @@ def abort_verdict(ab):
 class DegaussSession:
     """One degauss program run: its dg_<stamp>/ folder and its json."""
 
-    def __init__(self, ctx, lab, s):
+    def __init__(self, ctx, lab, s, live=None):
         self.ctx = ctx
         self.lab = lab
         self.s = s
+        # optional live current/voltage/I-V display (bfield.gui.dg_live);
+        # a GUI offers one through its UI (QtUI.degauss_live)
+        if live is None:
+            live = getattr(getattr(ctx, "ui", None), "degauss_live", None)
+        self.live = live
         self.outdir = None
         self.path = None
         self.dg = None
@@ -552,6 +643,7 @@ class DegaussSession:
             if self.outdir:
                 self.path = os.path.join(self.outdir, "degauss_session.json")
                 self.ctx.say("out", self.outdir)
+                self._live("set_outdir", self.outdir)
             self.dg = self.lab.degausser(self.ctx, self.warnings, s.port)
             try:
                 if s.mode == "status":
@@ -575,6 +667,8 @@ class DegaussSession:
                 self.ctx.error(f"stop: {msg} {REDO_CYCLE}")
                 return 130
             finally:
+                if self.doc.get("stream_decimation"):
+                    self._restore_decimation()
                 self.dg.close()
         except (KeyboardInterrupt, Stopped):
             self.ctx.error("interrupted before driving.")
@@ -638,6 +732,12 @@ class DegaussSession:
         for key in WAVEFORM_KEYS:
             self.ctx.say("status", f"  degauss.waveform.{key:<10} = "
                                    f"{wave.get(key)}")
+        stream = self._stream_settings()
+        if stream is not None:
+            self.doc["stream_before"] = stream
+            self.ctx.say("status", "waveform stream settings (degauss.data.*):")
+            for key, value in stream.items():
+                self.ctx.say("status", f"  degauss.data.{key:<11} = {value}")
         cur = wave.get("current")
         if cur is not None and cur > self.s.max_amp:
             # bench D-7: the unit once arrived holding 5 A against a
@@ -651,10 +751,64 @@ class DegaussSession:
         self.status_result = {"device": info, "waveform": wave}
         return 0
 
+    def _stream_settings(self):
+        if not hasattr(self.dg, "stream_settings"):
+            return None
+        return self.dg.stream_settings()
+
+    def _set_decimation(self):
+        """--decimation: write it, refuse to drive unless it reads back."""
+        n = self.s.decimation
+        before = (self.doc.get("stream_before") or {}).get("decimation")
+        rec = {"before": before, "set": n, "readback": None,
+               "restored": None}
+        self.doc["stream_decimation"] = rec
+        try:
+            rb = self.dg.set_decimation(n)
+        except Exception as e:
+            raise DgError(f"could not set degauss.data.decimation to {n} "
+                          f"({e}) -- nothing driven")
+        rec["readback"] = rb
+        try:
+            ok = rb is not None and int(float(rb)) == n
+        except (TypeError, ValueError):
+            ok = False
+        if not ok:
+            self._restore_decimation()
+            raise DgError(f"degauss.data.decimation read back {rb!r} after "
+                          f"writing {n} -- nothing driven")
+        self.ctx.say("stream", f"degauss.data.decimation {before} -> {n} for "
+                               f"this run (put back afterwards)")
+
+    def _restore_decimation(self):
+        rec = self.doc.get("stream_decimation")
+        if not rec or rec.get("restored") is not None:
+            return
+        before = rec.get("before")
+        if before is None:
+            rec["restored"] = False
+            self.warn("degauss.data.decimation was changed but its old "
+                      "value is unknown -- check it with --status")
+            return
+        try:
+            rb = self.dg.set_decimation(int(float(before)))
+            rec["restored"] = rb
+            self.ctx.say("stream", f"degauss.data.decimation put back to "
+                                   f"{rb}")
+        except Exception as e:
+            rec["restored"] = False
+            self.warn(f"could not put degauss.data.decimation back to "
+                      f"{before} ({e}) -- set it with --status / the VI")
+
     def _connect_for_drive(self):
         info = self.dg.connect()
         self.doc["device"] = info
         self.doc["settings_before"] = self.dg.get_waveform()
+        stream = self._stream_settings()
+        if stream is not None:
+            self.doc["stream_before"] = stream
+        if self.s.decimation is not None:
+            self._set_decimation()
         cap = getattr(self.dg, "output_max_a", None)
         if cap is not None and self.s.max_amp > cap:
             self.warn(f"max_amp {self.s.max_amp:g} A is above the unit's own "
@@ -809,7 +963,10 @@ class DegaussSession:
         except OSError as e:
             self.warn(f"cycle {idx}: stream csv not written ({e})")
         rec["n_rows"] = len(rows)
-        rec["status_timeline"] = phase_timeline(rows, dg.columns)
+        rec["status_timeline"] = phase_timeline(
+            rows, dg.columns, arrivals=rec["pc_clock"]["arrivals"])
+        rec["figure"] = self._save_figure(idx, rows, dg.columns, rec)
+        self._live("end_cycle", rec)
         _, how = abort_verdict(rec["abort"])
         self.warn(f"cycle {idx}: abnormal exit after trigger -- {how} "
                   f"{REDO_CYCLE}")
@@ -822,8 +979,11 @@ class DegaussSession:
                              "soaktime": soak, "duration": taper},
                "readback": None, "verified": None, "trigger": None,
                "end": None, "status_polled": [], "status_timeline": None,
-               "stream_csv": None, "n_rows": 0, "qc": None,
-               "outcome": "failed"}
+               "stream_csv": None, "figure": None, "n_rows": 0, "qc": None,
+               "outcome": "failed",
+               # the computer's clock: [s since trigger, rows so far] per
+               # poll, and [s, ms] for a timed read-only RPC
+               "pc_clock": {"arrivals": [], "rpc_ms": []}, "pc_timing": None}
         self.doc["cycles"].append(rec)
         dg.set_waveform({"current": amp, "frequency": freq,
                          "soaktime": soak, "duration": taper})
@@ -840,6 +1000,10 @@ class DegaussSession:
                      f"{wave['frequency']:g} Hz, soak {wave['soaktime']:g} s, "
                      f"taper {wave['duration']:g} s (~{plan:.0f} s total, "
                      f"verified readback)")
+        self._live("start_cycle", idx,
+                   cycle_title({"index": idx, "verified": wave},
+                               self.s.coil),
+                   f"cycle {idx}: {wave['current']:g} A")
         # caller-owned rows: whatever was drained before an exception
         # survives, so an aborted cycle keeps its partial waveform (E-3)
         rows = []
@@ -852,6 +1016,9 @@ class DegaussSession:
             deadline = (t_start + plan * DG_WATCHDOG_FACTOR
                         + DG_WATCHDOG_PAD_S)
             last_status = object()
+            arrivals = rec["pc_clock"]["arrivals"]
+            rpc_ms = rec["pc_clock"]["rpc_ms"]
+            next_probe = t_start
             while True:
                 self.ctx.check_stop()
                 st = dg.status()
@@ -862,6 +1029,19 @@ class DegaussSession:
                         self.ctx.say(f"cycle {idx}", f"status: "
                                                      f"{fmt_status(st)}")
                 dg.read_rows(rows)
+                t_now = clock.monotonic()
+                arrivals.append([round(t_now - t_start, 3), len(rows)])
+                if t_now >= next_probe and hasattr(dg, "rpc_round_trip_s"):
+                    next_probe = t_now + RPC_PROBE_S
+                    rtt = dg.rpc_round_trip_s()
+                    rpc_ms.append([round(t_now - t_start, 1),
+                                   None if rtt is None
+                                   else round(rtt * 1000.0, 1)])
+                t_draw = clock.monotonic()
+                self._live("update", rows, dg.columns)
+                # drawing time comes out of the poll wait, so the stream
+                # drain keeps its original pace (STREAM_POLL_ROWS per poll)
+                drawn_s = clock.monotonic() - t_draw
                 self.ctx.progress(min((clock.monotonic() - t_start)
                                       / max(plan, 1e-9), 1.0),
                                   f"degauss cycle {idx}")
@@ -872,19 +1052,29 @@ class DegaussSession:
                         f"watchdog: cycle {idx} still not finished after "
                         f"{plan * DG_WATCHDOG_FACTOR + DG_WATCHDOG_PAD_S:.0f}"
                         f" s")
-                clock.sleep(dg.poll_sleep_s())
+                self._sleep(max(0.0, dg.poll_sleep_s() - drawn_s))
             dg.read_rows(rows)
+            arrivals.append([round(clock.monotonic() - t_start, 3),
+                             len(rows)])
+            self._live("update", rows, dg.columns)
         except BaseException:
             self._stop_and_report(rec, idx, rows)
             raise
         rec["end"] = clock.iso_now()
         rec["n_rows"] = len(rows)
+        # most rows waiting in tio's 1000-row queue at one poll
+        rec["stream_queue_peak"] = getattr(dg, "queue_peak", None)
         rec["stream_csv"] = write_stream_csv(self.outdir, idx, rows,
                                              dg.columns)
         rec["qc"] = qc_metrics(rows, dg.columns, expected=wave)
         rec["status_timeline"] = phase_timeline(
             rows, dg.columns,
-            rate_hz=(rec["qc"] or {}).get("stream_rate_hz"))
+            rate_hz=(rec["qc"] or {}).get("stream_rate_hz"),
+            arrivals=rec["pc_clock"]["arrivals"])
+        rec["pc_timing"] = pc_timing(rec["pc_clock"]["arrivals"],
+                                     rec["pc_clock"]["rpc_ms"])
+        self.ctx.say(f"cycle {idx}", timing_line(rec["status_timeline"],
+                                                 rec["pc_timing"]))
         if rec["qc"] is None:
             rec["outcome"] = "no-stream"
             self.warn(f"cycle {idx}: no waveform stream captured -- QC absent")
@@ -908,7 +1098,77 @@ class DegaussSession:
                       f"{DG_OUTPUT_MAX_V:g} V / |Z|, state-dependent) "
                       f"probably limited the drive; lower the amplitude or "
                       f"use a 5 Hz pass")
+        rec["figure"] = self._save_figure(idx, rows, dg.columns, rec)
+        self._live("end_cycle", rec)
         return rec, rows
+
+    # -- the waveform figure and the live window ------------------------
+
+    def _live(self, method, *args):
+        """Call the live window, if any. A display must never break a
+        cycle: the first error drops the window with one warning."""
+        if self.live is None or not hasattr(self.live, method):
+            return          # optional hooks (set_outdir) may be absent
+        try:
+            getattr(self.live, method)(*args)
+        except Exception as e:
+            self.warn(f"live plot stopped ({type(e).__name__}: {e}); the "
+                      f"cycle carries on and the stream is still saved")
+            self.live = None
+
+    def _sleep(self, seconds):
+        """The poll wait; keeps a same-thread live window responsive (a
+        GUI's display lives on its own thread and has no wait)."""
+        if self.live is not None and hasattr(self.live, "wait"):
+            try:
+                self.live.wait(seconds)
+                return
+            except Exception as e:
+                self.warn(f"live plot stopped ({type(e).__name__}: {e})")
+                self.live = None
+        clock.sleep(seconds)
+
+    def _save_figure(self, idx, rows, columns, rec):
+        """stream_cNN.png beside the csv: current, voltage, I-V loop.
+        Drawn by a child process from the saved csv (figure_command: a
+        matplotlib draw in this process starves tio's serial thread, which
+        then kills the process). Never raises (the cycle's record matters
+        more than its picture)."""
+        if self.outdir is None or not rows:
+            return None
+        csv_name = rec.get("stream_csv")
+        if not csv_name:
+            return None
+        name = f"stream_c{idx:02d}.png"
+        png = os.path.join(self.outdir, name)
+        try:
+            I, _V, _s = rows_to_arrays(rows, columns)
+            if not np.isfinite(I).any():
+                return None
+            cmd = figure_command(
+                os.path.join(self.outdir, os.path.basename(csv_name)), png,
+                (rec.get("qc") or {}).get("stream_rate_hz"),
+                cycle_title(rec, self.s.coil, os.path.basename(self.outdir)))
+            proc = subprocess.Popen(
+                cmd, cwd=PROJECT_DIR, stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
+            t_end = time.monotonic() + FIGURE_TIMEOUT_S     # real seconds
+            while proc.poll() is None:
+                if time.monotonic() > t_end:
+                    proc.kill()
+                    raise TimeoutError(f"no figure after {FIGURE_TIMEOUT_S:g} s")
+                self._sleep(0.1)        # keeps a live window responsive
+            out = (proc.stdout.read() or b"").decode("utf-8", "replace")
+            if proc.returncode != 0 or not os.path.exists(png):
+                tail = out.strip().splitlines()[-1:] or ["no output"]
+                raise RuntimeError(f"exit {proc.returncode}: {tail[0]}")
+            return name
+        except Exception as e:
+            self.warn(f"cycle {idx}: waveform figure not saved "
+                      f"({type(e).__name__}: {e}); draw it later with "
+                      f"python -m bfield.analysis.dg_waveform <stream csv>")
+            return None
 
 
 def run_degauss(ctx, lab, settings):

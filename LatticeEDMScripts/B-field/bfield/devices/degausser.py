@@ -21,6 +21,7 @@ from __future__ import annotations
 import contextlib
 import itertools
 import re
+import time
 
 from bfield import clock
 from bfield.constants import dg_cycle_plan_s
@@ -35,6 +36,15 @@ DG_OUTPUT_MAX_V = 15.0              # output stage; DG refuses trigger
                                     # when amp > this / |Z|
 STREAM_POLL_ROWS = 400              # per read_rows drain, ~1 s of stream
                                     # (~348 row/s measured); caps poll stall
+                                    # (iterator fallback only)
+# tio's own stream queue: 1000 packets (one row each), oldest tossed when
+# full. Its data.iter() calls os._exit(0) -- no exception, no cleanup, exit
+# code 0 -- once more than 95% are waiting (bench 2026-11-04: a --plot run
+# lost its whole record that way in cooldown). So read_rows drains the
+# queue directly, everything waiting, and never goes through data.iter()
+# when the queue is reachable.
+TIO_QUEUE_ROWS = 1000
+STREAM_QUEUE_WARN_FRAC = 0.9        # warn: tio may be tossing rows
 
 # phase codes read off hardware; soak/taper match commanded durations,
 # ramp is state-dependent (1.6 s at 2 A to 12.6 s at 8 A), -3 = unit fault
@@ -44,6 +54,8 @@ DG_STATUS_FAULT = -3
 DG_PHASE_CODES = {"measuring": 4, "ramping": 5, "soaking": 6,
                   "running": 7, "cooldown": 8, "idle": 0}
 WAVEFORM_KEYS = ("current", "frequency", "soaktime", "duration")
+# the waveform stream's own settings, read by --status and recorded per run
+STREAM_KEYS = ("active", "decimation", "cutoff", "autocutoff")
 
 
 def status_is_idle(st):
@@ -94,6 +106,10 @@ def real_tio_backend(port):
     return tldevice.Device(port)
 
 
+def _as_row(row):
+    return tuple(row) if isinstance(row, (list, tuple)) else (row,)
+
+
 class TwinleafDG:
     """Thin adapter over tio-python.
 
@@ -115,6 +131,11 @@ class TwinleafDG:
         self._stream_warned = False
         self._status_dead = False
         self._stream_iter = None
+        self._stream_direct = None      # tio session, when drained directly
+        self._stream_started = False
+        self._queue_warned = False
+        self._held = []                 # rows status() drained, for read_rows
+        self.queue_peak = 0             # most rows seen waiting at a poll
         self._saw_active = False
         self.output_max_a = DG_OUTPUT_MAX_A
 
@@ -209,9 +230,12 @@ class TwinleafDG:
         if self._status_dead:
             return None
         try:
-            # stream source, not RPC. flush=False is load-bearing: the
-            # default drains the shared queue, ~25% waveform loss
-            v = self.dev.status(samples=1, flush=False)
+            if self._direct_ready():
+                v = self._status_from_queue()
+            else:
+                # stream source, not RPC. flush=False is load-bearing: the
+                # default drains the shared queue, ~25% waveform loss
+                v = self.dev.status(samples=1, flush=False)
             if isinstance(v, (list, tuple)):
                 v = v[-1] if v else None
             if v is None:
@@ -226,37 +250,60 @@ class TwinleafDG:
                        f"({e}); falling back to the time plan")
             return None
 
+    def _direct_ready(self):
+        """True when the stream is drained straight from tio's queue
+        (starting it if need be)."""
+        if self._stream_warned:
+            return False
+        if not self._stream_started:
+            try:
+                self._start_stream()
+            except Exception:
+                return False
+        return self._stream_direct is not None
+
+    def _status_from_queue(self):
+        """The status column of the NEWEST row. tio's own dev.status()
+        reads the OLDEST queued row and consumes it: with nobody else
+        draining (after an abort) it lags by the whole backlog, up to
+        ~2.5 s, and each call cost the record a row. The rows drained
+        here are held for the next read_rows."""
+        self._drain_queue(self._held)
+        if not self._held:      # nothing waiting: wait for the next row
+            self._held.append(_as_row(self._stream_direct.stream_read_raw(
+                samples=1, flush=False, timeaxis=False,
+                simplify_single=True)))
+        row = self._held[-1]
+        return row[self._status_index(len(row))]
+
+    def _status_index(self, width):
+        for i, c in enumerate(self.columns or []):
+            if "status" in str(c).lower():
+                return i
+        return width - 1        # degauss.A, .V, .Ohm, status
+
     def read_rows(self, sink):
         """Append new stream rows into the caller-owned sink list.
 
         Caller-owned so rows drained before an interrupt survive (bench
-        E-3). Drain bounded to STREAM_POLL_ROWS per call (D-5). The
-        keep-alive write must raise; suppressed, the next read blocked
-        forever."""
+        E-3). With tio's queue reachable, every row waiting is drained
+        and nothing blocks; otherwise the iterator, bounded to
+        STREAM_POLL_ROWS per call (D-5). The keep-alive write must
+        raise; suppressed, the next read blocked forever."""
         if self._stream_warned:
             return
         try:
-            if self._stream_iter is None:
-                self._rpc("degauss.data.active", 1)
-                for probe in ("data.iter", "data.stream_iter",
-                              "stream_iter"):
-                    with contextlib.suppress(Exception):
-                        node = self.dev
-                        for part in probe.split("."):
-                            node = getattr(node, part)
-                        self._stream_iter = node()
-                        break
-                if self._stream_iter is None:
-                    raise RuntimeError("no known stream entry point")
-                # one long-lived iterator: recreating with flush=True
-                # discarded rows accumulated between calls (D-5)
-                with contextlib.suppress(Exception):
-                    self.columns = [
-                        str(c) for c in self.dev.data.columnnames(False)]
-            for row in itertools.islice(self._stream_iter,
-                                        STREAM_POLL_ROWS):
-                sink.append(tuple(row) if isinstance(row, (list, tuple))
-                            else (row,))
+            if not self._stream_started:
+                self._start_stream()
+            if self._stream_direct is not None:
+                if self._held:
+                    sink.extend(self._held)
+                    self._held = []
+                self._drain_queue(sink)
+            else:
+                for row in itertools.islice(self._stream_iter,
+                                            STREAM_POLL_ROWS):
+                    sink.append(_as_row(row))
             if sink and not self.columns:
                 self.columns = [f"c{i}" for i in range(len(sink[0]))]
         except Exception as e:
@@ -264,6 +311,46 @@ class TwinleafDG:
             self._warn(f"waveform stream capture unavailable through this "
                        f"tio version ({e}); the cycle still runs, QC will be "
                        f"absent")
+
+    def _start_stream(self):
+        self._rpc("degauss.data.active", 1)
+        tio = getattr(self.dev, "_tio", None)
+        if (getattr(tio, "pub_queue", None) is not None
+                and callable(getattr(tio, "stream_read_raw", None))):
+            self._stream_direct = tio
+        else:
+            for probe in ("data.iter", "data.stream_iter", "stream_iter"):
+                with contextlib.suppress(Exception):
+                    node = self.dev
+                    for part in probe.split("."):
+                        node = getattr(node, part)
+                    self._stream_iter = node()
+                    break
+            if self._stream_iter is None:
+                raise RuntimeError("no known stream entry point")
+            # one long-lived iterator: recreating with flush=True
+            # discarded rows accumulated between calls (D-5)
+        with contextlib.suppress(Exception):
+            self.columns = [str(c) for c in self.dev.data.columnnames(False)]
+        self._stream_started = True
+
+    def _drain_queue(self, sink):
+        """Read exactly the rows waiting in tio's queue: never blocks,
+        never trips tio's os._exit overload check."""
+        tio = self._stream_direct
+        q = tio.pub_queue
+        n = q.qsize()
+        self.queue_peak = max(self.queue_peak, n)
+        size = getattr(q, "maxsize", 0) or TIO_QUEUE_ROWS
+        if n >= STREAM_QUEUE_WARN_FRAC * size and not self._queue_warned:
+            self._queue_warned = True
+            self._warn(f"DG stream queue {n}/{size} full at a poll: tio "
+                       f"drops the oldest rows when it fills, so the "
+                       f"stream may have gaps (QC rate check will show it)")
+        for _ in range(n):
+            sink.append(_as_row(tio.stream_read_raw(
+                samples=1, flush=False, timeaxis=False,
+                simplify_single=True)))
 
     def done(self):
         st = self.status()
@@ -276,6 +363,38 @@ class TwinleafDG:
         # idle counts only after the cycle was seen active: status can
         # still read 0 for a poll or two right after trigger
         return self._saw_active or elapsed_done
+
+    def stream_settings(self):
+        """{key: value or None} for degauss.data.* (read-only)."""
+        out = {}
+        for key in STREAM_KEYS:
+            try:
+                v = self._rpc(f"degauss.data.{key}")
+                out[key] = v if isinstance(v, (int, float, str)) else str(v)
+            except Exception:
+                out[key] = None
+        return out
+
+    def set_decimation(self, n):
+        """Write degauss.data.decimation and return the read-back value
+        (None if it cannot be read)."""
+        self._rpc("degauss.data.decimation", int(n))
+        try:
+            return self._rpc("degauss.data.decimation")
+        except Exception:
+            return None
+
+    def rpc_round_trip_s(self):
+        """Real seconds for one read-only RPC (the waveform current), or
+        None if it failed. Replies share the serial link with the stream:
+        a backlog building up inside the unit would show as a growing
+        round trip."""
+        t0 = time.perf_counter()
+        try:
+            self._rpc("degauss.waveform.current")
+        except Exception:
+            return None
+        return time.perf_counter() - t0
 
     def poll_sleep_s(self):
         return 0.5

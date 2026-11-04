@@ -25,6 +25,7 @@ Nothing here imports a vendor package; all of it runs on any machine.
 
 from __future__ import annotations
 
+import collections
 import json
 import math
 import os
@@ -503,6 +504,31 @@ DG_ROW_HZ = 348.0           # measured stream rate
 DG_MEASURE_S = 3.0
 DG_COOLDOWN_S = 6.0
 DG_CAP_A = 8.0
+TIO_QUEUE_ROWS = 1000       # tio's pub_queue: oldest tossed when full
+SIM_QUEUE_FAITHFUL_SPEED = 5.0  # up to here the queue is the bench's 1000
+
+
+def sim_queue_rows():
+    """The simulated queue length. The bench's 1000 rows (~2.5 s) up to
+    x5; above, scaled with the speed, so it still holds ~0.5 real s and a
+    scheduling hiccup in a fast simulation is not a lost-rows flag."""
+    speed = 1.0 / max(clock.real_seconds(1.0), 1e-9)
+    return int(TIO_QUEUE_ROWS * max(1.0, speed / SIM_QUEUE_FAITHFUL_SPEED))
+
+
+class SimTioExit(BaseException):
+    """Stands in for tio's os._exit(0) on a >95% full stream queue: on
+    the bench the process just ends, with no cleanup and exit code 0."""
+
+
+class _SimQueue:
+    def __init__(self, dev):
+        self.dev = dev
+        self.maxsize = dev._queue_rows
+
+    def qsize(self):
+        self.dev._fill()
+        return len(self.dev._pending)
 
 
 class _Callable:
@@ -539,6 +565,15 @@ class FakeTioDevice:
         self.aborted_at = None
         self.fault_at = None
         self.closed = False
+        # the stream as tio delivers it: rows arrive in real (sim) time
+        # into a bounded queue whether anyone reads them or not
+        self._queue_rows = sim_queue_rows()
+        self._pending = collections.deque(maxlen=self._queue_rows)
+        self._t_row = clock.monotonic()
+        self._k = 0
+        self.tossed = 0
+        self._driving = False
+        self.decimation = 1             # rows = DG_ROW_HZ / decimation
 
         dev = _NS()
         dev.desc = lambda: "Twinleaf DG R4 N78 [2023-07-14/4d4c6f]"
@@ -567,7 +602,13 @@ class FakeTioDevice:
         degauss.trigger = self._trigger
         degauss.abort = self._abort
         data = _NS()
-        data.active = lambda *a: None
+        data.active = _Callable(lambda: 1, lambda *a: None)
+        data.cutoff = _Callable(lambda: 100.0)
+        data.autocutoff = _Callable(lambda: 1)
+
+        def put_decimation(v):
+            self.decimation = max(1, int(v))
+        data.decimation = _Callable(lambda: self.decimation, put_decimation)
         degauss.data = data
         self.degauss = degauss
 
@@ -582,6 +623,9 @@ class FakeTioDevice:
             "degauss.waveform.current", "degauss.waveform.current.max",
             "degauss.waveform.duration", "degauss.waveform.frequency",
             "degauss.waveform.soaktime", "dev.desc", "dev.name")]
+        self._tio.pub_queue = _SimQueue(self)
+        self._tio.stream_read_raw = self._read_one
+        self._tio.pub_warn_overload = self._warn_overload
 
     # -- the cycle
     def _trigger(self):
@@ -597,6 +641,7 @@ class FakeTioDevice:
         f = inject.get("dg_fault_at_s")
         self.fault_at = (None if f is None else
                          DG_MEASURE_S + ramp + w["soaktime"] + float(f))
+        self._driving = True
         self.world.update(lambda d: d.update(dg_driving=True))
 
     def _abort(self):
@@ -624,29 +669,72 @@ class FakeTioDevice:
         return 0, 0.0
 
     def status(self, samples=1, flush=False):
-        if self.t_trig is None:
-            return [0]
-        code, _ = self._phase_at(clock.monotonic() - self.t_trig)
-        if code == 0 and self.world.read().get("dg_driving"):
-            self.world.update(lambda d: d.update(dg_driving=False))
-        return [code]
+        # tio reads the status column off the next queued stream packet:
+        # it consumes that row (as on the bench) and lags by the backlog
+        return [self._read_one()[3]]
+
+    def _note_idle(self):
+        """The world hears the drive has stopped (the sensors' field)."""
+        if self._driving and self.t_trig is not None:
+            code, _ = self._phase_at(clock.monotonic() - self.t_trig)
+            if code == 0:
+                self._driving = False
+                if self.world.read().get("dg_driving"):
+                    self.world.update(lambda d: d.update(dg_driving=False))
+
+    def _make_row(self):
+        t = self._t_row - (self.t_trig if self.t_trig is not None
+                           else self._t_row)
+        code, env = self._phase_at(t)
+        amp = self.wave["current"] * env
+        dt = self.decimation / DG_ROW_HZ
+        i = amp * math.sin(2 * math.pi * self.wave["frequency"]
+                           * self._k * dt)
+        z = 0.82 if abs(i) < 0.9 * DG_CAP_A else 0.4333
+        self._k += 1
+        self._t_row += dt
+        return [i, i * z, z if abs(i) > 1e-6 else 0.0, float(code)]
+
+    def _fill(self):
+        now = clock.monotonic()
+        # after a long unread gap only the last self._queue_rows survive
+        dt = self.decimation / DG_ROW_HZ
+        behind = int((now - self._t_row) / dt)
+        if behind > 2 * self._queue_rows:
+            skip = behind - self._queue_rows
+            self.tossed += skip + len(self._pending)
+            self._pending.clear()
+            self._k += skip
+            self._t_row += skip * dt
+        while self._t_row <= now:
+            if len(self._pending) == self._queue_rows:
+                self.tossed += 1        # deque drops the oldest
+            self._pending.append(self._make_row())
+        self._note_idle()
+
+    def _read_one(self, samples=1, flush=False, timeaxis=False,
+                  simplify_single=True, **_):
+        """tio's stream_read_raw(samples=1): the oldest queued row,
+        blocking until one arrives."""
+        while True:
+            self._fill()
+            if self._pending:
+                return self._pending.popleft()
+            if self.closed:
+                raise IOError("device closed")
+            clock.sleep(max(self._t_row - clock.monotonic(), 0.0))
+
+    def _warn_overload(self):
+        self._fill()
+        if len(self._pending) > 0.95 * self._queue_rows:
+            raise SimTioExit("tio stream queue overload: on the bench tio "
+                             "calls os._exit(0) here")
 
     def _iter(self):
-        t_row = clock.monotonic()
-        k = 0
+        """tldevice's data.iter(): the overload check before every row."""
         while not self.closed:
-            now = clock.monotonic()
-            if t_row > now:
-                clock.sleep(t_row - now)
-            t = t_row - (self.t_trig if self.t_trig is not None else t_row)
-            code, env = self._phase_at(t)
-            amp = self.wave["current"] * env
-            i = amp * math.sin(2 * math.pi * self.wave["frequency"]
-                               * k / DG_ROW_HZ)
-            z = 0.82 if abs(i) < 0.9 * DG_CAP_A else 0.4333
-            yield (i, i * z, z if abs(i) > 1e-6 else 0.0, float(code))
-            k += 1
-            t_row += 1.0 / DG_ROW_HZ
+            self._warn_overload()
+            yield self._read_one()
 
     def close(self):
         self.closed = True

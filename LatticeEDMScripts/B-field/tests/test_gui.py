@@ -115,6 +115,44 @@ def test_degauss_run(app, win):
     assert "t0 =" in text
 
 
+def test_degauss_tab_shows_traces_and_replay(app, win):
+    import json
+    import os
+    assert win.right.tabText(mw.TAB_LIVE) == "Live data"
+    f = form(win, mw.FORMS[1])
+    # the right half follows the left tab
+    assert win.right.tabText(mw.TAB_LIVE) == "Degauss live"
+    assert win.right.tabText(mw.TAB_ANALYSIS) == "Degauss replay"
+    assert win.live_stack.currentWidget() is win.dg_traces
+    assert win.analysis_stack.currentWidget() is win.dg_replay
+    f.quick_test()
+    win.start()
+    assert wait_done(app, win, 180) == 0
+    app.processEvents()
+    win.dg_traces.flush()
+    tr = win.dg_traces
+    assert len(tr.loops) == 1 and "outcome: ok" in tr.label.text()
+    assert win.right.currentIndex() == mw.TAB_LIVE      # switched to it
+    # every streamed row reached the window
+    folder = win.dg_replay.last_run
+    doc = json.load(open(os.path.join(folder, "degauss_session.json")))
+    assert tr.n == doc["cycles"][0]["n_rows"] > 1000
+    assert abs(max(abs(tr.I)) - 8.0) < 0.1
+    # the replay panel: the run just made, from its saved stream
+    assert win.dg_replay.last_btn.isEnabled()
+    win.dg_replay.last_btn.click()
+    rp = win.dg_replay.traces
+    assert len(rp.loops) == 1 and rp.n == tr.n
+    assert os.path.exists(os.path.join(folder, "stream_c01.png"))
+    win.dg_replay.clear_btn.click()
+    assert rp.loops == [] and rp.n == 0
+    # back to another procedure: the recorder's views again
+    form(win, mw.FORMS[0])
+    assert win.right.tabText(mw.TAB_LIVE) == "Live data"
+    assert win.live_stack.currentWidget() is win.live
+    assert win.analysis_stack.currentWidget() is win.analysis
+
+
 def test_sweep_go_with_auto_operator(app, win):
     f = form(win, mw.FORMS[3])
     f.quick_test()

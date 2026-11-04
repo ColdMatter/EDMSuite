@@ -57,7 +57,7 @@ def test_validate_resolves_and_refuses(sim_lab):
     ctx, lab = sim_lab()
     s = RelaxSettings()
     validate(ctx, lab, s, "plan")
-    assert (s.amp, s.freq, s.taper, s.coil) == (8.0, 15.0, 300.0,
+    assert (s.amp, s.freq, s.taper, s.coil) == (8.0, 20.0, 300.0,
                                                 "parallel4")
     assert s.device_name == "A10QHMQMA" and s.dg_port == "COM5"
     with pytest.raises(ConfigError):             # strong on parallel

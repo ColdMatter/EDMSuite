@@ -10,8 +10,8 @@ from PySide6.QtWidgets import (QCheckBox, QComboBox, QDoubleSpinBox,
                                QPushButton, QSpinBox, QVBoxLayout, QWidget)
 
 from bfield.errors import ConfigError
-from bfield.operations.degauss_cycle import (DegaussSession, DegaussSettings,
-                                             parse_amps)
+from bfield.operations.degauss_cycle import (DG_FREQ_DEFAULT_HZ, DegaussSession,
+                                             DegaussSettings, parse_amps)
 
 
 def _num(lo, hi, value, decimals=1, step=1.0, suffix=""):
@@ -424,7 +424,8 @@ class DegaussForm(ProcedureForm):
         self.amp = self.add("Amplitude (run)", _num(0.1, 10, 8.0, 2, 0.5, "A"))
         self.amps = self.add("Amplitudes (check)", _text("1,1.5,2,2.5"),
                              "increasing, comma separated")
-        self.freq = self.add("Frequency", _num(3, 60, 15.0, 1, 1, "Hz"))
+        self.freq = self.add("Frequency", _num(3, 60, DG_FREQ_DEFAULT_HZ,
+                                               1, 1, "Hz"))
         self.soak = self.add("Soak", _num(0, 120, 15.0, 1, 1, "s"))
         self.taper = self.add("Taper", _num(5, 600, 300.0, 0, 10, "s"))
         self.coil = self.add("Coil label", _text("parallel4"),
