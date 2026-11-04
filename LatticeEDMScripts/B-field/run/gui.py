@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
-"""The B-field GUI -- SIMULATION ONLY for now.
+"""The B-field GUI.
 
 Pick a procedure, set it up, press Start; watch the log and the live
-data; inject faults and play the bench in the "Simulated lab" tab.
-Nothing it runs touches hardware.
+data. Lab "Simulated" (the default) touches no hardware: inject faults
+and play the bench in the "Simulated lab" tab. Lab "Bench" (asks first)
+drives the real QZFM sensors and degausser from the QZFM and Degauss
+tabs, as run/qzfm.py and run/degauss.py do; Relaxation and the S(f)
+sweep stay simulator-only in the GUI.
 
   python run/gui.py
 """

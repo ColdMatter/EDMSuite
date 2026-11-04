@@ -7,8 +7,11 @@ With the Degauss tab selected on the left, the live plot shows the
 degausser's current, voltage and I-V loop instead, and the analysis
 panel replays saved degauss streams.
 
-SIMULATION ONLY for now: the bench option is shown but disabled
-(GUI_ALLOW_HARDWARE). Nothing the window can start touches hardware.
+Lab: Simulated (the default) or Bench. On the bench the QZFM and
+Degauss tabs drive the real sensors and degausser, exactly as
+run/qzfm.py and run/degauss.py do (same procedures, same safety
+questions, data under the real data folder); Relaxation and the S(f)
+sweep stay simulator-only here (run/relax.py, run/sf_sweep.py).
 """
 
 from __future__ import annotations
@@ -45,9 +48,9 @@ from bfield.lab import SIM_DATA_DIR, open_lab
 from bfield.sensors import load_sensors
 from bfield.ui import Context
 
-# The bench is off-limits from the GUI until it has been tried out in
-# the simulator. Flip only on purpose, with someone at the bench.
-GUI_ALLOW_HARDWARE = False
+# The Bench option. On since 2026-11-04 for the QZFM and Degauss tabs
+# (forms with bench_ok); set False to make the GUI simulation-only again.
+GUI_ALLOW_HARDWARE = True
 
 EXIT_WORDS = {
     0: "completed", 1: "crashed / unexpected error", 10: "device not found",
@@ -58,6 +61,9 @@ EXIT_WORDS = {
     130: "stopped by the operator",
 }
 LIVE_WINDOW_S = 20.0
+WINDOW_TITLE = {"sim": "B-field -- shield characterisation (SIMULATED LAB)",
+                "bench": "B-field -- shield characterisation -- BENCH "
+                         "(real hardware)"}
 DG_REDRAW_MS = 250              # degauss traces: redraws coalesced to this
 # the right-hand tabs (indices) and their titles in each mode
 TAB_LIVE, TAB_ANALYSIS = 1, 2
@@ -480,8 +486,7 @@ class MainWindow(QMainWindow):
         self.worker = None
         self.last_code = None
         self.finished_jobs = []
-        self.setWindowTitle("B-field -- shield characterisation "
-                            "(SIMULATION ONLY)")
+        self.setWindowTitle(WINDOW_TITLE["sim"])
         self.fit_to_screen()
         self._build()
         self.done_timer = QTimer(self)
@@ -503,8 +508,13 @@ class MainWindow(QMainWindow):
         self.rb_sim.setChecked(True)
         self.rb_bench = QRadioButton("Bench (hardware)")
         self.rb_bench.setEnabled(GUI_ALLOW_HARDWARE)
-        self.rb_bench.setToolTip("Disabled: the GUI is simulation-only for "
-                                 "now. Use run/*.py at the bench.")
+        self.rb_bench.setToolTip(
+            "Drive the real QZFM sensors and degausser from the QZFM and "
+            "Degauss tabs (as run/qzfm.py and run/degauss.py). Relaxation "
+            "and the S(f) sweep stay simulator-only." if GUI_ALLOW_HARDWARE
+            else "Disabled: the GUI is simulation-only. Use run/*.py at "
+                 "the bench.")
+        self.rb_bench.toggled.connect(self.on_lab_changed)
         top.addWidget(self.rb_sim)
         top.addWidget(self.rb_bench)
         top.addSpacing(20)
@@ -532,9 +542,10 @@ class MainWindow(QMainWindow):
         data.setMinimumWidth(60)
         data.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Preferred)
         data.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        self.data_label = data
         top.addWidget(data, 1)
         open_btn = QPushButton("Open folder")
-        open_btn.clicked.connect(lambda: os.startfile(self.sim_dir))
+        open_btn.clicked.connect(lambda: os.startfile(self.data_dir()))
         top.addWidget(open_btn)
         outer.addLayout(top)
 
@@ -676,6 +687,49 @@ class MainWindow(QMainWindow):
                 pick.on_apply = self.apply_sensors
                 pick.on_manage = self.manage_sensors
 
+    # -- simulated lab / bench -----------------------------------------
+
+    def bench(self):
+        return GUI_ALLOW_HARDWARE and self.rb_bench.isChecked()
+
+    def data_dir(self):
+        return self.config.data_root if self.bench() else self.sim_dir
+
+    def on_lab_changed(self, bench):
+        if bench and not self._bench_confirmed():
+            self.rb_sim.setChecked(True)
+            return
+        self.setWindowTitle(WINDOW_TITLE["bench" if bench else "sim"])
+        for w in (self.speed, self.auto_op):
+            w.setEnabled(not bench)
+        folder = self.data_dir()
+        self.data_label.setText(f"data: {folder}")
+        self.data_label.setToolTip(folder)
+        self.append("[lab] " + (
+            f"BENCH: the QZFM and Degauss tabs drive the real hardware; "
+            f"data goes to {folder}" if bench else
+            f"simulated lab; data goes to {folder}"),
+            "warn" if bench else "info")
+
+    def _bench_confirmed(self):
+        if self.running():
+            QMessageBox.information(self, "Run in progress",
+                                    "Switch the lab once the run has "
+                                    "finished.")
+            return False
+        box = QMessageBox(self)
+        box.setIcon(QMessageBox.Warning)
+        box.setWindowTitle("Switch to the bench")
+        box.setText("Switch to the real bench?")
+        box.setInformativeText(
+            "Start on the QZFM tab will drive the QZFM sensors, and on the "
+            "Degauss tab the Twinleaf degausser. Close the QuSpin software "
+            "and the DG Control VI first: each COM port can be held by one "
+            "program only.")
+        box.setStandardButtons(QMessageBox.Yes | QMessageBox.Cancel)
+        box.setDefaultButton(QMessageBox.Cancel)
+        return box.exec() == QMessageBox.Yes
+
     def scan_usb(self):
         """The serial ports a USB scan finds. Simulation only for now: the
         simulated lab's ports (a real scan comes with the bench mode)."""
@@ -735,11 +789,19 @@ class MainWindow(QMainWindow):
     def start(self):
         if self.running():
             return
-        if not self.rb_sim.isChecked():
+        bench = self.bench()
+        if not bench and not self.rb_sim.isChecked():
             QMessageBox.warning(self, "Bench disabled",
-                                "The GUI is simulation-only for now.")
+                                "The GUI is simulation-only.")
             return
         form = self.form_list[self.forms.currentIndex()]
+        if bench and not getattr(form, "bench_ok", False):
+            QMessageBox.information(
+                self, "Simulator only",
+                f"The {form.title} tab is simulator-only in the GUI. At the "
+                f"bench use {getattr(form, 'cli', 'its run/*.py program')}, "
+                f"or switch the lab to Simulated.")
+            return
         try:
             job = form.job()
         except BFieldError as e:
@@ -747,14 +809,17 @@ class MainWindow(QMainWindow):
             return
         self.stop_event = threading.Event()
         ui = QtUI(self.bridge, self.stop_event)
-        speed = self.speed.value()
-        auto = self.auto_op.isChecked()
+        speed = 1.0 if bench else self.speed.value()
+        auto = False if bench else self.auto_op.isChecked()
         self.live.clear()
         self.dg_traces.clear()
         self.progress.setValue(0)
         self.progress_label.setText("")
-        self.append(f"\n===== {job.title} -- simulated, x{speed:g}"
-                    + (", auto-operator" if auto else "") + " =====", "info")
+        self.append(f"\n===== {job.title} -- "
+                    + ("BENCH (real hardware)" if bench else
+                       f"simulated, x{speed:g}"
+                       + (", auto-operator" if auto else ""))
+                    + " =====", "warn" if bench else "info")
         self.status.setText(f"Running: {job.title}")
         self.start_btn.setEnabled(False)
         self.abort_btn.setEnabled(True)
@@ -765,8 +830,9 @@ class MainWindow(QMainWindow):
         def work():
             code = 1
             try:
-                lab = open_lab(self.config, sim=True, speed=speed,
-                               sim_dir=self.sim_dir)
+                lab = (open_lab(self.config) if bench else
+                       open_lab(self.config, sim=True, speed=speed,
+                                sim_dir=self.sim_dir))
                 ctx = Context(ui, config=lab.config,
                               stop_event=self.stop_event)
                 if auto:

@@ -322,6 +322,9 @@ class QZFMSession:
         self.plan = plan
         self.sensors = {}
         self.session = None
+        # True for a follow-on session on the same sensors (the GUI's
+        # standby after a record): the indicator cards keep their stages
+        self.continues = False
 
     # -- harness --------------------------------------------------------
 
@@ -367,7 +370,7 @@ class QZFMSession:
             for h, serial in heads.items()]
         info = [r for r in info if r.get("sensor") in self.sensors]
         self.plan.sensor_info = info
-        self.ctx.status("sensors", sensors=info)
+        self.ctx.status("sensors", sensors=info, continues=self.continues)
         for sensor in self.sensors.values():
             sensor.on_frame = (lambda s, frame, ctx=self.ctx:
                                ctx.status("frame", head=s.head, frame=frame))

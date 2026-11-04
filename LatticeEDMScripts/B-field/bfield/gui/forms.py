@@ -40,6 +40,12 @@ def _combo(items, current=None):
     return w
 
 
+def _checked(on=False):
+    box = QCheckBox()
+    box.setChecked(on)
+    return box
+
+
 def _text(value="", placeholder=""):
     w = QLineEdit(value)
     if placeholder:
@@ -265,6 +271,8 @@ class Job:
 class ProcedureForm(QWidget):
     title = ""
     blurb = ""
+    bench_ok = False      # may run on the real bench from the GUI
+    cli = ""              # the run/*.py program for the bench
 
     def __init__(self, config):
         super().__init__()
@@ -340,6 +348,8 @@ class ProcedureForm(QWidget):
 
 class QZFMForm(ProcedureForm):
     title = "QZFM"
+    bench_ok = True
+    cli = "run/qzfm.py"
     blurb = ("Bring the heads up, zero, calibrate, prove the recording with "
              "a guard record -- and, in Record mode, take one record. Same "
              "as run/qzfm.py.")
@@ -363,6 +373,12 @@ class QZFMForm(ProcedureForm):
             ["default", "master-slave", "none", "independent"]),
             "default: master-slave with two or more sensors, none with "
             "one")
+        self.standby_after = self.add(
+            "Standby afterwards", _checked(True),
+            "Record mode: put the sensors in standby (laser and heater "
+            "off) when the record ends -- also after an abort or a "
+            "failure, as the CLI's '; --standby'. Setup and zero leave "
+            "them running on purpose.")
         self.require = self.add("Require cal factors", QCheckBox())
         self.notes = self.add("Notes", _text(placeholder="stored in meta.json"))
         self.add_outdir("e.g. SingleSensorZ, TwoSensorsZY")
@@ -385,6 +401,8 @@ class QZFMForm(ProcedureForm):
                        require_factors=self.require.isChecked(),
                        notes=self.notes.text().strip() or None,
                        outdir=self.outdir(), name=self.run_name())
+        standby_after = (mode == "record"
+                         and self.standby_after.isChecked())
 
         def run(ctx, lab):
             plan = QZFMPlan.for_sensors(lab.config, sel.numbers,
@@ -402,17 +420,47 @@ class QZFMForm(ProcedureForm):
                             f"{s['cellT_err']:g}"
                             + (" -- CAUTION: blank frame" if blank else ""))
                 return 0
-            return {"record": session.record, "setup": session.setup,
-                    "zero": session.zero, "standby": session.standby}[mode]()
+            if not standby_after:
+                return {"record": session.record, "setup": session.setup,
+                        "zero": session.zero,
+                        "standby": session.standby}[mode]()
+            try:
+                return session.record()
+            finally:
+                standby_sensors(ctx, lab, sel.numbers, master)
 
         return Job(f"QZFM {mode} (sensors "
-                   f"{', '.join(map(str, sel.numbers))})", run)
+                   f"{', '.join(map(str, sel.numbers))})"
+                   + (" + standby" if standby_after else ""), run)
+
+
+def standby_sensors(ctx, lab, numbers, master):
+    """Standby after a record, whatever the record's ending. Its own stop
+    event: an Abort that ended the record must not also stop this."""
+    import threading
+    from bfield.procedures.qzfm_session import QZFMPlan, QZFMSession
+    sub = ctx.child(stop_event=threading.Event())
+    sub.say("standby", "putting the sensors in standby (laser and heater "
+                       "off)")
+    try:
+        plan = QZFMPlan.for_sensors(lab.config, numbers, master=master)
+        session = QZFMSession(sub, lab, plan)
+        session.continues = True
+        code = session.standby()
+    except Exception as e:
+        code = 1
+        sub.warn(f"standby failed ({type(e).__name__}: {e})")
+    if code:
+        sub.warn(f"standby ended with exit {code} -- the sensors may still "
+                 f"be ON; run QZFM mode standby before leaving them")
 
 
 # -------------------------------------------------------------- degauss
 
 class DegaussForm(ProcedureForm):
     title = "Degauss"
+    bench_ok = True
+    cli = "run/degauss.py"
     blurb = ("Twinleaf DG: status, a stepped saturation check, or one full "
              "cycle with the readback gate and taper QC. Same as "
              "run/degauss.py. You are asked the safety checklist before "
@@ -455,6 +503,7 @@ class DegaussForm(ProcedureForm):
 
 class RelaxForm(ProcedureForm):
     title = "Relaxation"
+    cli = "run/relax.py"
     blurb = ("The evening program: degauss the shield, then timed records at "
              "t0 + the listed minutes, with sensor standby in the gaps. "
              "Plan shows the schedule and touches nothing. Same as "
@@ -503,6 +552,7 @@ class RelaxForm(ProcedureForm):
 
 class SweepForm(ProcedureForm):
     title = "S(f) sweep"
+    cli = "run/sf_sweep.py"
     blurb = ("The shielding-factor sweep: the generator is set by hand for "
              "each frequency (the auto-operator does it in the simulator). "
              "Plan shows the order and touches nothing. Same as "

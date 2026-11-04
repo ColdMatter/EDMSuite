@@ -339,10 +339,17 @@ Note: `LatticeEDMScripts/.gitignore` ignores `*.png`, `*.csv` and
 
 ## 8. The GUI
 
-`python run/gui.py` (needs `pip install -e .[gui]`). **Simulation only
-for now:** the "Bench (hardware)" option is shown but disabled
-(`GUI_ALLOW_HARDWARE = False` in `bfield/gui/main_window.py`); at the
-bench, use `run/*.py`.
+`python run/gui.py` (needs `pip install -e .[gui]`). **Lab:** Simulated
+(the default) or Bench (hardware), which asks for confirmation first.
+On the bench the QZFM and Degauss tabs drive the real sensors and
+degausser, exactly as `run/qzfm.py` and `run/degauss.py` (same
+procedures, same safety questions as dialogs, data under `data_root`);
+the clock speed and the auto-operator are simulator-only. Relaxation
+and the S(f) sweep refuse to start on the bench (use `run/relax.py`,
+`run/sf_sweep.py`). QZFM record mode has "Standby afterwards" (on by
+default): the sensors go to standby when the record ends, also after
+an Abort. `GUI_ALLOW_HARDWARE = False` in `bfield/gui/main_window.py`
+makes the GUI simulation-only again.
 
 * Left: one tab per procedure (QZFM session, Degauss, Relaxation, S(f)
   sweep) with the main settings; everything else comes from
@@ -422,5 +429,6 @@ How it plugs in -- nothing below `run/` knows about Qt:
 * show and edit `config/lab.toml` for the settings panel;
 * develop it against `--sim`.
 
-Before enabling the bench in the GUI: use each procedure at the bench
-from `run/*.py` first, then flip `GUI_ALLOW_HARDWARE` deliberately.
+Before enabling another procedure on the bench in the GUI: use it at
+the bench from `run/*.py` first, then set `bench_ok = True` on its form
+deliberately.
