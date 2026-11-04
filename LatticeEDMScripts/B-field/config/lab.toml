@@ -9,7 +9,7 @@
 # Where runs are written and where the analysis scripts look. The Box
 # folder; it holds a copy of the old IROP_research/result tree (copied
 # 2026-09-24) plus every new run, bucket by bucket.
-data_root = "C:/Users/cafmot/Box/LatticeEDM/EDM chamber/Magnetic shield/Test data"
+data_root = "D:/Box/Box/LatticeEDM/EDM chamber/Magnetic shield/Test data"
 # Where a run goes when no --outdir is given:
 #   "dated"   <data_root>/Oct 2026/15/001_SingleSensorZ -- month, day (two
 #             digits), then the run: numbered through the day across all

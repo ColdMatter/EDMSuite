@@ -16,7 +16,7 @@ on `sys.path` and sets `DATA_ROOT`, the folder that holds the run buckets
 1. the environment variable `BFIELD_DATA_ROOT`, if set;
 2. `config/lab.local.toml` `[paths] data_root` (per machine, git-ignored);
 3. `config/lab.toml` `[paths] data_root`, which points at the Box folder
-   `C:/Users/cafmot/Box/LatticeEDM/EDM chamber/Magnetic shield/Test data`
+   `D:/Box/Box/LatticeEDM/EDM chamber/Magnetic shield/Test data`
    (a copy of the old `IROP_research/result` tree plus the new runs).
 
 If the data moves again, change `data_root`. Nothing in the scripts needs
