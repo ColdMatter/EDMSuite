@@ -21,7 +21,7 @@ public class Patterns : MOTMasterScript
 
 
         Parameters["ThorCamExposure"] = 250;
-        Parameters["OrcaExposure"] = 1000;
+        Parameters["OrcaExposure"] = 2000;
 
         // Shim Coils
         Parameters["xShimLoadCurrent"] = -3.20;
@@ -52,7 +52,7 @@ public class Patterns : MOTMasterScript
         Parameters["tDropDuration"] = 1; //done
         Parameters["tImageExpo"] = 1000;
 
-        Parameters["tBlueMOTDuration"] = 30000;
+        Parameters["tBlueMOTDuration"] = 2000;
         Parameters["tBlueMOTField"] = 0.48; //0.48 Rb = 30G/cm
 
         Parameters["tCoilOffDur"] = 1; //done
