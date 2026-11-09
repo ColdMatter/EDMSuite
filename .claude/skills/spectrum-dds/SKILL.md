@@ -107,6 +107,7 @@ prologue:  TRG_SRC = CARD; all cores silenced
 
 block k:   core params for event k; XIO mask
            k < N-1:  TRG_SRC = TIMER, TRG_TIMER = t[k+1] - t[k]
+                     or TRG_SRC = CARD if event k+1 is WaitForTrigger
            k = N-1:  TRG_SRC = CARD          // re-arm for the next shot
            EXEC_AT_TRG
 
@@ -119,7 +120,20 @@ queued, the external trigger at t = 0 executes the prologue instead of event 0 a
 **the whole pattern slips by one step**. Forcing consumes it, correctly leaving the
 card reading "idle" until the first pattern is flushed.
 
-Budget: 18 commands per block, plus a timer in all but the last. A 6-event pattern
+**Waiting mid-pattern.** An event with `WaitForTrigger` set is reached the same way
+the next shot is: the block before it sets `TRG_SRC = CARD` instead of a timer, so
+the card holds there until the next pulse on Trg0 (`DDS_Analog_Trg`). This exists for
+MOTMaster's pause trigger (see the `motmaster-controller` skill): the NI boards can
+pause but the DDS cannot, so the script pulses `DDS_Analog_Trg` again after the pause
+and the DDS waits for it. The flagged event's time is the pattern time of that pulse;
+later gaps are measured from it. Any DDS event timed between the pause point and that
+pulse plays in real time while the NI boards sit paused. Mid-pattern `CARD` uses the
+same register path as the measured end-of-pattern re-arm, but **it has not been run on
+the card yet** — in particular, check that `TRG_COUNT` counts the mid-pattern card
+trigger like a timer one, since `WaitForShot` relies on it.
+
+Budget: 18 commands per block, plus a timer in every block whose next event is timed
+(all but the last, unless some events wait for a trigger). A 6-event pattern
 is 113 commands and reads back as 94 queued — the difference is the block in the
 shadow registers, which is a useful integrity check.
 

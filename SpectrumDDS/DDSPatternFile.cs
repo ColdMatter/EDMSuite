@@ -38,6 +38,8 @@ namespace SpectrumDDS
             [DataMember(Name = "timeMs", Order = 1)] public double Time;
             [DataMember(Name = "xio", Order = 2)] public int Xio;
             [DataMember(Name = "channels", Order = 3)] public ChannelDto[] Channels;
+            // Left out of the file when false, so files from before it existed are unchanged.
+            [DataMember(Name = "waitForTrigger", Order = 4, EmitDefaultValue = false)] public bool WaitForTrigger;
         }
 
         [DataContract(Name = "DDSPattern")]
@@ -57,6 +59,7 @@ namespace SpectrumDDS
                     Name = e.Name,
                     Time = e.Time * DDSPattern.MillisecondsPerSecond,
                     Xio = e.Xio,
+                    WaitForTrigger = e.WaitForTrigger,
                     Channels = e.Channels.Select(c => new ChannelDto
                     {
                         Frequency = c.Frequency / DDSPattern.HzPerMHz,
@@ -102,7 +105,7 @@ namespace SpectrumDDS
                     c.AmplitudeSlope * DDSPattern.PerSecondPerPerMs)).ToArray();
 
                 events.Add(new DDSEvent(e.Name, e.Time / DDSPattern.MillisecondsPerSecond,
-                                        channels, e.Xio));
+                                        channels, e.Xio, e.WaitForTrigger));
             }
             return new DDSPattern(events);
         }

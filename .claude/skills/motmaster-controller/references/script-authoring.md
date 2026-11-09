@@ -116,3 +116,5 @@ Covered in the `spectrum-dds` skill (`.claude/skills/spectrum-dds/`), not here â
 that skill's `references/codebase.md` before touching `GetDDSPattern()` or any
 `AddEvent(...)` call. In short: replaces the old copy-pasted `addDDSPattern` helper,
 same units (MHz, fractional amplitude, ticks), gated so non-CaF experiments never see it.
+`WaitForTrigger(name)` makes an event wait for the next `DDS_Analog_Trg` pulse instead of
+the card's timer, for patterns that pause mid-sequence (see "Pausing a pattern" in SKILL.md).
