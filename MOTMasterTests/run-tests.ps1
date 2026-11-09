@@ -35,9 +35,13 @@ foreach ($f in @($csc, (Join-Path $bin 'MOTMaster.exe'), (Join-Path $bin 'DAQ.dl
 }
 
 $sources = Get-ChildItem -Path $testDir -Filter *.cs | ForEach-Object { $_.FullName }
+# The DDS tests build only where MOTMaster was built with the DDS card (the CaF configuration).
+$ddsArgs = @()
+$ddsDll = Join-Path $bin 'SpectrumDDS.dll'
+if (Test-Path $ddsDll) { $ddsArgs = @('/define:DDS', "/reference:$ddsDll") }
 & $csc /nologo /target:exe /langversion:7.3 "/out:$out" `
     "/reference:$(Join-Path $bin 'MOTMaster.exe')" "/reference:$(Join-Path $bin 'DAQ.dll')" `
-    "/reference:$(Join-Path $bin 'NationalInstruments.DAQmx.dll')" $sources
+    "/reference:$(Join-Path $bin 'NationalInstruments.DAQmx.dll')" @ddsArgs $sources
 if ($LASTEXITCODE -ne 0) { Write-Host 'Test harness failed to compile.'; exit 2 }
 
 & $out $repoRoot

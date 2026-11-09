@@ -24,6 +24,12 @@ namespace SpectrumDDS
     /// rest of it. The last block hands the trigger source back to the card input
     /// so the next shot starts on the next digital pulse.
     /// </para>
+    /// <para>
+    /// An event marked <see cref="DDSEvent.WaitForTrigger"/> is reached the same
+    /// way: the block before it sets the card input as the trigger source instead
+    /// of the timer, so the card holds there until the next pulse on
+    /// DDS_Analog_Trg, however long that takes.
+    /// </para>
     /// </remarks>
     public static class DDSPatternCompiler
     {
@@ -68,7 +74,11 @@ namespace SpectrumDDS
 
                 card.SetInt(SpcmRegs.SPC_DDS_X_MANUAL_OUTPUT, e.Xio);
 
-                if (k + 1 < pattern.Count)
+                if (k + 1 < pattern.Count && pattern[k + 1].WaitForTrigger)
+                {
+                    card.SetInt(SpcmRegs.SPC_DDS_TRG_SRC, SpcmRegs.SPCM_DDS_TRG_SRC_CARD);
+                }
+                else if (k + 1 < pattern.Count)
                 {
                     // This block governs the wait for event k+1.
                     double gap = pattern[k + 1].Time - e.Time;
