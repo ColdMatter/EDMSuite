@@ -123,6 +123,42 @@ The essentials:
 - **The trigger channel is reserved in linked runs** — a script that drives
   `rbTrigger` while linked is refused; MOTMaster adds the trigger pulse itself.
 
+## Pausing a pattern for an external trigger
+
+A machine can let its patterns stop mid-sequence and wait for an external trigger.
+It is opt-in per pattern task through the `Hardware` class, so nothing changes for a
+machine that doesn't set it:
+
+```csharp
+Info.Add("PGPauseTriggerLine", "/PXI1Slot4/PFI?");   // key = <task name> + "PauseTriggerLine"
+```
+
+`DAQMxPatternGenerator.configure_PG` and `DAQMxAnalogPatternGenerator.configure_AO`
+read it and set a DAQmx digital-level pause trigger: the task holds every output while
+the line is **high** and carries on from the same sample when it goes low. Task names:
+`PG` (master digital), `PGSlave0`, ... (extra digital boards), and the keys of
+`Info["AnalogBoards"]` (`AO`, `SecondAO` on cafmot). `AnalogStaticBuilder` is untimed
+and has none.
+
+- **It is a level, not an edge.** To wait for a trigger *pulse*, the bench needs a latch:
+  a pattern channel sets it where the pattern should stop, the external trigger
+  clears it, and its output drives the pause lines. The pause lands a few sample
+  clocks after the line goes high (board-dependent), so pulse the request early.
+- **Every timed board has to pause.** On cafmot the analog boards run on their own
+  clocks with only a start trigger, so they need their own pause lines (or clocking
+  from the PG's exported clock). Whether the slave `/Dev1`, clocked from the
+  master's exported clock, pauses with it is unverified: check it on a scope.
+- **The DDS cannot pause.** Mark the first DDS event after the pause with
+  `DDSPatternBuilder.WaitForTrigger(name)` and pulse `DDS_Analog_Trg` again just
+  after the pause point. That second pulse doesn't affect the AO boards, which are
+  already running. See the `spectrum-dds` skill's timing model.
+- **A latch left set stalls the next run.** If a run is stopped while waiting, the
+  next one starts paused until the latch clears.
+- `runPattern` waits on the master task with no timeout, so a long pause doesn't
+  time out in MOTMaster. Callers that assume a fixed shot length (camera timeouts,
+  pycaf/pytweezer scan loops, a linked secondary) would need checking.
+- Not yet enabled on any machine or run on hardware.
+
 ## Verifying a change
 
 MOTMaster never prebuilds the scripts project — every script is compiled at runtime
@@ -180,7 +216,9 @@ powershell -ExecutionPolicy Bypass -File MOTMasterTests\run-tests.ps1
 It compiles `MOTMasterTests\*.cs` (non-recursive — `MOTMasterTests\scripts\` holds test
 scripts loaded at run time) with the VS2019 Roslyn `csc.exe` against
 `MOTMaster\bin\<Configuration>\` and runs every `public static void Test*()`.
-55 tests at last count.
+55 tests at last count, plus `DDSWaitForTriggerTests` (7), which build only when
+`SpectrumDDS.dll` is in the bin folder (the CaF configuration): the script then adds
+`/define:DDS` and the reference.
 
 **If MOTMaster is running, `bin\CaF` is locked** (MSB3027 on `DAQ.dll`). Never stop the
 user's MOTMaster to get round it: build with `/p:OutDir=<scratch>\CaF\` and run the tests
