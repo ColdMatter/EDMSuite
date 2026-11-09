@@ -61,6 +61,18 @@ X_State = {
             "XC": 17.20e-6 / c
         }
     },
+    # !! v2 AND v3: THE SPIN-ROTATION AND HYPERFINE CONSTANTS ARE EXTRAPOLATED, NOT MEASURED !!
+    # g0, g1, g2, Xb, Xc, XC are exact linear extrapolations of the v0 and v1 values
+    # (e.g. g0 steps by -20.39357 MHz per v, b by -1.930 MHz, c by +1.3092 MHz).
+    # dpp is Lim's linear extrapolation too. Only Tv and Bpp were fitted, by
+    # Lim et al., J. Mol. Spectrosc. 338, 81 (2017), from optical spectra (16 MHz fit SD).
+    # Lim held bF, c and D at extrapolated values and fitted only B and gamma:
+    # gamma(v2) = -53.89(73), gamma(v3) = -74.5(13) MHz. The g0 values below are the
+    # extrapolations, not Lim's fitted values. No paper in the group's Resources folder
+    # (checked 2026-11-09) reports measured v2/v3 X-state hyperfine constants.
+    # Measured X(v3, N=1) splittings (S. Li & S. Popa; coarser values in Popa thesis 2024,
+    # Table 4.1): 1h-0 21.9(8), 0-2 83.6(7), 2-1l 145(2) MHz. The extrapolated constants
+    # give 19.5 / 85.0 / 137.6 MHz, so they are off by several MHz at v3.
     "v2": {
         174: {
             "iso": 0.32, "Tv": 999.81290, "Bpp": 7144.20e-3 / c, "dpp": 6.649e-6 / c,
@@ -106,6 +118,18 @@ A_Pi_12 = {
             "t": 18106.1714, "b": 0.247579, "ad": 1.1875e-3,
             "d": 2.607e-7, "p2q": -0.39553, "dp2q": 1.006e-6
         }
+    }
+}
+
+# --- A(2Pi_1/2) 19F magnetic hyperfine constants, IN MHz (not cm^-1 like the dicts above) ---
+# Sauer, Cahn, Kozlov, Redgrave & Hinds, J. Chem. Phys. 110, 8424 (1999), Eq. (3), 174YbF.
+# Sauer's convention: H_hfs = A_par (I.k)(S.k) + A_perp (I x k).(S x k)  [Eq. (1)].
+# Quoted as A_par = -1.6 +/- 2 MHz, A_perp = 4.6 +/- 1 MHz.
+# Used by levels.A12_hfs_split / levels.A12_hfs_shifts. Not used by the spectrum code.
+# A(v=1) is strongly mixed with [18.6]0.5 and has very different values; it is not included.
+A_Pi_12_hfs = {
+    "v0": {
+        174: {"A_par": -1.6, "A_perp": 4.6}
     }
 }
 

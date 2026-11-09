@@ -13,17 +13,19 @@ Typical use
 
 from . import units, constants, levels, transitions, spectra
 from .units import c, hck, CM_INV_TO_THZ
-from .constants import (X_State, A_Pi_12, A_Pi_32, A_Pi_32_new, State_561, State_557,
+from .constants import (X_State, A_Pi_12, A_Pi_12_hfs, A_Pi_32, A_Pi_32_new, State_561, State_557,
                         State_4f_7212, State_4f_7232,
                         get_converted_ground_params, get_initial_p0_dict_ghz)
 from .levels import (eRotor, gamma_spinRot, F1, F2, X_hyperfine,
-                     Ue, Uf, Ue3JCP, Uf3JCP, Ue4f, Uf4f)
+                     Ue, Uf, Ue3JCP, Uf3JCP, Ue4f, Uf4f,
+                     A12_hfs_split, A12_hfs_shifts)
 
 __all__ = ["units", "constants", "levels", "transitions", "spectra",
            "c", "hck", "CM_INV_TO_THZ",
-           "X_State", "A_Pi_12", "A_Pi_32", "A_Pi_32_new", "State_561", "State_557",
+           "X_State", "A_Pi_12", "A_Pi_12_hfs", "A_Pi_32", "A_Pi_32_new", "State_561", "State_557",
            "State_4f_7212", "State_4f_7232",
            "get_converted_ground_params", "get_initial_p0_dict_ghz",
            "eRotor", "gamma_spinRot", "F1", "F2", "X_hyperfine",
-           "Ue", "Uf", "Ue3JCP", "Uf3JCP", "Ue4f", "Uf4f"]
+           "Ue", "Uf", "Ue3JCP", "Uf3JCP", "Ue4f", "Uf4f",
+           "A12_hfs_split", "A12_hfs_shifts"]
 __version__ = "0.1.0"
