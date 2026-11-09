@@ -94,6 +94,15 @@ namespace DAQ.Analog
                 (string)Environs.Hardware.GetInfo(pattern_trigger),
                 DigitalEdgeStartTriggerEdge.Rising);
 
+            // Opt-in per task: the generation freezes, holding every output, while this line is high.
+            string pauseTriggerLine = (string)Environs.Hardware.GetInfo(analogTaskName + "PauseTriggerLine");
+            if (pauseTriggerLine != null)
+            {
+                analogOutputTask.Triggers.PauseTrigger.ConfigureDigitalLevelTrigger(
+                    pauseTriggerLine,
+                    DigitalLevelPauseTriggerCondition.High);
+            }
+
             if ((bool?)Environs.Hardware.GetInfo(analogTaskName + "PatternBuffer") ?? false)
                 analogOutputTask.Stream.ConfigureOutputBuffer(aPattern.PatternLength);
 
