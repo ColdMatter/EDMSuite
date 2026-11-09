@@ -59,8 +59,15 @@ namespace DAQ.Analog
             }
 
             string clockSource;
+            // Opt-in per task, overriding internalClk: e.g. "<pg>/do/SampleClock", so the
+            // analog output follows the digital pattern's clock, including its pauses.
+            string sampleClockSource = (string)Environs.Hardware.GetInfo(analogTaskName + "SampleClockSource");
 
-            if (internalClk == true)
+            if (sampleClockSource != null)
+            {
+                clockSource = sampleClockSource;
+            }
+            else if (internalClk == true)
             {
                 clockSource = "";
                 analogOutputTask.ExportSignals.SampleClockOutputTerminal = (string)Environment.Environs.Hardware.GetInfo(clock_line);

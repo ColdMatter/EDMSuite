@@ -463,6 +463,12 @@ namespace DAQ.HAL
             Info.Add("PGTriggerLine", pgBoard + "/PFI5");//"/PFI4"
             Info.Add("AOPatternBuffer", true);
 
+            // Pausing a pattern mid-sequence for an external trigger: the PG holds while
+            // the pause line is high, and the AO board, clocked from the PG's sample clock,
+            // holds with it. Needs the external latch wired to a free PG PFI (not PFI4/PFI5).
+            //Info.Add("PGPauseTriggerLine", pgBoard + "/PFI?");
+            //Info.Add("AOSampleClockSource", pgBoard + "/do/SampleClock");
+
 
             Dictionary<string, string> additionalPatternBoards = new Dictionary<string, string>();
             Info.Add("AdditionalPatternGeneratorBoards", additionalPatternBoards);

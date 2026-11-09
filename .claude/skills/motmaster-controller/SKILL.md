@@ -144,11 +144,22 @@ and has none.
   a pattern channel sets it where the pattern should stop, the external trigger
   clears it, and its output drives the pause lines. The pause lands a few sample
   clocks after the line goes high (board-dependent), so pulse the request early.
-- **Every timed board has to pause.** On cafmot the analog boards run on their own
-  clocks with only a start trigger, so they need their own pause lines (or clocking
-  from the PG's exported clock). Whether the slave `/Dev1`, clocked from the
-  master's exported clock, pauses with it is unverified: check it on a scope.
-- **The DDS cannot pause.** Mark the first DDS event after the pause with
+- **Every timed board has to pause.** Analog boards run on their own clocks with
+  only a start trigger, so each needs either its own `<task>PauseTriggerLine` (if the
+  board supports an AO pause trigger: X Series such as cafmot's 6738s do; Rb's
+  PXI-6723 is doubtful) or `Info["<task>SampleClockSource"] = "<pg>/do/SampleClock"`.
+  That key makes `configure_AO` clock the task from the PG's sample clock, which stops
+  while the PG is paused. It overrides the `internalClk` argument (hard-coded true in
+  `Controller.initializeHardware`), so set it only where the analog and digital clock
+  rates match. Whether the slave `/Dev1` on cafmot, clocked from the master's exported
+  clock, pauses with it is unverified: check it on a scope.
+- **Rb (first test bed):** one PG (`/PXI1Slot5`, task `PG`) and one AO board
+  (`/PXI1Slot4`, task `AO`, started by `do/StartTrigger`), both at 100 kHz, no DDS.
+  The entries are written but commented out in `RbTweezerHardware.cs`; the pause PFI
+  is a placeholder until the latch is wired (avoid PFI4 `PGClockLine` and PFI5, the
+  linked-secondary start trigger). Test with linking off: in a linked run cafmot would
+  carry on while Rb paused.
+- **The DDS cannot pause** (cafmot only). Mark the first DDS event after the pause with
   `DDSPatternBuilder.WaitForTrigger(name)` and pulse `DDS_Analog_Trg` again just
   after the pause point. That second pulse doesn't affect the AO boards, which are
   already running. See the `spectrum-dds` skill's timing model.
