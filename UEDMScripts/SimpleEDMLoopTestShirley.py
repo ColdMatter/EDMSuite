@@ -116,13 +116,10 @@ def measureParametersAndMakeBC(cluster, eState, bState, mwState): #used to have,
 	printWaveformCode(bc, "DB")
 	# store e-switch info in block config
 	print("Storing E switch parameters ...")
-	bc.Settings["eRampDownTime"] = hc.ERampDownTime
-	bc.Settings["eRampDownDelay"] = hc.ERampDownDelay
-	bc.Settings["eBleedTime"] = hc.EBleedTime
-	bc.Settings["eSwitchTime"] = hc.ESwitchTime
-	bc.Settings["eRampUpTime"] = hc.ERampUpTime
-	bc.Settings["eRampUpDelay"] = hc.ERampUpDelay
-	bc.Settings["eOvershootFactor"] = hc.EOvershootFactor
+	# (the old E-switch ramp parameters no longer exist in the hardware controller; store the Behlke timings instead)
+	bc.Settings["BehlkeBleedTime"] = hc.BehlkeBleedTime
+	bc.Settings["BehlkeSwitchTime"] = hc.BehlkeSwitchTime
+	bc.Settings["BehlkeSettleTime"] = hc.BehlkeSettleTime
 	# store the E switch asymmetry in the block
 	bc.Settings["E0PlusBoost"] = hc.E0PlusBoost
 	# number of times to step the target looking for a good target spot, step size is 2 (coded in Acquisitor)
@@ -244,8 +241,8 @@ def EDMGo():
 	# System.Threading.Thread.CurrentThread.Join(20000)
 	# print("leakage monitors calibrated")
 
+	#bc = measureParametersAndMakeBC(cluster, eState, bState, mwState)#, rfState, mwState, scramblerV)
 	bc = measureParametersAndMakeBC(cluster, eState, bState, mwState)#, rfState, mwState, scramblerV)
-
 	# loop and take data
 	blockIndex = 0
 	maxBlockIndex = 10000
