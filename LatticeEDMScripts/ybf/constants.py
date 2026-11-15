@@ -140,6 +140,25 @@ A_Pi_12_hfs = {
     }
 }
 
+# --- Zeeman g-factors (dimensionless). Used by ybf.zeeman only; not used by the spectrum code. ---
+# 19F nuclear g-factor: mu = +2.628868 mu_N, I = 1/2 (Stone, At. Data Nucl. Data Tables 90, 75 (2005)); gI = mu/(I mu_N).
+gI_F19 = 5.257736
+# X2Sigma+: gS fixed at 2.0023 and gl = 9.27e-4 (= -gamma/2B, Curl), the values Ma et al. 2009 constrained in their fits
+# (J. Phys. Chem. A 113, 8038 (2009), text p. 8041; their Table 2 footnote prints 9.4e-4, a rounding/typo). Used for every v.
+X_zeeman = {"gS": 2.0023, "gl": 9.27e-4}
+# A2Pi1/2(v'=0): Ma et al. 2009 Table 2, "fit B" (2-sigma statistical errors; corr(gL', gl') = 0.904), joint fit to
+# 171/172/174YbF Zeeman spectra (~15-20 MHz accuracy). gS = 2.0023 and gl(A) = 0 constrained. Chosen over fit A
+# (gL' = 0.996(8), gl' fixed at -0.8016): the MOT capture side study found no difference between the two (Nov 2026).
+# Convention: the gl' term enters with coefficient -1/2 relative to Ma's printed Eq. (4) in the Lim 2017 phase
+# (ChillTheBeams decision, confirmed by Stefan Truppe 1 Nov 2026; reproduces Ma Fig. 2). For the J' = 1/2 level this gives
+#     gJ = (2/3)(gL' - gS/2 + gl') for e(+),   gJ = (2/3)(gL' - gS/2 - gl') for f(-),
+# i.e. g_F(J'=1/2 e, F'=1) = -0.2031 and g_F(J'=1/2 f, F'=1) = +0.2782 (= ChillTheBeams' model file).
+A_Pi_12_zeeman = {
+    "v0": {
+        174: {"gS": 2.0023, "gLp": 1.118, "glp": -0.722, "gl": 0.0}
+    }
+}
+
 A_Pi_32 = {
     "v0": {
         172: {
