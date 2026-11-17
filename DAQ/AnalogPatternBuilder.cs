@@ -6,6 +6,7 @@ using System.Collections;
 using System.Linq;
 using DAQ.HAL;
 using DAQ.Environment;
+using DAQ.Pattern;
 
 namespace DAQ.Analog
 {
@@ -29,12 +30,19 @@ namespace DAQ.Analog
         public AnalogPatternBuilder(string[] channelNames, int patternLength)
         {
             ChannelNames = channelNames;
-            PatternLength = patternLength;
+            PatternLength = patternLength + LinkedLengthExtension();
         }
 
         public AnalogPatternBuilder(int patternLength)
         {
-            PatternLength = patternLength;
+            PatternLength = patternLength + LinkedLengthExtension();
+        }
+
+        // Inside a linked run the secondary's analog pattern is padded so the shifted events fit; otherwise 0.
+        private static int LinkedLengthExtension()
+        {
+            LinkRouting routing = LinkRouting.Current;
+            return routing == null ? 0 : routing.AnalogLengthExtension;
         }
 
         public void AddBoard(string address)
@@ -54,14 +62,18 @@ namespace DAQ.Analog
 
         public void AddChannel(string channelName)
         {
-            
-            AnalogOutputChannel channel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channelName];
+            LinkRouting routing = LinkRouting.Current;
+            if (routing != null && !routing.IsLocalAnalog(channelName)) return;
+            AnalogOutputChannel channel = LinkRouting.LookupAnalog(channelName);
             GetBoard(channel).AddChannel(channelName);
         }
 
         public void AddAnalogValue(string channelName, int time, double value)
         {
-            AnalogOutputChannel channel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channelName];
+            LinkRouting routing = LinkRouting.Current;
+            if (routing != null && !routing.IsLocalAnalog(channelName)) return;
+            if (routing != null) time = routing.MapAnalogPoint(channelName, time);
+            AnalogOutputChannel channel = LinkRouting.LookupAnalog(channelName);
             GetBoard(channel).AddAnalogValue(channelName, time, value);
         }
 
@@ -69,19 +81,32 @@ namespace DAQ.Analog
         //finalValue is the voltage AFTER the pulse.
         public void AddAnalogPulse(string channelName, int startTime, int duration, double value, double finalValue)
         {
-            AnalogOutputChannel channel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channelName];
+            LinkRouting routing = LinkRouting.Current;
+            if (routing != null && !routing.IsLocalAnalog(channelName)) return;
+            if (routing != null) startTime = routing.MapAnalogSpan(channelName, startTime);
+            AnalogOutputChannel channel = LinkRouting.LookupAnalog(channelName);
             GetBoard(channel).AddAnalogPulse(channelName, startTime, duration, value, finalValue);
         }
 
         public double GetValue(string channelName, int time)
         {
-            AnalogOutputChannel channel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channelName];
+            LinkRouting routing = LinkRouting.Current;
+            if (routing != null)
+            {
+                if (!routing.IsLocalAnalog(channelName))
+                    throw new LinkRoutingException("GetValue('" + channelName + "') reads a channel that belongs to the other system and is not supported in a linked run");
+                time = Math.Max(0, routing.ShiftAnalog(time));
+            }
+            AnalogOutputChannel channel = LinkRouting.LookupAnalog(channelName);
             return GetBoard(channel).GetValue(channelName, time);
         }
         
         public void AddLinearRamp(string channelName, int startTime, int steps, double finalValue)
         {
-            AnalogOutputChannel channel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channelName];
+            LinkRouting routing = LinkRouting.Current;
+            if (routing != null && !routing.IsLocalAnalog(channelName)) return;
+            if (routing != null) startTime = routing.MapAnalogSpan(channelName, startTime);
+            AnalogOutputChannel channel = LinkRouting.LookupAnalog(channelName);
             GetBoard(channel).AddLinearRamp(channelName, startTime, steps, finalValue);
         }
 
@@ -89,7 +114,15 @@ namespace DAQ.Analog
             double finalValue, double upperThresholdValue, double lowerThresholdValue,
             double weight1, double weight2, double weight3, double weight4)
         {
-            AnalogOutputChannel channel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channelName];
+            LinkRouting routing = LinkRouting.Current;
+            if (routing != null && !routing.IsLocalAnalog(channelName)) return;
+            if (routing != null)
+            {
+                int mappedStart = routing.MapAnalogSpan(channelName, startTime);
+                stopTime += mappedStart - startTime;
+                startTime = mappedStart;
+            }
+            AnalogOutputChannel channel = LinkRouting.LookupAnalog(channelName);
             GetBoard(channel).AddPolynomialRamp(channelName, startTime, stopTime,
                 finalValue, upperThresholdValue, lowerThresholdValue,
                 weight1, weight2, weight3, weight4);
@@ -105,7 +138,9 @@ namespace DAQ.Analog
 
         public void SwitchOffAtEndOfPattern(string channelName)
         {
-            AnalogOutputChannel channel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channelName];
+            LinkRouting routing = LinkRouting.Current;
+            if (routing != null && !routing.IsLocalAnalog(channelName)) return;
+            AnalogOutputChannel channel = LinkRouting.LookupAnalog(channelName);
             GetBoard(channel).SwitchOffAtEndOfPattern(channelName);
         }
         public void SwitchAllOffAtEndOfPattern()

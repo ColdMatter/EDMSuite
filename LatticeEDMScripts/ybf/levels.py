@@ -2,6 +2,8 @@
 
 X(2Sigma+): eRotor / gamma_spinRot / F1 / F2 / X_hyperfine (hyperfine, case (b)).
 A(2Pi_1/2), A(2Pi_3/2), [4f] states: Ue / Uf and variants (parity-resolved, case (a)).
+A(2Pi_1/2) 19F hyperfine: A12_hfs_split / A12_hfs_shifts (Sauer 1999; MHz; standalone,
+not used by the transition or spectrum code).
 
 Extracted verbatim from YbF_spectroscopy_library.py on 2026-09-16 — the physics code is byte-identical to the
 version that produced the group's published assignments. Do not retype values here;
@@ -218,3 +220,53 @@ def Uf4f(j, t, b, delta, zeta, **kwargs):
     spin_rotation = (b / 2) * zeta * (2 * j + 1)
     
     return t + rotational_eff * j * (j + 1) + spin_rotation
+
+
+# --- A(2Pi_1/2) 19F hyperfine structure (Sauer et al., J. Chem. Phys. 110, 8424 (1999)) ---
+# Standalone helpers: NOT used by Ue/Uf, transitions or spectra. Energies here are in MHz.
+# Constants: constants.A_Pi_12_hfs["v0"][174]  ->  A12_hfs_split(j, 'e', **that_dict)
+
+def A12_hfs_split(j, parity, A_par, A_perp, **kwargs):
+    '''
+    19F hyperfine splitting of an A(2Pi_1/2) J level, Sauer 1999 Eq. (2):
+
+        eps = [A_par/(2J+1) + eta*A_perp] * (2J+1)^2 / (8J(J+1))
+
+    with eta = -1 for e levels and +1 for f levels.
+
+    Parameters
+    ----------
+    j : float
+        Total angular momentum excluding nuclear spin (1/2, 3/2, ...).
+    parity : str
+        'e' or 'f'.
+    A_par, A_perp : float
+        Sauer's hyperfine constants in MHz (see constants.A_Pi_12_hfs).
+
+    Returns
+    -------
+    float
+        eps = E(F=J+1/2) - E(F=J-1/2) in MHz. Negative means inverted (F=J-1/2 on top),
+        which is the case for e levels with the v=0 constants.
+    '''
+    if parity not in ('e', 'f'):
+        raise ValueError("parity must be 'e' or 'f'")
+    eta = -1 if parity == 'e' else 1
+    return (A_par / (2*j + 1) + eta * A_perp) * (2*j + 1)**2 / (8*j*(j + 1))
+
+def A12_hfs_shifts(j, parity, A_par, A_perp, **kwargs):
+    '''
+    First-order hyperfine shifts of F = J+1/2 and F = J-1/2 for I(19F) = 1/2, relative to
+    the unsplit J level (e.g. Ue/Uf). The (2F+1)-weighted centre of gravity is unchanged.
+
+    Returns
+    -------
+    tuple (shift_F_upper, shift_F_lower), MHz
+        shift for F = J+1/2 is  +eps*J/(2J+1)
+        shift for F = J-1/2 is  -eps*(J+1)/(2J+1)
+
+    Note: Ue/Uf return cm^-1; divide these MHz shifts by (c*1e3) before adding.
+    Ignores hyperfine mixing between different J (MHz shifts vs GHz spacings).
+    '''
+    eps = A12_hfs_split(j, parity, A_par, A_perp)
+    return eps * j / (2*j + 1), -eps * (j + 1) / (2*j + 1)

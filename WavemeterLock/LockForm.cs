@@ -128,8 +128,8 @@ namespace WavemeterLock
             {
                 foreach (Laser laser in controller.lasers.Values)
                 {
-                    laser.Lock();
-                    controller.indicateRemoteConnection(laser.WLMChannel, true);
+                    if (laser.Lock()) // false if another program (e.g. TCL) is locking this laser
+                        controller.indicateRemoteConnection(laser.WLMChannel, true);
                 }
                 isLockAll = true;
             }

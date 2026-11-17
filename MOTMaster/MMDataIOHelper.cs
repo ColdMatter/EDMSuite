@@ -26,6 +26,12 @@ namespace MOTMaster
         private string element;
         string[] files;
 
+        /// <summary>
+        /// Linked-run metadata to save with the next run as "_link.txt". Set only around a linked run's save
+        /// and null otherwise; when null (every non-linked run) nothing extra is written.
+        /// </summary>
+        public Dictionary<String, Object> LinkInfo = null;
+
         public MMDataIOHelper(string motMasterDataPath, string element)
         {
             this.motMasterDataPath = motMasterDataPath;
@@ -123,6 +129,8 @@ namespace MOTMaster
             File.Copy(pathToPattern, saveFolder + fileTag + "_script.cs");
             File.Copy(pathToHardwareClass, saveFolder + fileTag + "_hardwareClass.cs");
             storeDictionary(saveFolder + fileTag + "_hardwareReport.txt", report);
+            if (LinkInfo != null)
+                storeDictionary(saveFolder + fileTag + "_link.txt", LinkInfo);
         }
 
         public string SelectSavedScriptPathDialog()

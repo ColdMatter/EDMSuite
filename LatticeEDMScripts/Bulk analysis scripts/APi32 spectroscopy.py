@@ -45,7 +45,8 @@ print("Matching files: ", [os.path.basename(f) for f in files])
 offset = 568.681 #in THz
 Data = {}
 
-showPlot = False
+showPlot = True
+showIndiv = True
 
 for f in files:
     fileLabel = re.split(r'[\\]', f)[-1]
@@ -58,13 +59,23 @@ for f in files:
         if showPlot:
             plt.plot((data['arr_0'][0] - offset)*1e3, data['arr_0'][1])
             plt.xlabel("Frequency offset (GHz) w.r.t %g"%offset)
-            plt.ylabel("PMT signal normalised to X-A (a.u.)")
+            plt.ylabel("PMT signal 1 -- X-A_Pi_32 (a.u.)")
             plt.title(fileLabel)
             plt.show()
+        
+        if showIndiv:
+            plt.plot((data['arr_0'][0] - offset)*1e3, data['arr_0'][2])
+            plt.xlabel("Frequency offset (GHz) w.r.t %g"%offset)
+            plt.ylabel("PMT signal 2 -- X-A_Pi_12 (a.u.)")
+            plt.title(fileLabel)
+            plt.show()
+
 
 #%% Join data by file and Normalise with X-A signal
 X = []
 Y = []
+Y_12 = []
+Y_32 = []
 
 for i in range(0, len(files)):
     f = files[i]
@@ -73,9 +84,14 @@ for i in range(0, len(files)):
     yXA = Data[f][2]
     X.append(list(x))
     Y.append(list(y/yXA))
+    Y_12.append(list(yXA))
+    Y_32.append(list(y))
 
 X = np.array(tools.flattenAnyList(X))
 Y = np.array(tools.flattenAnyList(Y))
+
+Y_12 = np.array(tools.flattenAnyList(Y_12))
+Y_32 = np.array(tools.flattenAnyList(Y_32))
 
 #%% Sort & bin
 # Get the indices that would sort Combi_ScanParams
@@ -84,6 +100,9 @@ sort_indices = np.argsort(X)
 # Reorder both arrays using those indices
 X_sorted = X[sort_indices]
 Y_sorted = Y[sort_indices]
+
+Y_12_sorted = Y_12[sort_indices]
+Y_32_sorted = Y_32[sort_indices]
 #%%
 plt.figure(figsize=(30,10), dpi=300)
 
@@ -93,6 +112,19 @@ plt.ylabel("PMT signal normalised to X-A (a.u.)")
 plt.title("Sorted & combined A Pi 3/2 spectrum, all branches, no freq bin")
 plt.xlim(-75, 46)
 plt.show()
+
+if showIndiv:
+    plt.figure(figsize=(30,10), dpi=300)
+
+    plt.plot((X_sorted-offset)*1e3, Y_12_sorted, label="X-APi12")
+    plt.plot((X_sorted-offset)*1e3, Y_32_sorted, label="X-APi32")
+    plt.xlabel("Frequency offset (GHz) w.r.t %g"%offset)
+    plt.ylabel("PMT signal NOT normalised (a.u.)")
+    plt.title("Sorted & combined A Pi 3/2 spectrum, all branches, no freq bin")
+    plt.xlim(-75, 46)
+    plt.legend()
+    plt.show()
+
 
 #%% Bin
 from scipy.stats import binned_statistic
@@ -108,11 +140,23 @@ bin_means, _, _ = binned_statistic(
 # 3. Convert bin edges to bin centers
 bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
 
+# And repeat for un-normalised too
+# 2. Compute binned averages
+bin_means12, _, _ = binned_statistic(
+    x=X_sorted, values=Y_12_sorted, statistic='mean', bins=bin_edges
+)
+bin_means32, _, _ = binned_statistic(
+    x=X_sorted, values=Y_32_sorted, statistic='mean', bins=bin_edges
+)
+
 
 #%% 4. Filter out NaNs (empty bins) so they don't break the plot
 valid_mask = ~np.isnan(bin_means)
 BinnedX = bin_centers[valid_mask]
 BinnedY = bin_means[valid_mask]
+
+BinnedY12 = bin_means12[valid_mask]
+BinnedY32 = bin_means32[valid_mask]
 
 #%% Change aspect ratio & xlim to zoom into different branches
 plt.figure(figsize=(30,10), dpi=300)
@@ -123,8 +167,22 @@ plt.plot((bin_centers-offset)*1e3, bin_means)  #With NaN there won't be lines go
 plt.xlabel("Frequency offset (GHz) w.r.t %g"%offset)
 plt.ylabel("PMT signal normalised to X-A (a.u.)")
 plt.title("Sorted & combined A Pi 3/2 spectrum, all branches, freq bin: %g MHz"%(fstep*1e6))
-plt.xlim(-75, 46)
+plt.xlim(-70, -68)
 plt.show()
+
+if showIndiv:
+    plt.figure(figsize=(30,10), dpi=300)
+
+    plt.plot((bin_centers-offset)*1e3, bin_means12, label="X-APi12")  #With NaN there won't be lines going
+                                                   #through empty spaces
+    plt.plot((bin_centers-offset)*1e3, bin_means32, label="X-APi32")
+    #plt.plot((BinnedX-offset)*1e3, BinnedY)
+    plt.xlabel("Frequency offset (GHz) w.r.t %g"%offset)
+    plt.ylabel("PMT signal NOT normalised (a.u.)")
+    plt.title("Sorted & combined A Pi 3/2 spectrum, all branches, freq bin: %g MHz"%(fstep*1e6))
+    plt.xlim(-70, -68)
+    plt.legend()
+    plt.show()
 
 
 #%% Moving average

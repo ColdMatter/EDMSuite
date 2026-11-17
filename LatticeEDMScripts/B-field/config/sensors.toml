@@ -4,7 +4,8 @@
 #   label       the QuSpin head ID printed on it (Z3D0-...)
 #   usb_serial  the USB ID the PC sees on its COM port (FTDI)
 #   location    free note: where it is in the experiment
-#   z_input     the DAQ input its Z output is wired to (ai0..ai3,
+#   z_input     the DAQ input its Z output is wired to (ai0..ai7
+#               on the PCIe-6321, ai0..ai3 on the USB-6008;
 #               or "" when Z is not recorded)
 #   y_input     the same for its Y output
 

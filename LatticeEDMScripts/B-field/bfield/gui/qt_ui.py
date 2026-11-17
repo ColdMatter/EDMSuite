@@ -43,6 +43,38 @@ class Bridge(QObject):
     ask = Signal(object)                      # Question
     data = Signal(str, object, float)         # channel, samples, fs
     status = Signal(str, object)              # kind, data (indicators)
+    degauss = Signal(str, object)             # event, payload (DgBridge)
+
+
+class DgBridge:
+    """The degauss session's live display, seen from the worker thread:
+    each call becomes a Bridge.degauss signal the window draws from
+    (bfield.gui.dg_live.DgTraces). Only the rows new since the last call
+    are sent."""
+
+    def __init__(self, bridge):
+        self.bridge = bridge
+        self.sent = 0
+
+    def set_outdir(self, folder):
+        self.bridge.degauss.emit("outdir", folder)
+
+    def start_cycle(self, idx, title, label=None):
+        self.sent = 0
+        self.bridge.degauss.emit("start", (idx, title, label))
+
+    def update(self, rows, columns):
+        if len(rows) <= self.sent:
+            return
+        new = list(rows[self.sent:])
+        self.sent = len(rows)
+        self.bridge.degauss.emit("rows", (new, list(columns or [])))
+
+    def end_cycle(self, rec):
+        self.bridge.degauss.emit("end", {
+            "outcome": rec.get("outcome"),
+            "qc": {"stream_rate_hz":
+                   (rec.get("qc") or {}).get("stream_rate_hz")}})
 
 
 class QtUI(UI):
@@ -56,6 +88,8 @@ class QtUI(UI):
         self.stop_event = stop_event
         self.operator = operator
         self.pending = None
+        # a DegaussSession run through this UI draws here
+        self.degauss_live = DgBridge(bridge)
 
     # -- one-way
     def log(self, stamp, tag, msg, level="info"):

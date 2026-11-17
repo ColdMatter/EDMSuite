@@ -55,9 +55,62 @@ def form(w, cls):
     raise KeyError(cls)
 
 
-def test_bench_is_disabled(win):
-    assert not mw.GUI_ALLOW_HARDWARE
-    assert not win.rb_bench.isEnabled() and win.rb_sim.isChecked()
+def test_simulated_lab_is_the_default(win):
+    assert mw.GUI_ALLOW_HARDWARE and win.rb_bench.isEnabled()
+    assert win.rb_sim.isChecked() and not win.bench()
+    assert "SIMULATED" in win.windowTitle()
+
+
+def go_bench(win, monkeypatch, answer=True):
+    monkeypatch.setattr(win, "_bench_confirmed", lambda: answer)
+    win.rb_bench.setChecked(True)
+
+
+def test_bench_switch_asks_first(win, monkeypatch):
+    go_bench(win, monkeypatch, answer=False)
+    assert win.rb_sim.isChecked() and not win.bench()
+    go_bench(win, monkeypatch)
+    assert win.bench() and "BENCH" in win.windowTitle()
+    assert not win.speed.isEnabled() and not win.auto_op.isEnabled()
+    assert win.data_dir() == win.config.data_root
+    assert win.config.data_root in win.data_label.text()
+    win.rb_sim.setChecked(True)
+    assert win.speed.isEnabled() and win.data_dir() == win.sim_dir
+
+
+def test_bench_refuses_the_simulator_only_tabs(app, win, monkeypatch):
+    told = []
+    monkeypatch.setattr(mw.QMessageBox, "information",
+                        lambda *a, **k: told.append(a[2]))
+    opened = []
+    monkeypatch.setattr(mw, "open_lab", lambda *a, **k: opened.append(k))
+    go_bench(win, monkeypatch)
+    for cls in mw.FORMS[2:]:                     # Relaxation, S(f) sweep
+        form(win, cls)
+        win.start()
+        assert win.worker is None and not opened
+    assert "run/relax.py" in told[0] and "run/sf_sweep.py" in told[1]
+
+
+def test_bench_degauss_opens_the_real_lab(app, win, monkeypatch, tmp_path):
+    # the bench lab is stood in for by a simulated one: what matters is
+    # that the bench path asks open_lab for the real lab (no sim=True)
+    calls = []
+    real_open = mw.open_lab
+
+    def fake_open(config, **kw):
+        calls.append(kw)
+        return real_open(config, sim=True, speed=60,
+                         sim_dir=str(tmp_path / "standin"))
+    monkeypatch.setattr(mw, "open_lab", fake_open)
+    go_bench(win, monkeypatch)
+    f = form(win, mw.FORMS[1])
+    f.mode.setCurrentText("status")
+    win.start()
+    assert wait_done(app, win, 60) == 0
+    assert calls == [{}]
+    text = win.log.toPlainText()
+    assert "BENCH (real hardware)" in text and "[auto]" not in text
 
 
 def test_apply_shows_sensors_without_running(app, win):
@@ -97,7 +150,10 @@ def test_qzfm_record_with_live_data(app, win):
     for stage in ("connect", "auto start", "gain / mode", "field zero",
                   "calibrate", "guard record", "sync check"):
         assert a.chips[stage].state == "passed", stage
-    assert a.chips["standby"].state == "pending"
+    # "Standby afterwards" (on by default) put them in standby
+    assert a.chips["standby"].state == "passed"
+    assert "+ standby" in win.log.toPlainText()
+    assert "dark confirmed" in win.log.toPlainText()
     assert a.factors["z"].text() == "0.80" and a.factors["y"].text() == "0.77"
     assert cards["s2"].factors["z"].text() == "0.82"
     assert a.comp["Bz_pT"].text() != "--"
@@ -113,6 +169,44 @@ def test_degauss_run(app, win):
     text = win.log.toPlainText()
     assert "[auto] yes -- Is the QZFM 19V power switch OFF" in text
     assert "t0 =" in text
+
+
+def test_degauss_tab_shows_traces_and_replay(app, win):
+    import json
+    import os
+    assert win.right.tabText(mw.TAB_LIVE) == "Live data"
+    f = form(win, mw.FORMS[1])
+    # the right half follows the left tab
+    assert win.right.tabText(mw.TAB_LIVE) == "Degauss live"
+    assert win.right.tabText(mw.TAB_ANALYSIS) == "Degauss replay"
+    assert win.live_stack.currentWidget() is win.dg_traces
+    assert win.analysis_stack.currentWidget() is win.dg_replay
+    f.quick_test()
+    win.start()
+    assert wait_done(app, win, 180) == 0
+    app.processEvents()
+    win.dg_traces.flush()
+    tr = win.dg_traces
+    assert len(tr.loops) == 1 and "outcome: ok" in tr.label.text()
+    assert win.right.currentIndex() == mw.TAB_LIVE      # switched to it
+    # every streamed row reached the window
+    folder = win.dg_replay.last_run
+    doc = json.load(open(os.path.join(folder, "degauss_session.json")))
+    assert tr.n == doc["cycles"][0]["n_rows"] > 1000
+    assert abs(max(abs(tr.I)) - 8.0) < 0.1
+    # the replay panel: the run just made, from its saved stream
+    assert win.dg_replay.last_btn.isEnabled()
+    win.dg_replay.last_btn.click()
+    rp = win.dg_replay.traces
+    assert len(rp.loops) == 1 and rp.n == tr.n
+    assert os.path.exists(os.path.join(folder, "stream_c01.png"))
+    win.dg_replay.clear_btn.click()
+    assert rp.loops == [] and rp.n == 0
+    # back to another procedure: the recorder's views again
+    form(win, mw.FORMS[0])
+    assert win.right.tabText(mw.TAB_LIVE) == "Live data"
+    assert win.live_stack.currentWidget() is win.live
+    assert win.analysis_stack.currentWidget() is win.analysis
 
 
 def test_sweep_go_with_auto_operator(app, win):
@@ -369,7 +463,8 @@ def test_analysis_shows_why_a_run_was_flagged(app, win):
     assert code == 30, win.log.toPlainText()[-1500:]
     an = win.analysis
     an.last_btn.click()
-    assert "ADC input rail" in an.info.text()
+    # the +/-5 V window holds the sensor's soft rail: the QZFM-rail verdict
+    assert "QZFM analog output rail" in an.info.text()
     assert not an.chan_checks["s1y"].isChecked()
     assert "⚠" in an.chan_checks["s1y"].text()
     assert an.chan_checks["s1z"].isChecked()

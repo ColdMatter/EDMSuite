@@ -47,7 +47,7 @@ colors = prop_cycle.by_key()['color']
 #datadrive=str(os.environ["Onedrive"]+"\\Desktop\\Lattice EDM\\data")
 datadrive = EDM.get_datadrive()  # set per device in data_locations.json
 month = "Oct 2026"
-date = "05"
+date = "23"
 #blockdrive=datadrive+"\\BlockData\\"
 
 drive = os.path.join(datadrive, month, date, "")# + subfolder
@@ -58,7 +58,7 @@ files = glob.glob(f'{drive}{pattern}', recursive=True)
 print("Matching files: ", [os.path.basename(f) for f in files])
 
 #%% Selection
-sele = ["009"] # leave empty, sele = [], to load all matching files
+sele = ["013"] # leave empty, sele = [], to load all matching files
 
 #%%
 LoadPasses = True
@@ -99,17 +99,24 @@ else:
 
 #%% Analysis settings
 """Can also read from scan settings (optional, for later)"""
-SigStart = 21
-SigEnd = 26
+SigStart = 27.5
+SigEnd = 40
 BkgStart = 70
 BkgEnd = 78
 
 showTOF = False
 shot_for_TOF = 17
 
-fTHz = 270
+showSET = True   #To show setpoint decided on the day as a vertical line
+SET = -0.119     #TCL or WM setpoint
+SETfreq = 288.734637
 
-#%%
+fTHz = 288
+
+TCLcal = -235.1  #in MHz/V
+TCLcalerr = 0.83
+
+#%% Extract from XML & initial processing
 OnBkgSubs = {}
 OffBkgSubs = {}
 f_iniTHzs = {}
@@ -124,6 +131,7 @@ for i in range(0, len(fileLabels)):  #for i in range(0, len(files)):
     
     ScanParams = EDM.GetScanParameterArray(Scan)
     print(Settings)
+    print("\n")
 
     BkgStartIndex = int(BkgStart * (Settings["sampleRate"]/1000))
     BkgEndIndex = int(BkgEnd * (Settings["sampleRate"]/1000))
@@ -142,19 +150,28 @@ for i in range(0, len(fileLabels)):  #for i in range(0, len(files)):
                   "and it's using Wavemeter Lock")
             HasWM = False
             Scan_F_offset = Settings["Freq offset THz"]
-            print("Scan frequency offset (THz): %.10g"%Scan_F_offset)
+            if Scan_F_offset is None:
+                WMLock = False
+                print("Scan doesn't use WM lock")
+            else:
+                WMLock = True
+                print("Scan uses WM lock.")
+                print("Scan frequency offset (THz): %.10g"%Scan_F_offset)
     else:
         HasWM = False
-        print("Wrong fibre in WM.")
-    
-    if HasWM:
-        f_iniTHzs[fileLabels[i]] = f_iniTHz
-        X_f_relMHzs[fileLabels[i]] = f_relMHz
-        X_f_THz[fileLabels[i]] = f_relMHz * 1e-6 + f_iniTHz
-    else:
-        f_iniTHzs[fileLabels[i]] = 0
-        X_f_relMHzs[fileLabels[i]] = ScanParams
-        X_f_THz[fileLabels[i]] = ScanParams
+        Scan_F_offset = Settings["Freq offset THz"]
+        if Scan_F_offset is None:
+            WMLock = False
+            print("Scan doesn't use WM lock")
+            TCLconv = TCLcal
+            TCLconverr = TCLcalerr
+            print("Wrong fibre in WM and not in WM lock. Use manual TCL calibration inputs.")
+        else:
+            WMLock = True
+            print("Scan uses WM lock.")
+            print("Scan frequency offset (THz): %.10g"%Scan_F_offset)
+        
+
     
     #% Get TOFs, averaged per point
     TimeOnSPP, DataOnSPP, TimeOffSPP, DataOffSPP = EDM.GetTOFsSPP(Scan)
@@ -198,6 +215,31 @@ for i in range(0, len(fileLabels)):  #for i in range(0, len(files)):
                                                   TimeOnSPP,TimeOffSPP,\
                     SigStart,SigEnd,BkgStart,BkgEnd)
     
+    # Sort by the scanned parameter: up-down scans run alternate passes in
+    # decreasing order, so everything below sees increasing scan points.
+    # ScanParams, WM readings and gated counts are all per point in acquisition
+    # order, so one ordering applies to all of them
+    if not (len(ScanParams) == len(f_relMHz) == len(OnBkgSub) == len(OffBkgSub)):
+        raise ValueError("Scan arrays of " + fileLabels[i] + " have different lengths")
+    order = np.argsort(ScanParams, kind='stable')
+    ScanParams = ScanParams[order]
+    f_relMHz = f_relMHz[order]
+    OnBkgSub = OnBkgSub[order]
+    OffBkgSub = OffBkgSub[order]
+    # f_relMHz was relative to the first point taken (the top end on a down
+    # pass); re-reference it to the first point after sorting
+    f_iniTHz = f_iniTHz + f_relMHz[0]*1e-6
+    f_relMHz = f_relMHz - f_relMHz[0]
+    
+    if HasWM:
+        f_iniTHzs[fileLabels[i]] = f_iniTHz
+        X_f_relMHzs[fileLabels[i]] = f_relMHz
+        X_f_THz[fileLabels[i]] = f_relMHz * 1e-6 + f_iniTHz
+    else:
+        f_iniTHzs[fileLabels[i]] = 0
+        X_f_relMHzs[fileLabels[i]] = ScanParams
+        X_f_THz[fileLabels[i]] = ScanParams
+    
     OnBkgSubs[fileLabels[i]] = OnBkgSub
     OffBkgSubs[fileLabels[i]] = OffBkgSub
         
@@ -217,13 +259,19 @@ for i in range(0, len(fileLabels)):  #for i in range(0, len(files)):
     plt.ylabel("Gated LIF (ms.V)")
     plt.title(title)
     plt.legend()
-    plt.show()   
+    plt.show()
     
-#%% Ratio
+    print("\n")
+    
+#%% Ratio (by passes/files)
 if HasWM:
     f_offset = 0 #270.259491 #f_iniTHzs[fileLabels[0]]
-else:
+if WMLock:
     f_offset = Scan_F_offset
+else:
+    print("No WM or WM lock. Everything in setpoints (V)")
+    
+MA = 3
 
 Ratios = {}
 for i in range(0, len(fileLabels)):
@@ -232,7 +280,6 @@ for i in range(0, len(fileLabels)):
     
     X = X_f_THz[fileLabels[i]]
     
-    MA = 10
     MoveAvg_R = tools.MovingAverage(MA, Ratio)
     MoveAvg_f = tools.MovingAverage(MA, X)
     
@@ -254,12 +301,20 @@ for i in range(0, len(fileLabels)):
         
         plt.xlabel("Relative frequency (MHz) to %.10g THz"%f_offset)
     
-    else:
+    if WMLock:
         plt.plot(X*1e3, Ratio, label='On/Off', color=colors[0])
         plt.plot(MoveAvg_f*1e3, MoveAvg_R, label="With moving average of %g"%MA, color=colors[1])
         
         plt.xlabel("Relative frequency (MHz) to WM lock setpoint %.10g"%f_offset)
-   
+    
+    else:
+        plt.plot(X, Ratio, label='On/Off', color=colors[0])
+        plt.plot(MoveAvg_f, MoveAvg_R, label="With moving average of %g"%MA, color=colors[1])
+        
+        if showSET:
+            plt.axvline(x=SET, color='r', linestyle='--', linewidth=1, label='SET')
+        
+        plt.xlabel("TCL setpoint (V)")
     
     plt.ylabel("Slowing On/Off Ratio")
     plt.title(title)
@@ -268,6 +323,101 @@ for i in range(0, len(fileLabels)):
 
 #print("Gaussian fit params [mean, std, amp, shift]: ", fitR)
 #print("Errors of fit [mean, std, amp, shift]: ", errR)
+#%% Ratio -- averaged over all
+'''
+Point-by-point mean of the On/Off ratio over all passes (scan point k of every
+pass averaged together), with the SEM over passes as the error band.
+Needs every pass to have the same scan points.
+'''
+AvgSele = [] # file IDs to include, e.g. ["010", "011"]; leave empty for all loaded files
+
+XAxis = "native" # "native": setpoint (V) / WM frequency, as in the cells above
+                  # "frequency": MHz relative to SETfreq
+                  # "velocity": molecule velocity (m/s), needs RestFreq
+RestFreq = 542.809032 - 198e-6 # THz, the v = 0 (rest frame) resonance. Only needed for "velocity"
+wavelength = 299792458/(SETfreq*1e12) # slowing light wavelength (m)
+def ToFreqTHz(X):
+    """Absolute laser frequency (THz) of scan x values"""
+    if HasWM:
+        return X
+    elif WMLock:
+        return Scan_F_offset + X*1e-3
+    else:
+        # No WM: SET <-> SETfreq, then the TCL calibration (MHz/V)
+        return SETfreq + (X - SET)*TCLconv*1e-6
+
+def ToVelocity(X):
+    """Velocity (m/s) addressed by a counter-propagating slowing beam.
+    Red detuning from RestFreq -> molecules moving towards the beam (positive v)"""
+    return -(ToFreqTHz(X) - RestFreq)*1e12*wavelength
+
+AvgLabels = [f for f in fileLabels if len(AvgSele) == 0 or f.split("_")[0] in AvgSele]
+nPoints = [len(Ratios[f]) for f in AvgLabels]
+if len(set(nPoints)) > 1:
+    raise ValueError("Passes have different numbers of scan points: " +
+                     str(dict(zip(AvgLabels, nPoints))))
+
+R_all = np.array([Ratios[f] for f in AvgLabels])    # shape (passes, points)
+X_all = np.array([X_f_THz[f] for f in AvgLabels])
+nPasses = len(AvgLabels)
+
+R_avg = np.mean(R_all, axis=0)
+R_sem = np.std(R_all, axis=0, ddof=1)/np.sqrt(nPasses) if nPasses > 1 \
+    else np.zeros_like(R_avg)
+X_avg = np.mean(X_all, axis=0) # identical for setpoints; WM readings differ slightly
+
+if XAxis == "velocity" and RestFreq is None:
+    raise ValueError('XAxis = "velocity" needs RestFreq (THz) set')
+
+def PlotX(X):
+    if XAxis == "velocity":
+        return ToVelocity(X)
+    elif XAxis == "frequency":
+        return (ToFreqTHz(X) - SETfreq)*1e6
+    elif HasWM:
+        return (X - f_offset)*1e6
+    elif WMLock:
+        return X*1e3
+    else:
+        return X
+
+if XAxis == "velocity":
+    Xlabel = "Velocity (m/s), rest frame at %.10g THz"%RestFreq
+elif XAxis == "frequency":
+    Xlabel = "Relative frequency (MHz) to SET %.10g THz"%SETfreq
+    if not (HasWM or WMLock):
+        Xlabel += "\n(from setpoint, TCL cal. %.4g MHz/V)"%TCLconv
+elif HasWM:
+    Xlabel = "Relative frequency (MHz) to %.10g THz"%f_offset
+elif WMLock:
+    Xlabel = "Relative frequency (MHz) to WM lock setpoint %.10g"%f_offset
+else:
+    Xlabel = "TCL setpoint (V)"
+
+for f in AvgLabels:
+    plt.plot(PlotX(X_f_THz[f]), Ratios[f], color='grey', alpha=0.3, linewidth=0.8)
+plt.plot(PlotX(X_avg), R_avg, '.-', color=colors[0], label="Mean of %g passes"%nPasses)
+plt.fill_between(PlotX(X_avg), R_avg-R_sem, R_avg+R_sem,
+                 color=colors[0], alpha=0.3, linewidth=0, label="SEM")
+if showSET:
+    if XAxis == "frequency":
+        plt.axvline(x=0, color='r', linestyle='--', linewidth=1, label='SET')
+    elif XAxis == "velocity":
+        plt.axvline(x=-(SETfreq - RestFreq)*1e12*wavelength,
+                    color='r', linestyle='--', linewidth=1, label='SET')
+    elif WMLock:
+        plt.axvline(x=SET*1e3, color='r', linestyle='--', linewidth=1, label='SET')
+    
+    elif not (HasWM or WMLock):
+        plt.axvline(x=SET, color='r', linestyle='--', linewidth=1, label='SET')
+
+plt.xlabel(Xlabel)
+plt.ylabel("Slowing On/Off Ratio")
+plt.title("Gated TOF over " + Settings["param"] + " from " + str(SigStart) +
+          "ms to " + str(SigEnd) + "ms gate,\n averaged over passes of files " +
+          str(sorted(set(f.split("_")[0] for f in AvgLabels))))
+plt.legend()
+plt.show()
 
 #%% Stack
 '''

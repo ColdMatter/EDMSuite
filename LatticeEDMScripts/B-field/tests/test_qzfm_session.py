@@ -113,6 +113,44 @@ def test_calib_silence_warns_or_refuses(sim_lab, tmp_path):
     assert QZFMSession(ctx, lab, p2).setup() == 13
 
 
+def test_settle_watches_then_zeroes(sim_lab, tmp_path):
+    ctx, lab = sim_lab(60.0)
+    heads_on(lab)
+    p = plan(lab, tmp_path, "settle", device_name=TWO, settle=120)
+    assert QZFMSession(ctx, lab, p).setup() == 0
+    doc = ledger(p)
+    steps = [r["step"] for r in doc["setup"]["steps"]]
+    assert steps.index("settle") == steps.index("field zero") - 1
+    settle = doc["setup"]["settle"]
+    assert settle["fault"] is None and settle["reads"] >= 4
+    rows = open(os.path.join(p.outdir, "settle_house.csv")).read().split()
+    assert rows[0].startswith("time,elapsed_s,sensor,laser_on")
+    assert {r.split(",")[2] for r in rows[1:]} == {"s1", "s2"}
+
+
+def test_settle_ends_the_session_when_a_lock_is_lost(sim_lab, tmp_path):
+    ctx, lab = sim_lab(60.0)
+    lab.world.inject(laser_drop_at_s={"A10QHJ1ZA": 20})
+    p = plan(lab, tmp_path, "drop", device_name=TWO, settle=600,
+             seconds=30)
+    code = QZFMSession(ctx, lab, p).record()
+    assert code != 0
+    doc = ledger(p)
+    assert doc["setup"]["settle"]["fault"]["sensor"] == "s2"
+    assert "lock lost" in doc["outcome"] and doc["runs"] == []
+
+
+def test_settle_only_with_setup_or_record(sim_lab):
+    _ctx, lab = sim_lab()
+    p = QZFMPlan.from_config(lab.config, device_name="A10QHMQMA", settle=60)
+    validate(p, "setup")
+    with pytest.raises(ConfigError, match="settle"):
+        validate(p, "zero")
+    with pytest.raises(ConfigError, match="settle"):
+        validate(QZFMPlan.from_config(lab.config, device_name="A10QHMQMA",
+                                      settle=-1), "run")
+
+
 def test_standby_confirms_dark(sim_lab, tmp_path):
     ctx, lab = sim_lab(60.0)
     heads_on(lab)

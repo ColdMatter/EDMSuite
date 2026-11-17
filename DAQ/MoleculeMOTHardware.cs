@@ -138,7 +138,7 @@ namespace DAQ.HAL
             
             AddDigitalOutputChannel("v0ddsSwitchB", digitalPatternBoardAddress2, 2, 1);
             AddDigitalOutputChannel("v0ddsSwitchC", digitalPatternBoardAddress2, 1, 5);
-            AddDigitalOutputChannel("v0ddsSwitchD", digitalPatternBoardAddress2, 1, 6);
+            AddDigitalOutputChannel("rbTrigger", digitalPatternBoardAddress2, 1, 6); // trigger to RbTweezer /PXI1Slot5/PFI5; the linked-MOTMaster trigger (reserved in linked runs)
 
             AddDigitalOutputChannel("DDSTrigger", digitalPatternBoardAddress2, 2, 3);
 
@@ -398,6 +398,26 @@ namespace DAQ.HAL
             MMConfig mmConfig = new MMConfig(false, false, true, false, false);
             mmConfig.ExternalFilePattern = "*.tif";
             Info.Add("MotMasterConfiguration", mmConfig);
+
+            // Linked MOTMaster: this machine is the primary, RbTweezer is the secondary.
+            Info.Add(MOTMasterLinkConfig.InfoKey, new MOTMasterLinkConfig
+            {
+                SecondaryUrl = "tcp://10.59.3.2:1187/controller.rem",
+                SecondaryHardwareType = "DAQ.HAL.RbTweezerHardware, DAQ",
+                TriggerChannel = "rbTrigger",
+                AnalogStartChannels = new[] { "DDS_Analog_Trg", "aoPatternTrigger" },
+            });
+
+            // Safe outputs: analog channel name -> volts. MOTMaster sets these at the end of
+            // every run, however it ends, and MOTMasterWatchdog sets them if MOTMaster
+            // exits or is killed. Add a channel here to protect it; the value must be
+            // inside the channel's range. See MOTMasterWatchdog/README.md.
+            Info.Add(DAQ.Analog.DAQMxAnalogSafeState.InfoKey, new Dictionary<string, double>
+            {
+                { "MOTCoilsCurrent", 0.0 },
+                { "transferCoils", 0.0 },
+                { "TweezerCoils", 0.0 },
+            });
 
             Info.Add("PGType", "dedicated");
             Info.Add("Element", "CaF");

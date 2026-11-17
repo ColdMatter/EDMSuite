@@ -16,7 +16,7 @@ public class Patterns : MOTMasterScript
     {
         Parameters = new Dictionary<string, object>();
         LoadGlobalParameters();
-        Parameters["PatternLength"] = 500000;
+        Parameters["PatternLength"] = 700000;
 
         // Shim Coils
         Parameters["xShimLoadCurrent"] = -3.20;
@@ -40,7 +40,7 @@ public class Patterns : MOTMasterScript
 
         Parameters["HandoverDur"] = 10000;
         Parameters["MoveDuration"] = 200000;
-        Parameters["tMagtrapDuration"] = 1000;
+        Parameters["tMagtrapDuration"] = 200000;
         Parameters["Magtrap2Duration"] = 1000;
     }
 
@@ -316,12 +316,15 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("MOTCoilsCurrent", BlueMOTEnd, (double)Parameters["MOTCoilsOffValue"]);                                                                    // OFF - lambda molasses 2
         p.AddAnalogValue("MOTCoilsCurrent", Magtrap1Start, (double)Parameters["BlueMOTField"]);                                                                      // ON  - magtrap
 
+        //set transport coils to negative setpoint for the experiment to avoid background field.
+        //p.AddAnalogValue("transferCoils", 0, -0.1)
+
         // Handover to transport coils
         p.AddLinearRamp("MOTCoilsCurrent", Handover1Start, (int)Parameters["HandoverDur"], 0.0); 
         p.AddLinearRamp("transferCoils", Handover1Start, (int)Parameters["HandoverDur"], 10.0); 
 
         // Handover to tweezer coils
-        p.AddLinearRamp("transferCoils", tHandover1Start, (int)Parameters["HandoverDur"], 0.0);
+        p.AddLinearRamp("transferCoils", tHandover1Start, (int)Parameters["HandoverDur"], -0.1);
         p.AddLinearRamp("TweezerCoils", tHandover1Start, (int)Parameters["HandoverDur"], 1.8);
 
         // Handover back to transport coils
@@ -330,7 +333,7 @@ public class Patterns : MOTMasterScript
 
         // Handover back to MOT coils
         p.AddLinearRamp("MOTCoilsCurrent", Handover2Start, (int)Parameters["HandoverDur"], (double)Parameters["BlueMOTField"]);
-        p.AddLinearRamp("transferCoils", Handover2Start, (int)Parameters["HandoverDur"], 0.0);
+        p.AddLinearRamp("transferCoils", Handover2Start, (int)Parameters["HandoverDur"], -0.1);
 
         // Reload into blue MOT
         p.AddAnalogValue("MOTCoilsCurrent", MagtrapEnd, (double)Parameters["MOTCoilsOffValue"]);                                                                    // OFF - switch off

@@ -21,7 +21,6 @@ from bfield.sensors import Sensor, check_sensor, save_sensors
 
 COLUMNS = ("No.", "Head ID (QuSpin label)", "USB ID", "Z -> DAQ",
            "Y -> DAQ", "Location / note")
-PIN_CHOICES = ("", "ai0", "ai1", "ai2", "ai3")   # "" = axis not recorded
 Z_COL, Y_COL, LOC_COL = 3, 4, 5
 
 
@@ -83,6 +82,8 @@ class SensorManager(QDialog):
         """scan() -> ([(port, usb, description)], simulated: bool)."""
         super().__init__(parent)
         self.config = config
+        from bfield.daq_models import model_of
+        self.pins = model_of(config).inputs     # the card's DAQ inputs
         self.scan_fn = scan
         self.saved = False
         self.setWindowTitle("Manage sensors")
@@ -162,7 +163,7 @@ class SensorManager(QDialog):
             self.table.setItem(r, c, item)
         for c, v in ((Z_COL, z_in), (Y_COL, y_in)):
             box = QComboBox()
-            for pin in PIN_CHOICES:
+            for pin in ("", *self.pins):    # "" = axis not recorded
                 box.addItem(pin or "--", pin)
             box.setCurrentIndex(max(box.findData(v), 0))
             box.currentIndexChanged.connect(self.update_sharing)

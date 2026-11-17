@@ -16,7 +16,7 @@ public class Patterns : MOTMasterScript
     {
         Parameters = new Dictionary<string, object>();
         LoadGlobalParameters();
-        Parameters["PatternLength"] = 365000;
+        Parameters["PatternLength"] = 365000 + 30000;
         Parameters["YagPreFire"] = 45000;
 
 
@@ -52,8 +52,8 @@ public class Patterns : MOTMasterScript
         Parameters["tDropDuration"] = 1; //done
         Parameters["tImageExpo"] = 1000;
 
-        Parameters["tBlueMOTDuration"] = 1000;
-        Parameters["tBlueMOTField"] = 1.8;
+        Parameters["tBlueMOTDuration"] = 30000;
+        Parameters["tBlueMOTField"] = 0.48; //0.48 Rb = 30G/cm
 
         Parameters["tCoilOffDur"] = 1; //done
     }
@@ -308,6 +308,7 @@ public class Patterns : MOTMasterScript
         // B Fields
         // MOT -> Compression -> Blue MOT -> Magtrap
         p.AddAnalogValue("MOTCoilsCurrent", 0, (double)Parameters["MOTCoilsCurrentValue"]);                                                                         // ON  - MOT
+        p.AddAnalogValue("transferCoils", 0, -0.1);
         p.AddLinearRamp("MOTCoilsCurrent", CompressRampDownStartTime, (int)Parameters["CompressRampDownDuration"], (double)Parameters["MOTCoilsCompressionValue"]); // Ramp up -MOT Compress
         p.AddAnalogValue("MOTCoilsCurrent", lambdaCoolingStart, (double)Parameters["MOTCoilsOffValue"]);                                                            // OFF - lambda molasses
         p.AddLinearRamp("MOTCoilsCurrent", BlueMOTRampStart, (int)Parameters["BlueMOTRampDuration"], (double)Parameters["BlueMOTField"]);                           // Ramp up - Blue MOT
@@ -319,7 +320,7 @@ public class Patterns : MOTMasterScript
         p.AddLinearRamp("transferCoils", Handover1Start, (int)Parameters["HandoverDur"], 10.0); 
 
         // Handover to tweezer coils
-        p.AddLinearRamp("transferCoils", tHandover1Start, (int)Parameters["HandoverDur"], 0.0);
+        p.AddLinearRamp("transferCoils", tHandover1Start, (int)Parameters["HandoverDur"], -0.1);
         p.AddLinearRamp("TweezerCoils", tHandover1Start, (int)Parameters["HandoverDur"], (double)Parameters["tMagTrapField"]);
 
         // Drop 

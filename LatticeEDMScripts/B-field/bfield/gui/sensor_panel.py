@@ -273,7 +273,11 @@ class SensorPanel(QWidget):
 
     def on_status(self, kind, data):
         if kind == "sensors":
-            self.set_sensors(data.get("sensors") or [])
+            info = data.get("sensors") or []
+            keys = {r.get("sensor", r.get("head")) for r in info}
+            # a follow-on session on the same sensors keeps the cards
+            if not (data.get("continues") and keys == set(self.cards)):
+                self.set_sensors(info)
         elif kind == "stage":
             card = self.cards.get(data.get("head"))
             if card is not None:

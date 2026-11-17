@@ -181,6 +181,18 @@ namespace UEDMHardwareControl
             this.labelMWSwitchState = new System.Windows.Forms.Label();
             this.cBMWSwitchState = new System.Windows.Forms.CheckBox();
             this.labelOPSynthTemp = new System.Windows.Forms.Label();
+            this.groupBoxNovatech = new System.Windows.Forms.GroupBox();
+            this.labelNovatechChannel = new System.Windows.Forms.Label();
+            this.comboBoxNovatechChannel = new System.Windows.Forms.ComboBox();
+            this.labelNovatechReadback = new System.Windows.Forms.Label();
+            this.labelNovatechFreq = new System.Windows.Forms.Label();
+            this.tbNovatechFrequency = new System.Windows.Forms.TextBox();
+            this.tbNovatechFreqMon = new System.Windows.Forms.TextBox();
+            this.labelNovatechAmp = new System.Windows.Forms.Label();
+            this.tbNovatechAmplitude = new System.Windows.Forms.TextBox();
+            this.tbNovatechAmpMon = new System.Windows.Forms.TextBox();
+            this.btUpdateNovatech = new System.Windows.Forms.Button();
+            this.btQueryNovatech = new System.Windows.Forms.Button();
             this.groupBoxStirapRF = new System.Windows.Forms.GroupBox();
             this.label48 = new System.Windows.Forms.Label();
             this.label47 = new System.Windows.Forms.Label();
@@ -197,6 +209,8 @@ namespace UEDMHardwareControl
             this.tbStirapRFFrequency = new System.Windows.Forms.TextBox();
             this.labelStirapRF = new System.Windows.Forms.Label();
             this.tbStirapRFFreqMon = new System.Windows.Forms.TextBox();
+            this.tbStirapRFAmpMon = new System.Windows.Forms.TextBox();
+            this.labelStirapRFAmpMon = new System.Windows.Forms.Label();
             this.groupBoxWindfreakDetection = new System.Windows.Forms.GroupBox();
             this.groupBoxMWCHAdetection = new System.Windows.Forms.GroupBox();
             this.cbCHATrigger = new System.Windows.Forms.CheckBox();
@@ -564,6 +578,11 @@ namespace UEDMHardwareControl
             this.TargetStepButton = new System.Windows.Forms.Button();
             this.lbTargetStep = new System.Windows.Forms.Label();
             this.TargetNumStepsTextBox = new System.Windows.Forms.TextBox();
+            this.lbTargetMoveSteps = new System.Windows.Forms.Label();
+            this.TargetMoveStepsTextBox = new System.Windows.Forms.TextBox();
+            this.TargetMoveNowButton = new System.Windows.Forms.Button();
+            this.TargetMoveBeforeBlockCBox = new System.Windows.Forms.CheckBox();
+            this.TargetMoveStatusTextBox = new System.Windows.Forms.TextBox();
             this.gbNeonFlowController = new System.Windows.Forms.GroupBox();
             this.cbSF6Valve = new System.Windows.Forms.CheckBox();
             this.cbHeFlowValveOnOff = new System.Windows.Forms.CheckBox();
@@ -833,6 +852,15 @@ namespace UEDMHardwareControl
             this.PD8LogCheck = new System.Windows.Forms.CheckBox();
             this.labelPDFileName = new System.Windows.Forms.Label();
             this.PDFileNameTextBox = new System.Windows.Forms.TextBox();
+            this.label57 = new System.Windows.Forms.Label();
+            this.label56 = new System.Windows.Forms.Label();
+            this.label55 = new System.Windows.Forms.Label();
+            this.label54 = new System.Windows.Forms.Label();
+            this.label53 = new System.Windows.Forms.Label();
+            this.label52 = new System.Windows.Forms.Label();
+            this.label51 = new System.Windows.Forms.Label();
+            this.label50 = new System.Windows.Forms.Label();
+            this.label49 = new System.Windows.Forms.Label();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
             this.calibrationVoltageV = new System.Windows.Forms.TextBox();
             this.calibrationPowerV = new System.Windows.Forms.TextBox();
@@ -866,6 +894,7 @@ namespace UEDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.ledChADetB)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ledChBDetA)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ledChADetA)).BeginInit();
+            this.groupBoxNovatech.SuspendLayout();
             this.groupBoxStirapRF.SuspendLayout();
             this.groupBoxWindfreakDetection.SuspendLayout();
             this.groupBoxMWCHAdetection.SuspendLayout();
@@ -1921,6 +1950,7 @@ namespace UEDMHardwareControl
             this.tabPagePumping.Controls.Add(this.labelDetectSynthTempB);
             this.tabPagePumping.Controls.Add(this.groupBoxMWSwitch);
             this.tabPagePumping.Controls.Add(this.labelOPSynthTemp);
+            this.tabPagePumping.Controls.Add(this.groupBoxNovatech);
             this.tabPagePumping.Controls.Add(this.groupBoxStirapRF);
             this.tabPagePumping.Controls.Add(this.groupBoxWindfreakDetection);
             this.tabPagePumping.Controls.Add(this.groupBoxWindfreaksynthhd);
@@ -2145,6 +2175,144 @@ namespace UEDMHardwareControl
             this.labelOPSynthTemp.TabIndex = 50;
             this.labelOPSynthTemp.Text = "Synth temperature (°C):";
             // 
+            // groupBoxNovatech
+            // 
+            this.groupBoxNovatech.Controls.Add(this.labelNovatechChannel);
+            this.groupBoxNovatech.Controls.Add(this.comboBoxNovatechChannel);
+            this.groupBoxNovatech.Controls.Add(this.labelNovatechReadback);
+            this.groupBoxNovatech.Controls.Add(this.labelNovatechFreq);
+            this.groupBoxNovatech.Controls.Add(this.tbNovatechFrequency);
+            this.groupBoxNovatech.Controls.Add(this.tbNovatechFreqMon);
+            this.groupBoxNovatech.Controls.Add(this.labelNovatechAmp);
+            this.groupBoxNovatech.Controls.Add(this.tbNovatechAmplitude);
+            this.groupBoxNovatech.Controls.Add(this.tbNovatechAmpMon);
+            this.groupBoxNovatech.Controls.Add(this.btUpdateNovatech);
+            this.groupBoxNovatech.Controls.Add(this.btQueryNovatech);
+            this.groupBoxNovatech.Location = new System.Drawing.Point(4, 674);
+            this.groupBoxNovatech.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBoxNovatech.Name = "groupBoxNovatech";
+            this.groupBoxNovatech.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBoxNovatech.Size = new System.Drawing.Size(337, 175);
+            this.groupBoxNovatech.TabIndex = 51;
+            this.groupBoxNovatech.TabStop = false;
+            this.groupBoxNovatech.Text = "Novatech 426A RF";
+            // 
+            // labelNovatechChannel
+            // 
+            this.labelNovatechChannel.AutoSize = true;
+            this.labelNovatechChannel.Location = new System.Drawing.Point(23, 33);
+            this.labelNovatechChannel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelNovatechChannel.Name = "labelNovatechChannel";
+            this.labelNovatechChannel.Size = new System.Drawing.Size(64, 17);
+            this.labelNovatechChannel.TabIndex = 0;
+            this.labelNovatechChannel.Text = "Channel:";
+            // 
+            // comboBoxNovatechChannel
+            // 
+            this.comboBoxNovatechChannel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxNovatechChannel.FormattingEnabled = true;
+            this.comboBoxNovatechChannel.Items.AddRange(new object[] {
+            "0",
+            "1"});
+            this.comboBoxNovatechChannel.Location = new System.Drawing.Point(131, 30);
+            this.comboBoxNovatechChannel.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.comboBoxNovatechChannel.Name = "comboBoxNovatechChannel";
+            this.comboBoxNovatechChannel.Size = new System.Drawing.Size(69, 24);
+            this.comboBoxNovatechChannel.TabIndex = 1;
+            this.comboBoxNovatechChannel.SelectedIndexChanged += new System.EventHandler(this.comboBoxNovatechChannel_SelectedIndexChanged);
+            // 
+            // labelNovatechReadback
+            // 
+            this.labelNovatechReadback.AutoSize = true;
+            this.labelNovatechReadback.Location = new System.Drawing.Point(237, 33);
+            this.labelNovatechReadback.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelNovatechReadback.Name = "labelNovatechReadback";
+            this.labelNovatechReadback.Size = new System.Drawing.Size(76, 17);
+            this.labelNovatechReadback.TabIndex = 2;
+            this.labelNovatechReadback.Text = "Readback:";
+            // 
+            // labelNovatechFreq
+            // 
+            this.labelNovatechFreq.AutoSize = true;
+            this.labelNovatechFreq.Location = new System.Drawing.Point(23, 67);
+            this.labelNovatechFreq.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelNovatechFreq.Name = "labelNovatechFreq";
+            this.labelNovatechFreq.Size = new System.Drawing.Size(101, 17);
+            this.labelNovatechFreq.TabIndex = 3;
+            this.labelNovatechFreq.Text = "RF freq (MHz):";
+            // 
+            // tbNovatechFrequency
+            // 
+            this.tbNovatechFrequency.Location = new System.Drawing.Point(131, 64);
+            this.tbNovatechFrequency.Margin = new System.Windows.Forms.Padding(4);
+            this.tbNovatechFrequency.Name = "tbNovatechFrequency";
+            this.tbNovatechFrequency.Size = new System.Drawing.Size(100, 22);
+            this.tbNovatechFrequency.TabIndex = 4;
+            this.tbNovatechFrequency.Text = "100";
+            // 
+            // tbNovatechFreqMon
+            // 
+            this.tbNovatechFreqMon.BackColor = System.Drawing.SystemColors.WindowText;
+            this.tbNovatechFreqMon.ForeColor = System.Drawing.Color.Chartreuse;
+            this.tbNovatechFreqMon.Location = new System.Drawing.Point(237, 64);
+            this.tbNovatechFreqMon.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tbNovatechFreqMon.Name = "tbNovatechFreqMon";
+            this.tbNovatechFreqMon.ReadOnly = true;
+            this.tbNovatechFreqMon.Size = new System.Drawing.Size(85, 22);
+            this.tbNovatechFreqMon.TabIndex = 5;
+            // 
+            // labelNovatechAmp
+            // 
+            this.labelNovatechAmp.AutoSize = true;
+            this.labelNovatechAmp.Location = new System.Drawing.Point(23, 99);
+            this.labelNovatechAmp.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelNovatechAmp.Name = "labelNovatechAmp";
+            this.labelNovatechAmp.Size = new System.Drawing.Size(99, 17);
+            this.labelNovatechAmp.TabIndex = 6;
+            this.labelNovatechAmp.Text = "Amp (0-1023):";
+            // 
+            // tbNovatechAmplitude
+            // 
+            this.tbNovatechAmplitude.Location = new System.Drawing.Point(131, 96);
+            this.tbNovatechAmplitude.Margin = new System.Windows.Forms.Padding(4);
+            this.tbNovatechAmplitude.Name = "tbNovatechAmplitude";
+            this.tbNovatechAmplitude.Size = new System.Drawing.Size(100, 22);
+            this.tbNovatechAmplitude.TabIndex = 7;
+            this.tbNovatechAmplitude.Text = "1023";
+            // 
+            // tbNovatechAmpMon
+            // 
+            this.tbNovatechAmpMon.BackColor = System.Drawing.SystemColors.WindowText;
+            this.tbNovatechAmpMon.ForeColor = System.Drawing.Color.Chartreuse;
+            this.tbNovatechAmpMon.Location = new System.Drawing.Point(237, 96);
+            this.tbNovatechAmpMon.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tbNovatechAmpMon.Name = "tbNovatechAmpMon";
+            this.tbNovatechAmpMon.ReadOnly = true;
+            this.tbNovatechAmpMon.Size = new System.Drawing.Size(85, 22);
+            this.tbNovatechAmpMon.TabIndex = 8;
+            // 
+            // btUpdateNovatech
+            // 
+            this.btUpdateNovatech.Location = new System.Drawing.Point(23, 132);
+            this.btUpdateNovatech.Margin = new System.Windows.Forms.Padding(4);
+            this.btUpdateNovatech.Name = "btUpdateNovatech";
+            this.btUpdateNovatech.Size = new System.Drawing.Size(100, 28);
+            this.btUpdateNovatech.TabIndex = 9;
+            this.btUpdateNovatech.Text = "Update";
+            this.btUpdateNovatech.UseVisualStyleBackColor = true;
+            this.btUpdateNovatech.Click += new System.EventHandler(this.btUpdateNovatech_Click);
+            // 
+            // btQueryNovatech
+            // 
+            this.btQueryNovatech.Location = new System.Drawing.Point(131, 132);
+            this.btQueryNovatech.Margin = new System.Windows.Forms.Padding(4);
+            this.btQueryNovatech.Name = "btQueryNovatech";
+            this.btQueryNovatech.Size = new System.Drawing.Size(100, 28);
+            this.btQueryNovatech.TabIndex = 10;
+            this.btQueryNovatech.Text = "Query";
+            this.btQueryNovatech.UseVisualStyleBackColor = true;
+            this.btQueryNovatech.Click += new System.EventHandler(this.btQueryNovatech_Click);
+            // 
             // groupBoxStirapRF
             // 
             this.groupBoxStirapRF.Controls.Add(this.label48);
@@ -2162,6 +2330,8 @@ namespace UEDMHardwareControl
             this.groupBoxStirapRF.Controls.Add(this.tbStirapRFFrequency);
             this.groupBoxStirapRF.Controls.Add(this.labelStirapRF);
             this.groupBoxStirapRF.Controls.Add(this.tbStirapRFFreqMon);
+            this.groupBoxStirapRF.Controls.Add(this.tbStirapRFAmpMon);
+            this.groupBoxStirapRF.Controls.Add(this.labelStirapRFAmpMon);
             this.groupBoxStirapRF.Location = new System.Drawing.Point(3, 234);
             this.groupBoxStirapRF.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.groupBoxStirapRF.Name = "groupBoxStirapRF";
@@ -2250,6 +2420,7 @@ namespace UEDMHardwareControl
             this.btQueryStirapRFFrequency.TabIndex = 55;
             this.btQueryStirapRFFrequency.Text = "Query";
             this.btQueryStirapRFFrequency.UseVisualStyleBackColor = true;
+            this.btQueryStirapRFFrequency.Click += new System.EventHandler(this.btQueryStirapRFFrequency_Click);
             // 
             // comboBoxStirapRFIncrementUnit
             // 
@@ -2329,6 +2500,27 @@ namespace UEDMHardwareControl
             this.tbStirapRFFreqMon.ReadOnly = true;
             this.tbStirapRFFreqMon.Size = new System.Drawing.Size(99, 22);
             this.tbStirapRFFreqMon.TabIndex = 36;
+            // 
+            // tbStirapRFAmpMon
+            // 
+            this.tbStirapRFAmpMon.BackColor = System.Drawing.SystemColors.WindowText;
+            this.tbStirapRFAmpMon.ForeColor = System.Drawing.Color.Chartreuse;
+            this.tbStirapRFAmpMon.Location = new System.Drawing.Point(237, 66);
+            this.tbStirapRFAmpMon.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tbStirapRFAmpMon.Name = "tbStirapRFAmpMon";
+            this.tbStirapRFAmpMon.ReadOnly = true;
+            this.tbStirapRFAmpMon.Size = new System.Drawing.Size(69, 22);
+            this.tbStirapRFAmpMon.TabIndex = 65;
+            // 
+            // labelStirapRFAmpMon
+            // 
+            this.labelStirapRFAmpMon.AutoSize = true;
+            this.labelStirapRFAmpMon.Location = new System.Drawing.Point(233, 42);
+            this.labelStirapRFAmpMon.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelStirapRFAmpMon.Name = "labelStirapRFAmpMon";
+            this.labelStirapRFAmpMon.Size = new System.Drawing.Size(82, 17);
+            this.labelStirapRFAmpMon.TabIndex = 66;
+            this.labelStirapRFAmpMon.Text = "Amp (dBm):";
             // 
             // groupBoxWindfreakDetection
             // 
@@ -6545,11 +6737,16 @@ namespace UEDMHardwareControl
             this.gBTargetStepper.Controls.Add(this.TargetStepButton);
             this.gBTargetStepper.Controls.Add(this.lbTargetStep);
             this.gBTargetStepper.Controls.Add(this.TargetNumStepsTextBox);
+            this.gBTargetStepper.Controls.Add(this.lbTargetMoveSteps);
+            this.gBTargetStepper.Controls.Add(this.TargetMoveStepsTextBox);
+            this.gBTargetStepper.Controls.Add(this.TargetMoveNowButton);
+            this.gBTargetStepper.Controls.Add(this.TargetMoveBeforeBlockCBox);
+            this.gBTargetStepper.Controls.Add(this.TargetMoveStatusTextBox);
             this.gBTargetStepper.Location = new System.Drawing.Point(8, 437);
             this.gBTargetStepper.Margin = new System.Windows.Forms.Padding(4);
             this.gBTargetStepper.Name = "gBTargetStepper";
             this.gBTargetStepper.Padding = new System.Windows.Forms.Padding(4);
-            this.gBTargetStepper.Size = new System.Drawing.Size(943, 391);
+            this.gBTargetStepper.Size = new System.Drawing.Size(943, 431);
             this.gBTargetStepper.TabIndex = 48;
             this.gBTargetStepper.TabStop = false;
             this.gBTargetStepper.Text = "Target stepper";
@@ -6557,7 +6754,7 @@ namespace UEDMHardwareControl
             // lbTargetStepperInfo
             // 
             this.lbTargetStepperInfo.AutoSize = true;
-            this.lbTargetStepperInfo.Location = new System.Drawing.Point(7, 110);
+            this.lbTargetStepperInfo.Location = new System.Drawing.Point(7, 140);
             this.lbTargetStepperInfo.Name = "lbTargetStepperInfo";
             this.lbTargetStepperInfo.Size = new System.Drawing.Size(880, 289);
             this.lbTargetStepperInfo.TabIndex = 31;
@@ -6677,6 +6874,56 @@ namespace UEDMHardwareControl
             this.TargetNumStepsTextBox.Size = new System.Drawing.Size(87, 22);
             this.TargetNumStepsTextBox.TabIndex = 0;
             this.TargetNumStepsTextBox.Text = "1";
+            // 
+            // lbTargetMoveSteps
+            // 
+            this.lbTargetMoveSteps.AutoSize = true;
+            this.lbTargetMoveSteps.Location = new System.Drawing.Point(24, 107);
+            this.lbTargetMoveSteps.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lbTargetMoveSteps.Name = "lbTargetMoveSteps";
+            this.lbTargetMoveSteps.Size = new System.Drawing.Size(144, 17);
+            this.lbTargetMoveSteps.TabIndex = 32;
+            this.lbTargetMoveSteps.Text = "Serial move N (steps)";
+            // 
+            // TargetMoveStepsTextBox
+            // 
+            this.TargetMoveStepsTextBox.Location = new System.Drawing.Point(209, 103);
+            this.TargetMoveStepsTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.TargetMoveStepsTextBox.Name = "TargetMoveStepsTextBox";
+            this.TargetMoveStepsTextBox.Size = new System.Drawing.Size(87, 22);
+            this.TargetMoveStepsTextBox.TabIndex = 33;
+            this.TargetMoveStepsTextBox.Text = "1";
+            // 
+            // TargetMoveNowButton
+            // 
+            this.TargetMoveNowButton.Location = new System.Drawing.Point(340, 101);
+            this.TargetMoveNowButton.Margin = new System.Windows.Forms.Padding(4);
+            this.TargetMoveNowButton.Name = "TargetMoveNowButton";
+            this.TargetMoveNowButton.Size = new System.Drawing.Size(100, 28);
+            this.TargetMoveNowButton.TabIndex = 34;
+            this.TargetMoveNowButton.Text = "Move now";
+            this.TargetMoveNowButton.UseVisualStyleBackColor = true;
+            this.TargetMoveNowButton.Click += new System.EventHandler(this.TargetMoveNowButton_Click);
+            // 
+            // TargetMoveBeforeBlockCBox
+            // 
+            this.TargetMoveBeforeBlockCBox.Location = new System.Drawing.Point(465, 101);
+            this.TargetMoveBeforeBlockCBox.Margin = new System.Windows.Forms.Padding(4);
+            this.TargetMoveBeforeBlockCBox.Name = "TargetMoveBeforeBlockCBox";
+            this.TargetMoveBeforeBlockCBox.Size = new System.Drawing.Size(200, 30);
+            this.TargetMoveBeforeBlockCBox.TabIndex = 35;
+            this.TargetMoveBeforeBlockCBox.Text = "Move N before each block";
+            this.TargetMoveBeforeBlockCBox.UseVisualStyleBackColor = true;
+            // 
+            // TargetMoveStatusTextBox
+            // 
+            this.TargetMoveStatusTextBox.Location = new System.Drawing.Point(672, 104);
+            this.TargetMoveStatusTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.TargetMoveStatusTextBox.Name = "TargetMoveStatusTextBox";
+            this.TargetMoveStatusTextBox.ReadOnly = true;
+            this.TargetMoveStatusTextBox.Size = new System.Drawing.Size(251, 22);
+            this.TargetMoveStatusTextBox.TabIndex = 36;
+            this.TargetMoveStatusTextBox.TabStop = false;
             // 
             // gbNeonFlowController
             // 
@@ -9499,6 +9746,15 @@ namespace UEDMHardwareControl
             this.PDMonitorTabPage.Controls.Add(this.PD8LogCheck);
             this.PDMonitorTabPage.Controls.Add(this.labelPDFileName);
             this.PDMonitorTabPage.Controls.Add(this.PDFileNameTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.label57);
+            this.PDMonitorTabPage.Controls.Add(this.label56);
+            this.PDMonitorTabPage.Controls.Add(this.label55);
+            this.PDMonitorTabPage.Controls.Add(this.label54);
+            this.PDMonitorTabPage.Controls.Add(this.label53);
+            this.PDMonitorTabPage.Controls.Add(this.label52);
+            this.PDMonitorTabPage.Controls.Add(this.label51);
+            this.PDMonitorTabPage.Controls.Add(this.label50);
+            this.PDMonitorTabPage.Controls.Add(this.label49);
             this.PDMonitorTabPage.Location = new System.Drawing.Point(4, 25);
             this.PDMonitorTabPage.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PDMonitorTabPage.Name = "PDMonitorTabPage";
@@ -9508,6 +9764,7 @@ namespace UEDMHardwareControl
             // 
             // queryPDButton
             // 
+            this.queryPDButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.queryPDButton.Location = new System.Drawing.Point(20, 20);
             this.queryPDButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.queryPDButton.Name = "queryPDButton";
@@ -9529,15 +9786,18 @@ namespace UEDMHardwareControl
             // 
             // labelPDChannel
             // 
+            this.labelPDChannel.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelPDChannel.Location = new System.Drawing.Point(20, 70);
             this.labelPDChannel.Name = "labelPDChannel";
             this.labelPDChannel.Size = new System.Drawing.Size(51, 20);
             this.labelPDChannel.TabIndex = 2;
             this.labelPDChannel.Text = "PD";
+            this.labelPDChannel.Click += new System.EventHandler(this.labelPDChannel_Click);
             // 
             // labelPDValue
             // 
-            this.labelPDValue.Location = new System.Drawing.Point(91, 70);
+            this.labelPDValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelPDValue.Location = new System.Drawing.Point(322, 70);
             this.labelPDValue.Name = "labelPDValue";
             this.labelPDValue.Size = new System.Drawing.Size(120, 25);
             this.labelPDValue.TabIndex = 3;
@@ -9545,7 +9805,8 @@ namespace UEDMHardwareControl
             // 
             // labelPDGain
             // 
-            this.labelPDGain.Location = new System.Drawing.Point(240, 70);
+            this.labelPDGain.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelPDGain.Location = new System.Drawing.Point(471, 70);
             this.labelPDGain.Name = "labelPDGain";
             this.labelPDGain.Size = new System.Drawing.Size(51, 20);
             this.labelPDGain.TabIndex = 4;
@@ -9553,7 +9814,8 @@ namespace UEDMHardwareControl
             // 
             // labelPDLog
             // 
-            this.labelPDLog.Location = new System.Drawing.Point(380, 70);
+            this.labelPDLog.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelPDLog.Location = new System.Drawing.Point(611, 70);
             this.labelPDLog.Name = "labelPDLog";
             this.labelPDLog.Size = new System.Drawing.Size(51, 20);
             this.labelPDLog.TabIndex = 5;
@@ -9569,7 +9831,7 @@ namespace UEDMHardwareControl
             // 
             // PD1MonitorTextBox
             // 
-            this.PD1MonitorTextBox.Location = new System.Drawing.Point(91, 98);
+            this.PD1MonitorTextBox.Location = new System.Drawing.Point(322, 98);
             this.PD1MonitorTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD1MonitorTextBox.Name = "PD1MonitorTextBox";
             this.PD1MonitorTextBox.ReadOnly = true;
@@ -9584,7 +9846,7 @@ namespace UEDMHardwareControl
             "Gain 2",
             "Gain 3",
             "Gain 4"});
-            this.PD1GainComboBox.Location = new System.Drawing.Point(240, 98);
+            this.PD1GainComboBox.Location = new System.Drawing.Point(471, 98);
             this.PD1GainComboBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD1GainComboBox.Name = "PD1GainComboBox";
             this.PD1GainComboBox.Size = new System.Drawing.Size(100, 24);
@@ -9593,7 +9855,7 @@ namespace UEDMHardwareControl
             // 
             // PD1LogCheck
             // 
-            this.PD1LogCheck.Location = new System.Drawing.Point(389, 100);
+            this.PD1LogCheck.Location = new System.Drawing.Point(620, 100);
             this.PD1LogCheck.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD1LogCheck.Name = "PD1LogCheck";
             this.PD1LogCheck.Size = new System.Drawing.Size(20, 20);
@@ -9601,7 +9863,7 @@ namespace UEDMHardwareControl
             // 
             // labelPDLogDuration
             // 
-            this.labelPDLogDuration.Location = new System.Drawing.Point(500, 60);
+            this.labelPDLogDuration.Location = new System.Drawing.Point(731, 72);
             this.labelPDLogDuration.Name = "labelPDLogDuration";
             this.labelPDLogDuration.Size = new System.Drawing.Size(120, 20);
             this.labelPDLogDuration.TabIndex = 10;
@@ -9609,7 +9871,7 @@ namespace UEDMHardwareControl
             // 
             // PDLogDurationTextBox
             // 
-            this.PDLogDurationTextBox.Location = new System.Drawing.Point(629, 58);
+            this.PDLogDurationTextBox.Location = new System.Drawing.Point(860, 70);
             this.PDLogDurationTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PDLogDurationTextBox.Name = "PDLogDurationTextBox";
             this.PDLogDurationTextBox.Size = new System.Drawing.Size(80, 22);
@@ -9618,7 +9880,7 @@ namespace UEDMHardwareControl
             // 
             // labelPDSamplePeriod
             // 
-            this.labelPDSamplePeriod.Location = new System.Drawing.Point(500, 97);
+            this.labelPDSamplePeriod.Location = new System.Drawing.Point(731, 109);
             this.labelPDSamplePeriod.Name = "labelPDSamplePeriod";
             this.labelPDSamplePeriod.Size = new System.Drawing.Size(124, 22);
             this.labelPDSamplePeriod.TabIndex = 12;
@@ -9626,7 +9888,7 @@ namespace UEDMHardwareControl
             // 
             // PDSamplePeriodTextBox
             // 
-            this.PDSamplePeriodTextBox.Location = new System.Drawing.Point(629, 97);
+            this.PDSamplePeriodTextBox.Location = new System.Drawing.Point(860, 109);
             this.PDSamplePeriodTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PDSamplePeriodTextBox.Name = "PDSamplePeriodTextBox";
             this.PDSamplePeriodTextBox.Size = new System.Drawing.Size(80, 22);
@@ -9635,7 +9897,7 @@ namespace UEDMHardwareControl
             // 
             // labelPDLogDirectory
             // 
-            this.labelPDLogDirectory.Location = new System.Drawing.Point(500, 178);
+            this.labelPDLogDirectory.Location = new System.Drawing.Point(731, 190);
             this.labelPDLogDirectory.Name = "labelPDLogDirectory";
             this.labelPDLogDirectory.Size = new System.Drawing.Size(105, 18);
             this.labelPDLogDirectory.TabIndex = 14;
@@ -9643,7 +9905,7 @@ namespace UEDMHardwareControl
             // 
             // PDLogDirectoryTextBox
             // 
-            this.PDLogDirectoryTextBox.Location = new System.Drawing.Point(629, 180);
+            this.PDLogDirectoryTextBox.Location = new System.Drawing.Point(860, 192);
             this.PDLogDirectoryTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PDLogDirectoryTextBox.Name = "PDLogDirectoryTextBox";
             this.PDLogDirectoryTextBox.Size = new System.Drawing.Size(129, 22);
@@ -9651,7 +9913,7 @@ namespace UEDMHardwareControl
             // 
             // PDLogDirectoryBrowseButton
             // 
-            this.PDLogDirectoryBrowseButton.Location = new System.Drawing.Point(771, 178);
+            this.PDLogDirectoryBrowseButton.Location = new System.Drawing.Point(1002, 190);
             this.PDLogDirectoryBrowseButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PDLogDirectoryBrowseButton.Name = "PDLogDirectoryBrowseButton";
             this.PDLogDirectoryBrowseButton.Size = new System.Drawing.Size(40, 25);
@@ -9661,7 +9923,7 @@ namespace UEDMHardwareControl
             // 
             // startPDLogButton
             // 
-            this.startPDLogButton.Location = new System.Drawing.Point(500, 240);
+            this.startPDLogButton.Location = new System.Drawing.Point(731, 252);
             this.startPDLogButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.startPDLogButton.Name = "startPDLogButton";
             this.startPDLogButton.Size = new System.Drawing.Size(120, 34);
@@ -9672,7 +9934,7 @@ namespace UEDMHardwareControl
             // stopPDLogButton
             // 
             this.stopPDLogButton.Enabled = false;
-            this.stopPDLogButton.Location = new System.Drawing.Point(651, 240);
+            this.stopPDLogButton.Location = new System.Drawing.Point(882, 252);
             this.stopPDLogButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.stopPDLogButton.Name = "stopPDLogButton";
             this.stopPDLogButton.Size = new System.Drawing.Size(120, 34);
@@ -9690,7 +9952,7 @@ namespace UEDMHardwareControl
             // 
             // PD2MonitorTextBox
             // 
-            this.PD2MonitorTextBox.Location = new System.Drawing.Point(91, 128);
+            this.PD2MonitorTextBox.Location = new System.Drawing.Point(322, 128);
             this.PD2MonitorTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD2MonitorTextBox.Name = "PD2MonitorTextBox";
             this.PD2MonitorTextBox.ReadOnly = true;
@@ -9705,7 +9967,7 @@ namespace UEDMHardwareControl
             "Gain 2",
             "Gain 3",
             "Gain 4"});
-            this.PD2GainComboBox.Location = new System.Drawing.Point(240, 128);
+            this.PD2GainComboBox.Location = new System.Drawing.Point(471, 128);
             this.PD2GainComboBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD2GainComboBox.Name = "PD2GainComboBox";
             this.PD2GainComboBox.Size = new System.Drawing.Size(100, 24);
@@ -9714,7 +9976,7 @@ namespace UEDMHardwareControl
             // 
             // PD2LogCheck
             // 
-            this.PD2LogCheck.Location = new System.Drawing.Point(389, 130);
+            this.PD2LogCheck.Location = new System.Drawing.Point(620, 130);
             this.PD2LogCheck.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD2LogCheck.Name = "PD2LogCheck";
             this.PD2LogCheck.Size = new System.Drawing.Size(20, 20);
@@ -9730,7 +9992,7 @@ namespace UEDMHardwareControl
             // 
             // PD3MonitorTextBox
             // 
-            this.PD3MonitorTextBox.Location = new System.Drawing.Point(91, 158);
+            this.PD3MonitorTextBox.Location = new System.Drawing.Point(322, 158);
             this.PD3MonitorTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD3MonitorTextBox.Name = "PD3MonitorTextBox";
             this.PD3MonitorTextBox.ReadOnly = true;
@@ -9745,7 +10007,7 @@ namespace UEDMHardwareControl
             "Gain 2",
             "Gain 3",
             "Gain 4"});
-            this.PD3GainComboBox.Location = new System.Drawing.Point(240, 158);
+            this.PD3GainComboBox.Location = new System.Drawing.Point(471, 158);
             this.PD3GainComboBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD3GainComboBox.Name = "PD3GainComboBox";
             this.PD3GainComboBox.Size = new System.Drawing.Size(100, 24);
@@ -9754,7 +10016,7 @@ namespace UEDMHardwareControl
             // 
             // PD3LogCheck
             // 
-            this.PD3LogCheck.Location = new System.Drawing.Point(389, 160);
+            this.PD3LogCheck.Location = new System.Drawing.Point(620, 160);
             this.PD3LogCheck.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD3LogCheck.Name = "PD3LogCheck";
             this.PD3LogCheck.Size = new System.Drawing.Size(20, 20);
@@ -9770,7 +10032,7 @@ namespace UEDMHardwareControl
             // 
             // PD4MonitorTextBox
             // 
-            this.PD4MonitorTextBox.Location = new System.Drawing.Point(91, 188);
+            this.PD4MonitorTextBox.Location = new System.Drawing.Point(322, 188);
             this.PD4MonitorTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD4MonitorTextBox.Name = "PD4MonitorTextBox";
             this.PD4MonitorTextBox.ReadOnly = true;
@@ -9785,7 +10047,7 @@ namespace UEDMHardwareControl
             "Gain 2",
             "Gain 3",
             "Gain 4"});
-            this.PD4GainComboBox.Location = new System.Drawing.Point(240, 188);
+            this.PD4GainComboBox.Location = new System.Drawing.Point(471, 188);
             this.PD4GainComboBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD4GainComboBox.Name = "PD4GainComboBox";
             this.PD4GainComboBox.Size = new System.Drawing.Size(100, 24);
@@ -9794,7 +10056,7 @@ namespace UEDMHardwareControl
             // 
             // PD4LogCheck
             // 
-            this.PD4LogCheck.Location = new System.Drawing.Point(389, 190);
+            this.PD4LogCheck.Location = new System.Drawing.Point(620, 190);
             this.PD4LogCheck.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD4LogCheck.Name = "PD4LogCheck";
             this.PD4LogCheck.Size = new System.Drawing.Size(20, 20);
@@ -9810,7 +10072,7 @@ namespace UEDMHardwareControl
             // 
             // PD5MonitorTextBox
             // 
-            this.PD5MonitorTextBox.Location = new System.Drawing.Point(91, 218);
+            this.PD5MonitorTextBox.Location = new System.Drawing.Point(322, 218);
             this.PD5MonitorTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD5MonitorTextBox.Name = "PD5MonitorTextBox";
             this.PD5MonitorTextBox.ReadOnly = true;
@@ -9825,7 +10087,7 @@ namespace UEDMHardwareControl
             "Gain 2",
             "Gain 3",
             "Gain 4"});
-            this.PD5GainComboBox.Location = new System.Drawing.Point(240, 218);
+            this.PD5GainComboBox.Location = new System.Drawing.Point(471, 218);
             this.PD5GainComboBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD5GainComboBox.Name = "PD5GainComboBox";
             this.PD5GainComboBox.Size = new System.Drawing.Size(100, 24);
@@ -9834,7 +10096,7 @@ namespace UEDMHardwareControl
             // 
             // PD5LogCheck
             // 
-            this.PD5LogCheck.Location = new System.Drawing.Point(389, 220);
+            this.PD5LogCheck.Location = new System.Drawing.Point(620, 220);
             this.PD5LogCheck.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD5LogCheck.Name = "PD5LogCheck";
             this.PD5LogCheck.Size = new System.Drawing.Size(20, 20);
@@ -9850,7 +10112,7 @@ namespace UEDMHardwareControl
             // 
             // PD6MonitorTextBox
             // 
-            this.PD6MonitorTextBox.Location = new System.Drawing.Point(91, 249);
+            this.PD6MonitorTextBox.Location = new System.Drawing.Point(322, 249);
             this.PD6MonitorTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD6MonitorTextBox.Name = "PD6MonitorTextBox";
             this.PD6MonitorTextBox.ReadOnly = true;
@@ -9865,7 +10127,7 @@ namespace UEDMHardwareControl
             "Gain 2",
             "Gain 3",
             "Gain 4"});
-            this.PD6GainComboBox.Location = new System.Drawing.Point(240, 249);
+            this.PD6GainComboBox.Location = new System.Drawing.Point(471, 249);
             this.PD6GainComboBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD6GainComboBox.Name = "PD6GainComboBox";
             this.PD6GainComboBox.Size = new System.Drawing.Size(100, 24);
@@ -9874,7 +10136,7 @@ namespace UEDMHardwareControl
             // 
             // PD6LogCheck
             // 
-            this.PD6LogCheck.Location = new System.Drawing.Point(389, 250);
+            this.PD6LogCheck.Location = new System.Drawing.Point(620, 250);
             this.PD6LogCheck.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD6LogCheck.Name = "PD6LogCheck";
             this.PD6LogCheck.Size = new System.Drawing.Size(20, 20);
@@ -9890,7 +10152,7 @@ namespace UEDMHardwareControl
             // 
             // PD7MonitorTextBox
             // 
-            this.PD7MonitorTextBox.Location = new System.Drawing.Point(91, 278);
+            this.PD7MonitorTextBox.Location = new System.Drawing.Point(322, 278);
             this.PD7MonitorTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD7MonitorTextBox.Name = "PD7MonitorTextBox";
             this.PD7MonitorTextBox.ReadOnly = true;
@@ -9905,7 +10167,7 @@ namespace UEDMHardwareControl
             "Gain 2",
             "Gain 3",
             "Gain 4"});
-            this.PD7GainComboBox.Location = new System.Drawing.Point(240, 278);
+            this.PD7GainComboBox.Location = new System.Drawing.Point(471, 278);
             this.PD7GainComboBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD7GainComboBox.Name = "PD7GainComboBox";
             this.PD7GainComboBox.Size = new System.Drawing.Size(100, 24);
@@ -9914,7 +10176,7 @@ namespace UEDMHardwareControl
             // 
             // PD7LogCheck
             // 
-            this.PD7LogCheck.Location = new System.Drawing.Point(389, 281);
+            this.PD7LogCheck.Location = new System.Drawing.Point(620, 281);
             this.PD7LogCheck.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD7LogCheck.Name = "PD7LogCheck";
             this.PD7LogCheck.Size = new System.Drawing.Size(20, 20);
@@ -9930,7 +10192,7 @@ namespace UEDMHardwareControl
             // 
             // PD8MonitorTextBox
             // 
-            this.PD8MonitorTextBox.Location = new System.Drawing.Point(91, 308);
+            this.PD8MonitorTextBox.Location = new System.Drawing.Point(322, 308);
             this.PD8MonitorTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD8MonitorTextBox.Name = "PD8MonitorTextBox";
             this.PD8MonitorTextBox.ReadOnly = true;
@@ -9945,7 +10207,7 @@ namespace UEDMHardwareControl
             "Gain 2",
             "Gain 3",
             "Gain 4"});
-            this.PD8GainComboBox.Location = new System.Drawing.Point(240, 308);
+            this.PD8GainComboBox.Location = new System.Drawing.Point(471, 308);
             this.PD8GainComboBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD8GainComboBox.Name = "PD8GainComboBox";
             this.PD8GainComboBox.Size = new System.Drawing.Size(100, 24);
@@ -9954,7 +10216,7 @@ namespace UEDMHardwareControl
             // 
             // PD8LogCheck
             // 
-            this.PD8LogCheck.Location = new System.Drawing.Point(389, 310);
+            this.PD8LogCheck.Location = new System.Drawing.Point(620, 310);
             this.PD8LogCheck.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD8LogCheck.Name = "PD8LogCheck";
             this.PD8LogCheck.Size = new System.Drawing.Size(20, 20);
@@ -9962,7 +10224,7 @@ namespace UEDMHardwareControl
             // 
             // labelPDFileName
             // 
-            this.labelPDFileName.Location = new System.Drawing.Point(500, 148);
+            this.labelPDFileName.Location = new System.Drawing.Point(731, 160);
             this.labelPDFileName.Name = "labelPDFileName";
             this.labelPDFileName.Size = new System.Drawing.Size(120, 22);
             this.labelPDFileName.TabIndex = 47;
@@ -9970,11 +10232,85 @@ namespace UEDMHardwareControl
             // 
             // PDFileNameTextBox
             // 
-            this.PDFileNameTextBox.Location = new System.Drawing.Point(629, 148);
+            this.PDFileNameTextBox.Location = new System.Drawing.Point(860, 160);
             this.PDFileNameTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PDFileNameTextBox.Name = "PDFileNameTextBox";
             this.PDFileNameTextBox.Size = new System.Drawing.Size(129, 22);
             this.PDFileNameTextBox.TabIndex = 48;
+            // 
+            // label57
+            // 
+            this.label57.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label57.Location = new System.Drawing.Point(77, 70);
+            this.label57.Name = "label57";
+            this.label57.Size = new System.Drawing.Size(167, 22);
+            this.label57.TabIndex = 49;
+            this.label57.Text = "Monitored Laser";
+            // 
+            // label56
+            // 
+            this.label56.Location = new System.Drawing.Point(77, 100);
+            this.label56.Name = "label56";
+            this.label56.Size = new System.Drawing.Size(187, 22);
+            this.label56.TabIndex = 50;
+            this.label56.Text = "v0 Horiztonal Cooling";
+            this.label56.Click += new System.EventHandler(this.label56_Click);
+            // 
+            // label55
+            // 
+            this.label55.Location = new System.Drawing.Point(77, 131);
+            this.label55.Name = "label55";
+            this.label55.Size = new System.Drawing.Size(236, 22);
+            this.label55.TabIndex = 51;
+            this.label55.Text = "v0 Vertical Cooling";
+            // 
+            // label54
+            // 
+            this.label54.Location = new System.Drawing.Point(77, 160);
+            this.label54.Name = "label54";
+            this.label54.Size = new System.Drawing.Size(157, 22);
+            this.label54.TabIndex = 52;
+            this.label54.Text = "P12 + Q0";
+            // 
+            // label53
+            // 
+            this.label53.Location = new System.Drawing.Point(77, 190);
+            this.label53.Name = "label53";
+            this.label53.Size = new System.Drawing.Size(120, 22);
+            this.label53.TabIndex = 53;
+            this.label53.Text = "Raman Splitter";
+            // 
+            // label52
+            // 
+            this.label52.Location = new System.Drawing.Point(77, 220);
+            this.label52.Name = "label52";
+            this.label52.Size = new System.Drawing.Size(157, 22);
+            this.label52.TabIndex = 54;
+            this.label52.Text = "Raman Recombiner";
+            // 
+            // label51
+            // 
+            this.label51.Location = new System.Drawing.Point(77, 250);
+            this.label51.Name = "label51";
+            this.label51.Size = new System.Drawing.Size(120, 22);
+            this.label51.TabIndex = 55;
+            this.label51.Text = "Probe A";
+            // 
+            // label50
+            // 
+            this.label50.Location = new System.Drawing.Point(77, 281);
+            this.label50.Name = "label50";
+            this.label50.Size = new System.Drawing.Size(120, 22);
+            this.label50.TabIndex = 56;
+            this.label50.Text = "TBD";
+            // 
+            // label49
+            // 
+            this.label49.Location = new System.Drawing.Point(77, 311);
+            this.label49.Name = "label49";
+            this.label49.Size = new System.Drawing.Size(120, 22);
+            this.label49.TabIndex = 57;
+            this.label49.Text = "TBD";
             // 
             // groupBox9
             // 
@@ -10160,6 +10496,8 @@ namespace UEDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.ledChADetB)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ledChBDetA)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ledChADetA)).EndInit();
+            this.groupBoxNovatech.ResumeLayout(false);
+            this.groupBoxNovatech.PerformLayout();
             this.groupBoxStirapRF.ResumeLayout(false);
             this.groupBoxStirapRF.PerformLayout();
             this.groupBoxWindfreakDetection.ResumeLayout(false);
@@ -10852,6 +11190,18 @@ namespace UEDMHardwareControl
         private System.Windows.Forms.ToolStripMenuItem parametersToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem parametersToolStripMenuItem1;
         private System.Windows.Forms.GroupBox groupBoxStirapRF;
+        private System.Windows.Forms.GroupBox groupBoxNovatech;
+        private System.Windows.Forms.Label labelNovatechChannel;
+        public System.Windows.Forms.ComboBox comboBoxNovatechChannel;
+        private System.Windows.Forms.Label labelNovatechReadback;
+        private System.Windows.Forms.Label labelNovatechFreq;
+        public System.Windows.Forms.TextBox tbNovatechFrequency;
+        public System.Windows.Forms.TextBox tbNovatechFreqMon;
+        private System.Windows.Forms.Label labelNovatechAmp;
+        public System.Windows.Forms.TextBox tbNovatechAmplitude;
+        public System.Windows.Forms.TextBox tbNovatechAmpMon;
+        public System.Windows.Forms.Button btUpdateNovatech;
+        public System.Windows.Forms.Button btQueryNovatech;
         private System.Windows.Forms.Button btQueryStirapRFFrequency;
         public System.Windows.Forms.ComboBox comboBoxStirapRFIncrementUnit;
         public System.Windows.Forms.ComboBox comboBoxStirapRFSetpointUnit;
@@ -10860,6 +11210,8 @@ namespace UEDMHardwareControl
         public System.Windows.Forms.TextBox tbStirapRFFrequency;
         private System.Windows.Forms.Label labelStirapRF;
         public System.Windows.Forms.TextBox tbStirapRFFreqMon;
+        public System.Windows.Forms.TextBox tbStirapRFAmpMon;
+        private System.Windows.Forms.Label labelStirapRFAmpMon;
         public System.Windows.Forms.CheckBox cbCHATrigger;
         public System.Windows.Forms.CheckBox cbCHARFTrigger;
         public System.Windows.Forms.CheckBox cbStirapRFOn;
@@ -10914,6 +11266,11 @@ namespace UEDMHardwareControl
         private System.Windows.Forms.Button TargetLengthTimeButton;
         private System.Windows.Forms.Label lbTargetStepTime;
         public System.Windows.Forms.TextBox TargetLengthTimeTextBox;
+        private System.Windows.Forms.Label lbTargetMoveSteps;
+        public System.Windows.Forms.TextBox TargetMoveStepsTextBox;
+        private System.Windows.Forms.Button TargetMoveNowButton;
+        public System.Windows.Forms.CheckBox TargetMoveBeforeBlockCBox;
+        public System.Windows.Forms.TextBox TargetMoveStatusTextBox;
         private System.Windows.Forms.Label lbTargetStepperInfo;
 
         // shirley adds on 20/05/2025
@@ -11087,6 +11444,15 @@ namespace UEDMHardwareControl
         public System.Windows.Forms.CheckBox PDConvertToMwCheckBox;
         public System.Windows.Forms.TextBox PDFileNameTextBox;
         private System.Windows.Forms.Label labelPDFileName;
+        public Label label57;
+        public Label label56;
+        public Label label55;
+        public Label label54;
+        public Label label53;
+        public Label label52;
+        public Label label51;
+        public Label label50;
+        public Label label49;
     }
 }
 

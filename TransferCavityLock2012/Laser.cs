@@ -21,7 +21,7 @@ namespace TransferCavityLock2012
         public double[] LatestScanData { get; set; }
         public String PhotoDiodeChannel;
         public Cavity ParentCavity;
-        private TransferCavityLock2012LaserControllable laser;
+        private DAQMxTCL2012LaserControlHelper laser;
         protected bool lockBlocked;  //protected : The type or member can be accessed only by code in the same class , or in a class that is derived from that class
 
         public enum LaserState
@@ -59,6 +59,7 @@ namespace TransferCavityLock2012
 
             set
             {
+                double previousVoltage = currentVoltage;
                 if (value < LowerVoltageLimit) // Want to make sure we don't try to send voltage that is too high or low so TCL doesn't crash
                 {
                     currentVoltage = LowerVoltageLimit;
@@ -71,7 +72,13 @@ namespace TransferCavityLock2012
                 {
                     currentVoltage = value;
                 }
-                laser.SetLaserVoltage(currentVoltage);
+                string owner;
+                if (!laser.TrySetLaserVoltage(currentVoltage, out owner) && owner != null)
+                {
+                    // Another program (e.g. WavemeterLock) is locking this laser, so the voltage wasn't written.
+                    currentVoltage = previousVoltage;
+                    Console.WriteLine(Name + ": voltage not set, laser is in use by " + owner);
+                }
             }
         }
 
@@ -86,9 +93,25 @@ namespace TransferCavityLock2012
             laser.ConfigureSetLaserVoltage(0.0);
         }
 
-        public void ArmLock()
+        /// <summary>
+        /// Name of the program holding this laser's output channel the last time ArmLock was refused.
+        /// </summary>
+        public string ClaimedBy { get; private set; }
+
+        /// <summary>
+        /// Arms the lock. Returns false, leaving the laser FREE, if another program
+        /// (e.g. WavemeterLock) is currently locking the same output channel.
+        /// </summary>
+        public bool ArmLock()
         {
+            string owner;
+            if (!laser.TryClaimChannel(out owner))
+            {
+                ClaimedBy = owner;
+                return false;
+            }
             lState = LaserState.LOCKING;
+            return true;
         }
 
         protected virtual void Lock()
@@ -99,6 +122,7 @@ namespace TransferCavityLock2012
         public void DisengageLock()
         {
             lState = LaserState.FREE;
+            laser.ReleaseChannel();
         }
 
         public bool IsLocked

@@ -123,33 +123,52 @@ X_State = {
             "XC": 17.20e-6 / c
         }
     },
+    # !! X(v2, v3): PROVENANCE (updated 2026-11-14). Several constants are EXTRAPOLATED, not measured. !!
+    # L17 = Lim et al., J. Mol. Spectrosc. 338, 81 (2017), Table 1 (optical spectra, 16 MHz fit SD).
+    # v2: Tv, Bpp fitted by L17. g0 = -53.89(73) MHz is L17's FITTED gamma (changed 2026-11-14 from the
+    #     extrapolated -54.20393; L17's Hamiltonian has no N-dependence of gamma).
+    #     Xb, Xc (b_F = 167.28, c = 88.02), g1, g2, XC: exact linear extrapolations of v0, v1 (L17 constrained
+    #     b_F and c the same way). dpp: L17's extrapolation. Same set as ChillTheBeams' L17 profile for v2.
+    #     TODO: we probably have our own measurement that resolves X(v2, N=1) hyperfine on the P(1) line.
+    #     Find it and cross-check these splittings with it (L17's only check, the [561] <- X(v2) scans of
+    #     their Fig. 8, had 12 MHz FWHM lines).
+    # v3: g0, Xb, Xc FITTED to the measured X(v3, N=1) intervals 1h-0 21.9(8), 0-2 83.6(7), 2-1l 145(2) MHz
+    #     (measured by S. Li & S. Popa; printed in Athanasakis-Kaklamanakis et al., arXiv:2508.15994 (2025),
+    #     Fig. 1(b); coarser values in S. Popa's thesis (2024), Table 4.1). The fit is ChillTheBeams'
+    #     (molecules/ybf/models/builder/fit_v3_ak25.py, exactly determined, L17 operator form, N <= 3 basis),
+    #     adopted by Stefan Truppe on 1 Nov 2026: gamma = -74.759(632), b_F = 173.857(2128),
+    #     c = 95.155(1836) MHz; Xb below = b_F - c/3. Changed 2026-11-14 from the linear extrapolation
+    #     (g0 -74.5975, b_F 165.78, c 89.3304), which gave 19.5 / 85.0 / 137.6 MHz for those intervals.
+    #     b_F and c sit 8.1 and 5.8 MHz above the v0-v2 trend: the extrapolation fails at v3.
+    #     Tv, Bpp: L17 fitted. dpp: L17 extrapolation. g1, g2, XC: still linear extrapolations of v0, v1.
+    # Other isotopes copy the 174 values (see the note above X_State).
     "v2": {
         174: {
             "iso": 0.32, "Tv": 999.81290, "Bpp": 7144.20e-3 / c, "dpp": 6.649e-6 / c,
-            "g0": -54.20393e-3 / c, "g1": 4.657e-6 / c, "g2": -31e-12 / c,
+            "g0": -53.89e-3 / c, "g1": 4.657e-6 / c, "g2": -31e-12 / c,
             "Xb": 137.936e-3 / c, "Xc": 88.0212e-3 / c, "XC": 21.301e-6 / c
         },
         172: {
             "iso": 0.219, "Tv": 1000.4293, "Bpp": 0.238617, "dpp": 2.102e-7,
-            "g0": -54.20393e-3 / c, "g1": 4.657e-6 / c, "g2": -31e-12 / c,
+            "g0": -53.89e-3 / c, "g1": 4.657e-6 / c, "g2": -31e-12 / c,
             "Xb": 137.936e-3 / c, "Xc": 88.0212e-3 / c, "XC": 21.301e-6 / c
         },
         176: {
             "iso": 0.127, "Tv": 999.3216, "Bpp": 0.238137, "dpp": 2.104e-7,
-            "g0": -54.20393e-3 / c, "g1": 4.657e-6 / c, "g2": -31e-12 / c,
+            "g0": -53.89e-3 / c, "g1": 4.657e-6 / c, "g2": -31e-12 / c,
             "Xb": 137.936e-3 / c, "Xc": 88.0212e-3 / c, "XC": 21.301e-6 / c
         }
     },
     "v3": {
         174: {
             "iso": 0.32, "Tv": 1493.0215, "Bpp": 7099.63e-3 / c, "dpp": 6.394e-6 / c,
-            "g0": -74.5975e-3 / c, "g1": 4.9935e-6 / c, "g2": -34e-12 / c,
-            "Xb": 136.006e-3 / c, "Xc": 89.3304e-3 / c, "XC": 25.402e-6 / c
+            "g0": -74.7592e-3 / c, "g1": 4.9935e-6 / c, "g2": -34e-12 / c,
+            "Xb": (173.8568 - 95.1547 / 3) * 1e-3 / c, "Xc": 95.1547e-3 / c, "XC": 25.402e-6 / c
         },
         172: {
             "iso": 0.219, "Tv": 1493.899, "Bpp": 0.237067, "dpp": 2.102e-7,
-            "g0": -74.5975e-3 / c, "g1": 4.9935e-6 / c, "g2": -34e-12 / c,
-            "Xb": 136.006e-3 / c, "Xc": 89.3304e-3 / c, "XC": 25.402e-6 / c
+            "g0": -74.7592e-3 / c, "g1": 4.9935e-6 / c, "g2": -34e-12 / c,
+            "Xb": (173.8568 - 95.1547 / 3) * 1e-3 / c, "Xc": 95.1547e-3 / c, "XC": 25.402e-6 / c
         }
     }
 }
@@ -3572,12 +3591,12 @@ def run_isotope_refit(
 if __name__ == "__main__":
     print("--- Running Local YbF Spectroscopy Library Tests ---")
 #% Example run for getting hyperfine structures of X under rotational
-#   levels N = 0-2 for each vibrational levels v = 0-3
+#   levels N = 0-3 for each vibrational levels v = 0-3
 # 3. Create an empty list to accumulate row dictionaries
     results_list = []
 
     # Define the range of rotational quantum numbers you want to calculate
-    n_values = range(0, 3)  # Example: n from 0 to 2
+    n_values = range(0, 4)  # Example: n from 0 to 3
 
     # 4. Run the nested loop and collect data
     for n in n_values:
@@ -3606,6 +3625,39 @@ if __name__ == "__main__":
     # Print a preview of the structured dataset (first 8 rows)
     #print(df.head(8))
     print(df)
+    
+    #% Calculate A Pi 1/2
+    results_list2 = []
+
+    # Define the range of rotational quantum numbers you want to calculate
+    j_values = np.arange(0.5, 3.5, 1)  # Example: j from 0 to 3
+
+    # 4. Run the nested loop and collect data
+    for j in j_values:
+        for iso, rules in A_Pi_12["v0"].items():
+            # Evaluate functions (returns numpy arrays of [term1, term2])
+            e_levels = Ue(j, **rules)
+            f_levels = Uf(j, **rules)
+            
+            # Flatten assignments to match your specific state notations
+            row = {
+                "j": j,
+                "isotope": iso,
+                "e (cm^-1)": e_levels,
+                "e (GHz)": e_levels * CM_INV_TO_THZ * 1e3,
+                "f (cm^-1)": f_levels,
+                "f (GHz)": f_levels * CM_INV_TO_THZ * 1e3,
+                "e-f (GHz)": (e_levels-f_levels)* CM_INV_TO_THZ * 1e3,
+            }
+            
+            results_list2.append(row)
+
+    # 5. Convert the accumulated list of dictionaries into a Pandas DataFrame
+    df2 = pd.DataFrame(results_list2)
+
+    # Print a preview of the structured dataset (first 8 rows)
+    #print(df.head(8))
+    print(df2)
     
     #% Example to get list of spectra lines
     # 1. Generate A 2Pi_1/2 spectrum

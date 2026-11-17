@@ -423,14 +423,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'RbTweezer|AnyCPU'">
     <OutputPath>bin\RbTweezer\</OutputPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'RbTweezer|x64'">
-    <OutputPath>bin\x64\RbTweezer\</OutputPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'RbTweezer|x86'">
-    <OutputPath>bin\x86\RbTweezer\</OutputPath>
-    <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL" />
@@ -438,7 +431,7 @@
     <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
-    <Reference Include="NationalInstruments.DAQmx, Version=24.3.45.49472, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
+    <Reference Include="NationalInstruments.DAQmx, Version=26.5.45.49613, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
       <Private>False</Private>
     </Reference>
     <Reference Include="NationalInstruments.UI, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
@@ -447,7 +440,7 @@
     <Reference Include="NationalInstruments.UI.WindowsForms, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
-    <Reference Include="NationalInstruments.Visa, Version=22.5.0.49212, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL">
+    <Reference Include="NationalInstruments.Visa, Version=26.5.0.12, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
     <Reference Include="PresentationCore">
@@ -495,6 +488,7 @@
       <DependentUpon>ParameterWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Controller.cs" />
+    <Compile Include="LastRunOutputs.cs" />
     <Compile Include="ControllerWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -506,6 +500,13 @@
     <Compile Include="LoadMoleculeMOTNoSlowingEdge.cs" />
     <Compile Include="MMDataIOHelper.cs" />
     <Compile Include="MOTMasterScript.cs" />
+    <Compile Include="Linked\BuildProvenance.cs" />
+    <Compile Include="Linked\LinkedPrimary.cs" />
+    <Compile Include="Linked\LinkedSecondaryState.cs" />
+    <Compile Include="Linked\LinkFingerprint.cs" />
+    <Compile Include="Linked\LinkMessages.cs" />
+    <Compile Include="Linked\LinkRemoting.cs" />
+    <Compile Include="Linked\LinkedScriptBuilder.cs" />
     <Compile Include="MOTMasterScriptSnippet.cs" />
     <Compile Include="MOTMasterSequence.cs" />
     <Compile Include="PreviewWindow.cs">

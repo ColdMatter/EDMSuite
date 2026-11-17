@@ -30,41 +30,41 @@ public class Patterns : MOTMasterScript
         Parameters["tMOTccSwitch"] = 5.5;
 
         // Shim Coils Default
-        Parameters["tMOTShimXccValue"] = 0.0; // 8.8; //8.8; //  0.0
-        Parameters["tMOTShimYccValue"] = -0.5; // 3.8;//3.8; // -2.0
-        Parameters["tMOTShimZccValue"] = -0.4193; // 0.3; //0.3; // -0.85
+        Parameters["tMOTShimXccValue"] = 1.07; // 8.8; //8.8; //  0.0
+        Parameters["tMOTShimYccValue"] = 0.0; // 3.8;//3.8; // -2.0
+        Parameters["tMOTShimZccValue"] = -0.47; // 0.3; //0.3; // -0.85
 
         // Shim Coils Molasses
         Parameters["tMolassesShimXccValue"] = 10.0000; // 8.8 // 10.0
-        Parameters["tMolassesShimYccValue"] = 3.2271; // 3.8 // 3.29
-        Parameters["tMolassesShimZccValue"] = 0.4492; // 0.3 // 0.52
+        Parameters["tMolassesShimYccValue"] = 2.80; // 3.8 // 3.29
+        Parameters["tMolassesShimZccValue"] = 0.408; // 0.3 // 0.52
 
         // tRb AOMs 
         // MOT Cooling and Repump - Loading
-        Parameters["tMOTLoadCoolVCO"] = 4.3; //Cool at 2.4 - 2.6
-        Parameters["tMOTLoadRepVCO"] = 3.0;
+        Parameters["tMOTLoadCoolVCO"] = 4.0; //Cool at 2.4 - 2.6
+        Parameters["tMOTLoadRepVCO"] = 1.84;
         Parameters["tMOTLoadCoolVVA"] = 1.00; // between 0 and 1 V
         Parameters["tMOTLoadRepVVA"] = 1.00;
 
         // MOT Cooling and Repump - Compression
-        Parameters["tcMOTLoadCoolVCO"] = 4.3; //Cool at 2.4 - 2.6
+        Parameters["tcMOTLoadCoolVCO"] = 4.0; //Cool at 2.4 - 2.6
         Parameters["tcMOTLoadRepVCO"] = 3.0;
         Parameters["tcMOTLoadCoolVVA"] = 1.00; // between 0 and 1 V
         Parameters["tcMOTLoadRepVVA"] = 1.00;
 
         // Molasses Cooling and Repump VCO & VVA
-        Parameters["tMolCoolVCO1"] = 2.5;
+        Parameters["tMolCoolVCO1"] = 1.10;
         Parameters["tMolRepVCO1"] = 3.00;
-        Parameters["tMolCoolVVA1"] = 0.5132;
-        Parameters["tMolRepVVA1"] = 1.0;
+        Parameters["tMolCoolVVA1"] = 1.0;
+        Parameters["tMolRepVVA1"] = 0.8;
 
-        Parameters["tMolCoolVCO2"] = 2.5;
+        Parameters["tMolCoolVCO2"] = 2.73;
         Parameters["tMolRepVCO2"] = 3.00;
-        Parameters["tMolCoolVVA2"] = 0.5132;
+        Parameters["tMolCoolVVA2"] = 0.69;
         Parameters["tMolRepVVA2"] = 1.0;
 
         // Imaging Cooling and Repump VCO & VVA
-        Parameters["tImgCoolVCO1"] = 2.948; // 3.6 - 4.0, resonance is 4.0
+        Parameters["tImgCoolVCO1"] = 3.0; // 3.6 - 4.0, resonance is 4.0
         Parameters["tImgRepVCO1"] = 3.00; // 3.0
         Parameters["tImgCoolVVA1"] = 1.5;
         Parameters["tImgRepVVA1"] = 1.0;
@@ -90,8 +90,8 @@ public class Patterns : MOTMasterScript
         Parameters["tDelay1"] = 1000;
         Parameters["tDelay2"] = 800;
         Parameters["tMOTExposure"] = 1;
-        Parameters["tTweezerExposure1"] = 1000;
-        Parameters["tTweezerExposure2"] = 1000;
+        Parameters["tTweezerExposure1"] = 5000;
+        Parameters["tTweezerExposure2"] = 5000;
 
         Parameters["tTweezerModulationDuration"] = 2000;
         Parameters["tDropDuration"] = 800;

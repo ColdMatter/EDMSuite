@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import re
 
-from bfield.constants import DAQ_DIFF_AI
+from bfield.daq_models import active as daq_model
 from bfield.errors import ConfigError
 
 KEY_RX = re.compile(r"s([1-9][0-9]?)")
@@ -74,9 +74,8 @@ def parse_map(spec):
         require(sep and key is not None,
                 f"bad map entry {item!r} (want sensor channel:input, e.g. "
                 "s1z:ai0 = sensor 1's Z output on ai0)")
-        require(re.fullmatch(DAQ_DIFF_AI, phys),
-                f"bad input {phys!r} in the map; the USB-6008 has four "
-                "differential inputs, ai0..ai3")
+        require(re.fullmatch(daq_model().input_rx, phys),
+                f"bad input {phys!r} in the map; {daq_model().inputs_text}")
         entries.append((name, key, phys))
     require(bool(entries), "the map is empty")
     names = [e[0] for e in entries]
@@ -85,7 +84,7 @@ def parse_map(spec):
     dupes = sorted({p for p in pins if pins.count(p) > 1})
     require(not dupes,
             f"the map puts {', '.join(dupes)} on more than one channel; "
-            "the USB-6008 has four differential inputs, ai0..ai3")
+            f"{daq_model().inputs_text}")
     for key in {e[1] for e in entries}:
         n = sum(1 for e in entries if e[1] == key)
         require(n <= AXES_PER_SENSOR,

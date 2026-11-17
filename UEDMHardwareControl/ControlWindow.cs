@@ -24,6 +24,7 @@ namespace UEDMHardwareControl
         public ControlWindow()
         {
             InitializeComponent();
+            comboBoxNovatechChannel.SelectedIndex = 0;
         }
 
         private void WindowLoaded(object sender, EventArgs e)
@@ -335,6 +336,16 @@ namespace UEDMHardwareControl
         private void SetCheckBoxHelper(CheckBox checkBox, bool checkedStatus)
         {
             checkBox.Checked = checkedStatus;
+        }
+
+        public string GetTextBoxText(System.Windows.Forms.TextBox box)
+        {
+            return (string)box.Invoke(new GetTextBoxTextDelegate(GetTextBoxTextHelper), new object[] { box });
+        }
+        private delegate string GetTextBoxTextDelegate(System.Windows.Forms.TextBox box);
+        private string GetTextBoxTextHelper(System.Windows.Forms.TextBox box)
+        {
+            return box.Text;
         }
 
         public bool GetCheckBoxCheckedStatus(CheckBox checkBox)
@@ -1673,6 +1684,11 @@ namespace UEDMHardwareControl
             controller.SaveParametersWithDialog();
         }
 
+        private void btQueryStirapRFFrequency_Click(object sender, EventArgs e)
+        {
+            controller.DisplayGreenSynthLastSettings();
+        }
+
         private void btUpdateStirapRFFrequency_Click(object sender, EventArgs e)
         {
             controller.EnableGreenSynth(true);
@@ -1698,6 +1714,21 @@ namespace UEDMHardwareControl
         private void cbStirapRFOn_CheckedChanged(object sender, EventArgs e)
         {
             controller.EnableGreenSynth(cbStirapRFOn.Checked);
+        }
+
+        private void btUpdateNovatech_Click(object sender, EventArgs e)
+        {
+            controller.UpdateNovatechUsingUIInput();
+        }
+
+        private void btQueryNovatech_Click(object sender, EventArgs e)
+        {
+            controller.QueryNovatech();
+        }
+
+        private void comboBoxNovatechChannel_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (controller != null) controller.DisplayNovatechChannelSettings();
         }
 
         private void cbCHBTrigger_CheckedChanged(object sender, EventArgs e)
@@ -1788,6 +1819,11 @@ namespace UEDMHardwareControl
         private void TargetLengthTimeButton_Click(object sender, EventArgs e)
         {
             controller.StepTargetForTime();
+        }
+
+        private void TargetMoveNowButton_Click(object sender, EventArgs e)
+        {
+            controller.MoveTarget();
         }
 
         // Shirley adds on 22/05/2025 for CCD controlling event handlers
@@ -2197,6 +2233,5 @@ namespace UEDMHardwareControl
                 }
             }
         }
-
     }
 }

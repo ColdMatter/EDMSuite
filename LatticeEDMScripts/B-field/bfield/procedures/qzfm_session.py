@@ -25,8 +25,8 @@ from dataclasses import dataclass, field
 
 from bfield import clock
 from bfield.channels import KEY_RX, key_number, split_channel
-from bfield.constants import (COMMON_VERSION, DAQ_AGGREGATE_MAX, GAIN_TABLE,
-                              RECORDABLE_AXES, VALID_VRANGE)
+from bfield.constants import COMMON_VERSION, GAIN_TABLE, RECORDABLE_AXES
+from bfield.daq_models import active as daq_model
 from bfield.errors import (BFieldError, ConfigError, SensorAbort,
                            SessionStop, Stopped, exit_meaning)
 from bfield.heads import same_head
@@ -73,6 +73,9 @@ class QZFMPlan:
     stream_head: str | None = None   # the sensor streamed ("s2"); None =
                                      # the first
     stream_seconds: float | None = None
+    # setup / run: hold the locked sensors this long before the field
+    # zero, watching that they stay on; 0 = no wait
+    settle: float = 0.0
     # the physical sensors (bfield.sensors.Selection.info()); empty when
     # serials were given directly -- the session then looks them up
     sensor_info: list = field(default_factory=list)
@@ -146,7 +149,7 @@ class QZFMPlan:
             zero_shift_warn=self.zero_shift_warn, sync=self.sync,
             master_head=self.master_head,
             lock_timeout=self.lock_timeout, outdir=self.outdir,
-            rs=self.record_settings())
+            settle_s=self.settle or 0.0, rs=self.record_settings())
 
 
 # ---------------------------------------------------------- validation
@@ -251,18 +254,19 @@ def validate(plan, mode):
         v = float(plan.vrange)
     except ValueError:
         v = -1.0
-    require(v in VALID_VRANGE, "vrange must be one of "
-            + ", ".join(f"{r:g}" for r in VALID_VRANGE))
+    daq = daq_model()
+    require(v in daq.vranges, f"vrange must be one of the {daq.title}'s "
+            + ", ".join(f"{r:g}" for r in daq.vranges))
     require(plan.gain in GAIN_TABLE,
             f"gain must be one of {sorted(GAIN_TABLE)}")
     require(plan.fs >= 1.0, "fs must be at least 1 Hz")
     plan.record_settings().check_extra_args()
     if mode in ("run", "setup"):
         n_ch = sum(1 for n, _k, _p in entries if split_channel(n)[1] in want)
-        require(plan.fs * n_ch <= DAQ_AGGREGATE_MAX,
+        require(plan.fs * n_ch <= daq.aggregate_max,
                 f"fs {plan.fs:g} Hz x {n_ch} channel(s) = "
-                f"{plan.fs * n_ch:.0f} S/s, over the USB-6008 aggregate "
-                f"limit of {DAQ_AGGREGATE_MAX} -- lower fs or record "
+                f"{plan.fs * n_ch:.0f} S/s, over the {daq.title} aggregate "
+                f"limit of {daq.aggregate_max:g} -- lower fs or record "
                 f"fewer channels")
     require(plan.cal_v_per_nT is None or plan.cal_v_per_nT > 0,
             "cal_v_per_nT must be positive")
@@ -276,7 +280,8 @@ def validate(plan, mode):
                         ("lock_timeout", plan.lock_timeout),
                         ("poll_s", plan.poll_s),
                         ("cal_v_per_nT", plan.cal_v_per_nT),
-                        ("stream_seconds", plan.stream_seconds)):
+                        ("stream_seconds", plan.stream_seconds),
+                        ("settle", plan.settle)):
         require(value is None or math.isfinite(value),
                 f"{name} must be a finite number (got {value!r})")
     if plan.sync == "master-slave":
@@ -285,6 +290,11 @@ def validate(plan, mode):
                 "modulation, the others follow)")
     require(plan.sync in (None, "none", "master-slave", "independent"),
             f"sync: unknown role plan {plan.sync!r}")
+    require(plan.settle is None or plan.settle >= 0,
+            "settle must be zero or positive")
+    require(not plan.settle or mode in ("setup", "run"),
+            "the settle wait belongs to a setup or a record (it comes "
+            "before the field zero)")
     if mode == "run":
         require(plan.seconds > 0, "seconds must be positive")
     if mode == "stream":
@@ -312,6 +322,9 @@ class QZFMSession:
         self.plan = plan
         self.sensors = {}
         self.session = None
+        # True for a follow-on session on the same sensors (the GUI's
+        # standby after a record): the indicator cards keep their stages
+        self.continues = False
 
     # -- harness --------------------------------------------------------
 
@@ -357,7 +370,7 @@ class QZFMSession:
             for h, serial in heads.items()]
         info = [r for r in info if r.get("sensor") in self.sensors]
         self.plan.sensor_info = info
-        self.ctx.status("sensors", sensors=info)
+        self.ctx.status("sensors", sensors=info, continues=self.continues)
         for sensor in self.sensors.values():
             sensor.on_frame = (lambda s, frame, ctx=self.ctx:
                                ctx.status("frame", head=s.head, frame=frame))

@@ -50,13 +50,13 @@ namespace UEDMHardwareControl
         //Convention for monitor to plate mapping:
         //west -> monitor1
         //east -> monitor2
-        private static double westSlope = 1858;
-        private static double eastSlope = 2001;
+        private static double westSlope = 1;//1858
+        private static double eastSlope = 1;//2001
         private static double westFreq2AmpSlope = 1;
         private static double eastFreq2AmpSlope = 1;
-        private static double westOffset = 100900;
-        private static double eastOffset = 100900;
-        private static double currentMonitorMeasurementTime = 0.01;
+        private static double westOffset = 630;//100900
+        private static double eastOffset = 630;//100900
+        private static double currentMonitorMeasurementTime = 0.1;
 
         //HV plates
         private static double voltageOutputHigh = 7;
@@ -120,6 +120,9 @@ namespace UEDMHardwareControl
 
         // Stirap Synth
         HP8657ASynth greenSynth = (HP8657ASynth)Environs.Hardware.Instruments["green"];
+
+        // Novatech 426A dual channel RF synth
+        Novatech426ASynth novatechSynth = (Novatech426ASynth)Environs.Hardware.Instruments["Novatech2channels"];
 
         // Pressure gauges
         // The following gauges have the same voltage-mbar conversion is used for the AgilentFRG720Gauge.
@@ -246,10 +249,16 @@ namespace UEDMHardwareControl
                 AnalogSingleChannelReader reader = new AnalogSingleChannelReader(task.Stream);
 
                 task.Start();
-                double val = reader.ReadSingleSample();
-                task.Stop();
-                task.Control(TaskAction.Unreserve);
-                return val;
+                try
+                {
+                    return reader.ReadSingleSample();
+                }
+                finally
+                {
+                    // Always release the card, otherwise a failed read leaves it reserved and blocks every other task on it
+                    task.Stop();
+                    task.Control(TaskAction.Unreserve);
+                }
             }
             catch (Exception e)
             {
@@ -505,10 +514,10 @@ namespace UEDMHardwareControl
             window.ToggleCCDControls(false);
 
             // Pre-fill default values in UI
-            window.tbCCDAGain.Text = "100";
-            window.tbCCDBGain.Text = "100";
+            window.tbCCDAGain.Text = "1200";
+            window.tbCCDBGain.Text = "1200";
             window.tbCCDAExposure.Text = "4.32";
-            window.tbCCDBExposure.Text = "4.83"; // based on 1.11 * 4.32 + deadtime
+            window.tbCCDBExposure.Text = "4.87"; // based on 1.11 * 4.32 + deadtime // On 09/11/2026, we changed it to 4.87 ms
             window.tbCCDAFrameCount.Text = "20";
             window.comboBoxCCDTriggerMode.SelectedIndex = 1; // Burst mode
 
@@ -516,7 +525,7 @@ namespace UEDMHardwareControl
             // Shirley adds on 25/08. When input = -1, the condition in the corresponding function would fail, such that the parameters to each CCD is set separately. 
             if (window.checkboxTCPCCDA.Checked && ccdA != null)
             {
-                SetCCDGain(100, -1);
+                SetCCDGain(1200, -1); // On 09/11/2026, we changed this from 100 to 1200
                 SetCCDExposureTime(4.32, -1);
                 SetCCDFrameCount(20, -1);
 
@@ -524,8 +533,8 @@ namespace UEDMHardwareControl
 
             if (window.checkboxTCPCCDB.Checked && ccdB != null)
             {
-                SetCCDGain(-1, 100);
-                SetCCDExposureTime(-1, 1.11 * 4.32 + 0.000033 * 1000);
+                SetCCDGain(-1, 1200); // On 09/11/2026, we changed this from 100 to 1200
+                SetCCDExposureTime(-1, 4.87); // On 09/11/2026, we changed this from 1.11 * 4.32 + 0.000033 * 1000 to 4.87
                 SetCCDFrameCount(-1, 20);
 
             }
@@ -3503,6 +3512,7 @@ namespace UEDMHardwareControl
         private int NeonFlowMonitorPollPeriod = 1000;
         private bool NeonFlowMonitorFlag;
         private bool NeonFlowSetPointFlag;
+        private bool SF6FlowSetPointFlag;
         private Object NeonFlowMonitorLock;
 
         internal void StartNeonFlowMonitorPoll()
@@ -3519,6 +3529,7 @@ namespace UEDMHardwareControl
             NeonFlowMonitorLock = new Object();
             NeonFlowMonitorFlag = false;
             NeonFlowSetPointFlag = false;
+            SF6FlowSetPointFlag = false;
             NeonFlowMonitorPollThread.Start();
         }
         internal void StopNeonFlowMonitorPoll()
@@ -3537,17 +3548,35 @@ namespace UEDMHardwareControl
                     UpdateNeonFlowSetpointMonitor();
                     if (window.cbSF6Valve.Checked)
                     {
-                        UpdateSF6FlowActMonitor();
-                        UpdateSF6FlowSetpointMonitor();
+                        try
+                        {
+                            UpdateSF6FlowActMonitor();
+                            UpdateSF6FlowSetpointMonitor();
+                        }
+                        catch (Exception e)
+                        {
+                            HandleSF6FlowControllerError(e);
+                        }
                     }
                     if (NeonFlowSetPointFlag)
                     {
                         neonFlowController.SetSetpoint(neonFlowChannelNumber, newNeonFlowSetpoint.ToString());
+                        NeonFlowSetPointFlag = false;
+                    }
+                    if (SF6FlowSetPointFlag)
+                    {
                         if (window.cbSF6Valve.Checked)
                         {
-                            sf6FlowController.SetSetpoint(sF6FlowChannelNumber, newSF6FlowSetpoint.ToString());
+                            try
+                            {
+                                sf6FlowController.SetSetpoint(sF6FlowChannelNumber, newSF6FlowSetpoint.ToString());
+                            }
+                            catch (Exception e)
+                            {
+                                HandleSF6FlowControllerError(e);
+                            }
                         }
-                        NeonFlowSetPointFlag = false;
+                        SF6FlowSetPointFlag = false;
                     }
                     if (NeonFlowMonitorFlag)
                     {
@@ -3564,12 +3593,24 @@ namespace UEDMHardwareControl
             window.EnableControl(window.btSetNewSF6FlowSetpoint, false);
         }
 
+        // If the Alicat doesn't respond (e.g. wrong COM port or unit ID), stop polling it rather than crashing the app.
+        private void HandleSF6FlowControllerError(Exception e)
+        {
+            window.SetCheckBoxCheckedStatus(window.cbSF6Valve, false);
+            string message = "Lost communication with the Alicat SF6 flow controller, so it has been disabled (\"Use Alicat?\" unticked).\n\n"
+                + "Check the COM port and unit ID, then tick the box again to retry.\n\n" + e.GetType().Name + ": " + e.Message;
+            // BeginInvoke so the poll thread isn't blocked while the message box is open
+            window.BeginInvoke(new Action(() => MessageBox.Show(message, "Alicat flow controller error", MessageBoxButtons.OK)));
+        }
+
         public void SetNeonFlowSetpoint()
         {
-            if (Double.TryParse(window.tbNewHeliumFlowSetPoint.Text, out newNeonFlowSetpoint))
+            double setpoint;
+            if (Double.TryParse(window.tbNewHeliumFlowSetPoint.Text, out setpoint))
             {
-                if (newNeonFlowSetpoint <= neonFlowUpperLimit & neonFlowLowerLimit <= newNeonFlowSetpoint)
+                if (setpoint <= neonFlowUpperLimit & neonFlowLowerLimit <= setpoint)
                 {
+                    newNeonFlowSetpoint = setpoint; // only store the setpoint once it has passed validation
                     NeonFlowSetPointFlag = true; // set flag that will trigger the setpoint to be changed in NeonFlowActMonitorPollWorker()
                 }
                 else MessageBox.Show("Setpoint request is outside of the MKS PR4000B flow range (" + neonFlowLowerLimit.ToString() + " - " + neonFlowUpperLimit.ToString() + " SCCM)", "User input exception", MessageBoxButtons.OK);
@@ -3579,13 +3620,15 @@ namespace UEDMHardwareControl
 
         public void SetSF6FlowSetpoint()
         {
-            if (Double.TryParse(window.tbNewSF6FlowSetpoint.Text, out newSF6FlowSetpoint))
+            double setpoint;
+            if (Double.TryParse(window.tbNewSF6FlowSetpoint.Text, out setpoint))
             {
-                if (newNeonFlowSetpoint <= neonFlowUpperLimit & neonFlowLowerLimit <= newNeonFlowSetpoint)
+                if (setpoint <= sF6FlowUpperLimit & sF6FlowLowerLimit <= setpoint)
                 {
-                    NeonFlowSetPointFlag = true; // set flag that will trigger the setpoint to be changed in NeonFlowActMonitorPollWorker()
+                    newSF6FlowSetpoint = setpoint; // only store the setpoint once it has passed validation
+                    SF6FlowSetPointFlag = true; // set flag that will trigger the setpoint to be changed in NeonFlowActMonitorPollWorker()
                 }
-                else MessageBox.Show("Setpoint request is outside of the Alicat flow range (" + neonFlowLowerLimit.ToString() + " - " + neonFlowUpperLimit.ToString() + " SCCM)", "User input exception", MessageBoxButtons.OK);
+                else MessageBox.Show("Setpoint request is outside of the Alicat flow range (" + sF6FlowLowerLimit.ToString() + " - " + sF6FlowUpperLimit.ToString() + " SCCM)", "User input exception", MessageBoxButtons.OK);
             }
             else MessageBox.Show("Unable to parse setpoint string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
         }
@@ -3678,6 +3721,98 @@ namespace UEDMHardwareControl
                 Console.WriteLine(String.Concat("Could not connect with exception ", errorMsg));
             }
         }
+
+        #region Target serial move (move N before each block)
+
+        // Number of steps for a serial "move N", read from the Target stepper box.
+        public int targetMoveSteps
+        {
+            get
+            {
+                string text = window.GetTextBoxText(window.TargetMoveStepsTextBox);
+                int steps;
+                if (Int32.TryParse(text.Trim(), out steps)) return steps;
+                throw new FormatException(String.Concat("Target move steps \"", text, "\" is not a whole number."));
+            }
+            set
+            {
+                window.SetTextBox(window.TargetMoveStepsTextBox, value.ToString());
+            }
+        }
+
+        // Whether MoveTargetBeforeBlock() should actually move the target.
+        public bool moveTargetBeforeBlock
+        {
+            get
+            {
+                return window.GetCheckBoxCheckedStatus(window.TargetMoveBeforeBlockCBox);
+            }
+            set
+            {
+                window.SetCheckBoxCheckedStatus(window.TargetMoveBeforeBlockCBox, value);
+            }
+        }
+
+        public int targetStepsMovedTotal = 0;
+
+        /// <summary>
+        /// Serial "move N" right now. Returns true if the controller replied AOK.
+        /// </summary>
+        public bool MoveTarget(int steps)
+        {
+            try
+            {
+                string response = targetStepperControl.Move(steps);
+                bool ok = response != null && response.Contains("AOK");
+                if (ok) targetStepsMovedTotal += steps;
+                window.SetTextBox(window.TargetMoveStatusTextBox, String.Concat(
+                    DateTime.Now.ToString("HH:mm:ss"), "  move ", steps.ToString(),
+                    ok ? " OK" : String.Concat(" FAILED (", (response ?? "").Trim(), ")"),
+                    "   total: ", targetStepsMovedTotal.ToString()));
+                return ok;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(String.Concat("Could not move target with exception ", e.ToString()));
+                window.SetTextBox(window.TargetMoveStatusTextBox, String.Concat(
+                    DateTime.Now.ToString("HH:mm:ss"), "  move ", steps.ToString(), " FAILED (no connection)"));
+                return false;
+            }
+        }
+
+        // "Move N now" button
+        public void MoveTarget()
+        {
+            int steps;
+            try { steps = targetMoveSteps; }
+            catch (FormatException e) { MessageBox.Show(e.Message, "User input exception", MessageBoxButtons.OK); return; }
+            MoveTarget(steps);
+        }
+
+        /// <summary>
+        /// Call from a block loop script just before each block, e.g.
+        ///     hc.MoveTargetBeforeBlock()
+        ///     bh.AcquireWithoutCCDsAndWait()
+        /// Does nothing (returns 0) unless "Serial move N before each block" is
+        /// ticked on the Flow Controllers tab. Otherwise sends "move N" and
+        /// returns N, or 0 if the move failed. The return value can be stored
+        /// in the block config if you want it recorded.
+        /// </summary>
+        public int MoveTargetBeforeBlock()
+        {
+            if (!moveTargetBeforeBlock) return 0;
+            int steps;
+            try { steps = targetMoveSteps; }
+            catch (FormatException e)
+            {
+                Console.WriteLine(e.Message);
+                window.SetTextBox(window.TargetMoveStatusTextBox, "Before-block move skipped: steps box is not a whole number");
+                return 0;
+            }
+            return MoveTarget(steps) ? steps : 0;
+        }
+
+        #endregion
 
         public bool targetStepDirection
         {
@@ -7104,6 +7239,20 @@ namespace UEDMHardwareControl
         #region STIRAP RF
         private const double greenSynthOffAmplitude = -130.0;
 
+        // The HP8657A can't report its settings over GPIB, so the readback boxes show the last values this program sent to it
+        private double greenSynthLastFrequency = Double.NaN;
+        private double greenSynthLastAmplitude = Double.NaN;
+
+        public void DisplayGreenSynthLastSettings()
+        {
+            window.SetTextBox(window.tbStirapRFFreqMon, Double.IsNaN(greenSynthLastFrequency) ? "Not set" : String.Format("{0:F5}", greenSynthLastFrequency));
+            string amplitudeText;
+            if (Double.IsNaN(greenSynthLastAmplitude)) amplitudeText = "Not set";
+            else if (greenSynthLastAmplitude == greenSynthOffAmplitude) amplitudeText = "Off";
+            else amplitudeText = greenSynthLastAmplitude.ToString();
+            window.SetTextBox(window.tbStirapRFAmpMon, amplitudeText);
+        }
+
         public double GreenSynthOnFrequency
         {
             get
@@ -7175,7 +7324,9 @@ namespace UEDMHardwareControl
                 MessageBox.Show("Disconnect error: " + e.Message);
             }
             greenSynth.Frequency = value;
+            greenSynthLastFrequency = value;
             window.SetTextBox(window.tbStirapRFFrequency, String.Format("{0:F5}", value));
+            DisplayGreenSynthLastSettings();
             try
             {
                 greenSynth.Disconnect();
@@ -7201,12 +7352,17 @@ namespace UEDMHardwareControl
             {
                 if (enable)
                 {
-                    greenSynth.Frequency = GreenSynthOnFrequency;
-                    greenSynth.Amplitude = GreenSynthOnAmplitude;
+                    double frequency = GreenSynthOnFrequency;
+                    double amplitude = GreenSynthOnAmplitude;
+                    greenSynth.Frequency = frequency;
+                    greenSynthLastFrequency = frequency;
+                    greenSynth.Amplitude = amplitude;
+                    greenSynthLastAmplitude = amplitude;
                 }
                 else
                 {
                     greenSynth.Amplitude = greenSynthOffAmplitude;
+                    greenSynthLastAmplitude = greenSynthOffAmplitude;
                 }
             }
 
@@ -7214,6 +7370,7 @@ namespace UEDMHardwareControl
             {
                 MessageBox.Show("Error while setting parameters: " + e.Message);
             }
+            DisplayGreenSynthLastSettings();
 
             try
             {
@@ -7224,6 +7381,13 @@ namespace UEDMHardwareControl
                 MessageBox.Show("Disconnect error: " + e.Message);
             }
 
+        }
+
+        // Called remotely (e.g. by ScanMaster's synth frequency output plugin at the end of a scan) to put the
+        // synth back to the settings in the Stirap RF box: on with its frequency/amplitude, or off
+        public void RestoreGreenSynthToUISettings()
+        {
+            window.Invoke(new Action(() => EnableGreenSynth(GreenSynthEnabled)));
         }
 
         public void SwitchStirapAOMfrequency(bool state)
@@ -7253,6 +7417,81 @@ namespace UEDMHardwareControl
             if (vIn < vMin) return vMin;
             if (vIn > vMax) return vMax;
             return vIn;
+        }
+
+        #endregion
+
+        #region Novatech 426A RF
+        // Each channel of the Novatech is set independently. The channel combo box selects which one
+        // the frequency/amplitude boxes and the readback boxes refer to.
+
+        private Novatech426ASynth.Novatech426AChannel SelectedNovatechChannel
+        {
+            get
+            {
+                int channel = window.comboBoxNovatechChannel.SelectedIndex;
+                return novatechSynth.Channel(channel < 0 ? 0 : channel);
+            }
+        }
+
+        public void UpdateNovatechUsingUIInput()
+        {
+            if (novatechSynth == null)
+            {
+                MessageBox.Show("Novatech 426A not found in hardware instruments.", "Novatech", MessageBoxButtons.OK);
+                return;
+            }
+            if (!Double.TryParse(window.tbNovatechFrequency.Text, out double frequency))
+            {
+                MessageBox.Show("Unable to parse Novatech frequency. Check input is a number (MHz).", "User input exception", MessageBoxButtons.OK);
+                return;
+            }
+            if (!Int32.TryParse(window.tbNovatechAmplitude.Text, out int amplitude))
+            {
+                MessageBox.Show("Unable to parse Novatech amplitude. Check input is an integer between 0 and 1023.", "User input exception", MessageBoxButtons.OK);
+                return;
+            }
+
+            try
+            {
+                Novatech426ASynth.Novatech426AChannel channel = SelectedNovatechChannel;
+                channel.Frequency = frequency;
+                // Make sure the amplitude is actually written, even if the channel was previously set to 0
+                if (!channel.Enabled) channel.Enabled = true;
+                channel.Amplitude = amplitude;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error while setting Novatech parameters: " + e.Message, "Novatech", MessageBoxButtons.OK);
+            }
+            DisplayNovatechChannelSettings();
+        }
+
+        public void QueryNovatech()
+        {
+            if (novatechSynth == null)
+            {
+                MessageBox.Show("Novatech 426A not found in hardware instruments.", "Novatech", MessageBoxButtons.OK);
+                return;
+            }
+            try
+            {
+                novatechSynth.ReadSettingsFromDevice();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error while querying Novatech: " + e.Message, "Novatech", MessageBoxButtons.OK);
+            }
+            DisplayNovatechChannelSettings();
+        }
+
+        // Shows the last known (set or queried) values of the selected channel in the readback boxes
+        public void DisplayNovatechChannelSettings()
+        {
+            if (novatechSynth == null) return;
+            Novatech426ASynth.Novatech426AChannel channel = SelectedNovatechChannel;
+            window.SetTextBox(window.tbNovatechFreqMon, String.Format("{0:F6}", channel.Frequency));
+            window.SetTextBox(window.tbNovatechAmpMon, (channel.Enabled ? channel.Amplitude : 0).ToString());
         }
 
         #endregion
@@ -8295,7 +8534,7 @@ namespace UEDMHardwareControl
         public void InitialiseTCPforCCDA()
         {
             string nameCCDA = null;
-            string computerCCDA = "ULTRACOLD-EMCCD"; // ULTRACOLD-EMCCD PC
+            string computerCCDA = "ic-czc5347lb5"; // CCD PC
 
             // Resolve CCD A IP
             IPHostEntry hostInfoCCDA = Dns.GetHostEntry(computerCCDA);
@@ -8506,8 +8745,8 @@ namespace UEDMHardwareControl
 
                 if (exposureB >= 0 && ccdB != null)
                 {
-                    double secB = (1.11 * exposureB + 0.000033 * 1000.0) / 1000.0;
-                    ccdB.UpdateExposureTime(secB);
+                    double secB = (1.08 * exposureB + 0.000033 * 1000.0) / 1000.0; //secB = (1.11 * exposureB + 0.000033 * 1000.0) / 1000.0
+                ccdB.UpdateExposureTime(secB);
                     Console.WriteLine($"CCD B exposure set to {exposureB} ms");
                 }
 
@@ -8772,14 +9011,14 @@ namespace UEDMHardwareControl
 
             }
 
-            // CCD External Burst Mode 
+            // CCD External Burst Mode for BlockHead
             public void StartBurstAcquisition()
             {
                 System.Threading.Tasks.Task.Run(() =>
                {
                    try
                    {
-                       ccdA.StartBurstAcquisition();
+                       ccdA.StartBurstAcquisitionBlockHead();
                        Console.WriteLine("CCD A started burst acquisition.");
                    }
                    catch (Exception ex)
@@ -8792,7 +9031,7 @@ namespace UEDMHardwareControl
                 {
                     try
                     {
-                        ccdB.StartBurstAcquisition();
+                        ccdB.StartBurstAcquisitionBlockHead();
                         Console.WriteLine("CCD B started burst acquisition.");
                     }
                     catch (Exception ex)
@@ -8802,77 +9041,79 @@ namespace UEDMHardwareControl
                 });
             }
 
-            //public void StartBurstAcquisition()
-            //{
-            //    bool readyA, readyB;
 
-            //    // Query readiness of both CCDs
-            //    IsCCDReady(out readyA, out readyB);
+            
+        //public void StartBurstAcquisition()
+        //{
+        //    bool readyA, readyB;
 
-            //    while ((ccdA != null && !readyA) || (ccdB != null && !readyB))
-            //    {
-            //        Thread.Sleep(1);
-            //        IsCCDReady(out readyA, out readyB); //re-check
-            //    }
+        //    // Query readiness of both CCDs
+        //    IsCCDReady(out readyA, out readyB);
 
-            //    if (readyA && !readyB)
-            //    {
-            //        System.Threading.Tasks.Task.Run(() =>
-            //        {
-            //            try
-            //            {
-            //                ccdA.StartBurstAcquisition();
-            //                Console.WriteLine("CCD A started burst acquisition.");
-            //            }
-            //            catch (Exception ex)
-            //            {
-            //                Console.WriteLine("CCD A burst acquisition error", ex);
-            //            }
-            //        });
-            //    }
+        //    while ((ccdA != null && !readyA) || (ccdB != null && !readyB))
+        //    {
+        //        Thread.Sleep(1);
+        //        IsCCDReady(out readyA, out readyB); //re-check
+        //    }
 
-            //    else if (!readyA && readyB)
-            //    {
-            //        System.Threading.Tasks.Task.Run(() =>
-            //        {
-            //            try
-            //            {
-            //                ccdB.StartBurstAcquisition();
-            //                Console.WriteLine("CCD B started burst acquisition.");
-            //            }
-            //            catch (Exception ex)
-            //            {
-            //                Console.WriteLine("CCD B burst acquisition error", ex);
-            //            }
-            //        });
-            //    }
+        //    if (readyA && !readyB)
+        //    {
+        //        System.Threading.Tasks.Task.Run(() =>
+        //        {
+        //            try
+        //            {
+        //                ccdA.StartBurstAcquisition();
+        //                Console.WriteLine("CCD A started burst acquisition.");
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                Console.WriteLine("CCD A burst acquisition error", ex);
+        //            }
+        //        });
+        //    }
 
-            //    else if (readyA && readyB)
-            //    {
-            //        System.Threading.Tasks.Task.Run(() =>
-            //        {
-            //            try
-            //            {
-            //                ccdA.StartBurstAcquisition();
-            //                ccdB.StartBurstAcquisition();
-            //                Console.WriteLine("CCD A and CCD B started burst acquisition.");
-            //            }
-            //            catch (Exception ex)
-            //            {
-            //                Console.WriteLine("CCD burst acquisition error", ex);
-            //            }
-            //        });
-            //    }
+        //    else if (!readyA && readyB)
+        //    {
+        //        System.Threading.Tasks.Task.Run(() =>
+        //        {
+        //            try
+        //            {
+        //                ccdB.StartBurstAcquisition();
+        //                Console.WriteLine("CCD B started burst acquisition.");
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                Console.WriteLine("CCD B burst acquisition error", ex);
+        //            }
+        //        });
+        //    }
 
-            //    else
-            //    {
-            //        Console.WriteLine("Neither CCD is ready for burst acquisition. Skipping...");
-            //    }
+        //    else if (readyA && readyB)
+        //    {
+        //        System.Threading.Tasks.Task.Run(() =>
+        //        {
+        //            try
+        //            {
+        //                ccdA.StartBurstAcquisition();
+        //                ccdB.StartBurstAcquisition();
+        //                Console.WriteLine("CCD A and CCD B started burst acquisition.");
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                Console.WriteLine("CCD burst acquisition error", ex);
+        //            }
+        //        });
+        //    }
 
-            //}
-            // NOTE: this method should only be called when ABORTING the current acquisition.
-            // otherwise, the burst mode will stop and save all files automatically itself when the scan finishes.
-            public void StopCCDBurst()
+        //    else
+        //    {
+        //        Console.WriteLine("Neither CCD is ready for burst acquisition. Skipping...");
+        //    }
+
+        //}
+        // NOTE: this method should only be called when ABORTING the current acquisition.
+        // otherwise, the burst mode will stop and save all files automatically itself when the scan finishes.
+        public void StopCCDBurst()
             {
                 ccdA.StopBurstAcquisition();
                 ccdB.StopBurstAcquisition();
@@ -9015,8 +9256,8 @@ namespace UEDMHardwareControl
 
         // Input Stray Power = slopeA * Voltage + interceptA. This differs by the gain user chooses for the specific PD. The first one is the most sensitive gain (gain 1).
         // This should apply to all PDs. To be determined by calibration.
-        private double[] slopeA = {0.0382, 0.355, 1, 1};
-        private double[] interceptA = {0.00195, -0.0278, 0, 0};
+        private double[] slopeA = {0.0323, 0.322, 3.19, 1};
+        private double[] interceptA = {-0.00337, -0.0456, -0.335, 0};
         // Monitoring Power = slopeB * Input Stray Power + interceptB. This varies case by case, depending on both the gain used and
         // the conversion factor between the captured stray light and corresponding monitoring power. To be determined.
         private double[] slopeB = {556, 147, 1, 1, 1, 1, 1, 1};
@@ -9042,15 +9283,15 @@ namespace UEDMHardwareControl
         }
 
 
-        private readonly object pdReadLock = new object();
-
         private double SafeReadPD(NationalInstruments.DAQmx.Task task)
         {
             if (task == null) return double.NaN;
 
             try
             {
-                lock (pdReadLock)
+                // The PDs are on the same DAQ card as the pressure gauges and other monitors, so share their lock.
+                // Using a separate lock let PD reads overlap with pressure reads, giving DAQmx error -50103 (resource reserved).
+                lock (HardwareControllerDAQCardLock)
                 {
                     return ReadAnalogInput(task);
                 }

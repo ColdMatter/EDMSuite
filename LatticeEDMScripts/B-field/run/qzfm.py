@@ -11,7 +11,12 @@ come from config/lab.toml, so most runs need only a mode:
   python run/qzfm.py --status --sensors 1
   python run/qzfm.py --setup  --sensors 1,2 --outdir <data_root>/labcheck/today
   python run/qzfm.py --record --sensors 1,2 --seconds 900 --name Baseline
+  python run/qzfm.py --record --sensors 1,2 --settle 1800 --seconds 3600
   python run/qzfm.py --standby --sensors 1,2
+
+--settle SECONDS (setup and record) holds the locked sensors that long
+before the field zero, reading each one every 5 s into settle_house.csv;
+the session ends if a laser goes off or a lock stays lost.
 
 --sensors picks sensors by number from config/sensors.toml; each records
 on its own DAQ inputs (z_input / y_input there; the program says what
@@ -75,6 +80,10 @@ def build_parser():
                    dest="cal_v_per_nT",
                    help="asserted V/nT; unset = nominal for the gain")
     p.add_argument("--seconds", type=float, default=900.0)
+    p.add_argument("--settle", type=float, default=None, metavar="SECONDS",
+                   help="setup / record: wait this long with the sensors "
+                        "locked before the field zero, checking they stay "
+                        "on (default 0)")
     p.add_argument("--zero-cond", type=float, default=None)
     p.add_argument("--lock-timeout", type=float, default=None)
     p.add_argument("--poll-s", type=float, default=None)
@@ -160,7 +169,7 @@ def main(argv=None):
         args, lab.config,
         axes=args.axes, map=args.map, gain=args.gain, fs=args.fs,
         vrange=args.vrange, cal_v_per_nT=args.cal_v_per_nT,
-        seconds=args.seconds, zero_cond=args.zero_cond,
+        seconds=args.seconds, settle=args.settle, zero_cond=args.zero_cond,
         lock_timeout=args.lock_timeout, poll_s=args.poll_s,
         outdir=args.outdir, name=args.name, notes=args.notes, extra_args=args.extra_args,
         require_factors=args.require_factors, force_start=args.force_start,

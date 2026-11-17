@@ -16,7 +16,12 @@ public class Patterns : MOTMasterScript
     {
         Parameters = new Dictionary<string, object>();
         LoadGlobalParameters();
-        Parameters["PatternLength"] = 600000;
+        Parameters["PatternLength"] = 365000;
+        Parameters["YagPreFire"] = 45000;
+
+
+        Parameters["ThorCamExposure"] = 250;
+        Parameters["OrcaExposure"] = 1000;
 
         // Shim Coils
         Parameters["xShimLoadCurrent"] = -3.20;
@@ -27,7 +32,7 @@ public class Patterns : MOTMasterScript
         Parameters["MagTrapField"] = 1.42;
 
         // Slowing Chirp, 5W ALS laser
-        Parameters["SlowingChirpStartTime"] = 250;//360; //400;// 380;
+        Parameters["SlowingChirpStartTime"] = 300;//360; //400;// 380;
         Parameters["SlowingChirpDuration"] = 1250;////1400;//1160; //1160
 
         // Timings
@@ -37,16 +42,23 @@ public class Patterns : MOTMasterScript
         Parameters["BlueMOTDuration"] = 1000;
         Parameters["LambdaCoolingDuration"] = 300;
         Parameters["LambdaCooling2Duration"] = 300;
+        Parameters["MagTrapField"] = 1.6;
 
-        Parameters["HandoverDur"] = 10000;
-        Parameters["MoveDuration"] = 154000;
-        Parameters["tMagtrapDuration"] = 20000;
-        Parameters["tDropDuration"] = 1;
-        Parameters["tLambdaMolassesDuration"] = 2500;
-        Parameters["tImgDelay"] = 1;
-        Parameters["tImageExpo"] = 5000;
+        Parameters["HandoverDur"] = 10000;  // can I scan this?
+        Parameters["MoveDuration"] = 154000; //done
 
-        Parameters["tCoilOffDur"] = 100;
+        Parameters["tMagTrapField"] = 1.0; //done
+        Parameters["tMagtrapDuration"] = 1; // done
+        Parameters["tDropDuration"] = 1; //done
+        Parameters["tImageExpo"] = 1000;
+
+        Parameters["tBlueMOTDuration"] = 1000;
+        Parameters["tBlueMOTField"] = 1.8;
+        Parameters["tLambdaDur"] = 2000;
+
+        Parameters["tFreeFall"] = 1000;
+
+        Parameters["tCoilOffDur"] = 1; //done
     }
 
     public override Dictionary<string, List<List<double>>> GetDDSPattern()
@@ -70,10 +82,10 @@ public class Patterns : MOTMasterScript
         int tCoilsOff = tMagtrapStart + (int)Parameters["tMagtrapDuration"];
         int tBlueMOTRampStart = tCoilsOff + (int)Parameters["tCoilOffDur"];
         int tBlueMOTRampEndImage = tBlueMOTRampStart + (int)Parameters["BlueMOTRampDuration"];
-        int tBlueMOTEnd = tBlueMOTRampEndImage + (int)Parameters["BlueMOTDuration"];
-        int tLambdaMolassesStart = tBlueMOTEnd + 1;
-        int tImageStart = tLambdaMolassesStart + (int)Parameters["tImgDelay"];
-        int Move2Start = tImageStart + (int)Parameters["tImageExpo"] + 10000;
+        int tLambdaStart = tBlueMOTRampEndImage + (int)Parameters["tBlueMOTDuration"];
+        int tLambdaEnd = tLambdaStart + (int)Parameters["tLambdaDur"];
+        int tCaFImage = tLambdaEnd + (int)Parameters["tFreeFall"];
+        int Move2Start = tCaFImage + 10000;
 
 
         addDDSPattern(p, "MOT", 0,
@@ -105,11 +117,19 @@ public class Patterns : MOTMasterScript
             (double)Parameters["ResonanceDDS1"], (double)Parameters["ResonanceDDS2"], (double)Parameters["ResonanceDDS3"], (double)Parameters["ResonanceDDS4"],
             (double)Parameters["LightoffDDS1"], (double)Parameters["LightoffDDS1"], (double)Parameters["LightoffDDS1"], (double)Parameters["LightoffDDS1"]);
 
-        addDDSPattern(p, "tBlueMOTRampStart", tBlueMOTRampStart,
+        addDDSPattern(p, "Image", tBlueMOTRampStart,
             (double)Parameters["FreqCVB1"], (double)Parameters["FreqCVB2"], (double)Parameters["FreqCVB3"], (double)Parameters["FreqCVB4"],
             (double)Parameters["BMOTAmpDDS1"], (double)Parameters["BMOTAmpDDS2"], (double)Parameters["BMOTAmpDDS3"], (double)Parameters["BMOTAmpDDS4"]);
 
-        addDDSPattern(p, "tLambdaMolasses", tBlueMOTEnd,
+        addDDSPattern(p, "tLambdaStart", tLambdaStart,
+            (double)Parameters["LambdaF1minus"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["MOTFreqDDS3"], (double)Parameters["LambdaF1plus"],
+            (double)Parameters["Lambda1Amp"], (double)Parameters["LightoffDDS2"], (double)Parameters["LightoffDDS3"], (double)Parameters["Lambda2Amp"]);
+
+        addDDSPattern(p, "FreeFall", tLambdaEnd,
+            (double)Parameters["ResonanceDDS1"], (double)Parameters["ResonanceDDS2"], (double)Parameters["ResonanceDDS3"], (double)Parameters["ResonanceDDS4"],
+            (double)Parameters["LightoffDDS1"], (double)Parameters["LightoffDDS1"], (double)Parameters["LightoffDDS1"], (double)Parameters["LightoffDDS1"]);
+
+        addDDSPattern(p, "tCaFImage", tCaFImage,
             (double)Parameters["LambdaF1minus"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["MOTFreqDDS3"], (double)Parameters["LambdaF1plus"],
             (double)Parameters["Lambda1Amp"], (double)Parameters["LightoffDDS2"], (double)Parameters["LightoffDDS3"], (double)Parameters["Lambda2Amp"]);
 
@@ -179,10 +199,10 @@ public class Patterns : MOTMasterScript
         int tCoilsOff = tMagtrapStart + (int)Parameters["tMagtrapDuration"];
         int tBlueMOTRampStart = tCoilsOff + (int)Parameters["tCoilOffDur"];
         int tBlueMOTRampEndImage = tBlueMOTRampStart + (int)Parameters["BlueMOTRampDuration"];
-        int tBlueMOTEnd = tBlueMOTRampEndImage + (int)Parameters["BlueMOTDuration"];
-        int tLambdaMolassesStart = tBlueMOTEnd + 1;
-        int tImageStart = tLambdaMolassesStart + (int)Parameters["tImgDelay"];
-        int Move2Start = tImageStart + (int)Parameters["tImageExpo"] + 10000;
+        int tLambdaStart = tBlueMOTRampEndImage + (int)Parameters["tBlueMOTDuration"];
+        int tLambdaEnd = tLambdaStart + (int)Parameters["tLambdaDur"];
+        int tCaFImage = tLambdaEnd + (int)Parameters["tFreeFall"];
+        int Move2Start = tCaFImage + 10000;
 
         //  SETUP //
         // Optical pumping
@@ -192,11 +212,13 @@ public class Patterns : MOTMasterScript
         p.Pulse(patternStartBeforeQ, 2000, 10, "tofTrigger");
 
         // CAMERA //
-        p.Pulse(0, BlueMOTEnd - (int)Parameters["BlueMOTDuration"], (int)Parameters["BlueMOTDuration"], "cameraTrigger"); //camera trigger for first frame
+        p.Pulse(0, BlueMOTEnd - (int)Parameters["ThorCamExposure"], (int)Parameters["ThorCamExposure"], "cameraTrigger"); //camera trigger for first frame
         //p.Pulse(BlueMOTEnd2 - (int)Parameters["BlueMOTDuration"], 0, (int)Parameters["BlueMOTDuration"]/2, "cameraTrigger"); //Tweezer camera trig
         //p.Pulse(background, 0, (int)Parameters["BlueMOTDuration"]/2, "cameraTrigger"); //Tweezer camera trig
 
-        p.Pulse(0, tImageStart, (int)Parameters["tImageExpo"], "rbAbsImgCamTrig");
+        //p.Pulse(0, tLambdaStart - (int)Parameters["OrcaExposure"], (int)Parameters["OrcaExposure"], "rbAbsImgCamTrig");
+
+        p.Pulse(0, tCaFImage, 5000, "rbAbsImgCamTrig");
 
         // preset load
         MOTMasterScriptSnippet lm = new LoadMoleculeMOTNoSlowingEdge(p, Parameters);
@@ -235,8 +257,8 @@ public class Patterns : MOTMasterScript
         //p.Pulse(patternStartBeforeQ, (int)Parameters["PatternLength"] - (int)Parameters["YagPreFire1"] - (int)Parameters["FlashToQ"], (int)Parameters["QSwitchPulseDuration"], "flashLamp");
         //p.Pulse(patternStartBeforeQ, (int)Parameters["PatternLength"] - (int)Parameters["YagPreFire1"], (int)Parameters["QSwitchPulseDuration"], "qSwitch");
 
-        //p.Pulse(patternStartBeforeQ, (int)Parameters["PatternLength"] - (int)Parameters["YagPreFire"] - (int)Parameters["FlashToQ"], (int)Parameters["QSwitchPulseDuration"], "flashLamp");
-        //p.Pulse(patternStartBeforeQ, (int)Parameters["PatternLength"] - (int)Parameters["YagPreFire"], (int)Parameters["QSwitchPulseDuration"], "qSwitch");
+        p.Pulse(patternStartBeforeQ, (int)Parameters["PatternLength"] - (int)Parameters["YagPreFire"] - (int)Parameters["FlashToQ"], (int)Parameters["QSwitchPulseDuration"], "flashLamp");
+        p.Pulse(patternStartBeforeQ, (int)Parameters["PatternLength"] - (int)Parameters["YagPreFire"], (int)Parameters["QSwitchPulseDuration"], "qSwitch");
 
         return p;
     }
@@ -262,10 +284,10 @@ public class Patterns : MOTMasterScript
         int tCoilsOff = tMagtrapStart + (int)Parameters["tMagtrapDuration"];
         int tBlueMOTRampStart = tCoilsOff + (int)Parameters["tCoilOffDur"];
         int tBlueMOTRampEndImage = tBlueMOTRampStart + (int)Parameters["BlueMOTRampDuration"];
-        int tBlueMOTEnd = tBlueMOTRampEndImage + (int)Parameters["BlueMOTDuration"];
-        int tLambdaMolassesStart = tBlueMOTEnd + 1;
-        int tImageStart = tLambdaMolassesStart + (int)Parameters["tImgDelay"];
-        int Move2Start = tImageStart + (int)Parameters["tImageExpo"] + 10000;
+        int tLambdaStart = tBlueMOTRampEndImage + (int)Parameters["tBlueMOTDuration"];
+        int tLambdaEnd = tLambdaStart + (int)Parameters["tLambdaDur"];
+        int tCaFImage = tLambdaEnd + (int)Parameters["tFreeFall"];
+        int Move2Start = tCaFImage + 10000;
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOTNoSlowingEdge(p, Parameters);
 
@@ -308,26 +330,27 @@ public class Patterns : MOTMasterScript
         // B Fields
         // MOT -> Compression -> Blue MOT -> Magtrap
         p.AddAnalogValue("MOTCoilsCurrent", 0, (double)Parameters["MOTCoilsCurrentValue"]);                                                                         // ON  - MOT
+        p.AddAnalogValue("transferCoils", 0, -0.1);
         p.AddLinearRamp("MOTCoilsCurrent", CompressRampDownStartTime, (int)Parameters["CompressRampDownDuration"], (double)Parameters["MOTCoilsCompressionValue"]); // Ramp up -MOT Compress
         p.AddAnalogValue("MOTCoilsCurrent", lambdaCoolingStart, (double)Parameters["MOTCoilsOffValue"]);                                                            // OFF - lambda molasses
         p.AddLinearRamp("MOTCoilsCurrent", BlueMOTRampStart, (int)Parameters["BlueMOTRampDuration"], (double)Parameters["BlueMOTField"]);                           // Ramp up - Blue MOT
         p.AddAnalogValue("MOTCoilsCurrent", BlueMOTEnd, (double)Parameters["MOTCoilsOffValue"]);                                                                    // OFF - lambda molasses 2
-        p.AddAnalogValue("MOTCoilsCurrent", Magtrap1Start, (double)Parameters["BlueMOTField"]);                                                                      // ON  - magtrap
+        p.AddAnalogValue("MOTCoilsCurrent", Magtrap1Start, (double)Parameters["MagTrapField"]);                                                                      // ON  - magtrap
 
         // Handover to transport coils
         p.AddLinearRamp("MOTCoilsCurrent", Handover1Start, (int)Parameters["HandoverDur"], 0.0); 
         p.AddLinearRamp("transferCoils", Handover1Start, (int)Parameters["HandoverDur"], 10.0); 
 
         // Handover to tweezer coils
-        p.AddLinearRamp("transferCoils", tHandover1Start, (int)Parameters["HandoverDur"], 0.0);
-        p.AddLinearRamp("TweezerCoils", tHandover1Start, (int)Parameters["HandoverDur"], 1.8);
+        p.AddLinearRamp("transferCoils", tHandover1Start, (int)Parameters["HandoverDur"], -0.1);
+        p.AddLinearRamp("TweezerCoils", tHandover1Start, (int)Parameters["HandoverDur"], (double)Parameters["tMagTrapField"]);
 
         // Drop 
         p.AddAnalogValue("TweezerCoils", tCoilsOff, 0.0);
 
         // Ramp into blue mot in tweezer chamber
-        p.AddLinearRamp("TweezerCoils", tBlueMOTRampStart, (int)Parameters["BlueMOTRampDuration"], 1.8);
-        p.AddAnalogValue("TweezerCoils", tBlueMOTEnd, 0.0);
+        p.AddLinearRamp("TweezerCoils", tBlueMOTRampStart, (int)Parameters["BlueMOTRampDuration"], (double)Parameters["tBlueMOTField"]);
+        p.AddAnalogValue("TweezerCoils", tLambdaStart, 0.0);
 
         return p;
     }

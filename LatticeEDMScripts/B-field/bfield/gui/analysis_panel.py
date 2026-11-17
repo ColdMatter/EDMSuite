@@ -47,7 +47,7 @@ from PySide6.QtWidgets import (QCheckBox, QComboBox, QDoubleSpinBox,
 
 from bfield.channels import PALETTE, split_channel
 from bfield.channels import colour as channel_colour
-from bfield.gui.plot_export import PlotActions
+from bfield.gui.plot_export import PlotActions, legend_outside
 
 WHITE_FROM_HZ = 10.0
 ASD, ADEV = "Amplitude spectral density", "Allan deviation"
@@ -480,8 +480,7 @@ class AnalysisPanel(QWidget):
         self.plot.setLabel("bottom", "frequency (Hz)")
         self.plot.showGrid(x=True, y=True, alpha=0.3)
         self.plot.setMinimumHeight(60)
-        legend = self.plot.addLegend()
-        legend.setBrush(pg.mkBrush(255, 255, 255, 220))
+        legend_outside(self.plot)
         from PySide6.QtWidgets import QTextBrowser
         vsplit = QSplitter(Qt.Vertical)
         vsplit.addWidget(self.plot)

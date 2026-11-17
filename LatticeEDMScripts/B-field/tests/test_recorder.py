@@ -77,9 +77,9 @@ def test_meta_has_every_key_the_old_recorder_wrote(lab, tmp_path):
 def test_railed_output_is_30(lab, tmp_path):
     heads_on(lab)
     lab.world.inject(rail_axis=["ai1"])
-    # at +/-2 V the ADC window clips first: the ADC-rail verdict
+    # at +/-1 V the ADC window clips first: the ADC-rail verdict
     out = str(tmp_path / "rail")
-    r = record(lab, out)
+    r = record(lab, out, "--vrange", "1")
     assert r.returncode == 30, r.stdout + r.stderr
     assert "ADC input rail" in meta_of(out)["error"]["message"]
     # a window wider than the sensor's soft rail sees the QZFM rail itself

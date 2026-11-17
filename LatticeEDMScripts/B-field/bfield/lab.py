@@ -25,6 +25,8 @@ SIM_DATA_DIR = os.path.join(PROJECT_DIR, "sim_data")
 class Lab:
     def __init__(self, config, sim=False, speed=1.0, sim_dir=None):
         self.config = config
+        from bfield.daq_models import set_active
+        self.daq_model = set_active(config)
         self.sim = bool(sim)
         if not self.sim and speed != 1.0:
             raise ConfigError("the clock can only be sped up in the "
@@ -89,9 +91,10 @@ class Lab:
         """A DAQ object (used inside the recorder child)."""
         if self.sim:
             from bfield.devices.simulated import SimUSB6008
-            return SimUSB6008(self.world)
-        from bfield.devices.daq import USB6008
-        return USB6008()
+            return SimUSB6008(self.world, self.daq_model,
+                              self.config.section("daq").get("device"))
+        from bfield.devices.daq import NIDaq
+        return NIDaq(self.daq_model)
 
     def degausser(self, ctx, warnings, port=None):
         from bfield.devices.degausser import TwinleafDG

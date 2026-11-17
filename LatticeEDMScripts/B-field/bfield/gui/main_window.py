@@ -1,11 +1,17 @@
 """The B-field main window.
 
 Left: one tab per procedure, Start / Abort. Right: the operations log,
-a live plot of what the recorder is recording, and the simulated lab
-(its state, fault injection, the simulated bench).
+a live plot of what the recorder is recording, the analysis panel, and
+the simulated lab (its state, fault injection, the simulated bench).
+With the Degauss tab selected on the left, the live plot shows the
+degausser's current, voltage and I-V loop instead, and the analysis
+panel replays saved degauss streams.
 
-SIMULATION ONLY for now: the bench option is shown but disabled
-(GUI_ALLOW_HARDWARE). Nothing the window can start touches hardware.
+Lab: Simulated (the default) or Bench. On the bench the QZFM and
+Degauss tabs drive the real sensors and degausser, exactly as
+run/qzfm.py and run/degauss.py do (same procedures, same safety
+questions, data under the real data folder); Relaxation and the S(f)
+sweep stay simulator-only here (run/relax.py, run/sf_sweep.py).
 """
 
 from __future__ import annotations
@@ -23,7 +29,8 @@ from PySide6.QtWidgets import (QCheckBox, QComboBox, QDialog,
                                QMainWindow, QMessageBox, QPlainTextEdit,
                                QProgressBar, QPushButton, QRadioButton,
                                QScrollArea, QSizePolicy,
-                               QSplitter, QTableWidget, QTableWidgetItem,
+                               QSplitter, QStackedWidget, QTableWidget,
+                               QTableWidgetItem,
                                QTabWidget, QVBoxLayout, QWidget)
 
 from bfield.channels import colour as channel_colour
@@ -33,16 +40,17 @@ from bfield.errors import BFieldError
 from bfield.gui.forms import FORMS
 from bfield.gui.qt_ui import Bridge, QtUI
 from bfield.gui.analysis_panel import AnalysisPanel
-from bfield.gui.plot_export import PlotActions
+from bfield.gui.dg_live import DgReplay, DgTraces
+from bfield.gui.plot_export import PlotActions, legend_outside
 from bfield.gui.sensor_panel import SensorPanel
 from bfield.gui.sim_operator import SimOperator
 from bfield.lab import SIM_DATA_DIR, open_lab
 from bfield.sensors import load_sensors
 from bfield.ui import Context
 
-# The bench is off-limits from the GUI until it has been tried out in
-# the simulator. Flip only on purpose, with someone at the bench.
-GUI_ALLOW_HARDWARE = False
+# The Bench option. On since 2026-11-04 for the QZFM and Degauss tabs
+# (forms with bench_ok); set False to make the GUI simulation-only again.
+GUI_ALLOW_HARDWARE = True
 
 EXIT_WORDS = {
     0: "completed", 1: "crashed / unexpected error", 10: "device not found",
@@ -53,6 +61,14 @@ EXIT_WORDS = {
     130: "stopped by the operator",
 }
 LIVE_WINDOW_S = 20.0
+WINDOW_TITLE = {"sim": "B-field -- shield characterisation (SIMULATED LAB)",
+                "bench": "B-field -- shield characterisation -- BENCH "
+                         "(real hardware)"}
+DG_REDRAW_MS = 250              # degauss traces: redraws coalesced to this
+# the right-hand tabs (indices) and their titles in each mode
+TAB_LIVE, TAB_ANALYSIS = 1, 2
+TAB_TITLES = {False: ("Live data", "Analysis"),
+              True: ("Degauss live", "Degauss replay")}
 NOMINAL_V_PER_NT = 2.7          # 1x gain; the plot is a rough pT view
 
 
@@ -117,8 +133,7 @@ class LivePlot(QWidget):
         self.plot = pg.PlotWidget()
         self.plot.setLabel("left", "field (pT, nominal 2.7 V/nT)")
         self.plot.setLabel("bottom", "time in the window (s)")
-        legend = self.plot.addLegend()
-        legend.setBrush(pg.mkBrush(255, 255, 255, 220))
+        legend_outside(self.plot)
         self.plot.showGrid(x=True, y=True, alpha=0.3)
         self.plot.setDownsampling(auto=True, mode="peak")
         self.plot.setClipToView(True)
@@ -466,17 +481,20 @@ class MainWindow(QMainWindow):
         self.bridge.ask.connect(self.on_ask)
         self.bridge.data.connect(self.on_data)
         self.bridge.status.connect(self.on_status)
+        self.bridge.degauss.connect(self.on_degauss)
         self.stop_event = None
         self.worker = None
         self.last_code = None
         self.finished_jobs = []
-        self.setWindowTitle("B-field -- shield characterisation "
-                            "(SIMULATION ONLY)")
+        self.setWindowTitle(WINDOW_TITLE["sim"])
         self.fit_to_screen()
         self._build()
         self.done_timer = QTimer(self)
         self.done_timer.timeout.connect(self.poll_worker)
         self.done_timer.start(200)
+        self.dg_timer = QTimer(self)
+        self.dg_timer.timeout.connect(self.dg_traces.flush)
+        self.dg_timer.start(DG_REDRAW_MS)
 
     # -- layout ---------------------------------------------------------
 
@@ -490,8 +508,13 @@ class MainWindow(QMainWindow):
         self.rb_sim.setChecked(True)
         self.rb_bench = QRadioButton("Bench (hardware)")
         self.rb_bench.setEnabled(GUI_ALLOW_HARDWARE)
-        self.rb_bench.setToolTip("Disabled: the GUI is simulation-only for "
-                                 "now. Use run/*.py at the bench.")
+        self.rb_bench.setToolTip(
+            "Drive the real QZFM sensors and degausser from the QZFM and "
+            "Degauss tabs (as run/qzfm.py and run/degauss.py). Relaxation "
+            "and the S(f) sweep stay simulator-only." if GUI_ALLOW_HARDWARE
+            else "Disabled: the GUI is simulation-only. Use run/*.py at "
+                 "the bench.")
+        self.rb_bench.toggled.connect(self.on_lab_changed)
         top.addWidget(self.rb_sim)
         top.addWidget(self.rb_bench)
         top.addSpacing(20)
@@ -519,9 +542,10 @@ class MainWindow(QMainWindow):
         data.setMinimumWidth(60)
         data.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Preferred)
         data.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        self.data_label = data
         top.addWidget(data, 1)
         open_btn = QPushButton("Open folder")
-        open_btn.clicked.connect(lambda: os.startfile(self.sim_dir))
+        open_btn.clicked.connect(lambda: os.startfile(self.data_dir()))
         top.addWidget(open_btn)
         outer.addLayout(top)
 
@@ -568,11 +592,22 @@ class MainWindow(QMainWindow):
         right.addTab(self.sensor_panel, "Sensors")
         self.live = LivePlot(folder=lambda: self.sim_dir,
                              say=lambda m: self.append(m, "info"))
-        right.addTab(self.live, "Live data")
+        # each of these two tabs is a stack: the recorder's view, or the
+        # degausser's (switched with the left tab, see on_form_changed)
+        self.dg_traces = DgTraces()
+        self.live_stack = QStackedWidget()
+        self.live_stack.addWidget(self.live)
+        self.live_stack.addWidget(self.dg_traces)
+        right.addTab(self.live_stack, TAB_TITLES[False][0])
         # Browse opens in the data folder (the Box Test data)
         self.analysis = AnalysisPanel(data_root=lambda: self.config.data_root,
                                       say=lambda m: self.append(m, "info"))
-        right.addTab(self.analysis, "Analysis")
+        self.dg_replay = DgReplay(data_root=lambda: self.config.data_root,
+                                  say=lambda m: self.append(m, "info"))
+        self.analysis_stack = QStackedWidget()
+        self.analysis_stack.addWidget(self.analysis)
+        self.analysis_stack.addWidget(self.dg_replay)
+        right.addTab(self.analysis_stack, TAB_TITLES[False][1])
         self.sim_panel = SimPanel(self.world, load_sensors(self.config))
         # scrollable, so the tall panel does not pin the top half's height
         # (a tab widget is as tall as its tallest tab; the divider to the
@@ -598,6 +633,8 @@ class MainWindow(QMainWindow):
         split.addWidget(right_split)
         split.setSizes([500, 900])
         outer.addWidget(split, 1)
+        self.forms.currentChanged.connect(self.on_form_changed)
+        self.on_form_changed(self.forms.currentIndex())
 
         self.progress = QProgressBar()
         self.progress.setRange(0, 1000)
@@ -624,6 +661,23 @@ class MainWindow(QMainWindow):
         self.move(area.x() + (area.width() - w) // 2,
                   area.y() + (area.height() - h) // 2)
 
+    def degauss_mode(self):
+        """True while the Degauss tab is selected on the left."""
+        from bfield.gui.forms import DegaussForm
+        i = self.forms.currentIndex()
+        return 0 <= i < len(self.form_list) and isinstance(
+            self.form_list[i], DegaussForm)
+
+    def on_form_changed(self, _index):
+        """The Degauss tab shows the degausser's traces and replay on the
+        right; every other tab the recorder's live plot and analysis."""
+        dg = self.degauss_mode()
+        self.live_stack.setCurrentIndex(1 if dg else 0)
+        self.analysis_stack.setCurrentIndex(1 if dg else 0)
+        live_title, analysis_title = TAB_TITLES[dg]
+        self.right.setTabText(TAB_LIVE, live_title)
+        self.right.setTabText(TAB_ANALYSIS, analysis_title)
+
     def hook_pickers(self):
         """Point every sensor checklist's Apply button at the panel (also
         after a form's Defaults button rebuilds it)."""
@@ -632,6 +686,49 @@ class MainWindow(QMainWindow):
             for pick in self.form_list[i].findChildren(SensorPicker):
                 pick.on_apply = self.apply_sensors
                 pick.on_manage = self.manage_sensors
+
+    # -- simulated lab / bench -----------------------------------------
+
+    def bench(self):
+        return GUI_ALLOW_HARDWARE and self.rb_bench.isChecked()
+
+    def data_dir(self):
+        return self.config.data_root if self.bench() else self.sim_dir
+
+    def on_lab_changed(self, bench):
+        if bench and not self._bench_confirmed():
+            self.rb_sim.setChecked(True)
+            return
+        self.setWindowTitle(WINDOW_TITLE["bench" if bench else "sim"])
+        for w in (self.speed, self.auto_op):
+            w.setEnabled(not bench)
+        folder = self.data_dir()
+        self.data_label.setText(f"data: {folder}")
+        self.data_label.setToolTip(folder)
+        self.append("[lab] " + (
+            f"BENCH: the QZFM and Degauss tabs drive the real hardware; "
+            f"data goes to {folder}" if bench else
+            f"simulated lab; data goes to {folder}"),
+            "warn" if bench else "info")
+
+    def _bench_confirmed(self):
+        if self.running():
+            QMessageBox.information(self, "Run in progress",
+                                    "Switch the lab once the run has "
+                                    "finished.")
+            return False
+        box = QMessageBox(self)
+        box.setIcon(QMessageBox.Warning)
+        box.setWindowTitle("Switch to the bench")
+        box.setText("Switch to the real bench?")
+        box.setInformativeText(
+            "Start on the QZFM tab will drive the QZFM sensors, and on the "
+            "Degauss tab the Twinleaf degausser. Close the QuSpin software "
+            "and the DG Control VI first: each COM port can be held by one "
+            "program only.")
+        box.setStandardButtons(QMessageBox.Yes | QMessageBox.Cancel)
+        box.setDefaultButton(QMessageBox.Cancel)
+        return box.exec() == QMessageBox.Yes
 
     def scan_usb(self):
         """The serial ports a USB scan finds. Simulation only for now: the
@@ -692,11 +789,19 @@ class MainWindow(QMainWindow):
     def start(self):
         if self.running():
             return
-        if not self.rb_sim.isChecked():
+        bench = self.bench()
+        if not bench and not self.rb_sim.isChecked():
             QMessageBox.warning(self, "Bench disabled",
-                                "The GUI is simulation-only for now.")
+                                "The GUI is simulation-only.")
             return
         form = self.form_list[self.forms.currentIndex()]
+        if bench and not getattr(form, "bench_ok", False):
+            QMessageBox.information(
+                self, "Simulator only",
+                f"The {form.title} tab is simulator-only in the GUI. At the "
+                f"bench use {getattr(form, 'cli', 'its run/*.py program')}, "
+                f"or switch the lab to Simulated.")
+            return
         try:
             job = form.job()
         except BFieldError as e:
@@ -704,13 +809,17 @@ class MainWindow(QMainWindow):
             return
         self.stop_event = threading.Event()
         ui = QtUI(self.bridge, self.stop_event)
-        speed = self.speed.value()
-        auto = self.auto_op.isChecked()
+        speed = 1.0 if bench else self.speed.value()
+        auto = False if bench else self.auto_op.isChecked()
         self.live.clear()
+        self.dg_traces.clear()
         self.progress.setValue(0)
         self.progress_label.setText("")
-        self.append(f"\n===== {job.title} -- simulated, x{speed:g}"
-                    + (", auto-operator" if auto else "") + " =====", "info")
+        self.append(f"\n===== {job.title} -- "
+                    + ("BENCH (real hardware)" if bench else
+                       f"simulated, x{speed:g}"
+                       + (", auto-operator" if auto else ""))
+                    + " =====", "warn" if bench else "info")
         self.status.setText(f"Running: {job.title}")
         self.start_btn.setEnabled(False)
         self.abort_btn.setEnabled(True)
@@ -721,8 +830,9 @@ class MainWindow(QMainWindow):
         def work():
             code = 1
             try:
-                lab = open_lab(self.config, sim=True, speed=speed,
-                               sim_dir=self.sim_dir)
+                lab = (open_lab(self.config) if bench else
+                       open_lab(self.config, sim=True, speed=speed,
+                                sim_dir=self.sim_dir))
                 ctx = Context(ui, config=lab.config,
                               stop_event=self.stop_event)
                 if auto:
@@ -821,6 +931,24 @@ class MainWindow(QMainWindow):
 
     def on_data(self, name, samples, fs):
         self.live.add(name, samples, fs)
+
+    def on_degauss(self, event, payload):
+        """A degauss session's live display (qt_ui.DgBridge)."""
+        try:
+            if event == "outdir":
+                self.dg_replay.set_last_run(payload)
+            elif event == "start":
+                self.dg_traces.start_cycle(*payload)
+                if self.degauss_mode():
+                    self.right.setCurrentIndex(TAB_LIVE)
+            elif event == "rows":
+                rows, columns = payload
+                self.dg_traces.add_rows(rows, columns, draw=False)
+            elif event == "end":
+                self.dg_traces.end_cycle(payload)
+        except Exception as e:      # a display must never stop a run
+            self.append(f"[plot] degauss traces: {type(e).__name__}: {e}",
+                        "warn")
 
     def on_status(self, kind, data):
         if kind == "record" and data.get("run_dir"):

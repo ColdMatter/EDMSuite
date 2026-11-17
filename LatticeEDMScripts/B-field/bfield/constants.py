@@ -65,6 +65,10 @@ DG_MEASURE_PAD_S = 30.0      # measure+ramp+cooldown, 12.6-23.6 s measured;
 # Vendor recipe for the 4-group parallel winding: 8 A / 15 Hz / 300 s
 DG_RECIPE_AMP_A = 8.0        # also the unit's own firmware cap (08-12/13)
 DG_RECIPE_FREQ_HZ = 15.0
+# The bench default: on the parallel winding 15 Hz dropped the drive to
+# ~0.4 A near the end of the soak and started the taper low (6.3-7.6 A);
+# 20 Hz ran clean (2026-11-03 VI, 2026-11-04 python runs 2-3)
+DG_BENCH_FREQ_HZ = 20.0
 DG_TAPER_FALLBACK_S = 60.0   # taper shown to complete at 8 A; 300 s cut
                              # near 46 s x4 on 08-14 (open with Twinleaf)
 
@@ -80,16 +84,9 @@ def mod_alias_hz(fs, harmonic=1):
     return min(r, fs - r)
 
 
-# ------------------------------------------------------------- USB-6008
+# ------------------------------------------------------------------ DAQ
+# The card's inputs, ranges and rate limit depend on the model
+# ([daq] model in config/lab.toml): see bfield.daq_models.
 
-VALID_VRANGE = (1.0, 2.0, 5.0, 10.0, 20.0)  # differential input ranges
-DAQ_DIFF_AI = r"ai[0-3]"       # the four differential inputs
-DAQ_AGGREGATE_MAX = 10_000     # S/s across all channels
 PROBE_HEADROOM = 1.5           # a probe peak must fit a range with margin
 MAP_AXIS_RX = r"[xyz]2?"       # a map channel name: axis, or axis+'2'
-
-
-def smallest_vrange(peak_v):
-    """Smallest range that still leaves some headroom, None if none fits."""
-    return next((r for r in VALID_VRANGE if peak_v * PROBE_HEADROOM <= r),
-                None)

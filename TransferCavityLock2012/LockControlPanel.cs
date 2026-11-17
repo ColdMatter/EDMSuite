@@ -192,6 +192,11 @@ namespace TransferCavityLock2012
             }
         }
 
+        public void SetLockCheck(bool state)
+        {
+            UIHelper.SetCheckBox(lockEnableCheck, state);
+        }
+
         public void EnableLocking()
         {
             UIHelper.EnableControl(lockEnableCheck, true);

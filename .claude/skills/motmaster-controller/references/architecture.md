@@ -53,6 +53,16 @@ The compiled script is loaded with `Assembly.LoadFrom` + `Activator.CreateInstan
 finding whichever class in the file `IsClass == true` (in practice: exactly one, named
 `Patterns` by convention in every current script).
 
+Every compile is a new assembly that is never unloaded, so MOTMaster's memory grows
+with each run. The remoting methods `GoCached(dict)` and `GetParametersCached()` opt in
+to a compile cache instead (`Controller.compileScript`). The cache is keyed on a SHA-256
+of the script text, so an edited script compiles afresh. A hit reuses the assembly and
+its already-JIT-compiled code, but each run still constructs a fresh script instance.
+Nothing else uses the cache: `Go`, `Run`, the Run button, `GetParameters`, the viewer and
+the linked secondary compile every time, as they always have. Two consequences of a hit:
+a `static` field in a script would keep its value between runs (no current top-level
+script has one), and a rebuilt DAQ/SharedCode DLL is not seen until MOTMaster restarts.
+
 ## Machine/experiment dispatch
 
 `DAQ/EnvironsHelper.cs` switches on `Environment.MachineName` to decide which

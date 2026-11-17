@@ -82,6 +82,7 @@ namespace WavemeterLock
 
             set
             {
+                double previousVoltage = currentVoltage;
                 if (value < LowerVoltageLimit) //Keeps output voltage in the range of the board
                 {
                     currentVoltage = LowerVoltageLimit;
@@ -101,7 +102,13 @@ namespace WavemeterLock
                     currentVoltage = value;
                     isOutOfRange = false;
                 }
-                    laser.SetLaserVoltage(currentVoltage);
+                string owner;
+                if (!laser.TrySetLaserVoltage(currentVoltage, out owner) && owner != null)
+                {
+                    // Another program (e.g. TCL) is locking this laser, so the voltage wasn't written.
+                    currentVoltage = previousVoltage;
+                    OnLog?.Invoke(Name + ": voltage not set, laser is in use by " + owner);
+                }
                 
             }
             
@@ -123,14 +130,32 @@ namespace WavemeterLock
 
 
 
-        public void Lock()
+        /// <summary>
+        /// Name of the program holding this laser's output channel the last time Lock was refused.
+        /// </summary>
+        public string ClaimedBy { get; private set; }
+
+        /// <summary>
+        /// Engages the lock. Returns false, leaving the laser FREE, if another program
+        /// (e.g. TCL) is currently locking the same output channel.
+        /// </summary>
+        public bool Lock()
         {
+            string owner;
+            if (!laser.TryClaimChannel(out owner))
+            {
+                ClaimedBy = owner;
+                OnLog?.Invoke(Name + " lock refused: laser is in use by " + owner);
+                return false;
+            }
             lState = LaserState.LOCKED;
+            return true;
         }
 
         public void DisengageLock()
         {
             lState = LaserState.FREE;
+            laser.ReleaseChannel();
         }
 
         

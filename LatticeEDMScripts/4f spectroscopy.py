@@ -7,7 +7,32 @@ For some 4f spectroscopy analysis
 @author: sl5119
 """
 
-#%% Packages
+#%% Packages & set directory
+import sys
+import os
+import re
+
+# On macOS, pythonnet needs pointing at Mono before anything imports clr
+if sys.platform == "darwin":
+    from pythonnet import load
+    load("mono", libmono="/Library/Frameworks/Mono.framework/Versions/Current/lib/libmonosgen-2.0.dylib")
+
+# Add LatticeEDMScripts (the folder holding YbF_spectroscopy_library.py) to the
+# path so the library imports work whatever the working directory, OS, or
+# which subfolder this script lives in
+try:
+    scriptDir = os.path.dirname(os.path.abspath(__file__))
+except NameError:  # __file__ isn't defined when running cells interactively
+    scriptDir = os.getcwd()
+libDir = scriptDir
+while not os.path.isfile(os.path.join(libDir, "YbF_spectroscopy_library.py")):
+    parent = os.path.dirname(libDir)
+    if parent == libDir:
+        raise ImportError("Couldn't find YbF_spectroscopy_library.py above " + scriptDir)
+    libDir = parent
+if libDir not in sys.path:
+    sys.path.insert(0, libDir)
+
 import YbF_spectroscopy_library as YbF
 import numpy as np
 #%% Get prediction lines
@@ -79,6 +104,44 @@ State4f_174_v0_J32 = [YbF.Ue4f(1.5, **State_4fv0_174), YbF.Uf4f(1.5, **State_4fv
 
 State4f_174_v1_J12 = [YbF.Ue4f(0.5, **State_4fv1_174), YbF.Uf4f(0.5, **State_4fv1_174)]
 State4f_174_v1_J32 = [YbF.Ue4f(1.5, **State_4fv1_174), YbF.Uf4f(1.5, **State_4fv1_174)]
+
+#%% X ground states
+# YbF.X_hyperfine(N, ...) returns 4 hyperfine levels in cm^-1, ordered
+# [F=N+1, F=N- (lower F=N), F=N+ (upper F=N), F=N-1]
+# N=0 only has F=1 and F=0, so the last two entries are NaN
+X_v0_174 = YbF.X_State["v0"][174]
+X_v1_174 = YbF.X_State["v1"][174]
+X_v2_174 = YbF.X_State["v2"][174]
+X_v3_174 = YbF.X_State["v3"][174]
+
+X_174_v0_N0 = YbF.X_hyperfine(0, **X_v0_174)
+X_174_v0_N1 = YbF.X_hyperfine(1, **X_v0_174)
+X_174_v0_N2 = YbF.X_hyperfine(2, **X_v0_174)
+X_174_v0_N3 = YbF.X_hyperfine(3, **X_v0_174)
+
+X_174_v1_N0 = YbF.X_hyperfine(0, **X_v1_174)
+X_174_v1_N1 = YbF.X_hyperfine(1, **X_v1_174)
+X_174_v1_N2 = YbF.X_hyperfine(2, **X_v1_174)
+X_174_v1_N3 = YbF.X_hyperfine(3, **X_v1_174)
+
+X_174_v2_N0 = YbF.X_hyperfine(0, **X_v2_174)
+X_174_v2_N1 = YbF.X_hyperfine(1, **X_v2_174)
+X_174_v2_N2 = YbF.X_hyperfine(2, **X_v2_174)
+X_174_v2_N3 = YbF.X_hyperfine(3, **X_v2_174)
+
+X_174_v3_N0 = YbF.X_hyperfine(0, **X_v3_174)
+X_174_v3_N1 = YbF.X_hyperfine(1, **X_v3_174)
+X_174_v3_N2 = YbF.X_hyperfine(2, **X_v3_174)
+X_174_v3_N3 = YbF.X_hyperfine(3, **X_v3_174)
+
+# Grouped by vibrational level then N, for plotting
+X_ground_states = {
+    "v0": {0: X_174_v0_N0, 1: X_174_v0_N1, 2: X_174_v0_N2, 3: X_174_v0_N3},
+    "v1": {0: X_174_v1_N0, 1: X_174_v1_N1, 2: X_174_v1_N2, 3: X_174_v1_N3},
+    "v2": {0: X_174_v2_N0, 1: X_174_v2_N1, 2: X_174_v2_N2, 3: X_174_v2_N3},
+    "v3": {0: X_174_v3_N0, 1: X_174_v3_N1, 2: X_174_v3_N2, 3: X_174_v3_N3},
+}
+
 
 #%%
 import matplotlib.pyplot as plt
@@ -250,6 +313,84 @@ ax.set_xticklabels(electronic_states.keys(), fontsize=12)
 ax.set_xlim(-0.6, len(electronic_states) - 0.2)
 ax.set_ylabel(r"Energy ($\text{cm}^{-1}$)", fontsize=12)
 ax.set_title("YbF Excited States Energy Levels", fontsize=14, fontweight="bold")
+ax.grid(axis="y", linestyle="--", alpha=0.5)
+
+plt.show()
+#%% X ground state structure
+# Choose what to plot and in which units
+X_plot_v = ["v0"]#, "v1", "v2", "v3"]  # vibrational levels (columns)
+X_plot_N = [0, 1, 2, 3]              # rotational levels
+X_unit = "GHz"                       # "cm-1", "THz", "GHz" or "MHz"
+X_relative = False   # True: plot each v relative to its own N=0 F=1 level so
+                    # rotational/hyperfine structure is visible side by side
+X_ylim = None       # e.g. (-0.5, 0.5) to zoom in on N=0 in X_unit; None = auto
+
+# Conversion from cm^-1 (YbF.c is c in cm*GHz)
+X_unit_factor = {"cm-1": 1, "THz": YbF.c * 1e-3, "GHz": YbF.c, "MHz": YbF.c * 1e3}
+X_unit_label = {"cm-1": r"$\text{cm}^{-1}$", "THz": "THz", "GHz": "GHz", "MHz": "MHz"}
+
+def X_level_label(N, idx):
+    """F of each X_hyperfine output, in the order it returns them. The two
+    F=N levels are named as in the library: N- is the lower, N+ the upper."""
+    if N == 0:
+        return ["F=1", "F=0"][idx]
+    return [f"F={N + 1}", f"F={N}−", f"F={N}+", f"F={N - 1}"][idx]
+
+fig, ax = plt.subplots(figsize=(10, 8))
+line_width = 0.5
+
+# Collect (x, energy, N, F label) for every level in the selection
+X_levels = []
+for x_idx, v in enumerate(X_plot_v):
+    reference = X_ground_states[v][0][0] if X_relative else 0
+    for N in X_plot_N:
+        for idx, energy in enumerate(X_ground_states[v][N]):
+            if np.isnan(energy):
+                continue
+            X_levels.append((x_idx, (energy - reference) * X_unit_factor[X_unit],
+                             N, X_level_label(N, idx)))
+
+for x_idx, energy, N, label in X_levels:
+    ax.hlines(y=energy, xmin=x_idx - line_width / 2, xmax=x_idx + line_width / 2,
+              color="black", linewidth=1.5)
+
+if X_ylim is not None:
+    ax.set_ylim(X_ylim)
+y_min, y_max = ax.get_ylim()
+
+# Lines closer than min_gap are drawn as one cluster: each cluster gets an N
+# label on its left (a range, e.g. N=0-3, if several N have merged), and an F
+# label on its right only if it is a single resolved line
+min_gap = 0.02 * (y_max - y_min)
+
+for x_idx in range(len(X_plot_v)):
+    column = sorted((e, N, l) for x, e, N, l in X_levels
+                    if x == x_idx and y_min <= e <= y_max)
+    clusters = []
+    for level in column:
+        if clusters and level[0] - clusters[-1][-1][0] <= min_gap:
+            clusters[-1].append(level)
+        else:
+            clusters.append([level])
+
+    for cluster in clusters:
+        energy = np.mean([e for e, N, l in cluster])
+        Ns = sorted({N for e, N, l in cluster})
+        N_text = f"N={Ns[0]}" if len(Ns) == 1 else f"N={Ns[0]}–{Ns[-1]}"
+        ax.text(x_idx - line_width / 2 - 0.03, energy, N_text, ha="right",
+                va="center", fontsize=9, color="darkred", clip_on=True)
+        if len(cluster) == 1:
+            ax.text(x_idx + line_width / 2 + 0.03, energy, cluster[0][2],
+                    va="center", fontsize=9, color="darkblue", clip_on=True)
+
+ax.set_xticks(range(len(X_plot_v)))
+ax.set_xticklabels([rf"$X\,^2\Sigma^+$ {v}" for v in X_plot_v], fontsize=12)
+ax.set_xlim(-0.6, len(X_plot_v) + 0.1)  # room for labels on the last column
+if X_relative:
+    ax.set_ylabel(f"Energy relative to N=0, F=1 ({X_unit_label[X_unit]})", fontsize=12)
+else:
+    ax.set_ylabel(f"Energy ({X_unit_label[X_unit]})", fontsize=12)
+ax.set_title(r"$^{174}$YbF X State Energy Levels", fontsize=14, fontweight="bold")
 ax.grid(axis="y", linestyle="--", alpha=0.5)
 
 plt.show()
