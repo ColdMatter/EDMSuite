@@ -1122,6 +1122,9 @@ def StraightLine(x, Slope, Intercept):
 def StraightLineThroughOrigin(x, Slope):
     return Slope*x
 
+def Quadratic(x, a,b,c):
+    return a*x**2 + b*x + c
+
 def ShotNoiseAsymmetry(PhotonF1, PhotonF0):
     sF1= np.sqrt(PhotonF1)
     sF0 = np.sqrt(PhotonF0) 
