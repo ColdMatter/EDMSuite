@@ -105,6 +105,29 @@ namespace DAQ.HAL
             Console.WriteLine(String.Concat("mode change to ", steps, " with response: ", response));
         }
 
+        private string MoveCommand(string steps)
+        {
+            string command = String.Concat("move ", steps, "\n\r");
+            Clear();
+            if (Precommand()) serial.RawIO.Write(command);
+            string response = serial.RawIO.ReadString(5);
+            Console.WriteLine(String.Concat("move ", steps, " with response: ", response));
+            return response;
+        }
+
+        /// <summary>
+        /// Immediately move the target by the given number of steps using the
+        /// controller's serial "move N" command. Does not change mode, delay,
+        /// triggers or steps settings.
+        /// </summary>
+        public string Move(int steps)
+        {
+            if (!connected) Connect();
+            string response = MoveCommand(steps.ToString());
+            Disconnect();
+            return response;
+        }
+
         public void FeedbackOff()
         {
             if (!connected) Connect();

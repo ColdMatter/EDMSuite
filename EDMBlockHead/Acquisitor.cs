@@ -69,6 +69,11 @@ namespace EDMBlockHead.Acquire
         DigitalSingleChannelWriter TaskCompleteWriter;
         [NonSerialized]
         Task counterTaskCCD; // CCD enable Task Counter
+
+        // CCD settings for the block being taken. Read from the CCDs at the start of the block
+        // (SnapshotCCDSettings) and written to a CCD config xml once the block completes (SaveCCDConfigXml).
+        // Uses the same CCDSettings class as ScanMaster's CCDModulatedAnalogShotGathererPlugin so the xml files match.
+        private ScanMaster.Acquire.Plugins.CCDModulatedAnalogShotGathererPlugin.CCDSettings blockCCDSettings;
     
         //NationalInstruments.DAQmx.Task counterTaskCCD;
 
@@ -184,6 +189,8 @@ namespace EDMBlockHead.Acquire
                 {
                     Thread.Sleep(1);
                 }
+                // record the CCD settings for this block (stored in the block config and in the CCD config xml)
+                SnapshotCCDSettings();
                 hardwareController.StartBurstAcquisition();
                 Console.WriteLine("CCD Burst Acquisition Start!");
 
@@ -756,6 +763,9 @@ namespace EDMBlockHead.Acquire
 
 			AcquisitionStopping();
  
+			// the block completed, so save the CCD config xml next to the CCD data
+			SaveCCDConfigXml();
+
 			// hand the new block back to the controller
 			Controller.GetController().AcquisitionFinished(b);
 
@@ -1401,29 +1411,29 @@ namespace EDMBlockHead.Acquire
 			switchedChannels = new ArrayList();
             hardwareController = new UEDMHardwareControl.UEDMController();        //new hardware controller EDMHardwareControl.Controller();
 
-            //TTLSwitchedChannel bChan = new TTLSwitchedChannel();
-            //bChan.Channel = "bSwitch";
-            //bChan.Invert = false;
-            //bChan.Modulation = config.GetModulationByName("B");
-            //switchedChannels.Add(bChan);
+            TTLSwitchedChannel bChan = new TTLSwitchedChannel();
+            bChan.Channel = "bSwitch";
+            bChan.Invert = false;
+            bChan.Modulation = config.GetModulationByName("B");
+            switchedChannels.Add(bChan);
 
-            //TTLSwitchedChannel notBChan = new TTLSwitchedChannel();
-            //notBChan.Channel = "notB";
-            //notBChan.Invert = true;
-            //notBChan.Modulation = config.GetModulationByName("B");
-            //switchedChannels.Add(notBChan);
+            TTLSwitchedChannel notBChan = new TTLSwitchedChannel();
+            notBChan.Channel = "notB";
+            notBChan.Invert = true;
+            notBChan.Modulation = config.GetModulationByName("B");
+            switchedChannels.Add(notBChan);
 
-            //TTLSwitchedChannel dbChan = new TTLSwitchedChannel();
-            //dbChan.Channel = "dB";
-            //dbChan.Invert = false;
-            //dbChan.Modulation = config.GetModulationByName("DB");
-            //switchedChannels.Add(dbChan);
+            TTLSwitchedChannel dbChan = new TTLSwitchedChannel();
+            dbChan.Channel = "dB";
+            dbChan.Invert = false;
+            dbChan.Modulation = config.GetModulationByName("DB");
+            switchedChannels.Add(dbChan);
 
-            //TTLSwitchedChannel notDBChan = new TTLSwitchedChannel();
-            //notDBChan.Channel = "notDB";
-            //notDBChan.Invert = true;
-            //notDBChan.Modulation = config.GetModulationByName("DB");
-            //switchedChannels.Add(notDBChan);
+            TTLSwitchedChannel notDBChan = new TTLSwitchedChannel();
+            notDBChan.Channel = "notDB";
+            notDBChan.Invert = true;
+            notDBChan.Modulation = config.GetModulationByName("DB");
+            switchedChannels.Add(notDBChan);
 
             //TTLSwitchedChannel piChan = new TTLSwitchedChannel();
             //piChan.Channel = "piFlipEnable";
@@ -2250,6 +2260,109 @@ namespace EDMBlockHead.Acquire
 			config.Settings["greenSynthAmplitude"] = hwController.GreenSynthOnAmplitude;               //new hardware controller
 		}
 
+        // Reads the CCD settings for this block from the two CCDs (via the hardware controller) and
+        // copies them into the block config, so they are saved inside the block zip.
+        // Only called from Acquire(), i.e. block acquisition with CCDs. Never throws: if the CCDs can't
+        // be read, the block still runs and no CCD config xml is written.
+        private void SnapshotCCDSettings()
+        {
+            blockCCDSettings = null;
+            try
+            {
+                csAcq4.CCDController ccdA = hardwareController.ccdA;
+                csAcq4.CCDController ccdB = hardwareController.ccdB;
+                int nShots = (int)config.Settings["numberOfPoints"];
+
+                ScanMaster.Acquire.Plugins.CCDModulatedAnalogShotGathererPlugin.CCDSettings s =
+                    new ScanMaster.Acquire.Plugins.CCDModulatedAnalogShotGathererPlugin.CCDSettings();
+                s.TimeStamp = DateTime.Now;
+                s.GateStartTime = inputs.GateStartTime;
+                s.GateLength = inputs.GateLength;
+                // counterTaskCCD starts on analogTrigger0 with no initial delay, i.e. at the same time as the PMT gate
+                s.CCDEnableStartTime = inputs.GateStartTime;
+                s.CCDEnableLength = inputs.CCDEnableLength;
+                // BlockHead always runs the CCDs with StartBurstAcquisition, i.e. burst mode (1)
+                s.CCDTriggerMode = 1;
+                s.CCDNBurstFrames = (ccdA != null) ? ccdA.GetFrameCountforHardwareController() : -1;
+                s.CCDNShots = nShots;
+                // a block is numberOfPoints single shots (no on/off switching shots as in ScanMaster)
+                s.pointsPerScan = nShots;
+                s.shotsPerPoint = 1;
+                // exposure in seconds and gain, as reported by the cameras themselves
+                s.CCDAExposureTime = (ccdA != null) ? ccdA.GetExposureTime() : -1;
+                s.CCDBExposureTime = (ccdB != null) ? ccdB.GetExposureTime() : -1;
+                s.CCDAGain = (ccdA != null) ? (int)Math.Round(ccdA.GetGainValue()) : -1;
+                s.CCDBGain = (ccdB != null) ? (int)Math.Round(ccdB.GetGainValue()) : -1;
+                s.SampleRate = inputs.RawSampleRate;
+                blockCCDSettings = s;
+
+                // also keep them in the block config, which is saved inside the block zip
+                config.Settings["ccdEnableLength"] = s.CCDEnableLength;
+                config.Settings["ccdTriggerMode"] = s.CCDTriggerMode;
+                config.Settings["ccdNBurstFrames"] = s.CCDNBurstFrames;
+                config.Settings["ccdNShots"] = s.CCDNShots;
+                config.Settings["ccdAExposureTime"] = s.CCDAExposureTime;
+                config.Settings["ccdBExposureTime"] = s.CCDBExposureTime;
+                config.Settings["ccdAGain"] = s.CCDAGain;
+                config.Settings["ccdBGain"] = s.CCDBGain;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Could not read the CCD settings for this block: " + ex.Message);
+            }
+        }
+
+        // Writes <cluster>_<blockIndex:D5>_CCD_Config.xml into the same folder as this block's CCD files
+        // (<cluster>_<blockIndex:D5>_CCDA.tif / _CCDB.tif, named via SyncCCDBlockName), with the CCD PC's
+        // save folder remapped to this PC's CCDxmlDataPath, as ScanMaster does. Never throws.
+        private void SaveCCDConfigXml()
+        {
+            if (blockCCDSettings == null)
+            {
+                Console.WriteLine("No CCD settings recorded for this block. Skipping CCD config xml.");
+                return;
+            }
+            try
+            {
+                string cluster = config.Settings["cluster"].ToString();
+                int blockIndex = Convert.ToInt32(config.Settings["clusterIndex"]);
+
+                // CCD A's save folder on the CCD PC, remapped to the same folder as seen from this PC
+                string ccdSaveDirectory = hardwareController.ccdA.saveDirectory;
+                string logDirectory = RemapCCDPathToLocal(ccdSaveDirectory);
+                if (!Directory.Exists(logDirectory)) Directory.CreateDirectory(logDirectory);
+
+                string xmlFileName = String.Format("{0}_{1:D5}_CCD_Config.xml", cluster, blockIndex);
+                string fullPath = Path.Combine(logDirectory, xmlFileName);
+
+                System.Xml.Serialization.XmlSerializer writer = new System.Xml.Serialization.XmlSerializer(
+                    typeof(ScanMaster.Acquire.Plugins.CCDModulatedAnalogShotGathererPlugin.CCDSettings));
+                using (FileStream file = File.Create(fullPath))
+                {
+                    writer.Serialize(file, blockCCDSettings);
+                }
+                Console.WriteLine("CCD configuration file logged to: " + fullPath);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Could not save CCD config xml: " + ex.Message);
+            }
+        }
+
+        // Same as ScanMaster's RemapCCDPathtoScanMaster: keeps everything after \Data\ in the CCD PC's path
+        // and puts it under this PC's CCDxmlDataPath.
+        private string RemapCCDPathToLocal(string ccdFullPath)
+        {
+            const string dataAnchor = @"\Data\";
+            int anchorIndex = ccdFullPath.IndexOf(dataAnchor, StringComparison.OrdinalIgnoreCase);
+            if (anchorIndex < 0)
+                throw new InvalidOperationException("CCD path does not contain \\Data\\ anchor: " + ccdFullPath);
+
+            string relativePath = ccdFullPath.Substring(anchorIndex + dataAnchor.Length);
+            string dataRoot = Environs.FileSystem.Paths["CCDxmlDataPath"].ToString();
+            return Path.Combine(dataRoot, relativePath);
+        }
+
 		private void ThrowSwitches(int point)
 		{
 			// this works out how long to wait before the switch - it looks at
@@ -2306,12 +2419,26 @@ namespace EDMBlockHead.Acquire
 		}
 
 		// stop pattern output and release hardware
-		private void AcquisitionStopping()
-		{
-			foreach( SwitchedChannel s in switchedChannels) s.AcquisitionFinishing();
-			inputTask.Dispose();
-            counterTaskCCD.Dispose();   
+		//private void AcquisitionStopping()
+		//{
+		//	foreach( SwitchedChannel s in switchedChannels) s.AcquisitionFinishing();
+		//	inputTask.Dispose();
+  //          counterTaskCCD.Dispose();   
+  //          singlePointInputTask.Dispose();
+  //      }
+
+        private void AcquisitionStopping()
+        {
+            foreach (SwitchedChannel s in switchedChannels) s.AcquisitionFinishing();
+            inputTask.Dispose();
+            counterTaskCCD.Dispose();
             singlePointInputTask.Dispose();
+            // the CCD status and task-complete tasks are created in AcquisitionStarting() for every block,
+            // so they must be released here too, or the next block fails with DAQmx error -200089
+            // ("Task name specified conflicts with an existing task name").
+            if (CCDAcquireStatusTask != null) { CCDAcquireStatusTask.Dispose(); CCDAcquireStatusTask = null; }
+            if (CCDReadyStatusTask != null) { CCDReadyStatusTask.Dispose(); CCDReadyStatusTask = null; }
+            if (TaskCompleteTask != null) { TaskCompleteTask.Dispose(); TaskCompleteTask = null; }
         }
 
         // stop pattern output and release hardware
