@@ -61,33 +61,52 @@ X_State = {
             "XC": 17.20e-6 / c
         }
     },
+    # !! X(v2, v3): PROVENANCE (updated 2026-11-14). Several constants are EXTRAPOLATED, not measured. !!
+    # L17 = Lim et al., J. Mol. Spectrosc. 338, 81 (2017), Table 1 (optical spectra, 16 MHz fit SD).
+    # v2: Tv, Bpp fitted by L17. g0 = -53.89(73) MHz is L17's FITTED gamma (changed 2026-11-14 from the
+    #     extrapolated -54.20393; L17's Hamiltonian has no N-dependence of gamma).
+    #     Xb, Xc (b_F = 167.28, c = 88.02), g1, g2, XC: exact linear extrapolations of v0, v1 (L17 constrained
+    #     b_F and c the same way). dpp: L17's extrapolation. Same set as ChillTheBeams' L17 profile for v2.
+    #     TODO: we probably have our own measurement that resolves X(v2, N=1) hyperfine on the P(1) line.
+    #     Find it and cross-check these splittings with it (L17's only check, the [561] <- X(v2) scans of
+    #     their Fig. 8, had 12 MHz FWHM lines).
+    # v3: g0, Xb, Xc FITTED to the measured X(v3, N=1) intervals 1h-0 21.9(8), 0-2 83.6(7), 2-1l 145(2) MHz
+    #     (measured by S. Li & S. Popa; printed in Athanasakis-Kaklamanakis et al., arXiv:2508.15994 (2025),
+    #     Fig. 1(b); coarser values in S. Popa's thesis (2024), Table 4.1). The fit is ChillTheBeams'
+    #     (molecules/ybf/models/builder/fit_v3_ak25.py, exactly determined, L17 operator form, N <= 3 basis),
+    #     adopted by Stefan Truppe on 1 Nov 2026: gamma = -74.759(632), b_F = 173.857(2128),
+    #     c = 95.155(1836) MHz; Xb below = b_F - c/3. Changed 2026-11-14 from the linear extrapolation
+    #     (g0 -74.5975, b_F 165.78, c 89.3304), which gave 19.5 / 85.0 / 137.6 MHz for those intervals.
+    #     b_F and c sit 8.1 and 5.8 MHz above the v0-v2 trend: the extrapolation fails at v3.
+    #     Tv, Bpp: L17 fitted. dpp: L17 extrapolation. g1, g2, XC: still linear extrapolations of v0, v1.
+    # Other isotopes copy the 174 values (see the note above X_State).
     "v2": {
         174: {
             "iso": 0.32, "Tv": 999.81290, "Bpp": 7144.20e-3 / c, "dpp": 6.649e-6 / c,
-            "g0": -54.20393e-3 / c, "g1": 4.657e-6 / c, "g2": -31e-12 / c,
+            "g0": -53.89e-3 / c, "g1": 4.657e-6 / c, "g2": -31e-12 / c,
             "Xb": 137.936e-3 / c, "Xc": 88.0212e-3 / c, "XC": 21.301e-6 / c
         },
         172: {
             "iso": 0.219, "Tv": 1000.4293, "Bpp": 0.238617, "dpp": 2.102e-7,
-            "g0": -54.20393e-3 / c, "g1": 4.657e-6 / c, "g2": -31e-12 / c,
+            "g0": -53.89e-3 / c, "g1": 4.657e-6 / c, "g2": -31e-12 / c,
             "Xb": 137.936e-3 / c, "Xc": 88.0212e-3 / c, "XC": 21.301e-6 / c
         },
         176: {
             "iso": 0.127, "Tv": 999.3216, "Bpp": 0.238137, "dpp": 2.104e-7,
-            "g0": -54.20393e-3 / c, "g1": 4.657e-6 / c, "g2": -31e-12 / c,
+            "g0": -53.89e-3 / c, "g1": 4.657e-6 / c, "g2": -31e-12 / c,
             "Xb": 137.936e-3 / c, "Xc": 88.0212e-3 / c, "XC": 21.301e-6 / c
         }
     },
     "v3": {
         174: {
             "iso": 0.32, "Tv": 1493.0215, "Bpp": 7099.63e-3 / c, "dpp": 6.394e-6 / c,
-            "g0": -74.5975e-3 / c, "g1": 4.9935e-6 / c, "g2": -34e-12 / c,
-            "Xb": 136.006e-3 / c, "Xc": 89.3304e-3 / c, "XC": 25.402e-6 / c
+            "g0": -74.7592e-3 / c, "g1": 4.9935e-6 / c, "g2": -34e-12 / c,
+            "Xb": (173.8568 - 95.1547 / 3) * 1e-3 / c, "Xc": 95.1547e-3 / c, "XC": 25.402e-6 / c
         },
         172: {
             "iso": 0.219, "Tv": 1493.899, "Bpp": 0.237067, "dpp": 2.102e-7,
-            "g0": -74.5975e-3 / c, "g1": 4.9935e-6 / c, "g2": -34e-12 / c,
-            "Xb": 136.006e-3 / c, "Xc": 89.3304e-3 / c, "XC": 25.402e-6 / c
+            "g0": -74.7592e-3 / c, "g1": 4.9935e-6 / c, "g2": -34e-12 / c,
+            "Xb": (173.8568 - 95.1547 / 3) * 1e-3 / c, "Xc": 95.1547e-3 / c, "XC": 25.402e-6 / c
         }
     }
 }
@@ -106,6 +125,37 @@ A_Pi_12 = {
             "t": 18106.1714, "b": 0.247579, "ad": 1.1875e-3,
             "d": 2.607e-7, "p2q": -0.39553, "dp2q": 1.006e-6
         }
+    }
+}
+
+# --- A(2Pi_1/2) 19F magnetic hyperfine constants, IN MHz (not cm^-1 like the dicts above) ---
+# Sauer, Cahn, Kozlov, Redgrave & Hinds, J. Chem. Phys. 110, 8424 (1999), Eq. (3), 174YbF.
+# Sauer's convention: H_hfs = A_par (I.k)(S.k) + A_perp (I x k).(S x k)  [Eq. (1)].
+# Quoted as A_par = -1.6 +/- 2 MHz, A_perp = 4.6 +/- 1 MHz.
+# Used by levels.A12_hfs_split / levels.A12_hfs_shifts. Not used by the spectrum code.
+# A(v=1) is strongly mixed with [18.6]0.5 and has very different values; it is not included.
+A_Pi_12_hfs = {
+    "v0": {
+        174: {"A_par": -1.6, "A_perp": 4.6}
+    }
+}
+
+# --- Zeeman g-factors (dimensionless). Used by ybf.zeeman only; not used by the spectrum code. ---
+# 19F nuclear g-factor: mu = +2.628868 mu_N, I = 1/2 (Stone, At. Data Nucl. Data Tables 90, 75 (2005)); gI = mu/(I mu_N).
+gI_F19 = 5.257736
+# X2Sigma+: gS fixed at 2.0023 and gl = 9.27e-4 (= -gamma/2B, Curl), the values Ma et al. 2009 constrained in their fits
+# (J. Phys. Chem. A 113, 8038 (2009), text p. 8041; their Table 2 footnote prints 9.4e-4, a rounding/typo). Used for every v.
+X_zeeman = {"gS": 2.0023, "gl": 9.27e-4}
+# A2Pi1/2(v'=0): Ma et al. 2009 Table 2, "fit B" (2-sigma statistical errors; corr(gL', gl') = 0.904), joint fit to
+# 171/172/174YbF Zeeman spectra (~15-20 MHz accuracy). gS = 2.0023 and gl(A) = 0 constrained. Chosen over fit A
+# (gL' = 0.996(8), gl' fixed at -0.8016): the MOT capture side study found no difference between the two (Nov 2026).
+# Convention: the gl' term enters with coefficient -1/2 relative to Ma's printed Eq. (4) in the Lim 2017 phase
+# (ChillTheBeams decision, confirmed by Stefan Truppe 1 Nov 2026; reproduces Ma Fig. 2). For the J' = 1/2 level this gives
+#     gJ = (2/3)(gL' - gS/2 + gl') for e(+),   gJ = (2/3)(gL' - gS/2 - gl') for f(-),
+# i.e. g_F(J'=1/2 e, F'=1) = -0.2031 and g_F(J'=1/2 f, F'=1) = +0.2782 (= ChillTheBeams' model file).
+A_Pi_12_zeeman = {
+    "v0": {
+        174: {"gS": 2.0023, "gLp": 1.118, "glp": -0.722, "gl": 0.0}
     }
 }
 

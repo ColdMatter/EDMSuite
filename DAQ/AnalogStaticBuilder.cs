@@ -6,6 +6,7 @@ using System.Collections;
 using System.Linq;
 using DAQ.HAL;
 using DAQ.Environment;
+using DAQ.Pattern;
 
 namespace DAQ.Analog
 {
@@ -53,14 +54,18 @@ namespace DAQ.Analog
 
         public void AddStaticChannel(string channelName)
         {
+            LinkRouting routing = LinkRouting.Current;
+            if (routing != null && !routing.IsLocalAnalog(channelName)) return;
 
-            AnalogOutputChannel channel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channelName];
+            AnalogOutputChannel channel = LinkRouting.LookupAnalog(channelName);
             GetBoard(channel).AddStaticChannel(channelName);
         }
 
         public void AddStaticAnalogValue(string channelName, double value)
         {
-            AnalogOutputChannel channel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channelName];
+            LinkRouting routing = LinkRouting.Current;
+            if (routing != null && !routing.IsLocalAnalog(channelName)) return;
+            AnalogOutputChannel channel = LinkRouting.LookupAnalog(channelName);
             GetBoard(channel).AddStaticAnalogValue(channelName, value);
         }
 

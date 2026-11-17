@@ -586,14 +586,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'RbTweezer|AnyCPU'">
     <OutputPath>bin\RbTweezer\</OutputPath>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'RbTweezer|x86'">
-    <OutputPath>bin\x86\RbTweezer\</OutputPath>
-    <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'RbTweezer|x64'">
-    <OutputPath>bin\x64\RbTweezer\</OutputPath>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="alglibnet2">
       <HintPath>.\alglibnet2.dll</HintPath>
@@ -654,6 +646,7 @@
     <Compile Include="StepperMotorController.cs" />
     <Compile Include="DAQMxPatternGenerator.cs" />
     <Compile Include="DAQMxWavemeterLockBlockHelper.cs" />
+    <Compile Include="DAQMxAnalogSafeState.cs" />
     <Compile Include="DAQMxStaticAnalogGenerator.cs" />
     <Compile Include="DTCLCavityConfig.cs" />
     <Compile Include="DTCLConfig.cs" />
@@ -683,6 +676,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AnalogPatternBuilder.cs" />
+    <Compile Include="LinkRouting.cs" />
     <Compile Include="AnalogPatternBuilderSingleBoard.cs" />
     <Compile Include="AnapicoSYN420.cs" />
     <Compile Include="AnritsuVNA.cs" />
@@ -741,6 +735,7 @@
     <Compile Include="AnapicoSynth.cs" />
     <Compile Include="HP8673BSynth.cs" />
     <Compile Include="MMConfig.cs" />
+    <Compile Include="MOTMasterLinkConfig.cs" />
     <Compile Include="EDMTestCrateHardware.cs" />
     <Compile Include="EDMTestCrateFileSystem.cs" />
     <Compile Include="SerialMotorControllerBCD.cs" />

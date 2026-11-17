@@ -38,7 +38,7 @@ public class Patterns : MOTMasterScript
         Parameters["tMolassesShimZccValue"] = 0.48; // 0.3 // 0.52
 
         // Bias Field Quantisation Axis
-        Parameters["tBiasShimZccValue"] = 2.0;
+        Parameters["tBiasShimZccValue"] = 0.84;
 
 
         // tRb AOMs 
@@ -140,12 +140,12 @@ public class Patterns : MOTMasterScript
         p.AddEdge("tVerticalShutter", TOF2Start, false);
 
         // Optical Pump Pulse
-        p.AddEdge("tD1AOMSwitch", PumpPulseStart, false);
-        p.AddEdge("tD1AOMSwitch", TOF3Start, true);
-        p.Pulse(PumpPulseStart, 0, (int)Parameters["RePumpPulseDuration"], "tRepSwitch");
+        //p.AddEdge("tD1AOMSwitch", PumpPulseStart, false);
+        //p.AddEdge("tD1AOMSwitch", TOF3Start, true);
+        //p.Pulse(PumpPulseStart, 0, (int)Parameters["RePumpPulseDuration"], "tRepSwitch");
 
         // Push Pulse
-        p.Pulse(PushPulseStart, 0, (int)Parameters["PushPulseDuration"], "tCoolSwitch"); // Red Molasses Coolng Pulse
+        //p.Pulse(PushPulseStart, 0, (int)Parameters["PushPulseDuration"], "tCoolSwitch"); // Red Molasses Coolng Pulse
         p.AddEdge("tVerticalShutter", TOF4Start, true);
 
         // Imaging 2

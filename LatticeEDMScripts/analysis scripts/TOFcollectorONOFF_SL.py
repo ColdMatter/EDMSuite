@@ -12,8 +12,13 @@ import sys
 import os
 import re
 
-OneDriveFolder = os.environ['onedrive']
-sys.path.append(OneDriveFolder + r"\Desktop\EDMSuite\LatticeEDMScripts")
+# Add LatticeEDMScripts (parent of "analysis scripts") to the path so the
+# library imports work whatever the working directory or OS
+try:
+    scriptDir = os.path.dirname(os.path.abspath(__file__))
+except NameError:  # __file__ isn't defined when running cells interactively
+    scriptDir = os.getcwd()
+sys.path.append(os.path.dirname(scriptDir))
 import LatticeEDM_analysis_library as EDM
 
 import numpy as np
@@ -39,12 +44,12 @@ colors = prop_cycle.by_key()['color']
 
 ###When we are using Box:
 #datadrive=str(os.environ["Onedrive"]+"\\Desktop\\Lattice EDM\\data")
-datadrive = r"C:\Users\sl5119\Box\LatticeEDM\data"
+datadrive = EDM.get_datadrive()  # set per device in data_locations.json
 month = "Sept 2026"
-date = "22"
+date = "08"
 #blockdrive=datadrive+"\\BlockData\\"
 
-drive = datadrive + "\\" + month + "\\" + date + "\\"# + subfolder
+drive = os.path.join(datadrive, month, date, "")# + subfolder
 print(drive)
 
 pattern="*TOF*.zip"
@@ -303,27 +308,47 @@ plt.show()
 plt.close()
 
 #%% Combine for ratios for saturation measurements
-#This is for Sept 8th 2026 4fv0 saturation
-V3_file = ''  #For benchmark
+#Grey out one P_Settings when run
+V3_file = '011'  #For benchmark
 
-P_Settings = {'007': 100,
-            '008': 40,
-            '009': 200,
-            '010': 250,
-            '011': 150,
-            '012': 15,
-            '014': 165,
-            '015': 270,
-            '016': 125,
-            '017': 42.5,
-            '018': 75}
+#Old set for 4fv0 saturation, used with V3_file = '011'
+P_Settings = {'012': 380,
+            '013': 1600,
+            '014': 5700,
+            '015': 3700,
+            '016': 730,
+            '017': 170,
+            '018': 54,
+            '019': 300,
+            '020': 580,
+            '021': 4700,
+            '022': 2600,
+            '023': 747,
+            '024': 5700,
+            '025': 1600,
+            '026': 4700,
+            '027': 6700,
+            '028': 170}
+
+#New set for 4fv1 R saturation, Sept 22nd, used with V3_file = ''
+#P_Settings = {'007': 100,
+#            '008': 40,
+#            '009': 200,
+#            '010': 250,
+#            '011': 150,
+#            '012': 15,
+#            '014': 165,
+#            '015': 270,
+#            '016': 125,
+#            '017': 42.5,
+#            '018': 75}
 
 #If forgot to take a bentchmark measurement, just put the values here
 #Otherwise initialise as 0
-benchmark = 0.524
-benchmarkerr = 0.005
+benchmark = 0
+benchmarkerr = 0
 
-#Initialise with a (0, 0) point
+#Can choose to initialise with a (0, 0) point
 R_sub = [0]
 R_suberr = [1e-3]
 P = [0]
@@ -368,20 +393,32 @@ plt.errorbar(P_proc, R_sub_proc, R_suberr_proc, fmt=' ', capsize=5, color=colors
 #                     absolute_sigma=True, sigma=R_suberr_proc)
 #err = np.sqrt(np.diag(cov))
 
-fit2, cov2 = curve_fit(tools.Saturation, P_proc, R_sub_proc, p0=[0.1, 400.],
+# Without a reference subtracted, the ratio at P=0 is not 0, so fit an offset y0
+fit_offset = (benchmark == 0)
+if fit_offset:
+    sat_model = tools.SaturationOffset
+    p0_sat = [np.max(R_sub_proc) - np.min(R_sub_proc), 400., np.min(R_sub_proc)]
+else:
+    sat_model = tools.Saturation
+    p0_sat = [0.1, 400.]
+
+fit2, cov2 = curve_fit(sat_model, P_proc, R_sub_proc, p0=p0_sat,
                      absolute_sigma=True, sigma=R_suberr_proc)
 err2 = np.sqrt(np.diag(cov2))
 
-P_span = np.arange(0, 300, 1)
+P_span = np.arange(0, 7000, 1)
 #plt.plot(P_span, tools.exp_decay(P_span, *fit), '-.', color='black',
 #         label=r'exp fit: $I_{sat}=%.4g \pm %.2gmW$'%(fit[1], err[1]))
-plt.plot(P_span, tools.Saturation(P_span, *fit2), '-.', color='red',
-         label=r'Saturation fit: $I_{sat}=%.4g \pm %.2gmW$'%(fit2[1], err2[1]))
+sat_label = r'Saturation fit: $P_{sat}=%.4g \pm %.2gmW$'%(fit2[1], err2[1])
+if fit_offset:
+    sat_label += '\n' + r'$y_0=%.3g \pm %.2g$'%(fit2[2], err2[2])
+plt.plot(P_span, sat_model(P_span, *fit2), '-.', color='red',
+         label=sat_label)
 
 plt.xlabel("4fv0 power (mW)")
 plt.ylabel("Relative on/off ratio")
-plt.title("4f v1 repump saturation, with 5ms slowing \n"+
-          "with 1.6W 4fv0 for 1:1 R & Q lines")
+plt.title("4f v0 repump saturation, with 4ms slowing \n"+
+          "subtracting repump contribution up to V3")
 plt.legend()
 plt.show()
 
@@ -389,7 +426,7 @@ plt.show()
 #residuals = R_sub_proc - tools.exp_decay(P_proc, *fit)
 #chi_squared = np.sum((residuals / R_suberr_proc) ** 2)
 
-residuals2 = R_sub_proc - tools.Saturation(P_proc, *fit2)
+residuals2 = R_sub_proc - sat_model(P_proc, *fit2)
 chi_squared2 = np.sum((residuals2 / R_suberr_proc) ** 2)
 
 # 4. Calculate degrees of freedom (N points - k parameters)
@@ -409,6 +446,65 @@ red_chi_sq2 = chi_squared2 / dof2
 print("Saturation fit results: ", fit2)
 print("Errors: ", err2)
 print("With reduced chi-squared = %g"%red_chi_sq2)
+
+#%% Temporarily save for overlapping saturation data.
+df_4fv1 = df_avg
+fit_4fv1 = fit2
+err_4fv1 = err2
+label_4fv1 = sat_label
+
+#%%
+df_4fv0 = df_avg
+fit_4fv0 = fit2
+err_4fv0 = err2
+label_4fv0 = sat_label
+
+#%%
+# Extract averaged arrays for plotting and fitting
+P_4fv1 = df_4fv1['P'].to_numpy()
+R_4fv1 = df_4fv1['R_sub'].to_numpy()
+R_err_4fv1 = df_4fv1['R_suberr'].to_numpy()
+
+P_4fv0 = df_4fv0['P'].to_numpy()
+R_4fv0 = df_4fv0['R_sub'].to_numpy()
+R_err_4fv0 = df_4fv0['R_suberr'].to_numpy()
+
+#%% Plot combined
+P_span = np.arange(0, 7000, 1)
+x_end = 500
+
+# 4fv0 has the benchmark subtracted (no offset), 4fv1 doesn't (fitted with offset y0),
+# so they go on separate y-axes sharing the power axis
+fig, ax1 = plt.subplots()
+ax2 = ax1.twinx()
+
+ax1.plot(P_4fv0, R_4fv0, '.', color=colors[0])
+ax1.errorbar(P_4fv0, R_4fv0, R_err_4fv0, fmt=' ', capsize=5, color=colors[0])
+ax1.plot(P_span, tools.Saturation(P_span, *fit_4fv0), '-.', color=colors[0],
+         label='4fv0 ' + label_4fv0)
+
+ax2.plot(P_4fv1, R_4fv1, '.', color=colors[1])
+ax2.errorbar(P_4fv1, R_4fv1, R_err_4fv1, fmt=' ', capsize=5, color=colors[1])
+ax2.plot(P_span, tools.SaturationOffset(P_span, *fit_4fv1), '-.', color=colors[1],
+         label='4fv1 ' + label_4fv1)
+
+ax1.set_xlim(0, x_end)
+ax2.set_xlim(0, x_end)
+
+ax1.set_title("4f v0 and v1 saturation \n"+
+              "v0 had 4ms slowing and v1 had 5ms slowing")
+ax1.set_xlabel("Repump power (mW)")
+ax1.set_ylabel("4fv0: relative on/off ratio", color=colors[0])
+ax2.set_ylabel("4fv1: slowing on/off ratio", color=colors[1])
+ax1.tick_params(axis='y', colors=colors[0])
+ax2.tick_params(axis='y', colors=colors[1])
+
+# Combine legends from both axes into one
+lines1, labels1 = ax1.get_legend_handles_labels()
+lines2, labels2 = ax2.get_legend_handles_labels()
+ax1.legend(lines1 + lines2, labels1 + labels2, loc='lower right')
+plt.show()
+
 #%% Difference
 compare = ["007", "008"]
 for i in compare:

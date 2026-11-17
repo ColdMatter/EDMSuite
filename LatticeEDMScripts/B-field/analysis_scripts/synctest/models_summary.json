@@ -1,0 +1,86 @@
+{
+  "white_floor_fT_3_40Hz": {
+    "gui": 19.71,
+    "analog": 20.9,
+    "ref0630": 11.75
+  },
+  "measured_asd_fT": {
+    "0.05": {
+      "gui": 1743.4,
+      "analog": 1729.7,
+      "ref0630": 712.7
+    },
+    "0.1": {
+      "gui": 572.3,
+      "analog": 535.5,
+      "ref0630": 522.0
+    },
+    "0.3": {
+      "gui": 140.9,
+      "analog": 143.7,
+      "ref0630": 189.0
+    },
+    "1.0": {
+      "gui": 75.4,
+      "analog": 73.9,
+      "ref0630": 43.8
+    },
+    "2.0": {
+      "gui": 63.9,
+      "analog": 77.9,
+      "ref0630": 33.4
+    }
+  },
+  "excess_slope_fit_0p05_2Hz": {
+    "gui": {
+      "slope": -0.933,
+      "rms_dex": 0.213,
+      "n": 210
+    },
+    "analog": {
+      "slope": -0.938,
+      "rms_dex": 0.218,
+      "n": 210
+    },
+    "ref0630": {
+      "slope": -1.019,
+      "rms_dex": 0.251,
+      "n": 210
+    },
+    "magnetization_predicted_slope": -0.5
+  },
+  "C_magn_fT_sqrtHz": 180.9,
+  "implied_knee_if_white_eq_floor_Hz": 84.25,
+  "johnson_white_fT": {
+    "analytic_highmu_limit_UNPHYSICAL_a8cm_t1mm": 993000.0,
+    "empirical_mumetal_band": [
+      6.1,
+      16.0
+    ]
+  },
+  "ms1l_f_magn_Hz": {
+    "central": 0.38,
+    "lo": 1.52,
+    "hi": 0.169
+  },
+  "assumptions": {
+    "bench_wall_thickness_UNKNOWN_band_mm": [
+      0.5,
+      1.0,
+      1.5
+    ],
+    "bench_radius_ASSUMED_cm": 7.5,
+    "mu_r": 25000.0,
+    "sigma_S_per_m": 1600000.0,
+    "tan_delta": 0.04,
+    "sensor_spec_fT": [
+      7.0,
+      15.0
+    ],
+    "white_floor_used_for_excess_fT": 19.71
+  },
+  "figures": [
+    "/Users/haruyaosawa/Desktop/Studying/ResearchProject/IROP/IROP_research/analysis/synctest/models_sync5_asd_models.png",
+    "/Users/haruyaosawa/Desktop/Studying/ResearchProject/IROP/IROP_research/analysis/synctest/models_sync5_excess_slope.png"
+  ]
+}

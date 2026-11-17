@@ -1,0 +1,15 @@
+{
+    "_readme": [
+        "Data folder locations for each device, read by LatticeEDM_analysis_library.get_datadrive().",
+        "Look-up order: LATTICEEDM_DATA environment variable, then 'machines' (keyed by hostname), then 'defaults' (keyed by sys.platform).",
+        "Find a device's hostname with:  python -c \"import platform; print(platform.node())\"",
+        "Paths may use forward slashes and ~ (home folder) on any OS."
+    ],
+    "defaults": {
+        "win32":  {"datadrive": "~/Box/LatticeEDM/data"},
+        "darwin": {"datadrive": "~/Library/CloudStorage/Box-Box/LatticeEDM/data"}
+    },
+    "machines": {
+        "ic-czc0137v0g": {"note": "Precilaser computer", "datadrive": "A:/Box/Box/LatticeEDM/data"}
+    }
+}

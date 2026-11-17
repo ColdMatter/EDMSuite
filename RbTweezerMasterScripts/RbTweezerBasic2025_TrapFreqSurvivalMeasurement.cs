@@ -14,7 +14,7 @@ public class Patterns : MOTMasterScript
         Parameters = new Dictionary<string, object>();
 
         // General
-        Parameters["PatternLength"] = 110000;
+        Parameters["PatternLength"] = 40000;
         Parameters["TCLBlockStart"] = 0;
         Parameters["tScanCount"] = 0;
 
@@ -28,39 +28,44 @@ public class Patterns : MOTMasterScript
         Parameters["tcMOTccValue"] = 0.48;
         Parameters["tMOTccSwitch"] = 5.5;
 
+        // MOT coils
+        Parameters["tMOTccValue"] = 0.48; //0.48
+        Parameters["tcMOTccValue"] = 0.48;
+        Parameters["tMOTccSwitch"] = 5.5;
+
         // Shim Coils Default
-        Parameters["tShimXccValue"] = 2.0; // 8.8; //8.8; //  0.0
-        Parameters["tShimYccValue"] = -2.0; // 3.8;//3.8; // -2.0
-        Parameters["tShimZccValue"] = -0.5; // 0.3; //0.3; // -0.85
+        Parameters["tShimXccValue"] = 5.0859; // 8.8; //8.8; //  0.0
+        Parameters["tShimYccValue"] = -0.0002; // 3.8;//3.8; // -2.0
+        Parameters["tShimZccValue"] = -0.0122; // 0.3; //0.3; // -0.85
 
         // Shim Coils Molasses
-        Parameters["tMolassesShimXccValue"] = 10.0; // 8.8 // 10.0
-        Parameters["tMolassesShimYccValue"] = 3.29; // 3.8 // 3.29
-        Parameters["tMolassesShimZccValue"] = 0.52; // 0.3 // 0.52
-
-        // Shim Coils Blue MOT
-        Parameters["tBlueMOTShimXccValue"] = 0.0; //0.0; // 8.0
-        Parameters["tBlueMOTShimYccValue"] = 0.0; //2.5; // -5.0
-        Parameters["tBlueMOTShimZccValue"] = 0.0; //-1.0; // -7.0
+        Parameters["tMolassesShimXccValue"] = 10.0000; // 8.8 // 10.0
+        Parameters["tMolassesShimYccValue"] = 3.1225; // 3.8 // 3.29
+        Parameters["tMolassesShimZccValue"] = 0.4068; // 0.3 // 0.52
 
         // tRb AOMs 
         // MOT Cooling and Repump VCO & VVA
-        Parameters["tMOTCool"] = 3.8; //Cool at 2.4 - 2.6
-        Parameters["tMOTRep"] = 3.0;
-        Parameters["tMOTCoolVVA"] = 2.0; // between 0 and 1 V
-        Parameters["tMOTRepVVA"] = 2.0;
+        Parameters["tMOTCool"] = 4.1794; //Cool at 2.4 - 2.6
+        Parameters["tMOTRep"] = 2.2053;
+        Parameters["tMOTCoolVVA"] = 2.4424; // between 0 and 1 V
+        Parameters["tMOTRepVVA"] = 1.6205;
 
         // Imaging Cooling and Repump VCO & VVA
-        Parameters["tImgCool"] = 0.0; // 3.6 - 4.0, resonance is 4.0
-        Parameters["tImgRep"] = 0.0; // 3.0
-        Parameters["tImgCoolVVA"] = 2.0;
-        Parameters["tImgRepVVA"] = 2.0;
+        Parameters["tImgCool"] = 0.67; // 3.6 - 4.0, resonance is 4.0
+        Parameters["tImgRep"] = 0.028; // 3.0
+        Parameters["tImgCoolVVA"] = 0.42;
+        Parameters["tImgRepVVA"] = 1.050;
 
         // Molasses Cooling and Repump VCO & VVA
-        Parameters["tMolCool"] = 0.0;
-        Parameters["tMolRep"] = 0.0;
-        Parameters["tMolCoolVVA"] = 1.0;
-        Parameters["tMolRepVVA"] = 1.2;
+        Parameters["tMolCool1"] = 1.9745;
+        Parameters["tMolRep1"] = 1.1108;
+        Parameters["tMolCoolVVA1"] = 0.4232;
+        Parameters["tMolRepVVA1"] = 1.00;
+
+        Parameters["tMolCool2"] = 2.6926;
+        Parameters["tMolRep2"] = 4.1274;
+        Parameters["tMolCoolVVA2"] = 0.4303;
+        Parameters["tMolRepVVA2"] = 0.9105;
 
         // Blue MOT Cooling and Repump VCO and VVA
         Parameters["tBlueMotVCO"] = 3.0; // 5.0 for blue MOT
@@ -85,13 +90,13 @@ public class Patterns : MOTMasterScript
         // Timing
         Parameters["tRbMOTStart"] = 10;
         Parameters["tDropTime"] = 10;
-        Parameters["tRbRedMOTDuration"] = 50000;
+        Parameters["tRbRedMOTDuration"] = 20000;
         Parameters["tMolassesDelay"] = 1;
-        Parameters["tRbRedMolassesDuration"] = 20000;
-        Parameters["tImgTOF"] = 400;
+        Parameters["tRbRedMolassesDuration"] = 5000;
+        Parameters["tImgTOF"] = 1000;
         Parameters["tTweezerModDuration"] = 2000;
-        Parameters["tMOTExposure"] = 200;
-        Parameters["tTweezerExposure"] = 10000;
+        Parameters["tMOTExposure"] = 1;
+        Parameters["tTweezerExposure"] = 5000;
         Parameters["tTweezerImg2Delay"] = 200; // 20000
 
     }
@@ -112,6 +117,7 @@ public class Patterns : MOTMasterScript
 
         // Analog Board trigger
         p.Pulse(0, 0, 10, "aoTrigger");
+        p.AddEdge("tVerticalShutter", RedMOTStart, true);
 
         // D1 Light
         p.AddEdge("tD1AOMSwitch", RedMOTStart, true); // Turn off D1 light for sequence

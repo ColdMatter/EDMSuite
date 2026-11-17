@@ -1,0 +1,405 @@
+{
+ "program": "runs_compare.py",
+ "generated": "2026-07-08T19:03:23",
+ "inputs": {
+  "runs": [
+   "result/modetest2/modeB1_dual",
+   "result/modetest2/modeB2_dual",
+   "result/modetest2/modeA_single"
+  ],
+  "args": {
+   "manifest": "analysis/modetest2/manifest.csv",
+   "gui": null,
+   "labels": null,
+   "gain_v_per_nt": 2.624,
+   "raw": false,
+   "band": [
+    3.0,
+    40.0
+   ],
+   "axes": null,
+   "outdir": "analysis/modetest2",
+   "force": false,
+   "allow_sim": false,
+   "no_figures": false
+  }
+ },
+ "results": {
+  "runs": [
+   {
+    "label": "B 17:24 dual",
+    "group": "dual",
+    "pair_id": "dualrepeat",
+    "path": "result/modetest2/modeB1_dual",
+    "source": "analog",
+    "axis": "z",
+    "floor_ft": 21.582645585587017,
+    "floor_err_ft": 0.24225577463659725,
+    "floor_sensor_only_ft": 20.48342233302479,
+    "floor_trend_pct_min": -0.21199237514182512,
+    "lowf_ft": {
+     "0.05": 746.7346937374471,
+     "0.1": 318.28453875410213,
+     "0.5": 70.60411917055693,
+     "1": 56.24561879992895
+    },
+    "lowf_err_ft": {
+     "0.05": 136.33447874390384,
+     "0.1": 41.090357264998225,
+     "0.5": 4.249868558858404,
+     "1": 0.9389932751261538
+    },
+    "dc_pt": -48.37342227991616,
+    "dc_sem_pt": 1.6281186476465106,
+    "drift_pt_min": 2.125622066909847,
+    "onef": {
+     "w": 0.021482415394983058,
+     "A": 0.04844043928834134,
+     "alpha": 0.7952771714649238
+    },
+    "gain_mode": "1x",
+    "vrange": 1.0,
+    "fs": 1200.0,
+    "dur_s": 900.0,
+    "start_iso": "2026-07-08T17:24:31",
+    "short": false
+   },
+   {
+    "label": "B 17:24 dual",
+    "group": "dual",
+    "pair_id": "dualrepeat",
+    "path": "result/modetest2/modeB1_dual",
+    "source": "analog",
+    "axis": "y",
+    "floor_ft": 21.27077816386187,
+    "floor_err_ft": 0.3301914884741078,
+    "floor_sensor_only_ft": 20.154552927222745,
+    "floor_trend_pct_min": -0.7304297026209322,
+    "lowf_ft": {
+     "0.05": 774.3719254269287,
+     "0.1": 320.19143881933934,
+     "0.5": 67.88536707795112,
+     "1": 48.80741195533482
+    },
+    "lowf_err_ft": {
+     "0.05": 141.38032381834572,
+     "0.1": 41.336537004849745,
+     "0.5": 4.086218913859869,
+     "1": 0.814816026211612
+    },
+    "dc_pt": 10.328820026676832,
+    "dc_sem_pt": 0.9279608030862484,
+    "drift_pt_min": 1.2046468477787449,
+    "onef": {
+     "w": 0.021838129140887008,
+     "A": 0.03999712861981964,
+     "alpha": 0.8892581021743875
+    },
+    "gain_mode": "1x",
+    "vrange": 1.0,
+    "fs": 1200.0,
+    "dur_s": 900.0,
+    "start_iso": "2026-07-08T17:24:31",
+    "short": false
+   },
+   {
+    "label": "B' 18:20 dual",
+    "group": "dual",
+    "pair_id": "dualrepeat",
+    "path": "result/modetest2/modeB2_dual",
+    "source": "analog",
+    "axis": "z",
+    "floor_ft": 23.054789841898888,
+    "floor_err_ft": 0.44887114275617657,
+    "floor_sensor_only_ft": 22.029147388270026,
+    "floor_trend_pct_min": -1.3658233989612558,
+    "lowf_ft": {
+     "0.05": 1017.5638385220138,
+     "0.1": 485.22270748510607,
+     "0.5": 123.90679550802771,
+     "1": 70.88393119641606
+    },
+    "lowf_err_ft": {
+     "0.05": 185.78088935335043,
+     "0.1": 62.64198217638296,
+     "0.5": 7.458312640178938,
+     "1": 1.1833727875712117
+    },
+    "dc_pt": 14.575011861661586,
+    "dc_sem_pt": 0.4663145054735241,
+    "drift_pt_min": 0.5896392040505214,
+    "onef": {
+     "w": 0.02190171794298477,
+     "A": 0.06934782439191806,
+     "alpha": 0.7719387240998274
+    },
+    "gain_mode": "1x",
+    "vrange": 1.0,
+    "fs": 1200.0,
+    "dur_s": 900.0,
+    "start_iso": "2026-07-08T18:20:57",
+    "short": false
+   },
+   {
+    "label": "B' 18:20 dual",
+    "group": "dual",
+    "pair_id": "dualrepeat",
+    "path": "result/modetest2/modeB2_dual",
+    "source": "analog",
+    "axis": "y",
+    "floor_ft": 23.159796863036338,
+    "floor_err_ft": 0.5532103620195957,
+    "floor_sensor_only_ft": 22.139019642637923,
+    "floor_trend_pct_min": -2.0802387904268844,
+    "lowf_ft": {
+     "0.05": 1138.2281050226584,
+     "0.1": 491.01753876713883,
+     "0.5": 124.06340794741446,
+     "1": 72.05108980204423
+    },
+    "lowf_err_ft": {
+     "0.05": 207.81106956908977,
+     "0.1": 63.39009167802945,
+     "0.5": 7.467739601238645,
+     "1": 1.2028579333492122
+    },
+    "dc_pt": -4.91520948456555,
+    "dc_sem_pt": 0.17665317422371216,
+    "drift_pt_min": -0.057659038817508106,
+    "onef": {
+     "w": 0.022197080563230394,
+     "A": 0.06803165861284702,
+     "alpha": 0.8121198262003624
+    },
+    "gain_mode": "1x",
+    "vrange": 1.0,
+    "fs": 1200.0,
+    "dur_s": 900.0,
+    "start_iso": "2026-07-08T18:20:57",
+    "short": false
+   },
+   {
+    "label": "A 17:42 single",
+    "group": "single",
+    "pair_id": "",
+    "path": "result/modetest2/modeA_single",
+    "source": "analog",
+    "axis": "z",
+    "floor_ft": 16.616865443397405,
+    "floor_err_ft": 0.08176706677145458,
+    "floor_sensor_only_ft": 15.161801250642181,
+    "floor_trend_pct_min": 0.48846659141199134,
+    "lowf_ft": {
+     "0.05": 1186.2165044193887,
+     "0.1": 489.06500070185797,
+     "0.5": 82.69085929914144,
+     "1": 55.62569832576882
+    },
+    "lowf_err_ft": {
+     "0.05": 216.57251251847526,
+     "0.1": 63.13802009770716,
+     "0.5": 4.977404819561228,
+     "1": 0.9286440040403477
+    },
+    "dc_pt": -3.701212104611281,
+    "dc_sem_pt": 1.160016437379947,
+    "drift_pt_min": 1.4953271953941643,
+    "onef": {
+     "w": 0.01549781793927727,
+     "A": 0.05647388941229725,
+     "alpha": 0.7472787104508537
+    },
+    "gain_mode": "1x",
+    "vrange": 1.0,
+    "fs": 1200.0,
+    "dur_s": 900.0,
+    "start_iso": "2026-07-08T17:42:19",
+    "short": false
+   }
+  ],
+  "groups": [
+   {
+    "group": "dual",
+    "axis": "y",
+    "n": 2,
+    "floor_mean": 22.215287513449105,
+    "floor_rel_std": 0.06012697027512262,
+    "small_sample": true
+   },
+   {
+    "group": "dual",
+    "axis": "z",
+    "n": 2,
+    "floor_mean": 22.318717713742952,
+    "floor_rel_std": 0.046640815116451274,
+    "small_sample": true
+   },
+   {
+    "group": "single",
+    "axis": "z",
+    "n": 1,
+    "floor_mean": 16.616865443397405,
+    "floor_rel_std": null,
+    "small_sample": true
+   }
+  ],
+  "pairs": [
+   {
+    "pair_id": "dualrepeat",
+    "axis": "y",
+    "metric": "floor",
+    "before": 21.27077816386187,
+    "after": 23.159796863036338,
+    "ratio": 1.0888081613480334,
+    "z": 2.932085066714555,
+    "verdict": "no significant change",
+    "settling": false
+   },
+   {
+    "pair_id": "dualrepeat",
+    "axis": "y",
+    "metric": "dc_pt",
+    "before": 10.328820026676832,
+    "after": -4.91520948456555,
+    "ratio": -0.47587328193063283,
+    "z": 16.137641090281676,
+    "verdict": "reduced",
+    "settling": false
+   },
+   {
+    "pair_id": "dualrepeat",
+    "axis": "y",
+    "metric": "lowf_0.05",
+    "before": 774.3719254269287,
+    "after": 1138.2281050226584,
+    "ratio": 1.4698726382611658,
+    "z": 1.447641847213139,
+    "verdict": "no significant change",
+    "settling": false
+   },
+   {
+    "pair_id": "dualrepeat",
+    "axis": "y",
+    "metric": "lowf_0.1",
+    "before": 320.19143881933934,
+    "after": 491.01753876713883,
+    "ratio": 1.5335123905176746,
+    "z": 2.2573044659261714,
+    "verdict": "no significant change",
+    "settling": false
+   },
+   {
+    "pair_id": "dualrepeat",
+    "axis": "y",
+    "metric": "lowf_0.5",
+    "before": 67.88536707795112,
+    "after": 124.06340794741446,
+    "ratio": 1.8275427133649504,
+    "z": 6.599400416482342,
+    "verdict": "increased",
+    "settling": false
+   },
+   {
+    "pair_id": "dualrepeat",
+    "axis": "y",
+    "metric": "lowf_1",
+    "before": 48.80741195533482,
+    "after": 72.05108980204423,
+    "ratio": 1.4762325416471667,
+    "z": 15.998604055672732,
+    "verdict": "increased",
+    "settling": false
+   },
+   {
+    "pair_id": "dualrepeat",
+    "axis": "z",
+    "metric": "floor",
+    "before": 21.582645585587017,
+    "after": 23.054789841898888,
+    "ratio": 1.0682096293743977,
+    "z": 2.886151473220599,
+    "verdict": "no significant change",
+    "settling": false
+   },
+   {
+    "pair_id": "dualrepeat",
+    "axis": "z",
+    "metric": "dc_pt",
+    "before": -48.37342227991616,
+    "after": 14.575011861661586,
+    "ratio": -0.30130206164290524,
+    "z": 37.16881673912425,
+    "verdict": "increased",
+    "settling": false
+   },
+   {
+    "pair_id": "dualrepeat",
+    "axis": "z",
+    "metric": "lowf_0.05",
+    "before": 746.7346937374471,
+    "after": 1017.5638385220138,
+    "ratio": 1.3626845612717582,
+    "z": 1.1752803538727257,
+    "verdict": "no significant change",
+    "settling": false
+   },
+   {
+    "pair_id": "dualrepeat",
+    "axis": "z",
+    "metric": "lowf_0.1",
+    "before": 318.28453875410213,
+    "after": 485.22270748510607,
+    "ratio": 1.5244934905869738,
+    "z": 2.2283323632512047,
+    "verdict": "no significant change",
+    "settling": false
+   },
+   {
+    "pair_id": "dualrepeat",
+    "axis": "z",
+    "metric": "lowf_0.5",
+    "before": 70.60411917055693,
+    "after": 123.90679550802771,
+    "ratio": 1.7549513677623907,
+    "z": 6.209422202869833,
+    "verdict": "increased",
+    "settling": false
+   },
+   {
+    "pair_id": "dualrepeat",
+    "axis": "z",
+    "metric": "lowf_1",
+    "before": 56.24561879992895,
+    "after": 70.88393119641606,
+    "ratio": 1.2602569357189755,
+    "z": 9.6900412085197,
+    "verdict": "increased",
+    "settling": false
+   }
+  ],
+  "cross_group": [
+   {
+    "a": "dual",
+    "b": "single",
+    "axis": "z",
+    "basis": "as-is",
+    "floor_ratio": 0.7445259918837281,
+    "z": 21.289631136346493,
+    "p_welch": null,
+    "inferential": false
+   },
+   {
+    "a": "dual",
+    "b": "single",
+    "axis": "z",
+    "basis": "sensor-only",
+    "floor_ratio": 0.7132855694228966,
+    "z": 22.755641828590818,
+    "p_welch": null,
+    "inferential": false
+   }
+  ]
+ },
+ "warnings": [],
+ "pass": null
+}

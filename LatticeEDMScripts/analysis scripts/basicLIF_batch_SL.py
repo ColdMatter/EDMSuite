@@ -12,8 +12,13 @@ import sys
 import os
 import re
 
-OneDriveFolder = os.environ['onedrive']
-sys.path.append(OneDriveFolder + r"\Desktop\EDMSuite\LatticeEDMScripts")
+# Add LatticeEDMScripts (parent of "analysis scripts") to the path so the
+# library imports work whatever the working directory or OS
+try:
+    scriptDir = os.path.dirname(os.path.abspath(__file__))
+except NameError:  # __file__ isn't defined when running cells interactively
+    scriptDir = os.getcwd()
+sys.path.append(os.path.dirname(scriptDir))
 import LatticeEDM_analysis_library as EDM
 
 import numpy as np
@@ -30,13 +35,13 @@ prop_cycle = plt.rcParams['axes.prop_cycle']
 colors = prop_cycle.by_key()['color']
 
 #%%
-sele = ["003", "004"]
+sele = ["003", "004"] # leave empty, sele = [], to load all matching files
 
 #%% Load data
 #datadrive=str(os.environ["Onedrive"]+"\\Desktop\\Lattice EDM\\data")
-datadrive = r"C:\Users\sl5119\Box\LatticeEDM\data"
-month=datadrive+"\\4f2025\\May2026\\"
-date=month+"\\28\\"
+datadrive = EDM.get_datadrive()  # set per device in data_locations.json
+month=os.path.join(datadrive, "4f2025", "May2026")
+date=os.path.join(month, "28", "")
 #blockdrive=datadrive+"\\BlockData\\"
 
 drive = date
@@ -48,29 +53,26 @@ print("Matching files: ", [os.path.basename(f) for f in files])
 
 if len(files) > 0:
     print("%g matching files found. Loading"%len(files))
+    if len(sele) == 0:
+        # No selection: select every matching file by its ID
+        sele = sorted(set(re.split(r'[_]', os.path.basename(f))[0] for f in files))
+        print("No selection - loading all matching files: ", sele)
     Data = {}
     fileLabels = []
     Lasers = []
     for i in range(0, len(files)):
         fileLabel = re.split(r'[_]', re.split(r'[\\]', files[i])[-1])[0]
         Laser = re.split(r'[.]', re.split(r'[_]', re.split(r'[\\]', files[i])[-1])[-2])[0]
-       
+
        #Use this part if have selections
-        if len(sele) > 0:
-            for j in range(0, len(sele)):
-                if fileLabel == sele[j]:
-                    print("File "+fileLabel+" selected")
-           ###
-                    Data[fileLabel] = EDM.ReadAverageScanInZippedXML(files[i])
-                    print("loaded file " + files[i])
-                    fileLabels.append(fileLabel)
-                    Lasers.append(Laser)
-        else:
-            print("No further selection applied.")
-            Data[fileLabel] = EDM.ReadAverageScanInZippedXML(files[i])
-            print("loaded file " + files[i])
-            fileLabels.append(fileLabel)
-            Lasers.append(Laser)
+        for j in range(0, len(sele)):
+            if fileLabel == sele[j]:
+                print("File "+fileLabel+" selected")
+       ###
+                Data[fileLabel] = EDM.ReadAverageScanInZippedXML(files[i])
+                print("loaded file " + files[i])
+                fileLabels.append(fileLabel)
+                Lasers.append(Laser)
 
 else:
     print("No matching files.")

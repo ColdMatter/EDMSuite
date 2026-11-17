@@ -50,6 +50,9 @@
             this.viewPatternButton = new System.Windows.Forms.Button();
             this.parametersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editParameterFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.linkedCheckBox = new System.Windows.Forms.CheckBox();
+            this.linkBannerLabel = new System.Windows.Forms.Label();
+            this.breakLinkButton = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -256,11 +259,50 @@
             this.editParameterFileToolStripMenuItem.Text = "Edit parameter file";
             this.editParameterFileToolStripMenuItem.Click += new System.EventHandler(this.editParameterFileToolStripMenuItem_Click);
             //
+            // linkedCheckBox
+            //
+            this.linkedCheckBox.AutoSize = true;
+            this.linkedCheckBox.Location = new System.Drawing.Point(240, 109);
+            this.linkedCheckBox.Name = "linkedCheckBox";
+            this.linkedCheckBox.Size = new System.Drawing.Size(60, 17);
+            this.linkedCheckBox.TabIndex = 19;
+            this.linkedCheckBox.Text = "Linked";
+            this.linkedCheckBox.UseVisualStyleBackColor = true;
+            this.linkedCheckBox.Visible = false;
+            this.linkedCheckBox.CheckedChanged += new System.EventHandler(this.linkedCheckBox_CheckedChanged);
+            //
+            // linkBannerLabel
+            //
+            this.linkBannerLabel.BackColor = System.Drawing.Color.Gold;
+            this.linkBannerLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.linkBannerLabel.ForeColor = System.Drawing.Color.Black;
+            this.linkBannerLabel.Location = new System.Drawing.Point(100, 130);
+            this.linkBannerLabel.Name = "linkBannerLabel";
+            this.linkBannerLabel.Size = new System.Drawing.Size(483, 18);
+            this.linkBannerLabel.TabIndex = 20;
+            this.linkBannerLabel.Text = "Controlled by (linked run)";
+            this.linkBannerLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.linkBannerLabel.Visible = false;
+            //
+            // breakLinkButton
+            //
+            this.breakLinkButton.Location = new System.Drawing.Point(447, 108);
+            this.breakLinkButton.Name = "breakLinkButton";
+            this.breakLinkButton.Size = new System.Drawing.Size(136, 21);
+            this.breakLinkButton.TabIndex = 21;
+            this.breakLinkButton.Text = "Take back control";
+            this.breakLinkButton.UseVisualStyleBackColor = true;
+            this.breakLinkButton.Visible = false;
+            this.breakLinkButton.Click += new System.EventHandler(this.breakLinkButton_Click);
+            //
             // ControllerWindow
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(736, 149);
+            this.Controls.Add(this.breakLinkButton);
+            this.Controls.Add(this.linkBannerLabel);
+            this.Controls.Add(this.linkedCheckBox);
             this.Controls.Add(this.viewPatternButton);
             this.Controls.Add(this.triggeredCheckBox);
             this.Controls.Add(this.runUntilStopCheckBox);
@@ -311,6 +353,9 @@
         private System.Windows.Forms.Button viewPatternButton;
         private System.Windows.Forms.ToolStripMenuItem parametersToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editParameterFileToolStripMenuItem;
+        private System.Windows.Forms.CheckBox linkedCheckBox;
+        private System.Windows.Forms.Label linkBannerLabel;
+        private System.Windows.Forms.Button breakLinkButton;
     }
 }
 

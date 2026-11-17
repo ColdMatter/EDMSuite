@@ -161,6 +161,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("tHamCamTrig", pgBoard, 3, 3);
             AddDigitalOutputChannel("tTweezerModSwitch", pgBoard, 3, 4); // '0' - modulated, '1' - unmodulated
             AddDigitalOutputChannel("tTweezerSwitch", pgBoard, 3, 5); // '1' - off, '0' - on
+            AddDigitalOutputChannel("tScopeTest", pgBoard, 2, 0); // spare line, scope checks only (LinkedScopeTest.cs)
 
             
             // ANALOG OUTPUT CHANNELS - PXISlot4
@@ -446,7 +447,7 @@ namespace DAQ.HAL
 
             // AddDigitalInputChannel("WavemeterLockBlockTest", pgBoard, 2, 0); 
 
-            MMConfig mmConfig = new MMConfig(false, false, true, false);
+            MMConfig mmConfig = new MMConfig(false, false, false, false);
             mmConfig.ExternalFilePattern = "*.tif";
             Info.Add("MotMasterConfiguration", mmConfig);
             //Info.Add("PatternGeneratorBoard", pgBoard);
