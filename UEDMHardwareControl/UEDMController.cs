@@ -50,13 +50,13 @@ namespace UEDMHardwareControl
         //Convention for monitor to plate mapping:
         //west -> monitor1
         //east -> monitor2
-        private static double westSlope = 1858;
-        private static double eastSlope = 2001;
+        private static double westSlope = 1;//1858
+        private static double eastSlope = 1;//2001
         private static double westFreq2AmpSlope = 1;
         private static double eastFreq2AmpSlope = 1;
-        private static double westOffset = 100900;
-        private static double eastOffset = 100900;
-        private static double currentMonitorMeasurementTime = 0.01;
+        private static double westOffset = 630;//100900
+        private static double eastOffset = 630;//100900
+        private static double currentMonitorMeasurementTime = 0.1;
 
         //HV plates
         private static double voltageOutputHigh = 7;
@@ -514,10 +514,10 @@ namespace UEDMHardwareControl
             window.ToggleCCDControls(false);
 
             // Pre-fill default values in UI
-            window.tbCCDAGain.Text = "100";
-            window.tbCCDBGain.Text = "100";
+            window.tbCCDAGain.Text = "1200";
+            window.tbCCDBGain.Text = "1200";
             window.tbCCDAExposure.Text = "4.32";
-            window.tbCCDBExposure.Text = "4.83"; // based on 1.11 * 4.32 + deadtime
+            window.tbCCDBExposure.Text = "4.87"; // based on 1.11 * 4.32 + deadtime // On 09/11/2026, we changed it to 4.87 ms
             window.tbCCDAFrameCount.Text = "20";
             window.comboBoxCCDTriggerMode.SelectedIndex = 1; // Burst mode
 
@@ -525,7 +525,7 @@ namespace UEDMHardwareControl
             // Shirley adds on 25/08. When input = -1, the condition in the corresponding function would fail, such that the parameters to each CCD is set separately. 
             if (window.checkboxTCPCCDA.Checked && ccdA != null)
             {
-                SetCCDGain(100, -1);
+                SetCCDGain(1200, -1); // On 09/11/2026, we changed this from 100 to 1200
                 SetCCDExposureTime(4.32, -1);
                 SetCCDFrameCount(20, -1);
 
@@ -533,8 +533,8 @@ namespace UEDMHardwareControl
 
             if (window.checkboxTCPCCDB.Checked && ccdB != null)
             {
-                SetCCDGain(-1, 100);
-                SetCCDExposureTime(-1, 1.11 * 4.32 + 0.000033 * 1000);
+                SetCCDGain(-1, 1200); // On 09/11/2026, we changed this from 100 to 1200
+                SetCCDExposureTime(-1, 4.87); // On 09/11/2026, we changed this from 1.11 * 4.32 + 0.000033 * 1000 to 4.87
                 SetCCDFrameCount(-1, 20);
 
             }
@@ -3512,6 +3512,7 @@ namespace UEDMHardwareControl
         private int NeonFlowMonitorPollPeriod = 1000;
         private bool NeonFlowMonitorFlag;
         private bool NeonFlowSetPointFlag;
+        private bool SF6FlowSetPointFlag;
         private Object NeonFlowMonitorLock;
 
         internal void StartNeonFlowMonitorPoll()
@@ -3528,6 +3529,7 @@ namespace UEDMHardwareControl
             NeonFlowMonitorLock = new Object();
             NeonFlowMonitorFlag = false;
             NeonFlowSetPointFlag = false;
+            SF6FlowSetPointFlag = false;
             NeonFlowMonitorPollThread.Start();
         }
         internal void StopNeonFlowMonitorPoll()
@@ -3559,6 +3561,10 @@ namespace UEDMHardwareControl
                     if (NeonFlowSetPointFlag)
                     {
                         neonFlowController.SetSetpoint(neonFlowChannelNumber, newNeonFlowSetpoint.ToString());
+                        NeonFlowSetPointFlag = false;
+                    }
+                    if (SF6FlowSetPointFlag)
+                    {
                         if (window.cbSF6Valve.Checked)
                         {
                             try
@@ -3570,7 +3576,7 @@ namespace UEDMHardwareControl
                                 HandleSF6FlowControllerError(e);
                             }
                         }
-                        NeonFlowSetPointFlag = false;
+                        SF6FlowSetPointFlag = false;
                     }
                     if (NeonFlowMonitorFlag)
                     {
@@ -3599,10 +3605,12 @@ namespace UEDMHardwareControl
 
         public void SetNeonFlowSetpoint()
         {
-            if (Double.TryParse(window.tbNewHeliumFlowSetPoint.Text, out newNeonFlowSetpoint))
+            double setpoint;
+            if (Double.TryParse(window.tbNewHeliumFlowSetPoint.Text, out setpoint))
             {
-                if (newNeonFlowSetpoint <= neonFlowUpperLimit & neonFlowLowerLimit <= newNeonFlowSetpoint)
+                if (setpoint <= neonFlowUpperLimit & neonFlowLowerLimit <= setpoint)
                 {
+                    newNeonFlowSetpoint = setpoint; // only store the setpoint once it has passed validation
                     NeonFlowSetPointFlag = true; // set flag that will trigger the setpoint to be changed in NeonFlowActMonitorPollWorker()
                 }
                 else MessageBox.Show("Setpoint request is outside of the MKS PR4000B flow range (" + neonFlowLowerLimit.ToString() + " - " + neonFlowUpperLimit.ToString() + " SCCM)", "User input exception", MessageBoxButtons.OK);
@@ -3612,13 +3620,15 @@ namespace UEDMHardwareControl
 
         public void SetSF6FlowSetpoint()
         {
-            if (Double.TryParse(window.tbNewSF6FlowSetpoint.Text, out newSF6FlowSetpoint))
+            double setpoint;
+            if (Double.TryParse(window.tbNewSF6FlowSetpoint.Text, out setpoint))
             {
-                if (newNeonFlowSetpoint <= neonFlowUpperLimit & neonFlowLowerLimit <= newNeonFlowSetpoint)
+                if (setpoint <= sF6FlowUpperLimit & sF6FlowLowerLimit <= setpoint)
                 {
-                    NeonFlowSetPointFlag = true; // set flag that will trigger the setpoint to be changed in NeonFlowActMonitorPollWorker()
+                    newSF6FlowSetpoint = setpoint; // only store the setpoint once it has passed validation
+                    SF6FlowSetPointFlag = true; // set flag that will trigger the setpoint to be changed in NeonFlowActMonitorPollWorker()
                 }
-                else MessageBox.Show("Setpoint request is outside of the Alicat flow range (" + neonFlowLowerLimit.ToString() + " - " + neonFlowUpperLimit.ToString() + " SCCM)", "User input exception", MessageBoxButtons.OK);
+                else MessageBox.Show("Setpoint request is outside of the Alicat flow range (" + sF6FlowLowerLimit.ToString() + " - " + sF6FlowUpperLimit.ToString() + " SCCM)", "User input exception", MessageBoxButtons.OK);
             }
             else MessageBox.Show("Unable to parse setpoint string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
         }
@@ -3711,6 +3721,98 @@ namespace UEDMHardwareControl
                 Console.WriteLine(String.Concat("Could not connect with exception ", errorMsg));
             }
         }
+
+        #region Target serial move (move N before each block)
+
+        // Number of steps for a serial "move N", read from the Target stepper box.
+        public int targetMoveSteps
+        {
+            get
+            {
+                string text = window.GetTextBoxText(window.TargetMoveStepsTextBox);
+                int steps;
+                if (Int32.TryParse(text.Trim(), out steps)) return steps;
+                throw new FormatException(String.Concat("Target move steps \"", text, "\" is not a whole number."));
+            }
+            set
+            {
+                window.SetTextBox(window.TargetMoveStepsTextBox, value.ToString());
+            }
+        }
+
+        // Whether MoveTargetBeforeBlock() should actually move the target.
+        public bool moveTargetBeforeBlock
+        {
+            get
+            {
+                return window.GetCheckBoxCheckedStatus(window.TargetMoveBeforeBlockCBox);
+            }
+            set
+            {
+                window.SetCheckBoxCheckedStatus(window.TargetMoveBeforeBlockCBox, value);
+            }
+        }
+
+        public int targetStepsMovedTotal = 0;
+
+        /// <summary>
+        /// Serial "move N" right now. Returns true if the controller replied AOK.
+        /// </summary>
+        public bool MoveTarget(int steps)
+        {
+            try
+            {
+                string response = targetStepperControl.Move(steps);
+                bool ok = response != null && response.Contains("AOK");
+                if (ok) targetStepsMovedTotal += steps;
+                window.SetTextBox(window.TargetMoveStatusTextBox, String.Concat(
+                    DateTime.Now.ToString("HH:mm:ss"), "  move ", steps.ToString(),
+                    ok ? " OK" : String.Concat(" FAILED (", (response ?? "").Trim(), ")"),
+                    "   total: ", targetStepsMovedTotal.ToString()));
+                return ok;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(String.Concat("Could not move target with exception ", e.ToString()));
+                window.SetTextBox(window.TargetMoveStatusTextBox, String.Concat(
+                    DateTime.Now.ToString("HH:mm:ss"), "  move ", steps.ToString(), " FAILED (no connection)"));
+                return false;
+            }
+        }
+
+        // "Move N now" button
+        public void MoveTarget()
+        {
+            int steps;
+            try { steps = targetMoveSteps; }
+            catch (FormatException e) { MessageBox.Show(e.Message, "User input exception", MessageBoxButtons.OK); return; }
+            MoveTarget(steps);
+        }
+
+        /// <summary>
+        /// Call from a block loop script just before each block, e.g.
+        ///     hc.MoveTargetBeforeBlock()
+        ///     bh.AcquireWithoutCCDsAndWait()
+        /// Does nothing (returns 0) unless "Serial move N before each block" is
+        /// ticked on the Flow Controllers tab. Otherwise sends "move N" and
+        /// returns N, or 0 if the move failed. The return value can be stored
+        /// in the block config if you want it recorded.
+        /// </summary>
+        public int MoveTargetBeforeBlock()
+        {
+            if (!moveTargetBeforeBlock) return 0;
+            int steps;
+            try { steps = targetMoveSteps; }
+            catch (FormatException e)
+            {
+                Console.WriteLine(e.Message);
+                window.SetTextBox(window.TargetMoveStatusTextBox, "Before-block move skipped: steps box is not a whole number");
+                return 0;
+            }
+            return MoveTarget(steps) ? steps : 0;
+        }
+
+        #endregion
 
         public bool targetStepDirection
         {
@@ -8432,7 +8534,7 @@ namespace UEDMHardwareControl
         public void InitialiseTCPforCCDA()
         {
             string nameCCDA = null;
-            string computerCCDA = "ULTRACOLD-EMCCD"; // ULTRACOLD-EMCCD PC
+            string computerCCDA = "ic-czc5347lb5"; // CCD PC
 
             // Resolve CCD A IP
             IPHostEntry hostInfoCCDA = Dns.GetHostEntry(computerCCDA);
@@ -8643,8 +8745,8 @@ namespace UEDMHardwareControl
 
                 if (exposureB >= 0 && ccdB != null)
                 {
-                    double secB = (1.11 * exposureB + 0.000033 * 1000.0) / 1000.0;
-                    ccdB.UpdateExposureTime(secB);
+                    double secB = (1.08 * exposureB + 0.000033 * 1000.0) / 1000.0; //secB = (1.11 * exposureB + 0.000033 * 1000.0) / 1000.0
+                ccdB.UpdateExposureTime(secB);
                     Console.WriteLine($"CCD B exposure set to {exposureB} ms");
                 }
 
@@ -8909,14 +9011,14 @@ namespace UEDMHardwareControl
 
             }
 
-            // CCD External Burst Mode 
+            // CCD External Burst Mode for BlockHead
             public void StartBurstAcquisition()
             {
                 System.Threading.Tasks.Task.Run(() =>
                {
                    try
                    {
-                       ccdA.StartBurstAcquisition();
+                       ccdA.StartBurstAcquisitionBlockHead();
                        Console.WriteLine("CCD A started burst acquisition.");
                    }
                    catch (Exception ex)
@@ -8929,7 +9031,7 @@ namespace UEDMHardwareControl
                 {
                     try
                     {
-                        ccdB.StartBurstAcquisition();
+                        ccdB.StartBurstAcquisitionBlockHead();
                         Console.WriteLine("CCD B started burst acquisition.");
                     }
                     catch (Exception ex)
@@ -8939,77 +9041,79 @@ namespace UEDMHardwareControl
                 });
             }
 
-            //public void StartBurstAcquisition()
-            //{
-            //    bool readyA, readyB;
 
-            //    // Query readiness of both CCDs
-            //    IsCCDReady(out readyA, out readyB);
+            
+        //public void StartBurstAcquisition()
+        //{
+        //    bool readyA, readyB;
 
-            //    while ((ccdA != null && !readyA) || (ccdB != null && !readyB))
-            //    {
-            //        Thread.Sleep(1);
-            //        IsCCDReady(out readyA, out readyB); //re-check
-            //    }
+        //    // Query readiness of both CCDs
+        //    IsCCDReady(out readyA, out readyB);
 
-            //    if (readyA && !readyB)
-            //    {
-            //        System.Threading.Tasks.Task.Run(() =>
-            //        {
-            //            try
-            //            {
-            //                ccdA.StartBurstAcquisition();
-            //                Console.WriteLine("CCD A started burst acquisition.");
-            //            }
-            //            catch (Exception ex)
-            //            {
-            //                Console.WriteLine("CCD A burst acquisition error", ex);
-            //            }
-            //        });
-            //    }
+        //    while ((ccdA != null && !readyA) || (ccdB != null && !readyB))
+        //    {
+        //        Thread.Sleep(1);
+        //        IsCCDReady(out readyA, out readyB); //re-check
+        //    }
 
-            //    else if (!readyA && readyB)
-            //    {
-            //        System.Threading.Tasks.Task.Run(() =>
-            //        {
-            //            try
-            //            {
-            //                ccdB.StartBurstAcquisition();
-            //                Console.WriteLine("CCD B started burst acquisition.");
-            //            }
-            //            catch (Exception ex)
-            //            {
-            //                Console.WriteLine("CCD B burst acquisition error", ex);
-            //            }
-            //        });
-            //    }
+        //    if (readyA && !readyB)
+        //    {
+        //        System.Threading.Tasks.Task.Run(() =>
+        //        {
+        //            try
+        //            {
+        //                ccdA.StartBurstAcquisition();
+        //                Console.WriteLine("CCD A started burst acquisition.");
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                Console.WriteLine("CCD A burst acquisition error", ex);
+        //            }
+        //        });
+        //    }
 
-            //    else if (readyA && readyB)
-            //    {
-            //        System.Threading.Tasks.Task.Run(() =>
-            //        {
-            //            try
-            //            {
-            //                ccdA.StartBurstAcquisition();
-            //                ccdB.StartBurstAcquisition();
-            //                Console.WriteLine("CCD A and CCD B started burst acquisition.");
-            //            }
-            //            catch (Exception ex)
-            //            {
-            //                Console.WriteLine("CCD burst acquisition error", ex);
-            //            }
-            //        });
-            //    }
+        //    else if (!readyA && readyB)
+        //    {
+        //        System.Threading.Tasks.Task.Run(() =>
+        //        {
+        //            try
+        //            {
+        //                ccdB.StartBurstAcquisition();
+        //                Console.WriteLine("CCD B started burst acquisition.");
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                Console.WriteLine("CCD B burst acquisition error", ex);
+        //            }
+        //        });
+        //    }
 
-            //    else
-            //    {
-            //        Console.WriteLine("Neither CCD is ready for burst acquisition. Skipping...");
-            //    }
+        //    else if (readyA && readyB)
+        //    {
+        //        System.Threading.Tasks.Task.Run(() =>
+        //        {
+        //            try
+        //            {
+        //                ccdA.StartBurstAcquisition();
+        //                ccdB.StartBurstAcquisition();
+        //                Console.WriteLine("CCD A and CCD B started burst acquisition.");
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                Console.WriteLine("CCD burst acquisition error", ex);
+        //            }
+        //        });
+        //    }
 
-            //}
-            // NOTE: this method should only be called when ABORTING the current acquisition.
-            // otherwise, the burst mode will stop and save all files automatically itself when the scan finishes.
-            public void StopCCDBurst()
+        //    else
+        //    {
+        //        Console.WriteLine("Neither CCD is ready for burst acquisition. Skipping...");
+        //    }
+
+        //}
+        // NOTE: this method should only be called when ABORTING the current acquisition.
+        // otherwise, the burst mode will stop and save all files automatically itself when the scan finishes.
+        public void StopCCDBurst()
             {
                 ccdA.StopBurstAcquisition();
                 ccdB.StopBurstAcquisition();

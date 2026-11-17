@@ -338,6 +338,16 @@ namespace UEDMHardwareControl
             checkBox.Checked = checkedStatus;
         }
 
+        public string GetTextBoxText(System.Windows.Forms.TextBox box)
+        {
+            return (string)box.Invoke(new GetTextBoxTextDelegate(GetTextBoxTextHelper), new object[] { box });
+        }
+        private delegate string GetTextBoxTextDelegate(System.Windows.Forms.TextBox box);
+        private string GetTextBoxTextHelper(System.Windows.Forms.TextBox box)
+        {
+            return box.Text;
+        }
+
         public bool GetCheckBoxCheckedStatus(CheckBox checkBox)
         {
             return (bool)checkBox.Invoke(new GetCheckBoxCheckedStatusDelegate(GetCheckBoxCheckedStatusHelper), new object[] { checkBox });
@@ -1811,6 +1821,11 @@ namespace UEDMHardwareControl
             controller.StepTargetForTime();
         }
 
+        private void TargetMoveNowButton_Click(object sender, EventArgs e)
+        {
+            controller.MoveTarget();
+        }
+
         // Shirley adds on 22/05/2025 for CCD controlling event handlers
 
         private void QueryTemperature_Click(object sender, EventArgs e)
@@ -2217,11 +2232,6 @@ namespace UEDMHardwareControl
                     PDLogDirectoryTextBox.Text = dialog.SelectedPath;
                 }
             }
-        }
-
-        private void labelPDChannel_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }
