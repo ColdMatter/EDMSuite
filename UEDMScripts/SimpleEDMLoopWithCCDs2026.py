@@ -66,7 +66,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, mwState):
     fileSystem = Environs.FileSystem
     print("Measuring parameters ...")
     bh.StopPattern()
-    # hc.UpdateBCurrentMonitor()
+    hc.UpdateBCurrentMonitor()
     hc.PollVMonitor()
     bh.StartPattern()
 
@@ -81,7 +81,8 @@ def measureParametersAndMakeBC(cluster, eState, bState, mwState):
     settingsPath = fileSystem.Paths["settingsPath"] + "\\BlockHead\\"
     # bc = loadBlockConfig(settingsPath + "calibrateBfield.xml")
     # bc = loadBlockConfig(settingsPath + "default_EfieldBlocks.xml")
-    bc = loadBlockConfig(settingsPath + "default_EfieldBlocks_Unit8_STIRAPAOM01.xml")
+    # bc = loadBlockConfig(settingsPath + "default_EfieldBlocks_Unit8_STIRAPAOM01.xml")
+    bc = loadBlockConfig(settingsPath + "default_EfieldBlocks_2026.xml")
 
     bc.Settings["cluster"] = str(cluster)
     bc.Settings["eState"] = eState
@@ -106,15 +107,15 @@ def measureParametersAndMakeBC(cluster, eState, bState, mwState):
     bc.GetModulationByName("DB").PhysicalStep = abs(hc.CalStepCurrent)/1000
 
     # generate the waveform codes
-    # print("Generating waveform codes ...")
-    # eWave = bc.GetModulationByName("E").Waveform
-    # eWave.Name = str("E")
-    # ws = WaveformSetGenerator.GenerateWaveforms( (eWave,), ("B","DB"))#,"PI","RF1A","RF2A","RF1F","RF2F","LF1") )
-    # bc.GetModulationByName("B").Waveform = ws["B"]
-    # bc.GetModulationByName("DB").Waveform = ws["DB"]
+    print("Generating waveform codes ...")
+    eWave = bc.GetModulationByName("E").Waveform
+    eWave.Name = str("E")
+    ws = WaveformSetGenerator.GenerateWaveforms( (eWave,), ("B","DB"))#,"PI","RF1A","RF2A","RF1F","RF2F","LF1") )
+    bc.GetModulationByName("B").Waveform = ws["B"]
+    bc.GetModulationByName("DB").Waveform = ws["DB"]
 
     # change the inversions of the static codes E
-    # bc.GetModulationByName("E").Waveform.Inverted = WaveformSetGenerator.RandomBool()
+    bc.GetModulationByName("E").Waveform.Inverted = WaveformSetGenerator.RandomBool()
 
     printWaveformCode(bc, "E")
     printWaveformCode(bc, "B")
@@ -212,14 +213,14 @@ def EDMGo():
             # Only moves if "Serial move N before each block" is ticked in the hardware
             # controller (N from the target move steps box); returns steps moved, 0 if
             # disabled or the move failed. Recorded in the block config.
-            targetStepsMoved = hc.MoveTargetBeforeBlock()
-            print("Target moved " + str(targetStepsMoved) + " steps.")
+            # targetStepsMoved = hc.MoveTargetBeforeBlock()
+            # print("Target moved " + str(targetStepsMoved) + " steps.")
 
             print("Acquiring EDM block " + str(blockIndex) + " at " + str(i) + " kV ...")
             # save the block config and load into blockhead
             print("Saving temp config.")
             bc.Settings["clusterIndex"] = System.Int32(blockIndex)
-            bc.Settings["targetStepsMoved"] = System.Int32(targetStepsMoved)
+            # bc.Settings["targetStepsMoved"] = System.Int32(targetStepsMoved)
             tempConfigFile =str('%(p)stemp%(c)s_%(i)s.xml' % {'p': settingsPath, 'c': cluster, 'i': blockIndex})
             saveBlockConfig(tempConfigFile, bc)
             System.Threading.Thread.CurrentThread.Join(500)
