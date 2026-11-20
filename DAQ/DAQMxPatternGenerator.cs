@@ -241,6 +241,15 @@ namespace DAQ.HAL
                     DigitalEdgeStartTriggerEdge.Rising);
             }
 
+            // Opt-in per task: the generation freezes, holding every output, while this line is high.
+            string pauseTriggerLine = (string)Environs.Hardware.GetInfo(pgTaskName + "PauseTriggerLine");
+            if (pauseTriggerLine != null)
+            {
+                pgTask.Triggers.PauseTrigger.ConfigureDigitalLevelTrigger(
+                    pauseTriggerLine,
+                    DigitalLevelPauseTriggerCondition.High);
+            }
+
             /**** Write configuration to board ****/
 
 			pgTask.Control(TaskAction.Verify);

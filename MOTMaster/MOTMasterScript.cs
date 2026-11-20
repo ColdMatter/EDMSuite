@@ -166,6 +166,25 @@ namespace MOTMaster
             });
         }
 
+        /// <summary>
+        /// Make an event already added wait for the next pulse on DDS_Analog_Trg
+        /// instead of following the previous event on the card's timer.
+        /// </summary>
+        /// <remarks>
+        /// For a pattern that pauses mid-sequence: the DDS cannot pause, so the event
+        /// after the pause is held back until the digital pattern pulses
+        /// DDS_Analog_Trg again once it resumes. Give the event the time of that pulse
+        /// (in ticks after the first one); later events keep their gaps from it.
+        /// </remarks>
+        public void WaitForTrigger(string name)
+        {
+            List<List<double>> rows;
+            if (!pattern.TryGetValue(name, out rows))
+                throw new ArgumentException(
+                    "there is no DDS event called \"" + name + "\"", "name");
+            if (rows.Count == 5) rows.Add(new List<double> { 1.0 });
+        }
+
         private static List<double> Row(string name, string what, double[] values, double scale)
         {
             if (values == null) return new List<double> { 0.0, 0.0, 0.0, 0.0 };

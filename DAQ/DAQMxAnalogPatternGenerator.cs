@@ -59,8 +59,15 @@ namespace DAQ.Analog
             }
 
             string clockSource;
+            // Opt-in per task, overriding internalClk: e.g. "<pg>/do/SampleClock", so the
+            // analog output follows the digital pattern's clock, including its pauses.
+            string sampleClockSource = (string)Environs.Hardware.GetInfo(analogTaskName + "SampleClockSource");
 
-            if (internalClk == true)
+            if (sampleClockSource != null)
+            {
+                clockSource = sampleClockSource;
+            }
+            else if (internalClk == true)
             {
                 clockSource = "";
                 analogOutputTask.ExportSignals.SampleClockOutputTerminal = (string)Environment.Environs.Hardware.GetInfo(clock_line);
@@ -93,6 +100,15 @@ namespace DAQ.Analog
             analogOutputTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
                 (string)Environs.Hardware.GetInfo(pattern_trigger),
                 DigitalEdgeStartTriggerEdge.Rising);
+
+            // Opt-in per task: the generation freezes, holding every output, while this line is high.
+            string pauseTriggerLine = (string)Environs.Hardware.GetInfo(analogTaskName + "PauseTriggerLine");
+            if (pauseTriggerLine != null)
+            {
+                analogOutputTask.Triggers.PauseTrigger.ConfigureDigitalLevelTrigger(
+                    pauseTriggerLine,
+                    DigitalLevelPauseTriggerCondition.High);
+            }
 
             if ((bool?)Environs.Hardware.GetInfo(analogTaskName + "PatternBuffer") ?? false)
                 analogOutputTask.Stream.ConfigureOutputBuffer(aPattern.PatternLength);

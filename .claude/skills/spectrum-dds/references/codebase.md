@@ -44,8 +44,8 @@ Ports across the suite: **1172** hardware control and reporter, **1187** MOTMast
 
 ~130 MOTMaster scripts produce a `Dictionary<string, List<List<double>>>` from
 `GetDDSPattern()`. Keeping it as the wire format is what lets all of them go on
-working untouched. The key is an arbitrary unique event label; the value is exactly
-five lists:
+working untouched. The key is an arbitrary unique event label; the value is five
+lists, or six:
 
 | index | contents | length | units |
 |---|---|---|---|
@@ -54,6 +54,11 @@ five lists:
 | 2 | amplitude | 4 | fraction 0–1 |
 | 3 | frequency slope | 4 | **MHz/ms** |
 | 4 | amplitude slope | 4 | **1/ms** |
+| 5 | *optional:* wait for trigger | 1 | non-zero = `DDSEvent.WaitForTrigger` |
+
+Row 5 is only ever written for a waiting event, so every existing script and saved
+`*_ddsPattern.json` (`waitForTrigger` is left out of the file when false) is unchanged.
+`dds_python/pattern.py`'s `from_legacy` still insists on exactly five rows.
 
 Events are unordered in the dictionary — sort on `[0][0]`. SI conversions:
 `t_s = v/1000`, `f_Hz = v*1e6`, `df_Hz/s = v*1e9`, `da_/s = v*1e3`.
@@ -68,6 +73,9 @@ casually.
 `DDSPatternBuilder` in `MOTMaster/MOTMasterScript.cs` replaces the `addDDSPattern`
 helper copy-pasted verbatim into every script. Same units: time in 10 µs pattern
 ticks (`time / 100` gives ms), slopes given per tick and stored per ms (hence ×100).
+`WaitForTrigger(name)` marks an event already added as waiting for the next
+`DDS_Analog_Trg` pulse (adds row 5). The DDS controller's Pattern tab shows it as the
+"Wait for trigger" column.
 
 ## MOTMaster hook points
 

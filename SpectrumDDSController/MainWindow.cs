@@ -337,6 +337,13 @@ namespace SpectrumDDSController
                 patternGrid.Columns.Add(TextColumn("da" + ch, label + " da / per ms"));
             }
             patternGrid.Columns.Add(TextColumn("xio", "XIO"));
+            patternGrid.Columns.Add(new DataGridViewCheckBoxColumn
+            {
+                Name = "waitForTrigger",
+                HeaderText = "Wait for trigger",
+                SortMode = DataGridViewColumnSortMode.NotSortable,
+                Width = 80,
+            });
         }
 
         private static DataGridViewTextBoxColumn TextColumn(string name, string header)
@@ -432,6 +439,7 @@ namespace SpectrumDDSController
                         cells.Add(Fmt(c.AmplitudeSlope / DDSPattern.PerSecondPerPerMs));
                     }
                     cells.Add(e.Xio);
+                    cells.Add(e.WaitForTrigger);
                     patternGrid.Rows.Add(cells.ToArray());
                 }
 
@@ -515,8 +523,9 @@ namespace SpectrumDDSController
                         ParseCell(row.Cells[col++]) * DDSPattern.HzPerSecondPerMHzPerMs,
                         ParseCell(row.Cells[col++]) * DDSPattern.PerSecondPerPerMs);
                 }
-                int xio = (int)ParseCell(row.Cells[col]);
-                events.Add(new DDSEvent(name, time, channels, xio));
+                int xio = (int)ParseCell(row.Cells[col++]);
+                bool waitForTrigger = Convert.ToBoolean(row.Cells[col].Value ?? false);
+                events.Add(new DDSEvent(name, time, channels, xio, waitForTrigger));
             }
             return new DDSPattern(events);
         }

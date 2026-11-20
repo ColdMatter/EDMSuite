@@ -52,13 +52,20 @@ namespace SpectrumDDS
         public DDSChannelState[] Channels { get; set; }
         /// <summary>Bit mask over the three multi-purpose outputs X0, X1, X2.</summary>
         public int Xio { get; set; }
+        /// <summary>
+        /// Run this event on the next pulse at the card's trigger input instead of
+        /// after the timer gap from the previous event. <see cref="Time"/> is then the
+        /// pattern time of that pulse, and later gaps are still measured from it.
+        /// </summary>
+        public bool WaitForTrigger { get; set; }
 
         public DDSEvent()
         {
             Channels = NewChannels();
         }
 
-        public DDSEvent(string name, double time, DDSChannelState[] channels, int xio = 0)
+        public DDSEvent(string name, double time, DDSChannelState[] channels, int xio = 0,
+                        bool waitForTrigger = false)
         {
             if (channels == null || channels.Length != DDSPattern.ChannelCount)
                 throw new ArgumentException(string.Format(
@@ -67,6 +74,7 @@ namespace SpectrumDDS
             Time = time;
             Channels = channels;
             Xio = xio;
+            WaitForTrigger = waitForTrigger;
         }
 
         public static DDSChannelState[] NewChannels()
@@ -78,12 +86,14 @@ namespace SpectrumDDS
 
         public DDSEvent Clone()
         {
-            return new DDSEvent(Name, Time, Channels.Select(c => c.Clone()).ToArray(), Xio);
+            return new DDSEvent(Name, Time, Channels.Select(c => c.Clone()).ToArray(), Xio,
+                                WaitForTrigger);
         }
 
         public override string ToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "{0} @ {1:g6} ms", Name, Time * 1e3);
+            return string.Format(CultureInfo.InvariantCulture, "{0} @ {1:g6} ms{2}", Name, Time * 1e3,
+                WaitForTrigger ? " (waits for trigger)" : "");
         }
     }
 
@@ -157,12 +167,13 @@ namespace SpectrumDDS
         // -- the MOTMaster script format ---------------------------------------
         //
         // Dictionary<string, List<List<double>>>: the key is an arbitrary unique
-        // event label and the value is exactly five lists --
+        // event label and the value is five lists, or six --
         //   [0] time       1 entry,  milliseconds after the DDS trigger
         //   [1] frequency  4 entries, MHz
         //   [2] amplitude  4 entries, fraction 0-1
         //   [3] freq slope 4 entries, MHz/ms
         //   [4] amp slope  4 entries, per ms
+        //   [5] optional   1 entry,  non-zero = wait for a trigger (DDSEvent.WaitForTrigger)
         // Events are unordered in the dictionary, so they get sorted on time here.
         //
         // This stays the wire format between scripts and the driver so that none
@@ -183,11 +194,15 @@ namespace SpectrumDDS
             foreach (KeyValuePair<string, List<List<double>>> entry in source)
             {
                 List<List<double>> rows = entry.Value;
-                if (rows == null || rows.Count != 5)
+                if (rows == null || (rows.Count != 5 && rows.Count != 6))
                     throw new ArgumentException(string.Format(
                         "DDS event \"{0}\": expected 5 rows (time, frequency, amplitude, " +
-                        "frequency slope, amplitude slope), got {1}",
+                        "frequency slope, amplitude slope) and an optional wait-for-trigger row, got {1}",
                         entry.Key, rows == null ? 0 : rows.Count));
+                if (rows.Count == 6 && rows[5].Count != 1)
+                    throw new ArgumentException(string.Format(
+                        "DDS event \"{0}\": the wait-for-trigger row has {1} entries, expected 1",
+                        entry.Key, rows[5].Count));
                 if (rows[0].Count < 1)
                     throw new ArgumentException(string.Format(
                         "DDS event \"{0}\": the time row is empty", entry.Key));
@@ -205,8 +220,9 @@ namespace SpectrumDDS
                         rows[3][i] * HzPerSecondPerMHzPerMs,
                         rows[4][i] * PerSecondPerPerMs);
 
+                bool waitForTrigger = rows.Count == 6 && rows[5][0] != 0.0;
                 pattern.events.Add(new DDSEvent(
-                    entry.Key, rows[0][0] / MillisecondsPerSecond, channels));
+                    entry.Key, rows[0][0] / MillisecondsPerSecond, channels, 0, waitForTrigger));
             }
             pattern.Sort();
             return pattern;
@@ -218,7 +234,7 @@ namespace SpectrumDDS
                 new Dictionary<string, List<List<double>>>();
             foreach (DDSEvent e in events)
             {
-                result[e.Name] = new List<List<double>>
+                List<List<double>> rows = new List<List<double>>
                 {
                     new List<double> { e.Time * MillisecondsPerSecond },
                     e.Channels.Select(c => c.Frequency / HzPerMHz).ToList(),
@@ -226,6 +242,8 @@ namespace SpectrumDDS
                     e.Channels.Select(c => c.FrequencySlope / HzPerSecondPerMHzPerMs).ToList(),
                     e.Channels.Select(c => c.AmplitudeSlope / PerSecondPerPerMs).ToList(),
                 };
+                if (e.WaitForTrigger) rows.Add(new List<double> { 1.0 });
+                result[e.Name] = rows;
             }
             return result;
         }
@@ -261,6 +279,8 @@ namespace SpectrumDDS
                     problems.Add(string.Format(CultureInfo.InvariantCulture,
                         "\"{0}\" and \"{1}\" share the time {2:g6} ms, so their order is ambiguous",
                         events[k].Name, events[k + 1].Name, events[k].Time * 1e3));
+                else if (events[k + 1].WaitForTrigger)
+                    continue;
                 else if (gap < TimerMinimum)
                     problems.Add(string.Format(CultureInfo.InvariantCulture,
                         "the gap from \"{0}\" to \"{1}\" is {2:g4} s, below the card's {3:g4} s timer minimum",
@@ -320,13 +340,17 @@ namespace SpectrumDDS
         /// <summary>
         /// Number of queue slots the compiled pattern occupies, which is just the
         /// number of register writes: four parameters per channel, the XIO mask
-        /// and the trigger source in every block, plus a timer in all but the last.
+        /// and the trigger source in every block, plus a timer in every block whose
+        /// next event follows on the timer.
         /// </summary>
         public int CommandCount()
         {
             if (events.Count == 0) return 0;
             const int perBlock = 4 * ChannelCount + 2;
-            return events.Count * perBlock + (events.Count - 1);
+            int timedGaps = 0;
+            for (int k = 1; k < events.Count; k++)
+                if (!events[k].WaitForTrigger) timedGaps++;
+            return events.Count * perBlock + timedGaps;
         }
 
         // -- plotting -------------------------------------------------------------
