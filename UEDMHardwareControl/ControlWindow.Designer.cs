@@ -804,14 +804,27 @@ namespace UEDMHardwareControl
             this.labelCCDShotCount = new System.Windows.Forms.Label();
             this.PDMonitorTabPage = new System.Windows.Forms.TabPage();
             this.queryPDButton = new System.Windows.Forms.Button();
-            this.PDConvertToMwCheckBox = new System.Windows.Forms.CheckBox();
+            this.labelPDPower = new System.Windows.Forms.Label();
+            this.labelPDThreshold = new System.Windows.Forms.Label();
+            this.labelPDStatus = new System.Windows.Forms.Label();
+            this.labelPDCalA = new System.Windows.Forms.Label();
+            this.labelPDCalB = new System.Windows.Forms.Label();
+            this.labelPDCalNote = new System.Windows.Forms.Label();
+            this.labelPDAllStatus = new System.Windows.Forms.Label();
+            this.PDAllStatusLight = new System.Windows.Forms.Panel();
+            this.PDLiveUpdateCheckBox = new System.Windows.Forms.CheckBox();
             this.labelPDChannel = new System.Windows.Forms.Label();
             this.labelPDValue = new System.Windows.Forms.Label();
             this.labelPDGain = new System.Windows.Forms.Label();
             this.labelPDLog = new System.Windows.Forms.Label();
             this.labelPD1 = new System.Windows.Forms.Label();
             this.PD1MonitorTextBox = new System.Windows.Forms.TextBox();
-            this.PD1GainComboBox = new System.Windows.Forms.ComboBox();
+            this.PD1GainLabel = new System.Windows.Forms.Label();
+            this.PD1PowerTextBox = new System.Windows.Forms.TextBox();
+            this.PD1ThresholdTextBox = new System.Windows.Forms.TextBox();
+            this.PD1StatusLight = new System.Windows.Forms.Panel();
+            this.PD1CalATextBox = new System.Windows.Forms.TextBox();
+            this.PD1CalBTextBox = new System.Windows.Forms.TextBox();
             this.PD1LogCheck = new System.Windows.Forms.CheckBox();
             this.labelPDLogDuration = new System.Windows.Forms.Label();
             this.PDLogDurationTextBox = new System.Windows.Forms.TextBox();
@@ -824,31 +837,66 @@ namespace UEDMHardwareControl
             this.stopPDLogButton = new System.Windows.Forms.Button();
             this.labelPD2 = new System.Windows.Forms.Label();
             this.PD2MonitorTextBox = new System.Windows.Forms.TextBox();
-            this.PD2GainComboBox = new System.Windows.Forms.ComboBox();
+            this.PD2GainLabel = new System.Windows.Forms.Label();
+            this.PD2PowerTextBox = new System.Windows.Forms.TextBox();
+            this.PD2ThresholdTextBox = new System.Windows.Forms.TextBox();
+            this.PD2StatusLight = new System.Windows.Forms.Panel();
+            this.PD2CalATextBox = new System.Windows.Forms.TextBox();
+            this.PD2CalBTextBox = new System.Windows.Forms.TextBox();
             this.PD2LogCheck = new System.Windows.Forms.CheckBox();
             this.labelPD3 = new System.Windows.Forms.Label();
             this.PD3MonitorTextBox = new System.Windows.Forms.TextBox();
-            this.PD3GainComboBox = new System.Windows.Forms.ComboBox();
+            this.PD3GainLabel = new System.Windows.Forms.Label();
+            this.PD3PowerTextBox = new System.Windows.Forms.TextBox();
+            this.PD3ThresholdTextBox = new System.Windows.Forms.TextBox();
+            this.PD3StatusLight = new System.Windows.Forms.Panel();
+            this.PD3CalATextBox = new System.Windows.Forms.TextBox();
+            this.PD3CalBTextBox = new System.Windows.Forms.TextBox();
             this.PD3LogCheck = new System.Windows.Forms.CheckBox();
             this.labelPD4 = new System.Windows.Forms.Label();
             this.PD4MonitorTextBox = new System.Windows.Forms.TextBox();
-            this.PD4GainComboBox = new System.Windows.Forms.ComboBox();
+            this.PD4GainLabel = new System.Windows.Forms.Label();
+            this.PD4PowerTextBox = new System.Windows.Forms.TextBox();
+            this.PD4ThresholdTextBox = new System.Windows.Forms.TextBox();
+            this.PD4StatusLight = new System.Windows.Forms.Panel();
+            this.PD4CalATextBox = new System.Windows.Forms.TextBox();
+            this.PD4CalBTextBox = new System.Windows.Forms.TextBox();
             this.PD4LogCheck = new System.Windows.Forms.CheckBox();
             this.labelPD5 = new System.Windows.Forms.Label();
             this.PD5MonitorTextBox = new System.Windows.Forms.TextBox();
-            this.PD5GainComboBox = new System.Windows.Forms.ComboBox();
+            this.PD5GainLabel = new System.Windows.Forms.Label();
+            this.PD5PowerTextBox = new System.Windows.Forms.TextBox();
+            this.PD5ThresholdTextBox = new System.Windows.Forms.TextBox();
+            this.PD5StatusLight = new System.Windows.Forms.Panel();
+            this.PD5CalATextBox = new System.Windows.Forms.TextBox();
+            this.PD5CalBTextBox = new System.Windows.Forms.TextBox();
             this.PD5LogCheck = new System.Windows.Forms.CheckBox();
             this.labelPD6 = new System.Windows.Forms.Label();
             this.PD6MonitorTextBox = new System.Windows.Forms.TextBox();
-            this.PD6GainComboBox = new System.Windows.Forms.ComboBox();
+            this.PD6GainLabel = new System.Windows.Forms.Label();
+            this.PD6PowerTextBox = new System.Windows.Forms.TextBox();
+            this.PD6ThresholdTextBox = new System.Windows.Forms.TextBox();
+            this.PD6StatusLight = new System.Windows.Forms.Panel();
+            this.PD6CalATextBox = new System.Windows.Forms.TextBox();
+            this.PD6CalBTextBox = new System.Windows.Forms.TextBox();
             this.PD6LogCheck = new System.Windows.Forms.CheckBox();
             this.labelPD7 = new System.Windows.Forms.Label();
             this.PD7MonitorTextBox = new System.Windows.Forms.TextBox();
-            this.PD7GainComboBox = new System.Windows.Forms.ComboBox();
+            this.PD7GainLabel = new System.Windows.Forms.Label();
+            this.PD7PowerTextBox = new System.Windows.Forms.TextBox();
+            this.PD7ThresholdTextBox = new System.Windows.Forms.TextBox();
+            this.PD7StatusLight = new System.Windows.Forms.Panel();
+            this.PD7CalATextBox = new System.Windows.Forms.TextBox();
+            this.PD7CalBTextBox = new System.Windows.Forms.TextBox();
             this.PD7LogCheck = new System.Windows.Forms.CheckBox();
             this.labelPD8 = new System.Windows.Forms.Label();
             this.PD8MonitorTextBox = new System.Windows.Forms.TextBox();
-            this.PD8GainComboBox = new System.Windows.Forms.ComboBox();
+            this.PD8GainLabel = new System.Windows.Forms.Label();
+            this.PD8PowerTextBox = new System.Windows.Forms.TextBox();
+            this.PD8ThresholdTextBox = new System.Windows.Forms.TextBox();
+            this.PD8StatusLight = new System.Windows.Forms.Panel();
+            this.PD8CalATextBox = new System.Windows.Forms.TextBox();
+            this.PD8CalBTextBox = new System.Windows.Forms.TextBox();
             this.PD8LogCheck = new System.Windows.Forms.CheckBox();
             this.labelPDFileName = new System.Windows.Forms.Label();
             this.PDFileNameTextBox = new System.Windows.Forms.TextBox();
@@ -9698,14 +9746,27 @@ namespace UEDMHardwareControl
             // PDMonitorTabPage
             // 
             this.PDMonitorTabPage.Controls.Add(this.queryPDButton);
-            this.PDMonitorTabPage.Controls.Add(this.PDConvertToMwCheckBox);
+            this.PDMonitorTabPage.Controls.Add(this.labelPDPower);
+            this.PDMonitorTabPage.Controls.Add(this.labelPDThreshold);
+            this.PDMonitorTabPage.Controls.Add(this.labelPDStatus);
+            this.PDMonitorTabPage.Controls.Add(this.labelPDCalA);
+            this.PDMonitorTabPage.Controls.Add(this.labelPDCalB);
+            this.PDMonitorTabPage.Controls.Add(this.labelPDCalNote);
+            this.PDMonitorTabPage.Controls.Add(this.labelPDAllStatus);
+            this.PDMonitorTabPage.Controls.Add(this.PDAllStatusLight);
+            this.PDMonitorTabPage.Controls.Add(this.PDLiveUpdateCheckBox);
             this.PDMonitorTabPage.Controls.Add(this.labelPDChannel);
             this.PDMonitorTabPage.Controls.Add(this.labelPDValue);
             this.PDMonitorTabPage.Controls.Add(this.labelPDGain);
             this.PDMonitorTabPage.Controls.Add(this.labelPDLog);
             this.PDMonitorTabPage.Controls.Add(this.labelPD1);
             this.PDMonitorTabPage.Controls.Add(this.PD1MonitorTextBox);
-            this.PDMonitorTabPage.Controls.Add(this.PD1GainComboBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD1GainLabel);
+            this.PDMonitorTabPage.Controls.Add(this.PD1PowerTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD1ThresholdTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD1StatusLight);
+            this.PDMonitorTabPage.Controls.Add(this.PD1CalATextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD1CalBTextBox);
             this.PDMonitorTabPage.Controls.Add(this.PD1LogCheck);
             this.PDMonitorTabPage.Controls.Add(this.labelPDLogDuration);
             this.PDMonitorTabPage.Controls.Add(this.PDLogDurationTextBox);
@@ -9718,31 +9779,66 @@ namespace UEDMHardwareControl
             this.PDMonitorTabPage.Controls.Add(this.stopPDLogButton);
             this.PDMonitorTabPage.Controls.Add(this.labelPD2);
             this.PDMonitorTabPage.Controls.Add(this.PD2MonitorTextBox);
-            this.PDMonitorTabPage.Controls.Add(this.PD2GainComboBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD2GainLabel);
+            this.PDMonitorTabPage.Controls.Add(this.PD2PowerTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD2ThresholdTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD2StatusLight);
+            this.PDMonitorTabPage.Controls.Add(this.PD2CalATextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD2CalBTextBox);
             this.PDMonitorTabPage.Controls.Add(this.PD2LogCheck);
             this.PDMonitorTabPage.Controls.Add(this.labelPD3);
             this.PDMonitorTabPage.Controls.Add(this.PD3MonitorTextBox);
-            this.PDMonitorTabPage.Controls.Add(this.PD3GainComboBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD3GainLabel);
+            this.PDMonitorTabPage.Controls.Add(this.PD3PowerTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD3ThresholdTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD3StatusLight);
+            this.PDMonitorTabPage.Controls.Add(this.PD3CalATextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD3CalBTextBox);
             this.PDMonitorTabPage.Controls.Add(this.PD3LogCheck);
             this.PDMonitorTabPage.Controls.Add(this.labelPD4);
             this.PDMonitorTabPage.Controls.Add(this.PD4MonitorTextBox);
-            this.PDMonitorTabPage.Controls.Add(this.PD4GainComboBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD4GainLabel);
+            this.PDMonitorTabPage.Controls.Add(this.PD4PowerTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD4ThresholdTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD4StatusLight);
+            this.PDMonitorTabPage.Controls.Add(this.PD4CalATextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD4CalBTextBox);
             this.PDMonitorTabPage.Controls.Add(this.PD4LogCheck);
             this.PDMonitorTabPage.Controls.Add(this.labelPD5);
             this.PDMonitorTabPage.Controls.Add(this.PD5MonitorTextBox);
-            this.PDMonitorTabPage.Controls.Add(this.PD5GainComboBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD5GainLabel);
+            this.PDMonitorTabPage.Controls.Add(this.PD5PowerTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD5ThresholdTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD5StatusLight);
+            this.PDMonitorTabPage.Controls.Add(this.PD5CalATextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD5CalBTextBox);
             this.PDMonitorTabPage.Controls.Add(this.PD5LogCheck);
             this.PDMonitorTabPage.Controls.Add(this.labelPD6);
             this.PDMonitorTabPage.Controls.Add(this.PD6MonitorTextBox);
-            this.PDMonitorTabPage.Controls.Add(this.PD6GainComboBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD6GainLabel);
+            this.PDMonitorTabPage.Controls.Add(this.PD6PowerTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD6ThresholdTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD6StatusLight);
+            this.PDMonitorTabPage.Controls.Add(this.PD6CalATextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD6CalBTextBox);
             this.PDMonitorTabPage.Controls.Add(this.PD6LogCheck);
             this.PDMonitorTabPage.Controls.Add(this.labelPD7);
             this.PDMonitorTabPage.Controls.Add(this.PD7MonitorTextBox);
-            this.PDMonitorTabPage.Controls.Add(this.PD7GainComboBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD7GainLabel);
+            this.PDMonitorTabPage.Controls.Add(this.PD7PowerTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD7ThresholdTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD7StatusLight);
+            this.PDMonitorTabPage.Controls.Add(this.PD7CalATextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD7CalBTextBox);
             this.PDMonitorTabPage.Controls.Add(this.PD7LogCheck);
             this.PDMonitorTabPage.Controls.Add(this.labelPD8);
             this.PDMonitorTabPage.Controls.Add(this.PD8MonitorTextBox);
-            this.PDMonitorTabPage.Controls.Add(this.PD8GainComboBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD8GainLabel);
+            this.PDMonitorTabPage.Controls.Add(this.PD8PowerTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD8ThresholdTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD8StatusLight);
+            this.PDMonitorTabPage.Controls.Add(this.PD8CalATextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD8CalBTextBox);
             this.PDMonitorTabPage.Controls.Add(this.PD8LogCheck);
             this.PDMonitorTabPage.Controls.Add(this.labelPDFileName);
             this.PDMonitorTabPage.Controls.Add(this.PDFileNameTextBox);
@@ -9774,15 +9870,94 @@ namespace UEDMHardwareControl
             this.queryPDButton.UseVisualStyleBackColor = true;
             this.queryPDButton.Click += new System.EventHandler(this.QueryPDButton_Click);
             // 
-            // PDConvertToMwCheckBox
+            // labelPDPower
             // 
-            this.PDConvertToMwCheckBox.Location = new System.Drawing.Point(20, 359);
-            this.PDConvertToMwCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.PDConvertToMwCheckBox.Name = "PDConvertToMwCheckBox";
-            this.PDConvertToMwCheckBox.Size = new System.Drawing.Size(373, 57);
-            this.PDConvertToMwCheckBox.TabIndex = 1;
-            this.PDConvertToMwCheckBox.Text = "Display in converted monitoring power (mW) ?";
-            this.PDConvertToMwCheckBox.CheckedChanged += new System.EventHandler(this.PDConvertToMwCheckBox_CheckedChanged);
+            this.labelPDPower.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelPDPower.Location = new System.Drawing.Point(439, 47);
+            this.labelPDPower.Name = "labelPDPower";
+            this.labelPDPower.Size = new System.Drawing.Size(95, 34);
+            this.labelPDPower.TabIndex = 109;
+            this.labelPDPower.Text = "Power (mW)";
+            this.labelPDPower.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            // 
+            // labelPDThreshold
+            // 
+            this.labelPDThreshold.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelPDThreshold.Location = new System.Drawing.Point(540, 57);
+            this.labelPDThreshold.Name = "labelPDThreshold";
+            this.labelPDThreshold.Size = new System.Drawing.Size(94, 34);
+            this.labelPDThreshold.TabIndex = 110;
+            this.labelPDThreshold.Text = "Threshold (mW)";
+            this.labelPDThreshold.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            // 
+            // labelPDStatus
+            // 
+            this.labelPDStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelPDStatus.Location = new System.Drawing.Point(640, 55);
+            this.labelPDStatus.Name = "labelPDStatus";
+            this.labelPDStatus.Size = new System.Drawing.Size(59, 34);
+            this.labelPDStatus.TabIndex = 111;
+            this.labelPDStatus.Text = "Power Status";
+            this.labelPDStatus.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.labelPDStatus.Click += new System.EventHandler(this.labelPDStatus_Click);
+            // 
+            // labelPDCalA
+            // 
+            this.labelPDCalA.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelPDCalA.Location = new System.Drawing.Point(721, 55);
+            this.labelPDCalA.Name = "labelPDCalA";
+            this.labelPDCalA.Size = new System.Drawing.Size(70, 34);
+            this.labelPDCalA.TabIndex = 112;
+            this.labelPDCalA.Text = "Cal. a (mW/V)";
+            this.labelPDCalA.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            // 
+            // labelPDCalB
+            // 
+            this.labelPDCalB.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelPDCalB.Location = new System.Drawing.Point(811, 55);
+            this.labelPDCalB.Name = "labelPDCalB";
+            this.labelPDCalB.Size = new System.Drawing.Size(75, 34);
+            this.labelPDCalB.TabIndex = 113;
+            this.labelPDCalB.Text = "Cal. b (mW)";
+            this.labelPDCalB.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            // 
+            // labelPDCalNote
+            // 
+            this.labelPDCalNote.Location = new System.Drawing.Point(718, 335);
+            this.labelPDCalNote.Name = "labelPDCalNote";
+            this.labelPDCalNote.Size = new System.Drawing.Size(217, 48);
+            this.labelPDCalNote.TabIndex = 114;
+            this.labelPDCalNote.Text = "Power = a * Voltage + b";
+            // 
+            // labelPDAllStatus
+            // 
+            this.labelPDAllStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelPDAllStatus.Location = new System.Drawing.Point(505, 363);
+            this.labelPDAllStatus.Name = "labelPDAllStatus";
+            this.labelPDAllStatus.Size = new System.Drawing.Size(105, 20);
+            this.labelPDAllStatus.TabIndex = 115;
+            this.labelPDAllStatus.Text = "All lasers OK?";
+            this.labelPDAllStatus.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // PDAllStatusLight
+            // 
+            this.PDAllStatusLight.BackColor = System.Drawing.Color.Gray;
+            this.PDAllStatusLight.Location = new System.Drawing.Point(653, 361);
+            this.PDAllStatusLight.Name = "PDAllStatusLight";
+            this.PDAllStatusLight.Size = new System.Drawing.Size(22, 22);
+            this.PDAllStatusLight.TabIndex = 116;
+            // 
+            // PDLiveUpdateCheckBox
+            // 
+            this.PDLiveUpdateCheckBox.AutoSize = true;
+            this.PDLiveUpdateCheckBox.Location = new System.Drawing.Point(20, 372);
+            this.PDLiveUpdateCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PDLiveUpdateCheckBox.Name = "PDLiveUpdateCheckBox";
+            this.PDLiveUpdateCheckBox.Size = new System.Drawing.Size(225, 21);
+            this.PDLiveUpdateCheckBox.TabIndex = 117;
+            this.PDLiveUpdateCheckBox.Text = "Live update (every Poll Period)";
+            this.PDLiveUpdateCheckBox.UseVisualStyleBackColor = true;
+            this.PDLiveUpdateCheckBox.CheckedChanged += new System.EventHandler(this.PDLiveUpdateCheckBox_CheckedChanged);
             // 
             // labelPDChannel
             // 
@@ -9792,21 +9967,20 @@ namespace UEDMHardwareControl
             this.labelPDChannel.Size = new System.Drawing.Size(51, 20);
             this.labelPDChannel.TabIndex = 2;
             this.labelPDChannel.Text = "PD";
-            this.labelPDChannel.Click += new System.EventHandler(this.labelPDChannel_Click);
             // 
             // labelPDValue
             // 
             this.labelPDValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelPDValue.Location = new System.Drawing.Point(322, 70);
+            this.labelPDValue.Location = new System.Drawing.Point(282, 65);
             this.labelPDValue.Name = "labelPDValue";
-            this.labelPDValue.Size = new System.Drawing.Size(120, 25);
+            this.labelPDValue.Size = new System.Drawing.Size(95, 25);
             this.labelPDValue.TabIndex = 3;
             this.labelPDValue.Text = "Voltage (V)";
             // 
             // labelPDGain
             // 
             this.labelPDGain.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelPDGain.Location = new System.Drawing.Point(471, 70);
+            this.labelPDGain.Location = new System.Drawing.Point(380, 65);
             this.labelPDGain.Name = "labelPDGain";
             this.labelPDGain.Size = new System.Drawing.Size(51, 20);
             this.labelPDGain.TabIndex = 4;
@@ -9815,7 +9989,7 @@ namespace UEDMHardwareControl
             // labelPDLog
             // 
             this.labelPDLog.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelPDLog.Location = new System.Drawing.Point(611, 70);
+            this.labelPDLog.Location = new System.Drawing.Point(937, 61);
             this.labelPDLog.Name = "labelPDLog";
             this.labelPDLog.Size = new System.Drawing.Size(51, 20);
             this.labelPDLog.TabIndex = 5;
@@ -9831,31 +10005,68 @@ namespace UEDMHardwareControl
             // 
             // PD1MonitorTextBox
             // 
-            this.PD1MonitorTextBox.Location = new System.Drawing.Point(322, 98);
+            this.PD1MonitorTextBox.Location = new System.Drawing.Point(282, 93);
             this.PD1MonitorTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD1MonitorTextBox.Name = "PD1MonitorTextBox";
             this.PD1MonitorTextBox.ReadOnly = true;
-            this.PD1MonitorTextBox.Size = new System.Drawing.Size(120, 22);
+            this.PD1MonitorTextBox.Size = new System.Drawing.Size(90, 22);
             this.PD1MonitorTextBox.TabIndex = 7;
             // 
-            // PD1GainComboBox
+            // PD1GainLabel
             // 
-            this.PD1GainComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.PD1GainComboBox.Items.AddRange(new object[] {
-            "Gain 1",
-            "Gain 2",
-            "Gain 3",
-            "Gain 4"});
-            this.PD1GainComboBox.Location = new System.Drawing.Point(471, 98);
-            this.PD1GainComboBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.PD1GainComboBox.Name = "PD1GainComboBox";
-            this.PD1GainComboBox.Size = new System.Drawing.Size(100, 24);
-            this.PD1GainComboBox.TabIndex = 8;
-            this.PD1GainComboBox.SelectedIndexChanged += new System.EventHandler(this.PDGainComboBox_SelectedIndexChanged);
+            this.PD1GainLabel.Location = new System.Drawing.Point(380, 95);
+            this.PD1GainLabel.Name = "PD1GainLabel";
+            this.PD1GainLabel.Size = new System.Drawing.Size(55, 20);
+            this.PD1GainLabel.TabIndex = 61;
+            this.PD1GainLabel.Text = "Gain 2";
+            // 
+            // PD1PowerTextBox
+            // 
+            this.PD1PowerTextBox.Location = new System.Drawing.Point(442, 93);
+            this.PD1PowerTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD1PowerTextBox.Name = "PD1PowerTextBox";
+            this.PD1PowerTextBox.ReadOnly = true;
+            this.PD1PowerTextBox.Size = new System.Drawing.Size(90, 22);
+            this.PD1PowerTextBox.TabIndex = 62;
+            // 
+            // PD1ThresholdTextBox
+            // 
+            this.PD1ThresholdTextBox.Location = new System.Drawing.Point(540, 93);
+            this.PD1ThresholdTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD1ThresholdTextBox.Name = "PD1ThresholdTextBox";
+            this.PD1ThresholdTextBox.Size = new System.Drawing.Size(70, 22);
+            this.PD1ThresholdTextBox.TabIndex = 63;
+            this.PD1ThresholdTextBox.TextChanged += new System.EventHandler(this.PDThresholdTextBox_TextChanged);
+            // 
+            // PD1StatusLight
+            // 
+            this.PD1StatusLight.BackColor = System.Drawing.Color.Gray;
+            this.PD1StatusLight.Location = new System.Drawing.Point(655, 91);
+            this.PD1StatusLight.Name = "PD1StatusLight";
+            this.PD1StatusLight.Size = new System.Drawing.Size(18, 18);
+            this.PD1StatusLight.TabIndex = 64;
+            // 
+            // PD1CalATextBox
+            // 
+            this.PD1CalATextBox.Location = new System.Drawing.Point(721, 91);
+            this.PD1CalATextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD1CalATextBox.Name = "PD1CalATextBox";
+            this.PD1CalATextBox.Size = new System.Drawing.Size(65, 22);
+            this.PD1CalATextBox.TabIndex = 65;
+            this.PD1CalATextBox.TextChanged += new System.EventHandler(this.PDCalTextBox_TextChanged);
+            // 
+            // PD1CalBTextBox
+            // 
+            this.PD1CalBTextBox.Location = new System.Drawing.Point(811, 91);
+            this.PD1CalBTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD1CalBTextBox.Name = "PD1CalBTextBox";
+            this.PD1CalBTextBox.Size = new System.Drawing.Size(65, 22);
+            this.PD1CalBTextBox.TabIndex = 66;
+            this.PD1CalBTextBox.TextChanged += new System.EventHandler(this.PDCalTextBox_TextChanged);
             // 
             // PD1LogCheck
             // 
-            this.PD1LogCheck.Location = new System.Drawing.Point(620, 100);
+            this.PD1LogCheck.Location = new System.Drawing.Point(946, 91);
             this.PD1LogCheck.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD1LogCheck.Name = "PD1LogCheck";
             this.PD1LogCheck.Size = new System.Drawing.Size(20, 20);
@@ -9863,7 +10074,7 @@ namespace UEDMHardwareControl
             // 
             // labelPDLogDuration
             // 
-            this.labelPDLogDuration.Location = new System.Drawing.Point(731, 72);
+            this.labelPDLogDuration.Location = new System.Drawing.Point(25, 462);
             this.labelPDLogDuration.Name = "labelPDLogDuration";
             this.labelPDLogDuration.Size = new System.Drawing.Size(120, 20);
             this.labelPDLogDuration.TabIndex = 10;
@@ -9871,7 +10082,7 @@ namespace UEDMHardwareControl
             // 
             // PDLogDurationTextBox
             // 
-            this.PDLogDurationTextBox.Location = new System.Drawing.Point(860, 70);
+            this.PDLogDurationTextBox.Location = new System.Drawing.Point(154, 460);
             this.PDLogDurationTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PDLogDurationTextBox.Name = "PDLogDurationTextBox";
             this.PDLogDurationTextBox.Size = new System.Drawing.Size(80, 22);
@@ -9880,7 +10091,7 @@ namespace UEDMHardwareControl
             // 
             // labelPDSamplePeriod
             // 
-            this.labelPDSamplePeriod.Location = new System.Drawing.Point(731, 109);
+            this.labelPDSamplePeriod.Location = new System.Drawing.Point(25, 499);
             this.labelPDSamplePeriod.Name = "labelPDSamplePeriod";
             this.labelPDSamplePeriod.Size = new System.Drawing.Size(124, 22);
             this.labelPDSamplePeriod.TabIndex = 12;
@@ -9888,7 +10099,7 @@ namespace UEDMHardwareControl
             // 
             // PDSamplePeriodTextBox
             // 
-            this.PDSamplePeriodTextBox.Location = new System.Drawing.Point(860, 109);
+            this.PDSamplePeriodTextBox.Location = new System.Drawing.Point(154, 499);
             this.PDSamplePeriodTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PDSamplePeriodTextBox.Name = "PDSamplePeriodTextBox";
             this.PDSamplePeriodTextBox.Size = new System.Drawing.Size(80, 22);
@@ -9897,7 +10108,7 @@ namespace UEDMHardwareControl
             // 
             // labelPDLogDirectory
             // 
-            this.labelPDLogDirectory.Location = new System.Drawing.Point(731, 190);
+            this.labelPDLogDirectory.Location = new System.Drawing.Point(25, 580);
             this.labelPDLogDirectory.Name = "labelPDLogDirectory";
             this.labelPDLogDirectory.Size = new System.Drawing.Size(105, 18);
             this.labelPDLogDirectory.TabIndex = 14;
@@ -9905,7 +10116,7 @@ namespace UEDMHardwareControl
             // 
             // PDLogDirectoryTextBox
             // 
-            this.PDLogDirectoryTextBox.Location = new System.Drawing.Point(860, 192);
+            this.PDLogDirectoryTextBox.Location = new System.Drawing.Point(154, 582);
             this.PDLogDirectoryTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PDLogDirectoryTextBox.Name = "PDLogDirectoryTextBox";
             this.PDLogDirectoryTextBox.Size = new System.Drawing.Size(129, 22);
@@ -9913,7 +10124,7 @@ namespace UEDMHardwareControl
             // 
             // PDLogDirectoryBrowseButton
             // 
-            this.PDLogDirectoryBrowseButton.Location = new System.Drawing.Point(1002, 190);
+            this.PDLogDirectoryBrowseButton.Location = new System.Drawing.Point(296, 580);
             this.PDLogDirectoryBrowseButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PDLogDirectoryBrowseButton.Name = "PDLogDirectoryBrowseButton";
             this.PDLogDirectoryBrowseButton.Size = new System.Drawing.Size(40, 25);
@@ -9923,7 +10134,7 @@ namespace UEDMHardwareControl
             // 
             // startPDLogButton
             // 
-            this.startPDLogButton.Location = new System.Drawing.Point(731, 252);
+            this.startPDLogButton.Location = new System.Drawing.Point(25, 642);
             this.startPDLogButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.startPDLogButton.Name = "startPDLogButton";
             this.startPDLogButton.Size = new System.Drawing.Size(120, 34);
@@ -9934,7 +10145,7 @@ namespace UEDMHardwareControl
             // stopPDLogButton
             // 
             this.stopPDLogButton.Enabled = false;
-            this.stopPDLogButton.Location = new System.Drawing.Point(882, 252);
+            this.stopPDLogButton.Location = new System.Drawing.Point(176, 642);
             this.stopPDLogButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.stopPDLogButton.Name = "stopPDLogButton";
             this.stopPDLogButton.Size = new System.Drawing.Size(120, 34);
@@ -9952,31 +10163,68 @@ namespace UEDMHardwareControl
             // 
             // PD2MonitorTextBox
             // 
-            this.PD2MonitorTextBox.Location = new System.Drawing.Point(322, 128);
+            this.PD2MonitorTextBox.Location = new System.Drawing.Point(282, 123);
             this.PD2MonitorTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD2MonitorTextBox.Name = "PD2MonitorTextBox";
             this.PD2MonitorTextBox.ReadOnly = true;
-            this.PD2MonitorTextBox.Size = new System.Drawing.Size(120, 22);
+            this.PD2MonitorTextBox.Size = new System.Drawing.Size(90, 22);
             this.PD2MonitorTextBox.TabIndex = 20;
             // 
-            // PD2GainComboBox
+            // PD2GainLabel
             // 
-            this.PD2GainComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.PD2GainComboBox.Items.AddRange(new object[] {
-            "Gain 1",
-            "Gain 2",
-            "Gain 3",
-            "Gain 4"});
-            this.PD2GainComboBox.Location = new System.Drawing.Point(471, 128);
-            this.PD2GainComboBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.PD2GainComboBox.Name = "PD2GainComboBox";
-            this.PD2GainComboBox.Size = new System.Drawing.Size(100, 24);
-            this.PD2GainComboBox.TabIndex = 21;
-            this.PD2GainComboBox.SelectedIndexChanged += new System.EventHandler(this.PDGainComboBox_SelectedIndexChanged);
+            this.PD2GainLabel.Location = new System.Drawing.Point(380, 125);
+            this.PD2GainLabel.Name = "PD2GainLabel";
+            this.PD2GainLabel.Size = new System.Drawing.Size(55, 20);
+            this.PD2GainLabel.TabIndex = 67;
+            this.PD2GainLabel.Text = "Gain 2";
+            // 
+            // PD2PowerTextBox
+            // 
+            this.PD2PowerTextBox.Location = new System.Drawing.Point(442, 123);
+            this.PD2PowerTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD2PowerTextBox.Name = "PD2PowerTextBox";
+            this.PD2PowerTextBox.ReadOnly = true;
+            this.PD2PowerTextBox.Size = new System.Drawing.Size(90, 22);
+            this.PD2PowerTextBox.TabIndex = 68;
+            // 
+            // PD2ThresholdTextBox
+            // 
+            this.PD2ThresholdTextBox.Location = new System.Drawing.Point(540, 123);
+            this.PD2ThresholdTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD2ThresholdTextBox.Name = "PD2ThresholdTextBox";
+            this.PD2ThresholdTextBox.Size = new System.Drawing.Size(70, 22);
+            this.PD2ThresholdTextBox.TabIndex = 69;
+            this.PD2ThresholdTextBox.TextChanged += new System.EventHandler(this.PDThresholdTextBox_TextChanged);
+            // 
+            // PD2StatusLight
+            // 
+            this.PD2StatusLight.BackColor = System.Drawing.Color.Gray;
+            this.PD2StatusLight.Location = new System.Drawing.Point(655, 121);
+            this.PD2StatusLight.Name = "PD2StatusLight";
+            this.PD2StatusLight.Size = new System.Drawing.Size(18, 18);
+            this.PD2StatusLight.TabIndex = 70;
+            // 
+            // PD2CalATextBox
+            // 
+            this.PD2CalATextBox.Location = new System.Drawing.Point(721, 121);
+            this.PD2CalATextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD2CalATextBox.Name = "PD2CalATextBox";
+            this.PD2CalATextBox.Size = new System.Drawing.Size(65, 22);
+            this.PD2CalATextBox.TabIndex = 71;
+            this.PD2CalATextBox.TextChanged += new System.EventHandler(this.PDCalTextBox_TextChanged);
+            // 
+            // PD2CalBTextBox
+            // 
+            this.PD2CalBTextBox.Location = new System.Drawing.Point(811, 121);
+            this.PD2CalBTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD2CalBTextBox.Name = "PD2CalBTextBox";
+            this.PD2CalBTextBox.Size = new System.Drawing.Size(65, 22);
+            this.PD2CalBTextBox.TabIndex = 72;
+            this.PD2CalBTextBox.TextChanged += new System.EventHandler(this.PDCalTextBox_TextChanged);
             // 
             // PD2LogCheck
             // 
-            this.PD2LogCheck.Location = new System.Drawing.Point(620, 130);
+            this.PD2LogCheck.Location = new System.Drawing.Point(946, 121);
             this.PD2LogCheck.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD2LogCheck.Name = "PD2LogCheck";
             this.PD2LogCheck.Size = new System.Drawing.Size(20, 20);
@@ -9992,31 +10240,68 @@ namespace UEDMHardwareControl
             // 
             // PD3MonitorTextBox
             // 
-            this.PD3MonitorTextBox.Location = new System.Drawing.Point(322, 158);
+            this.PD3MonitorTextBox.Location = new System.Drawing.Point(282, 153);
             this.PD3MonitorTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD3MonitorTextBox.Name = "PD3MonitorTextBox";
             this.PD3MonitorTextBox.ReadOnly = true;
-            this.PD3MonitorTextBox.Size = new System.Drawing.Size(120, 22);
+            this.PD3MonitorTextBox.Size = new System.Drawing.Size(90, 22);
             this.PD3MonitorTextBox.TabIndex = 24;
             // 
-            // PD3GainComboBox
+            // PD3GainLabel
             // 
-            this.PD3GainComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.PD3GainComboBox.Items.AddRange(new object[] {
-            "Gain 1",
-            "Gain 2",
-            "Gain 3",
-            "Gain 4"});
-            this.PD3GainComboBox.Location = new System.Drawing.Point(471, 158);
-            this.PD3GainComboBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.PD3GainComboBox.Name = "PD3GainComboBox";
-            this.PD3GainComboBox.Size = new System.Drawing.Size(100, 24);
-            this.PD3GainComboBox.TabIndex = 25;
-            this.PD3GainComboBox.SelectedIndexChanged += new System.EventHandler(this.PDGainComboBox_SelectedIndexChanged);
+            this.PD3GainLabel.Location = new System.Drawing.Point(380, 155);
+            this.PD3GainLabel.Name = "PD3GainLabel";
+            this.PD3GainLabel.Size = new System.Drawing.Size(55, 20);
+            this.PD3GainLabel.TabIndex = 73;
+            this.PD3GainLabel.Text = "Gain 2";
+            // 
+            // PD3PowerTextBox
+            // 
+            this.PD3PowerTextBox.Location = new System.Drawing.Point(442, 153);
+            this.PD3PowerTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD3PowerTextBox.Name = "PD3PowerTextBox";
+            this.PD3PowerTextBox.ReadOnly = true;
+            this.PD3PowerTextBox.Size = new System.Drawing.Size(90, 22);
+            this.PD3PowerTextBox.TabIndex = 74;
+            // 
+            // PD3ThresholdTextBox
+            // 
+            this.PD3ThresholdTextBox.Location = new System.Drawing.Point(540, 153);
+            this.PD3ThresholdTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD3ThresholdTextBox.Name = "PD3ThresholdTextBox";
+            this.PD3ThresholdTextBox.Size = new System.Drawing.Size(70, 22);
+            this.PD3ThresholdTextBox.TabIndex = 75;
+            this.PD3ThresholdTextBox.TextChanged += new System.EventHandler(this.PDThresholdTextBox_TextChanged);
+            // 
+            // PD3StatusLight
+            // 
+            this.PD3StatusLight.BackColor = System.Drawing.Color.Gray;
+            this.PD3StatusLight.Location = new System.Drawing.Point(655, 151);
+            this.PD3StatusLight.Name = "PD3StatusLight";
+            this.PD3StatusLight.Size = new System.Drawing.Size(18, 18);
+            this.PD3StatusLight.TabIndex = 76;
+            // 
+            // PD3CalATextBox
+            // 
+            this.PD3CalATextBox.Location = new System.Drawing.Point(721, 151);
+            this.PD3CalATextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD3CalATextBox.Name = "PD3CalATextBox";
+            this.PD3CalATextBox.Size = new System.Drawing.Size(65, 22);
+            this.PD3CalATextBox.TabIndex = 77;
+            this.PD3CalATextBox.TextChanged += new System.EventHandler(this.PDCalTextBox_TextChanged);
+            // 
+            // PD3CalBTextBox
+            // 
+            this.PD3CalBTextBox.Location = new System.Drawing.Point(811, 151);
+            this.PD3CalBTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD3CalBTextBox.Name = "PD3CalBTextBox";
+            this.PD3CalBTextBox.Size = new System.Drawing.Size(65, 22);
+            this.PD3CalBTextBox.TabIndex = 78;
+            this.PD3CalBTextBox.TextChanged += new System.EventHandler(this.PDCalTextBox_TextChanged);
             // 
             // PD3LogCheck
             // 
-            this.PD3LogCheck.Location = new System.Drawing.Point(620, 160);
+            this.PD3LogCheck.Location = new System.Drawing.Point(946, 151);
             this.PD3LogCheck.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD3LogCheck.Name = "PD3LogCheck";
             this.PD3LogCheck.Size = new System.Drawing.Size(20, 20);
@@ -10032,31 +10317,68 @@ namespace UEDMHardwareControl
             // 
             // PD4MonitorTextBox
             // 
-            this.PD4MonitorTextBox.Location = new System.Drawing.Point(322, 188);
+            this.PD4MonitorTextBox.Location = new System.Drawing.Point(282, 183);
             this.PD4MonitorTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD4MonitorTextBox.Name = "PD4MonitorTextBox";
             this.PD4MonitorTextBox.ReadOnly = true;
-            this.PD4MonitorTextBox.Size = new System.Drawing.Size(120, 22);
+            this.PD4MonitorTextBox.Size = new System.Drawing.Size(90, 22);
             this.PD4MonitorTextBox.TabIndex = 28;
             // 
-            // PD4GainComboBox
+            // PD4GainLabel
             // 
-            this.PD4GainComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.PD4GainComboBox.Items.AddRange(new object[] {
-            "Gain 1",
-            "Gain 2",
-            "Gain 3",
-            "Gain 4"});
-            this.PD4GainComboBox.Location = new System.Drawing.Point(471, 188);
-            this.PD4GainComboBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.PD4GainComboBox.Name = "PD4GainComboBox";
-            this.PD4GainComboBox.Size = new System.Drawing.Size(100, 24);
-            this.PD4GainComboBox.TabIndex = 29;
-            this.PD4GainComboBox.SelectedIndexChanged += new System.EventHandler(this.PDGainComboBox_SelectedIndexChanged);
+            this.PD4GainLabel.Location = new System.Drawing.Point(380, 185);
+            this.PD4GainLabel.Name = "PD4GainLabel";
+            this.PD4GainLabel.Size = new System.Drawing.Size(55, 20);
+            this.PD4GainLabel.TabIndex = 79;
+            this.PD4GainLabel.Text = "Gain 2";
+            // 
+            // PD4PowerTextBox
+            // 
+            this.PD4PowerTextBox.Location = new System.Drawing.Point(442, 183);
+            this.PD4PowerTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD4PowerTextBox.Name = "PD4PowerTextBox";
+            this.PD4PowerTextBox.ReadOnly = true;
+            this.PD4PowerTextBox.Size = new System.Drawing.Size(90, 22);
+            this.PD4PowerTextBox.TabIndex = 80;
+            // 
+            // PD4ThresholdTextBox
+            // 
+            this.PD4ThresholdTextBox.Location = new System.Drawing.Point(540, 183);
+            this.PD4ThresholdTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD4ThresholdTextBox.Name = "PD4ThresholdTextBox";
+            this.PD4ThresholdTextBox.Size = new System.Drawing.Size(70, 22);
+            this.PD4ThresholdTextBox.TabIndex = 81;
+            this.PD4ThresholdTextBox.TextChanged += new System.EventHandler(this.PDThresholdTextBox_TextChanged);
+            // 
+            // PD4StatusLight
+            // 
+            this.PD4StatusLight.BackColor = System.Drawing.Color.Gray;
+            this.PD4StatusLight.Location = new System.Drawing.Point(655, 181);
+            this.PD4StatusLight.Name = "PD4StatusLight";
+            this.PD4StatusLight.Size = new System.Drawing.Size(18, 18);
+            this.PD4StatusLight.TabIndex = 82;
+            // 
+            // PD4CalATextBox
+            // 
+            this.PD4CalATextBox.Location = new System.Drawing.Point(721, 181);
+            this.PD4CalATextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD4CalATextBox.Name = "PD4CalATextBox";
+            this.PD4CalATextBox.Size = new System.Drawing.Size(65, 22);
+            this.PD4CalATextBox.TabIndex = 83;
+            this.PD4CalATextBox.TextChanged += new System.EventHandler(this.PDCalTextBox_TextChanged);
+            // 
+            // PD4CalBTextBox
+            // 
+            this.PD4CalBTextBox.Location = new System.Drawing.Point(811, 181);
+            this.PD4CalBTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD4CalBTextBox.Name = "PD4CalBTextBox";
+            this.PD4CalBTextBox.Size = new System.Drawing.Size(65, 22);
+            this.PD4CalBTextBox.TabIndex = 84;
+            this.PD4CalBTextBox.TextChanged += new System.EventHandler(this.PDCalTextBox_TextChanged);
             // 
             // PD4LogCheck
             // 
-            this.PD4LogCheck.Location = new System.Drawing.Point(620, 190);
+            this.PD4LogCheck.Location = new System.Drawing.Point(946, 181);
             this.PD4LogCheck.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD4LogCheck.Name = "PD4LogCheck";
             this.PD4LogCheck.Size = new System.Drawing.Size(20, 20);
@@ -10072,31 +10394,68 @@ namespace UEDMHardwareControl
             // 
             // PD5MonitorTextBox
             // 
-            this.PD5MonitorTextBox.Location = new System.Drawing.Point(322, 218);
+            this.PD5MonitorTextBox.Location = new System.Drawing.Point(282, 213);
             this.PD5MonitorTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD5MonitorTextBox.Name = "PD5MonitorTextBox";
             this.PD5MonitorTextBox.ReadOnly = true;
-            this.PD5MonitorTextBox.Size = new System.Drawing.Size(120, 22);
+            this.PD5MonitorTextBox.Size = new System.Drawing.Size(90, 22);
             this.PD5MonitorTextBox.TabIndex = 32;
             // 
-            // PD5GainComboBox
+            // PD5GainLabel
             // 
-            this.PD5GainComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.PD5GainComboBox.Items.AddRange(new object[] {
-            "Gain 1",
-            "Gain 2",
-            "Gain 3",
-            "Gain 4"});
-            this.PD5GainComboBox.Location = new System.Drawing.Point(471, 218);
-            this.PD5GainComboBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.PD5GainComboBox.Name = "PD5GainComboBox";
-            this.PD5GainComboBox.Size = new System.Drawing.Size(100, 24);
-            this.PD5GainComboBox.TabIndex = 33;
-            this.PD5GainComboBox.SelectedIndexChanged += new System.EventHandler(this.PDGainComboBox_SelectedIndexChanged);
+            this.PD5GainLabel.Location = new System.Drawing.Point(380, 215);
+            this.PD5GainLabel.Name = "PD5GainLabel";
+            this.PD5GainLabel.Size = new System.Drawing.Size(55, 20);
+            this.PD5GainLabel.TabIndex = 85;
+            this.PD5GainLabel.Text = "Gain 2";
+            // 
+            // PD5PowerTextBox
+            // 
+            this.PD5PowerTextBox.Location = new System.Drawing.Point(442, 213);
+            this.PD5PowerTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD5PowerTextBox.Name = "PD5PowerTextBox";
+            this.PD5PowerTextBox.ReadOnly = true;
+            this.PD5PowerTextBox.Size = new System.Drawing.Size(90, 22);
+            this.PD5PowerTextBox.TabIndex = 86;
+            // 
+            // PD5ThresholdTextBox
+            // 
+            this.PD5ThresholdTextBox.Location = new System.Drawing.Point(540, 213);
+            this.PD5ThresholdTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD5ThresholdTextBox.Name = "PD5ThresholdTextBox";
+            this.PD5ThresholdTextBox.Size = new System.Drawing.Size(70, 22);
+            this.PD5ThresholdTextBox.TabIndex = 87;
+            this.PD5ThresholdTextBox.TextChanged += new System.EventHandler(this.PDThresholdTextBox_TextChanged);
+            // 
+            // PD5StatusLight
+            // 
+            this.PD5StatusLight.BackColor = System.Drawing.Color.Gray;
+            this.PD5StatusLight.Location = new System.Drawing.Point(655, 211);
+            this.PD5StatusLight.Name = "PD5StatusLight";
+            this.PD5StatusLight.Size = new System.Drawing.Size(18, 18);
+            this.PD5StatusLight.TabIndex = 88;
+            // 
+            // PD5CalATextBox
+            // 
+            this.PD5CalATextBox.Location = new System.Drawing.Point(721, 211);
+            this.PD5CalATextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD5CalATextBox.Name = "PD5CalATextBox";
+            this.PD5CalATextBox.Size = new System.Drawing.Size(65, 22);
+            this.PD5CalATextBox.TabIndex = 89;
+            this.PD5CalATextBox.TextChanged += new System.EventHandler(this.PDCalTextBox_TextChanged);
+            // 
+            // PD5CalBTextBox
+            // 
+            this.PD5CalBTextBox.Location = new System.Drawing.Point(811, 211);
+            this.PD5CalBTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD5CalBTextBox.Name = "PD5CalBTextBox";
+            this.PD5CalBTextBox.Size = new System.Drawing.Size(65, 22);
+            this.PD5CalBTextBox.TabIndex = 90;
+            this.PD5CalBTextBox.TextChanged += new System.EventHandler(this.PDCalTextBox_TextChanged);
             // 
             // PD5LogCheck
             // 
-            this.PD5LogCheck.Location = new System.Drawing.Point(620, 220);
+            this.PD5LogCheck.Location = new System.Drawing.Point(946, 211);
             this.PD5LogCheck.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD5LogCheck.Name = "PD5LogCheck";
             this.PD5LogCheck.Size = new System.Drawing.Size(20, 20);
@@ -10112,31 +10471,68 @@ namespace UEDMHardwareControl
             // 
             // PD6MonitorTextBox
             // 
-            this.PD6MonitorTextBox.Location = new System.Drawing.Point(322, 249);
+            this.PD6MonitorTextBox.Location = new System.Drawing.Point(282, 244);
             this.PD6MonitorTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD6MonitorTextBox.Name = "PD6MonitorTextBox";
             this.PD6MonitorTextBox.ReadOnly = true;
-            this.PD6MonitorTextBox.Size = new System.Drawing.Size(120, 22);
+            this.PD6MonitorTextBox.Size = new System.Drawing.Size(90, 22);
             this.PD6MonitorTextBox.TabIndex = 36;
             // 
-            // PD6GainComboBox
+            // PD6GainLabel
             // 
-            this.PD6GainComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.PD6GainComboBox.Items.AddRange(new object[] {
-            "Gain 1",
-            "Gain 2",
-            "Gain 3",
-            "Gain 4"});
-            this.PD6GainComboBox.Location = new System.Drawing.Point(471, 249);
-            this.PD6GainComboBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.PD6GainComboBox.Name = "PD6GainComboBox";
-            this.PD6GainComboBox.Size = new System.Drawing.Size(100, 24);
-            this.PD6GainComboBox.TabIndex = 37;
-            this.PD6GainComboBox.SelectedIndexChanged += new System.EventHandler(this.PDGainComboBox_SelectedIndexChanged);
+            this.PD6GainLabel.Location = new System.Drawing.Point(380, 245);
+            this.PD6GainLabel.Name = "PD6GainLabel";
+            this.PD6GainLabel.Size = new System.Drawing.Size(55, 20);
+            this.PD6GainLabel.TabIndex = 91;
+            this.PD6GainLabel.Text = "Gain 2";
+            // 
+            // PD6PowerTextBox
+            // 
+            this.PD6PowerTextBox.Location = new System.Drawing.Point(442, 243);
+            this.PD6PowerTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD6PowerTextBox.Name = "PD6PowerTextBox";
+            this.PD6PowerTextBox.ReadOnly = true;
+            this.PD6PowerTextBox.Size = new System.Drawing.Size(90, 22);
+            this.PD6PowerTextBox.TabIndex = 92;
+            // 
+            // PD6ThresholdTextBox
+            // 
+            this.PD6ThresholdTextBox.Location = new System.Drawing.Point(540, 243);
+            this.PD6ThresholdTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD6ThresholdTextBox.Name = "PD6ThresholdTextBox";
+            this.PD6ThresholdTextBox.Size = new System.Drawing.Size(70, 22);
+            this.PD6ThresholdTextBox.TabIndex = 93;
+            this.PD6ThresholdTextBox.TextChanged += new System.EventHandler(this.PDThresholdTextBox_TextChanged);
+            // 
+            // PD6StatusLight
+            // 
+            this.PD6StatusLight.BackColor = System.Drawing.Color.Gray;
+            this.PD6StatusLight.Location = new System.Drawing.Point(655, 241);
+            this.PD6StatusLight.Name = "PD6StatusLight";
+            this.PD6StatusLight.Size = new System.Drawing.Size(18, 18);
+            this.PD6StatusLight.TabIndex = 94;
+            // 
+            // PD6CalATextBox
+            // 
+            this.PD6CalATextBox.Location = new System.Drawing.Point(721, 241);
+            this.PD6CalATextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD6CalATextBox.Name = "PD6CalATextBox";
+            this.PD6CalATextBox.Size = new System.Drawing.Size(65, 22);
+            this.PD6CalATextBox.TabIndex = 95;
+            this.PD6CalATextBox.TextChanged += new System.EventHandler(this.PDCalTextBox_TextChanged);
+            // 
+            // PD6CalBTextBox
+            // 
+            this.PD6CalBTextBox.Location = new System.Drawing.Point(811, 241);
+            this.PD6CalBTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD6CalBTextBox.Name = "PD6CalBTextBox";
+            this.PD6CalBTextBox.Size = new System.Drawing.Size(65, 22);
+            this.PD6CalBTextBox.TabIndex = 96;
+            this.PD6CalBTextBox.TextChanged += new System.EventHandler(this.PDCalTextBox_TextChanged);
             // 
             // PD6LogCheck
             // 
-            this.PD6LogCheck.Location = new System.Drawing.Point(620, 250);
+            this.PD6LogCheck.Location = new System.Drawing.Point(946, 241);
             this.PD6LogCheck.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD6LogCheck.Name = "PD6LogCheck";
             this.PD6LogCheck.Size = new System.Drawing.Size(20, 20);
@@ -10152,31 +10548,68 @@ namespace UEDMHardwareControl
             // 
             // PD7MonitorTextBox
             // 
-            this.PD7MonitorTextBox.Location = new System.Drawing.Point(322, 278);
+            this.PD7MonitorTextBox.Location = new System.Drawing.Point(282, 273);
             this.PD7MonitorTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD7MonitorTextBox.Name = "PD7MonitorTextBox";
             this.PD7MonitorTextBox.ReadOnly = true;
-            this.PD7MonitorTextBox.Size = new System.Drawing.Size(120, 22);
+            this.PD7MonitorTextBox.Size = new System.Drawing.Size(90, 22);
             this.PD7MonitorTextBox.TabIndex = 40;
             // 
-            // PD7GainComboBox
+            // PD7GainLabel
             // 
-            this.PD7GainComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.PD7GainComboBox.Items.AddRange(new object[] {
-            "Gain 1",
-            "Gain 2",
-            "Gain 3",
-            "Gain 4"});
-            this.PD7GainComboBox.Location = new System.Drawing.Point(471, 278);
-            this.PD7GainComboBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.PD7GainComboBox.Name = "PD7GainComboBox";
-            this.PD7GainComboBox.Size = new System.Drawing.Size(100, 24);
-            this.PD7GainComboBox.TabIndex = 41;
-            this.PD7GainComboBox.SelectedIndexChanged += new System.EventHandler(this.PDGainComboBox_SelectedIndexChanged);
+            this.PD7GainLabel.Location = new System.Drawing.Point(380, 275);
+            this.PD7GainLabel.Name = "PD7GainLabel";
+            this.PD7GainLabel.Size = new System.Drawing.Size(55, 20);
+            this.PD7GainLabel.TabIndex = 97;
+            this.PD7GainLabel.Text = "Gain 2";
+            // 
+            // PD7PowerTextBox
+            // 
+            this.PD7PowerTextBox.Location = new System.Drawing.Point(442, 273);
+            this.PD7PowerTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD7PowerTextBox.Name = "PD7PowerTextBox";
+            this.PD7PowerTextBox.ReadOnly = true;
+            this.PD7PowerTextBox.Size = new System.Drawing.Size(90, 22);
+            this.PD7PowerTextBox.TabIndex = 98;
+            // 
+            // PD7ThresholdTextBox
+            // 
+            this.PD7ThresholdTextBox.Location = new System.Drawing.Point(540, 273);
+            this.PD7ThresholdTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD7ThresholdTextBox.Name = "PD7ThresholdTextBox";
+            this.PD7ThresholdTextBox.Size = new System.Drawing.Size(70, 22);
+            this.PD7ThresholdTextBox.TabIndex = 99;
+            this.PD7ThresholdTextBox.TextChanged += new System.EventHandler(this.PDThresholdTextBox_TextChanged);
+            // 
+            // PD7StatusLight
+            // 
+            this.PD7StatusLight.BackColor = System.Drawing.Color.Gray;
+            this.PD7StatusLight.Location = new System.Drawing.Point(655, 271);
+            this.PD7StatusLight.Name = "PD7StatusLight";
+            this.PD7StatusLight.Size = new System.Drawing.Size(18, 18);
+            this.PD7StatusLight.TabIndex = 100;
+            // 
+            // PD7CalATextBox
+            // 
+            this.PD7CalATextBox.Location = new System.Drawing.Point(721, 271);
+            this.PD7CalATextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD7CalATextBox.Name = "PD7CalATextBox";
+            this.PD7CalATextBox.Size = new System.Drawing.Size(65, 22);
+            this.PD7CalATextBox.TabIndex = 101;
+            this.PD7CalATextBox.TextChanged += new System.EventHandler(this.PDCalTextBox_TextChanged);
+            // 
+            // PD7CalBTextBox
+            // 
+            this.PD7CalBTextBox.Location = new System.Drawing.Point(811, 271);
+            this.PD7CalBTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD7CalBTextBox.Name = "PD7CalBTextBox";
+            this.PD7CalBTextBox.Size = new System.Drawing.Size(65, 22);
+            this.PD7CalBTextBox.TabIndex = 102;
+            this.PD7CalBTextBox.TextChanged += new System.EventHandler(this.PDCalTextBox_TextChanged);
             // 
             // PD7LogCheck
             // 
-            this.PD7LogCheck.Location = new System.Drawing.Point(620, 281);
+            this.PD7LogCheck.Location = new System.Drawing.Point(946, 272);
             this.PD7LogCheck.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD7LogCheck.Name = "PD7LogCheck";
             this.PD7LogCheck.Size = new System.Drawing.Size(20, 20);
@@ -10192,31 +10625,68 @@ namespace UEDMHardwareControl
             // 
             // PD8MonitorTextBox
             // 
-            this.PD8MonitorTextBox.Location = new System.Drawing.Point(322, 308);
+            this.PD8MonitorTextBox.Location = new System.Drawing.Point(282, 303);
             this.PD8MonitorTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD8MonitorTextBox.Name = "PD8MonitorTextBox";
             this.PD8MonitorTextBox.ReadOnly = true;
-            this.PD8MonitorTextBox.Size = new System.Drawing.Size(120, 22);
+            this.PD8MonitorTextBox.Size = new System.Drawing.Size(90, 22);
             this.PD8MonitorTextBox.TabIndex = 44;
             // 
-            // PD8GainComboBox
+            // PD8GainLabel
             // 
-            this.PD8GainComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.PD8GainComboBox.Items.AddRange(new object[] {
-            "Gain 1",
-            "Gain 2",
-            "Gain 3",
-            "Gain 4"});
-            this.PD8GainComboBox.Location = new System.Drawing.Point(471, 308);
-            this.PD8GainComboBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.PD8GainComboBox.Name = "PD8GainComboBox";
-            this.PD8GainComboBox.Size = new System.Drawing.Size(100, 24);
-            this.PD8GainComboBox.TabIndex = 45;
-            this.PD8GainComboBox.SelectedIndexChanged += new System.EventHandler(this.PDGainComboBox_SelectedIndexChanged);
+            this.PD8GainLabel.Location = new System.Drawing.Point(380, 305);
+            this.PD8GainLabel.Name = "PD8GainLabel";
+            this.PD8GainLabel.Size = new System.Drawing.Size(55, 20);
+            this.PD8GainLabel.TabIndex = 103;
+            this.PD8GainLabel.Text = "Gain 2";
+            // 
+            // PD8PowerTextBox
+            // 
+            this.PD8PowerTextBox.Location = new System.Drawing.Point(442, 303);
+            this.PD8PowerTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD8PowerTextBox.Name = "PD8PowerTextBox";
+            this.PD8PowerTextBox.ReadOnly = true;
+            this.PD8PowerTextBox.Size = new System.Drawing.Size(90, 22);
+            this.PD8PowerTextBox.TabIndex = 104;
+            // 
+            // PD8ThresholdTextBox
+            // 
+            this.PD8ThresholdTextBox.Location = new System.Drawing.Point(540, 303);
+            this.PD8ThresholdTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD8ThresholdTextBox.Name = "PD8ThresholdTextBox";
+            this.PD8ThresholdTextBox.Size = new System.Drawing.Size(70, 22);
+            this.PD8ThresholdTextBox.TabIndex = 105;
+            this.PD8ThresholdTextBox.TextChanged += new System.EventHandler(this.PDThresholdTextBox_TextChanged);
+            // 
+            // PD8StatusLight
+            // 
+            this.PD8StatusLight.BackColor = System.Drawing.Color.Gray;
+            this.PD8StatusLight.Location = new System.Drawing.Point(655, 301);
+            this.PD8StatusLight.Name = "PD8StatusLight";
+            this.PD8StatusLight.Size = new System.Drawing.Size(18, 18);
+            this.PD8StatusLight.TabIndex = 106;
+            // 
+            // PD8CalATextBox
+            // 
+            this.PD8CalATextBox.Location = new System.Drawing.Point(721, 301);
+            this.PD8CalATextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD8CalATextBox.Name = "PD8CalATextBox";
+            this.PD8CalATextBox.Size = new System.Drawing.Size(65, 22);
+            this.PD8CalATextBox.TabIndex = 107;
+            this.PD8CalATextBox.TextChanged += new System.EventHandler(this.PDCalTextBox_TextChanged);
+            // 
+            // PD8CalBTextBox
+            // 
+            this.PD8CalBTextBox.Location = new System.Drawing.Point(811, 301);
+            this.PD8CalBTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD8CalBTextBox.Name = "PD8CalBTextBox";
+            this.PD8CalBTextBox.Size = new System.Drawing.Size(65, 22);
+            this.PD8CalBTextBox.TabIndex = 108;
+            this.PD8CalBTextBox.TextChanged += new System.EventHandler(this.PDCalTextBox_TextChanged);
             // 
             // PD8LogCheck
             // 
-            this.PD8LogCheck.Location = new System.Drawing.Point(620, 310);
+            this.PD8LogCheck.Location = new System.Drawing.Point(946, 301);
             this.PD8LogCheck.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PD8LogCheck.Name = "PD8LogCheck";
             this.PD8LogCheck.Size = new System.Drawing.Size(20, 20);
@@ -10224,7 +10694,7 @@ namespace UEDMHardwareControl
             // 
             // labelPDFileName
             // 
-            this.labelPDFileName.Location = new System.Drawing.Point(731, 160);
+            this.labelPDFileName.Location = new System.Drawing.Point(25, 550);
             this.labelPDFileName.Name = "labelPDFileName";
             this.labelPDFileName.Size = new System.Drawing.Size(120, 22);
             this.labelPDFileName.TabIndex = 47;
@@ -10232,7 +10702,7 @@ namespace UEDMHardwareControl
             // 
             // PDFileNameTextBox
             // 
-            this.PDFileNameTextBox.Location = new System.Drawing.Point(860, 160);
+            this.PDFileNameTextBox.Location = new System.Drawing.Point(154, 550);
             this.PDFileNameTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PDFileNameTextBox.Name = "PDFileNameTextBox";
             this.PDFileNameTextBox.Size = new System.Drawing.Size(129, 22);
@@ -10254,11 +10724,10 @@ namespace UEDMHardwareControl
             this.label56.Size = new System.Drawing.Size(187, 22);
             this.label56.TabIndex = 50;
             this.label56.Text = "v0 Horiztonal Cooling";
-            this.label56.Click += new System.EventHandler(this.label56_Click);
             // 
             // label55
             // 
-            this.label55.Location = new System.Drawing.Point(77, 131);
+            this.label55.Location = new System.Drawing.Point(77, 130);
             this.label55.Name = "label55";
             this.label55.Size = new System.Drawing.Size(236, 22);
             this.label55.TabIndex = 51;
@@ -11424,14 +11893,59 @@ namespace UEDMHardwareControl
         public System.Windows.Forms.TextBox PD7MonitorTextBox;
         public System.Windows.Forms.TextBox PD8MonitorTextBox;
 
-        public System.Windows.Forms.ComboBox PD1GainComboBox;
-        public System.Windows.Forms.ComboBox PD2GainComboBox;
-        public System.Windows.Forms.ComboBox PD3GainComboBox;
-        public System.Windows.Forms.ComboBox PD4GainComboBox;
-        public System.Windows.Forms.ComboBox PD5GainComboBox;
-        public System.Windows.Forms.ComboBox PD6GainComboBox;
-        public System.Windows.Forms.ComboBox PD7GainComboBox;
-        public System.Windows.Forms.ComboBox PD8GainComboBox;
+        public System.Windows.Forms.Label PD1GainLabel;
+        public System.Windows.Forms.Label PD2GainLabel;
+        public System.Windows.Forms.Label PD3GainLabel;
+        public System.Windows.Forms.Label PD4GainLabel;
+        public System.Windows.Forms.Label PD5GainLabel;
+        public System.Windows.Forms.Label PD6GainLabel;
+        public System.Windows.Forms.Label PD7GainLabel;
+        public System.Windows.Forms.Label PD8GainLabel;
+
+        public System.Windows.Forms.TextBox PD1PowerTextBox;
+        public System.Windows.Forms.TextBox PD2PowerTextBox;
+        public System.Windows.Forms.TextBox PD3PowerTextBox;
+        public System.Windows.Forms.TextBox PD4PowerTextBox;
+        public System.Windows.Forms.TextBox PD5PowerTextBox;
+        public System.Windows.Forms.TextBox PD6PowerTextBox;
+        public System.Windows.Forms.TextBox PD7PowerTextBox;
+        public System.Windows.Forms.TextBox PD8PowerTextBox;
+
+        public System.Windows.Forms.TextBox PD1ThresholdTextBox;
+        public System.Windows.Forms.TextBox PD2ThresholdTextBox;
+        public System.Windows.Forms.TextBox PD3ThresholdTextBox;
+        public System.Windows.Forms.TextBox PD4ThresholdTextBox;
+        public System.Windows.Forms.TextBox PD5ThresholdTextBox;
+        public System.Windows.Forms.TextBox PD6ThresholdTextBox;
+        public System.Windows.Forms.TextBox PD7ThresholdTextBox;
+        public System.Windows.Forms.TextBox PD8ThresholdTextBox;
+
+        public System.Windows.Forms.Panel PD1StatusLight;
+        public System.Windows.Forms.Panel PD2StatusLight;
+        public System.Windows.Forms.Panel PD3StatusLight;
+        public System.Windows.Forms.Panel PD4StatusLight;
+        public System.Windows.Forms.Panel PD5StatusLight;
+        public System.Windows.Forms.Panel PD6StatusLight;
+        public System.Windows.Forms.Panel PD7StatusLight;
+        public System.Windows.Forms.Panel PD8StatusLight;
+
+        public System.Windows.Forms.TextBox PD1CalATextBox;
+        public System.Windows.Forms.TextBox PD2CalATextBox;
+        public System.Windows.Forms.TextBox PD3CalATextBox;
+        public System.Windows.Forms.TextBox PD4CalATextBox;
+        public System.Windows.Forms.TextBox PD5CalATextBox;
+        public System.Windows.Forms.TextBox PD6CalATextBox;
+        public System.Windows.Forms.TextBox PD7CalATextBox;
+        public System.Windows.Forms.TextBox PD8CalATextBox;
+
+        public System.Windows.Forms.TextBox PD1CalBTextBox;
+        public System.Windows.Forms.TextBox PD2CalBTextBox;
+        public System.Windows.Forms.TextBox PD3CalBTextBox;
+        public System.Windows.Forms.TextBox PD4CalBTextBox;
+        public System.Windows.Forms.TextBox PD5CalBTextBox;
+        public System.Windows.Forms.TextBox PD6CalBTextBox;
+        public System.Windows.Forms.TextBox PD7CalBTextBox;
+        public System.Windows.Forms.TextBox PD8CalBTextBox;
 
         public System.Windows.Forms.CheckBox PD1LogCheck;
         public System.Windows.Forms.CheckBox PD2LogCheck;
@@ -11441,7 +11955,15 @@ namespace UEDMHardwareControl
         public System.Windows.Forms.CheckBox PD6LogCheck;
         public System.Windows.Forms.CheckBox PD7LogCheck;
         public System.Windows.Forms.CheckBox PD8LogCheck;
-        public System.Windows.Forms.CheckBox PDConvertToMwCheckBox;
+        private System.Windows.Forms.Label labelPDPower;
+        private System.Windows.Forms.Label labelPDThreshold;
+        private System.Windows.Forms.Label labelPDStatus;
+        private System.Windows.Forms.Label labelPDCalA;
+        private System.Windows.Forms.Label labelPDCalB;
+        private System.Windows.Forms.Label labelPDCalNote;
+        private System.Windows.Forms.Label labelPDAllStatus;
+        public System.Windows.Forms.Panel PDAllStatusLight;
+        public System.Windows.Forms.CheckBox PDLiveUpdateCheckBox;
         public System.Windows.Forms.TextBox PDFileNameTextBox;
         private System.Windows.Forms.Label labelPDFileName;
         public Label label57;

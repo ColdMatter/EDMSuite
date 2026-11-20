@@ -25,6 +25,7 @@ namespace UEDMHardwareControl
         {
             InitializeComponent();
             comboBoxNovatechChannel.SelectedIndex = 0;
+            MakePDStatusLightsRound();
         }
 
         private void WindowLoaded(object sender, EventArgs e)
@@ -97,6 +98,17 @@ namespace UEDMHardwareControl
         private void SetTextHelper(System.Windows.Forms.TextBox box, string text)
         {
             box.Text = text;
+        }
+
+        // Thread-safe colour setter for the photodiode status lights. BeginInvoke so a background
+        // polling thread never blocks on the UI thread (avoids deadlock when the window closes).
+        public void SetControlBackColor(Control control, Color color)
+        {
+            if (control.IsDisposed || !control.IsHandleCreated) return;
+            if (control.InvokeRequired)
+                control.BeginInvoke(new Action(() => control.BackColor = color));
+            else
+                control.BackColor = color;
         }
 
         public void SetRichTextBox(RichTextBox box, string text)
@@ -2206,20 +2218,97 @@ namespace UEDMHardwareControl
             controller.UpdatePDVMonitorUI();
         }
 
-        private void PDConvertToMwCheckBox_CheckedChanged(object sender, EventArgs e)
+        // ---- Photodiode monitor: gain labels, power column, calibration, thresholds and status lights ----
+
+        public System.Windows.Forms.Label[] PDGainLabels => new System.Windows.Forms.Label[] {
+            PD1GainLabel, PD2GainLabel, PD3GainLabel, PD4GainLabel, PD5GainLabel, PD6GainLabel, PD7GainLabel, PD8GainLabel };
+        public System.Windows.Forms.TextBox[] PDVoltageTextBoxes => new System.Windows.Forms.TextBox[] {
+            PD1MonitorTextBox, PD2MonitorTextBox, PD3MonitorTextBox, PD4MonitorTextBox,
+            PD5MonitorTextBox, PD6MonitorTextBox, PD7MonitorTextBox, PD8MonitorTextBox };
+        public System.Windows.Forms.TextBox[] PDPowerTextBoxes => new System.Windows.Forms.TextBox[] {
+            PD1PowerTextBox, PD2PowerTextBox, PD3PowerTextBox, PD4PowerTextBox,
+            PD5PowerTextBox, PD6PowerTextBox, PD7PowerTextBox, PD8PowerTextBox };
+        public System.Windows.Forms.TextBox[] PDThresholdTextBoxes => new System.Windows.Forms.TextBox[] {
+            PD1ThresholdTextBox, PD2ThresholdTextBox, PD3ThresholdTextBox, PD4ThresholdTextBox,
+            PD5ThresholdTextBox, PD6ThresholdTextBox, PD7ThresholdTextBox, PD8ThresholdTextBox };
+        public System.Windows.Forms.TextBox[] PDCalATextBoxes => new System.Windows.Forms.TextBox[] {
+            PD1CalATextBox, PD2CalATextBox, PD3CalATextBox, PD4CalATextBox,
+            PD5CalATextBox, PD6CalATextBox, PD7CalATextBox, PD8CalATextBox };
+        public System.Windows.Forms.TextBox[] PDCalBTextBoxes => new System.Windows.Forms.TextBox[] {
+            PD1CalBTextBox, PD2CalBTextBox, PD3CalBTextBox, PD4CalBTextBox,
+            PD5CalBTextBox, PD6CalBTextBox, PD7CalBTextBox, PD8CalBTextBox };
+        public System.Windows.Forms.Panel[] PDStatusLights => new System.Windows.Forms.Panel[] {
+            PD1StatusLight, PD2StatusLight, PD3StatusLight, PD4StatusLight,
+            PD5StatusLight, PD6StatusLight, PD7StatusLight, PD8StatusLight };
+
+        private void MakePDStatusLightsRound()
         {
-            bool displayAsPower = PDConvertToMwCheckBox.Checked;
-
-            labelPDValue.Text = displayAsPower
-                ? "Power (mW)"
-                : "Voltage (V)";
-
-            controller.UpdatePDVMonitorUI();
+            foreach (var light in PDStatusLights.Concat(new[] { PDAllStatusLight }))
+            {
+                var path = new System.Drawing.Drawing2D.GraphicsPath();
+                path.AddEllipse(0, 0, light.Width, light.Height);
+                light.Region = new Region(path);
+            }
         }
 
-        private void PDGainComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        // Empty box -> NaN (meaning "not set"); returns false only for text that isn't a number
+        private static bool TryParseOptionalDouble(string text, out double value)
         {
-            controller.UpdatePDVMonitorUI();
+            value = double.NaN;
+            if (string.IsNullOrWhiteSpace(text)) return true;
+            return double.TryParse(text.Trim(), System.Globalization.NumberStyles.Float,
+                                   System.Globalization.CultureInfo.InvariantCulture, out value);
+        }
+
+        private static readonly Color InvalidEntryColor = Color.MistyRose;
+
+        // True while the controller fills the boxes with the defaults at start-up, so the TextChanged
+        // handlers don't push half-filled values (e.g. a set but b still blank) back into the calibration.
+        public bool PDSuppressTextEvents = false;
+
+        // Shared by all eight "Cal. a" and "Cal. b" boxes
+        private void PDCalTextBoxes_Changed(int ch)
+        {
+            if (PDSuppressTextEvents) return;
+            bool aOk = TryParseOptionalDouble(PDCalATextBoxes[ch].Text, out double a);
+            bool bOk = TryParseOptionalDouble(PDCalBTextBoxes[ch].Text, out double b);
+            PDCalATextBoxes[ch].BackColor = aOk ? SystemColors.Window : InvalidEntryColor;
+            PDCalBTextBoxes[ch].BackColor = bOk ? SystemColors.Window : InvalidEntryColor;
+
+            if (controller == null || !aOk || !bOk) return;
+            if (double.IsNaN(b) && !double.IsNaN(a)) b = 0; // a given with b left blank means b = 0
+            controller.SetPDCalibration(ch, a, b);
+            controller.RefreshPDDisplayFromLatest();
+        }
+
+        private void PDCalTextBox_TextChanged(object sender, EventArgs e)
+        {
+            int ch = Array.IndexOf(PDCalATextBoxes, sender);
+            if (ch < 0) ch = Array.IndexOf(PDCalBTextBoxes, sender);
+            if (ch >= 0) PDCalTextBoxes_Changed(ch);
+        }
+
+        private void PDThresholdTextBox_TextChanged(object sender, EventArgs e)
+        {
+            if (PDSuppressTextEvents) return;
+            int ch = Array.IndexOf(PDThresholdTextBoxes, sender);
+            if (ch < 0) return;
+
+            bool ok = TryParseOptionalDouble(PDThresholdTextBoxes[ch].Text, out double threshold);
+            PDThresholdTextBoxes[ch].BackColor = ok ? SystemColors.Window : InvalidEntryColor;
+
+            if (controller == null || !ok) return;
+            controller.SetPDThreshold(ch, threshold);
+            controller.RefreshPDDisplayFromLatest();
+        }
+
+        private void PDLiveUpdateCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (controller == null) return;
+            if (PDLiveUpdateCheckBox.Checked)
+                controller.StartPDLiveMonitor();
+            else
+                controller.StopPDLiveMonitor();
         }
 
         private void PDLogDirectoryBrowseButton_Click(object sender, EventArgs e)
@@ -2232,6 +2321,11 @@ namespace UEDMHardwareControl
                     PDLogDirectoryTextBox.Text = dialog.SelectedPath;
                 }
             }
+        }
+
+        private void labelPDStatus_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

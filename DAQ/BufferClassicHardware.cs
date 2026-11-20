@@ -305,7 +305,7 @@ namespace DAQ.HAL
             tclConfig.Cavities[VISCavity].AddDefaultGain("v1laser", 0.2);
             tclConfig.Cavities[VISCavity].AddFSRCalibration("v1laser", 3.84);
             tclConfig.Cavities[VISCavity].AddSlaveLaser("probelaser", "VISp2_probelaser");
-            tclConfig.Cavities[VISCavity].AddDefaultGain("probelaser", -0.2);
+            tclConfig.Cavities[VISCavity].AddDefaultGain("probelaser", -0.4);
             tclConfig.Cavities[VISCavity].AddFSRCalibration("probelaser", 3.84);
             tclConfig.Cavities[VISCavity].AddSlaveLaser("v0laser", "VISp3_v0laser");
             tclConfig.Cavities[VISCavity].AddDefaultGain("v0laser", 0.2);
@@ -353,8 +353,8 @@ namespace DAQ.HAL
             wmlConfig.AddLaserConfiguration("STIRAPSeed", 271.4106, -200, -100); //("YourLaserName", SetFrequencyInTHz, PGain, IGain)
             wmlConfig.AddSlaveLaser("UltracoldProbeLaser", "probelaser", 3);//Laser name, analog channel, wavemeter channel
             wmlConfig.AddLaserConfiguration("UltracoldProbeLaser", 542.809124, 3000, 1600); //("YourLaserName", SetFrequencyInTHz, PGain, IGain)
-            wmlConfig.AddSlaveLaser("Q0 seed", "Q0", 2);
-            wmlConfig.AddLaserConfiguration("Q0 seed", 542.81152,-200, -100); //("YourLaserName", SetFrequencyInTHz, PGain, IGain)
+            wmlConfig.AddSlaveLaser("Q0seed", "Q0", 2);
+            wmlConfig.AddLaserConfiguration("Q0seed", 542.81152,-200, -100); //("YourLaserName", SetFrequencyInTHz, PGain, IGain)
             Info.Add("Default", wmlConfig);
 
 

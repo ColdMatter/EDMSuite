@@ -540,6 +540,7 @@ namespace UEDMHardwareControl
             }
 
             window.PDSamplePeriodTextBox.Text = "200"; // Default photodiode monitor input sample period 200 ms
+            InitialisePDMonitorUI(); // hardcoded PD gains + default laser power calibrations
         }
 
         #endregion
@@ -548,6 +549,7 @@ namespace UEDMHardwareControl
         {
             // Request that the PT monitoring thread stop
             StopPTMonitorPoll();
+            StopPDLiveMonitor();
             StopIMonitorPoll();
             StopFreqMonitorPoll();
 
@@ -9249,37 +9251,64 @@ namespace UEDMHardwareControl
         private double[] pdVoltages = new double[8];
         private double[] pdPowers = new double[8];
 
-        private System.Windows.Forms.ComboBox[] pdGainComboBoxes => new System.Windows.Forms.ComboBox[] {
-            window.PD1GainComboBox, window.PD2GainComboBox, window.PD3GainComboBox, window.PD4GainComboBox,
-            window.PD5GainComboBox, window.PD6GainComboBox, window.PD7GainComboBox, window.PD8GainComboBox
-        };
+        // Photodiode amplifier gains are fixed in hardware, so they are hardcoded here and only displayed on the UI.
+        // Change an entry here if a PD's gain switch is moved (and re-calibrate that PD).
+        public static readonly string[] PDGainSettings = {
+            "Gain 2", "Gain 2", "Gain 2", "Gain 2", "Gain 2", "Gain 2", "Gain 2", "Gain 2" };
 
-        // Input Stray Power = slopeA * Voltage + interceptA. This differs by the gain user chooses for the specific PD. The first one is the most sensitive gain (gain 1).
-        // This should apply to all PDs. To be determined by calibration.
-        private double[] slopeA = {0.0323, 0.322, 3.19, 1};
-        private double[] interceptA = {-0.00337, -0.0456, -0.335, 0};
-        // Monitoring Power = slopeB * Input Stray Power + interceptB. This varies case by case, depending on both the gain used and
-        // the conversion factor between the captured stray light and corresponding monitoring power. To be determined.
-        private double[] slopeB = {556, 147, 1, 1, 1, 1, 1, 1};
-        private double[] interceptB = {1.55, -4.84, 0, 0, 0, 0, 0, 0};
+        // Default calibration for each laser, linear fit: Monitored Power (mW) = a * Voltage (V) + b
+        // Index 0..7 = PD1..PD8. double.NaN = not yet calibrated (power shows N/A, status light stays grey).
+        // TODO: fill in the fitted values for each laser at the gain above.
+        // Calibrations entered 19/11/2026 (all at Gain 2):
+        //   PD1 v0 horizontal cooling: P = 911 V - 75.6
+        //   PD4 Raman splitter:        P = 379 V - 8.88
+        //   PD5 Raman recombiner:      P = 428 V - 2.06
+        //   PD6 Probe A:               P = 17.1 V + 2.55
+        //                                                       PD1      PD2         PD3         PD4     PD5     PD6    PD7         PD8
+        public static readonly double[] PDDefaultCalSlope     = { 911.0,   double.NaN, double.NaN, 379.0,  428.0,  17.1,  double.NaN, double.NaN }; // a (mW/V)
+        public static readonly double[] PDDefaultCalIntercept = { -75.6,   double.NaN, double.NaN, -8.88,  -2.06,  2.55,  double.NaN, double.NaN }; // b (mW)
 
-        private double ConvertVoltageToPower(double voltage, int gainIndex)
+        // Live values; start at the defaults and can be overridden from the UI (not saved between sessions).
+        private readonly double[] pdCalSlope = (double[])PDDefaultCalSlope.Clone();
+        private readonly double[] pdCalIntercept = (double[])PDDefaultCalIntercept.Clone();
+        // Threshold power (mW) for each laser's status light. NaN = no threshold set.
+        // Default thresholds, editable on the UI. v0 horizontal cooling (PD1) 100 mW (PD2 blank until calibrated); Raman splitter/recombiner (PD4, PD5) 200 mW; Probe A (PD6) 18 mW.
+        //                                                        PD1    PD2    PD3         PD4    PD5    PD6   PD7         PD8
+        public static readonly double[] PDDefaultThresholds = { 100.0, double.NaN, double.NaN, 200.0, 200.0, 18.0, double.NaN, double.NaN };
+        private readonly double[] pdThresholds = (double[])PDDefaultThresholds.Clone();
+
+        public void SetPDCalibration(int channel, double slope, double intercept)
         {
-            if (gainIndex < 0 ||
-                gainIndex >= slopeA.Length ||
-                gainIndex >= interceptA.Length ||
-                gainIndex >= slopeB.Length ||
-                gainIndex >= interceptB.Length)
-            {
-                gainIndex = 0;
-            }
+            if (channel < 0 || channel >= 8) return;
+            pdCalSlope[channel] = slope;
+            pdCalIntercept[channel] = intercept;
+        }
 
-            double slope = slopeB[gainIndex] * slopeA[gainIndex];
-            double intercept =
-                slopeB[gainIndex] * interceptA[gainIndex] +
-                interceptB[gainIndex];
+        public void SetPDThreshold(int channel, double thresholdMw)
+        {
+            if (channel < 0 || channel >= 8) return;
+            pdThresholds[channel] = thresholdMw;
+        }
 
+        private static double ConvertVoltageToPower(double voltage, double slope, double intercept)
+        {
+            if (double.IsNaN(voltage) || double.IsNaN(slope) || double.IsNaN(intercept)) return double.NaN;
             return slope * voltage + intercept;
+        }
+
+        // Fill the gain labels and calibration boxes with the hardcoded values. Called once when the window loads.
+        public void InitialisePDMonitorUI()
+        {
+            window.PDSuppressTextEvents = true; // don't let filling a before b overwrite the intercepts
+            for (int i = 0; i < 8; i++)
+            {
+                window.PDGainLabels[i].Text = PDGainSettings[i];
+                window.PDCalATextBoxes[i].Text = double.IsNaN(pdCalSlope[i]) ? "" : pdCalSlope[i].ToString("G6", CultureInfo.InvariantCulture);
+                window.PDCalBTextBoxes[i].Text = double.IsNaN(pdCalIntercept[i]) ? "" : pdCalIntercept[i].ToString("G6", CultureInfo.InvariantCulture);
+                window.PDThresholdTextBoxes[i].Text = double.IsNaN(pdThresholds[i]) ? "" : pdThresholds[i].ToString("G6", CultureInfo.InvariantCulture);
+            }
+            window.PDSuppressTextEvents = false;
+            RefreshPDDisplayFromLatest();
         }
 
 
@@ -9313,8 +9342,11 @@ namespace UEDMHardwareControl
         private readonly object pdSnapshotLock = new object();
         private PDSnapshot latestSnapshot;
 
-        public PDSnapshot AcquirePDSnapshot(int[] snapshotGainIndexes = null)
+        public PDSnapshot AcquirePDSnapshot(double[] slopes = null, double[] intercepts = null)
         {
+            slopes = slopes ?? pdCalSlope;
+            intercepts = intercepts ?? pdCalIntercept;
+
             lock (pdSnapshotLock)
             {
                 double[] v = ReadPDArray(); // single DAQ entry point
@@ -9325,20 +9357,7 @@ namespace UEDMHardwareControl
                 for (int i = 0; i < 8; i++)
                 {
                     voltages[i] = v[i];
-
-                    if (!double.IsNaN(v[i]))
-                    {
-                        int gainIdx =
-                            snapshotGainIndexes != null
-                                ? snapshotGainIndexes[i]
-                                : pdGainComboBoxes[i].SelectedIndex;
-
-                        powers[i] = ConvertVoltageToPower(v[i], gainIdx);
-                    }
-                    else
-                    {
-                        powers[i] = double.NaN;
-                    }
+                    powers[i] = ConvertVoltageToPower(v[i], slopes[i], intercepts[i]);
                 }
 
                 latestSnapshot = new PDSnapshot
@@ -9360,9 +9379,9 @@ namespace UEDMHardwareControl
             }
         }
 
-        public void PollPDMonitor(int[] snapshotGainIndexes = null)
+        public void PollPDMonitor()
         {
-            AcquirePDSnapshot(snapshotGainIndexes);
+            AcquirePDSnapshot();
         }
 
         public double[] ReadPDArray()
@@ -9403,34 +9422,92 @@ namespace UEDMHardwareControl
         //    }
         //}
 
+        // Read the PDs and refresh the whole table (voltages, powers, status lights)
         public void UpdatePDVMonitorUI()
         {
             var snapshot = AcquirePDSnapshot();
+            ShowPDValues(snapshot.Voltages);
+        }
 
-            System.Windows.Forms.TextBox[] pdTextBoxes = {
-                window.PD1MonitorTextBox,
-                window.PD2MonitorTextBox,
-                window.PD3MonitorTextBox,
-                window.PD4MonitorTextBox,
-                window.PD5MonitorTextBox,
-                window.PD6MonitorTextBox,
-                window.PD7MonitorTextBox,
-                window.PD8MonitorTextBox
-            };
+        // Re-display the last reading with the current calibration/thresholds, without touching the DAQ.
+        // Used when the user edits a calibration or threshold box.
+        public void RefreshPDDisplayFromLatest()
+        {
+            var snapshot = GetLatestPDSnapshot();
+            ShowPDValues(snapshot.Voltages); // null before the first read -> shows blanks / grey lights
+        }
 
-            bool displayAsPower = window.PDConvertToMwCheckBox.Checked;
+        private void ShowPDValues(double[] voltages)
+        {
+            System.Drawing.Color ok = System.Drawing.Color.LimeGreen, bad = System.Drawing.Color.Red, unknown = System.Drawing.Color.Gray;
+            bool anyBelow = false, anyAbove = false;
 
             for (int i = 0; i < 8; i++)
             {
-                double val = displayAsPower
-                    ? snapshot.Powers[i]
-                    : snapshot.Voltages[i];
+                double v = voltages == null ? double.NaN : voltages[i];
+                double p = ConvertVoltageToPower(v, pdCalSlope[i], pdCalIntercept[i]);
+                double threshold = pdThresholds[i];
 
-                window.SetTextBox(
-                    pdTextBoxes[i],
-                    double.IsNaN(val) ? "N/A" : val.ToString("N4")
-                );
+                window.SetTextBox(window.PDVoltageTextBoxes[i], voltages == null ? "" : (double.IsNaN(v) ? "N/A" : v.ToString("N4")));
+                window.SetTextBox(window.PDPowerTextBoxes[i], voltages == null ? "" : (double.IsNaN(p) ? "N/A" : p.ToString("N3")));
+
+                System.Drawing.Color light;
+                if (double.IsNaN(p) || double.IsNaN(threshold))
+                    light = unknown;            // no reading, no calibration, or no threshold set
+                else if (p >= threshold)
+                {
+                    light = ok;
+                    anyAbove = true;
+                }
+                else
+                {
+                    light = bad;
+                    anyBelow = true;
+                }
+                window.SetControlBackColor(window.PDStatusLights[i], light);
             }
+
+            // Overall light: red if any monitored laser is below threshold, green if all monitored ones are fine
+            window.SetControlBackColor(window.PDAllStatusLight, anyBelow ? bad : (anyAbove ? ok : unknown));
+        }
+
+        // ---- Live update: re-reads the PDs every Poll Period so the status lights track the lasers ----
+        private Thread pdLiveThread;
+        private volatile bool pdLiveRunning;
+
+        public void StartPDLiveMonitor()
+        {
+            if (pdLiveRunning) return;
+            pdLiveRunning = true;
+            pdLiveThread = new Thread(() =>
+            {
+                while (pdLiveRunning)
+                {
+                    int periodMs;
+                    string periodText;
+                    try { periodText = (string)window.Invoke(new Func<string>(() => window.PDSamplePeriodTextBox.Text)); }
+                    catch { break; } // window has gone
+                    if (!int.TryParse(periodText, out periodMs) || periodMs <= 0)
+                        periodMs = 200;
+                    try
+                    {
+                        UpdatePDVMonitorUI();
+                    }
+                    catch (Exception e)
+                    {
+                        // Window closing or a transient DAQ problem; don't kill the app
+                        Console.WriteLine("PD live update error: " + e.Message);
+                    }
+                    Thread.Sleep(periodMs);
+                }
+            });
+            pdLiveThread.IsBackground = true;
+            pdLiveThread.Start();
+        }
+
+        public void StopPDLiveMonitor()
+        {
+            pdLiveRunning = false;
         }
 
         private void PDLogWorker()
@@ -9452,14 +9529,15 @@ namespace UEDMHardwareControl
     };
 
             List<int> selectedChannels = new List<int>();
-            int[] savedGainIndexesSnapshot = new int[8];
+            // Freeze the calibration for the whole log so every row in the file uses the same equation
+            double[] logSlopes = (double[])pdCalSlope.Clone();
+            double[] logIntercepts = (double[])pdCalIntercept.Clone();
+            double[] logThresholds = (double[])pdThresholds.Clone();
 
             for (int i = 0; i < 8; i++)
             {
                 if (pdLogCheckBoxes[i].Checked)
                     selectedChannels.Add(i);
-
-                savedGainIndexesSnapshot[i] = pdGainComboBoxes[i].SelectedIndex;
             }
 
             if (selectedChannels.Count == 0)
@@ -9506,13 +9584,18 @@ namespace UEDMHardwareControl
                 {
                     writer.WriteLine($"Log Started,{DateTime.Now}");
 
-                    StringBuilder gainConfigLine = new StringBuilder("Channel Gain Indexes");
+                    StringBuilder gainConfigLine = new StringBuilder("Channel Gains");
+                    StringBuilder calLine = new StringBuilder("Calibration P(mW) = a*V + b");
+                    StringBuilder thresholdLine = new StringBuilder("Threshold (mW)");
                     foreach (int ch in selectedChannels)
                     {
-                        int currentGainIdx = savedGainIndexesSnapshot[ch];
-                        gainConfigLine.Append($",PD{ch + 1}_GainIndex:{currentGainIdx + 1}");
+                        gainConfigLine.Append($",PD{ch + 1}:{PDGainSettings[ch]}");
+                        calLine.Append($",PD{ch + 1}: a={logSlopes[ch].ToString(CultureInfo.InvariantCulture)} b={logIntercepts[ch].ToString(CultureInfo.InvariantCulture)}");
+                        thresholdLine.Append($",PD{ch + 1}:{(double.IsNaN(logThresholds[ch]) ? "none" : logThresholds[ch].ToString(CultureInfo.InvariantCulture))}");
                     }
                     writer.WriteLine(gainConfigLine.ToString());
+                    writer.WriteLine(calLine.ToString());
+                    writer.WriteLine(thresholdLine.ToString());
                     writer.WriteLine();
 
                     StringBuilder header = new StringBuilder();
@@ -9520,7 +9603,7 @@ namespace UEDMHardwareControl
                     foreach (int ch in selectedChannels)
                     {
                         header.Append($",PD{ch + 1} Voltage (V)");
-                        header.Append($",PD{ch + 1} Input Power (mW)");
+                        header.Append($",PD{ch + 1} Monitored Power (mW)");
                     }
                     writer.WriteLine(header.ToString());
 
@@ -9530,7 +9613,7 @@ namespace UEDMHardwareControl
                     while (!pdLogFlag && timer.ElapsedMilliseconds < totalDurationSeconds * 1000)
                     {
                         // Pass safe array tracking metrics to bypass WinForm execution block locks
-                        var snapshot = AcquirePDSnapshot(savedGainIndexesSnapshot);
+                        var snapshot = AcquirePDSnapshot(logSlopes, logIntercepts);
 
                         StringBuilder row = new StringBuilder();
                         row.Append(timer.ElapsedMilliseconds);
