@@ -54,7 +54,7 @@ public class Patterns : MOTMasterScript
         Parameters["tDropDuration"] = 1; //done
         Parameters["tImageExpo"] = 2000;
 
-        Parameters["tBlueMOTDuration"] = 2000;
+        Parameters["tBlueMOTDuration"] = 24000;
         Parameters["tBlueMOTField"] = 0.48; //0.48 Rb = 30G/cm
 
         Parameters["tCoilOffDur"] = 1; //done
@@ -62,6 +62,7 @@ public class Patterns : MOTMasterScript
         Parameters["tMolassesShimXccValue"] = 0.0; // 8.8 // 10.0
         Parameters["tMolassesShimYccValue"] = 0.0; // 3.8 // 3.29
         Parameters["tMolassesShimZccValue"] = 0.0; // 0.3 // 0.52
+        Parameters["TransportEnable"] = 1;
     }
 
     public override Dictionary<string, List<List<double>>> GetDDSPattern()
@@ -202,12 +203,12 @@ public class Patterns : MOTMasterScript
         p.Pulse(patternStartBeforeQ, 2000, 10, "tofTrigger");
 
         // CAMERA //
-        p.Pulse(0, BlueMOTEnd - (int)Parameters["ThorCamExposure"], (int)Parameters["ThorCamExposure"], "cameraTrigger"); //camera trigger for first frame
+        p.Pulse(0, BlueMOTEnd - 1000, 1000, "cameraTrigger"); //camera trigger for first frame
         //p.Pulse(BlueMOTEnd2 - (int)Parameters["BlueMOTDuration"], 0, (int)Parameters["BlueMOTDuration"]/2, "cameraTrigger"); //Tweezer camera trig
         //p.Pulse(background, 0, (int)Parameters["BlueMOTDuration"]/2, "cameraTrigger"); //Tweezer camera trig
 
-        p.Pulse(0, tBlueMOTRampEndImage, (int)Parameters["OrcaExposure"], "tMOTCamTrig");
-
+        p.Pulse(0, tBlueMOTEnd - 2000, 2000, "tMOTCamTrig");
+        //p.Pulse(0, tBlueMOTRampEndImage, (int)Parameters["tBlueMOTDuration"], "tHamCamTrig");
         // preset load
         MOTMasterScriptSnippet lm = new LoadMoleculeMOTNoSlowingEdge(p, Parameters);
         p.Pulse(patternStartBeforeQ, 0, (int)Parameters["QSwitchPulseDuration"], "DDS_Analog_Trg");  // DDS trigger
@@ -237,16 +238,20 @@ public class Patterns : MOTMasterScript
         p.DownPulse(OPStart, 0, (int)Parameters["OpticalPumpingDuration"], "QCLShutter");
 
         // Transport
-        p.AddEdge("transportTrack", 0, true);
-        p.AddEdge("transportTrack", Move1Start, false);
-        p.AddEdge("transportTrack", Move2Start, true);
+        if ((int)Parameters["TransportEnable"] == 1)
+        {
+            p.AddEdge("transportTrack", 0, true);
+            p.AddEdge("transportTrack", Move1Start, false);
+            p.AddEdge("transportTrack", Move2Start, true);
+
+        }
 
         // YaG Compensating Shots
         //p.Pulse(patternStartBeforeQ, (int)Parameters["PatternLength"] - (int)Parameters["YagPreFire1"] - (int)Parameters["FlashToQ"], (int)Parameters["QSwitchPulseDuration"], "flashLamp");
         //p.Pulse(patternStartBeforeQ, (int)Parameters["PatternLength"] - (int)Parameters["YagPreFire1"], (int)Parameters["QSwitchPulseDuration"], "qSwitch");
 
-        p.Pulse(patternStartBeforeQ, (int)Parameters["PatternLength"] - (int)Parameters["YagPreFire"] - (int)Parameters["FlashToQ"], (int)Parameters["QSwitchPulseDuration"], "flashLamp");
-        p.Pulse(patternStartBeforeQ, (int)Parameters["PatternLength"] - (int)Parameters["YagPreFire"], (int)Parameters["QSwitchPulseDuration"], "qSwitch");
+        // p.Pulse(patternStartBeforeQ, (int)Parameters["PatternLength"] - (int)Parameters["YagPreFire"] - (int)Parameters["FlashToQ"], (int)Parameters["QSwitchPulseDuration"], "flashLamp");
+        // p.Pulse(patternStartBeforeQ, (int)Parameters["PatternLength"] - (int)Parameters["YagPreFire"], (int)Parameters["QSwitchPulseDuration"], "qSwitch");
 
         return p;
     }

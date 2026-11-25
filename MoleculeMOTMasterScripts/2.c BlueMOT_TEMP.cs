@@ -17,7 +17,7 @@ public class Patterns : MOTMasterScript
         Parameters = new Dictionary<string, object>();
         LoadGlobalParameters();
         Parameters["PatternLength"] = 50000;
-        Parameters["BMTriggerDuration"] = 1000;
+        Parameters["BlueMOTImageDur"] = 100;
 
         // Camera
 
@@ -109,7 +109,7 @@ public class Patterns : MOTMasterScript
         //Parameters["zShimLoadCurrent"] = 0.22;
 
         Parameters["BlueMOTDuration"] = 1000;
-        Parameters["FreeExpTime"] = 1;
+        Parameters["FreeExpTime"] = 1000;
 
         // END OF PATTERN //
 
@@ -117,7 +117,7 @@ public class Patterns : MOTMasterScript
 
     public override Dictionary<string, List<List<double>>> GetDDSPattern()
     {
-        DDSPatternBuilder p = new DDSPatternBuilder();
+        Dictionary<string, List<List<double>>> p = new Dictionary<string, List<List<double>>>();
 
         int CompressRampDownStartTime = (int)Parameters["CompressRampDownStartTime"];
         int CompressRampDownEndTime = CompressRampDownStartTime + (int)Parameters["CompressRampDownDuration"];
@@ -125,56 +125,87 @@ public class Patterns : MOTMasterScript
         int BlueMOTRampStart = lambdaCoolingStart + (int)Parameters["LambdaCoolingDuration"];
         int BlueMOTRampEnd = BlueMOTRampStart + (int)Parameters["BlueMOTRampDuration"];
         int BlueMOTEnd = BlueMOTRampEnd + (int)Parameters["BlueMOTDuration"];
-        int imageTime = BlueMOTEnd + (int)Parameters["FreeExpTime"];
+        int BlueMOTImageStart = BlueMOTEnd + (int)Parameters["FreeExpTime"];
+        int BlueMOTImageEnd = BlueMOTImageStart + (int)Parameters["BlueMOTImageDur"];
 
-        double[] motFrequencies = {
-            (double)Parameters["MOTFreqDDS1"], (double)Parameters["MOTFreqDDS2"],
-            (double)Parameters["MOTFreqDDS3"], (double)Parameters["MOTFreqDDS4"] };
-        double[] motAmplitudes = {
-            (double)Parameters["MOTAmpDDS1"], (double)Parameters["MOTAmpDDS2"],
-            (double)Parameters["MOTAmpDDS3"], (double)Parameters["MOTAmpDDS4"] };
-        double[] rampAmplitudeSlopes = {
-            (double)Parameters["RampAmplitudeDDS1"], (double)Parameters["RampAmplitudeDDS2"],
-            (double)Parameters["RampAmplitudeDDS3"], (double)Parameters["RampAmplitudeDDS4"] };
-        double[] rampEndAmplitudes = {
-            (double)Parameters["RampEndAmpDDS1"], (double)Parameters["RampEndAmpDDS2"],
-            (double)Parameters["RampEndAmpDDS3"], (double)Parameters["RampEndAmpDDS4"] };
-        double[] lambdaFrequencies = {
-            (double)Parameters["LambdaF1minus"], (double)Parameters["MOTFreqDDS2"],
-            (double)Parameters["MOTFreqDDS3"], (double)Parameters["LambdaF1plus"] };
-        double[] lambdaAmplitudes = {
-            (double)Parameters["Lambda1Amp"], (double)Parameters["LightoffDDS2"],
-            (double)Parameters["LightoffDDS3"], (double)Parameters["Lambda2Amp"] };
-        double[] blueMOTFrequencies = {
-            (double)Parameters["FreqCVB1"], (double)Parameters["FreqCVB2"],
-            (double)Parameters["FreqCVB3"], (double)Parameters["FreqCVB4"] };
-        double[] blueMOTAmplitudes = {
-            (double)Parameters["BMOTAmpDDS1"], (double)Parameters["BMOTAmpDDS2"],
-            (double)Parameters["BMOTAmpDDS3"], (double)Parameters["BMOTAmpDDS4"] };
-        double[] resonanceFrequencies = {
-            (double)Parameters["ResonanceDDS1"], (double)Parameters["ResonanceDDS2"],
-            (double)Parameters["ResonanceDDS3"], (double)Parameters["ResonanceDDS4"] };
-        // As before: LightoffDDS2 on all four channels, not LightoffDDS1 to 4.
-        double[] lightOffAmplitudes = {
-            (double)Parameters["LightoffDDS2"], (double)Parameters["LightoffDDS2"],
-            (double)Parameters["LightoffDDS2"], (double)Parameters["LightoffDDS2"] };
+        addDDSPattern(p, "MOT", 0,
+            (double)Parameters["MOTFreqDDS1"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["MOTFreqDDS3"], (double)Parameters["MOTFreqDDS4"],
+            (double)Parameters["MOTAmpDDS1"], (double)Parameters["MOTAmpDDS2"], (double)Parameters["MOTAmpDDS3"], (double)Parameters["MOTAmpDDS4"]);
 
-        p.AddEvent("MOT", 0, motFrequencies, motAmplitudes);
+        addDDSPattern(p, "RampStart", CompressRampDownStartTime,
+            (double)Parameters["MOTFreqDDS1"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["MOTFreqDDS3"], (double)Parameters["MOTFreqDDS4"],
+            (double)Parameters["MOTAmpDDS1"], (double)Parameters["MOTAmpDDS2"], (double)Parameters["MOTAmpDDS3"], (double)Parameters["MOTAmpDDS4"],
+            0.0, 0.0, 0.0, 0.0, (double)Parameters["RampAmplitudeDDS1"], (double)Parameters["RampAmplitudeDDS2"], (double)Parameters["RampAmplitudeDDS3"], (double)Parameters["RampAmplitudeDDS4"]);
 
-        p.AddEvent("RampStart", CompressRampDownStartTime, motFrequencies, motAmplitudes,
-            null, rampAmplitudeSlopes);
+        addDDSPattern(p, "RampEnd", CompressRampDownEndTime,
+            (double)Parameters["MOTFreqDDS1"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["MOTFreqDDS3"], (double)Parameters["MOTFreqDDS4"],
+            (double)Parameters["RampEndAmpDDS1"], (double)Parameters["RampEndAmpDDS2"], (double)Parameters["RampEndAmpDDS3"], (double)Parameters["RampEndAmpDDS4"]);
 
-        p.AddEvent("RampEnd", CompressRampDownEndTime, motFrequencies, rampEndAmplitudes);
+        addDDSPattern(p, "LambdaCooling1", lambdaCoolingStart,
+            (double)Parameters["LambdaF1minus"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["MOTFreqDDS3"], (double)Parameters["LambdaF1plus"],
+            (double)Parameters["Lambda1Amp"], (double)Parameters["LightoffDDS2"], (double)Parameters["LightoffDDS3"], (double)Parameters["Lambda2Amp"]);
 
-        p.AddEvent("LambdaCooling", lambdaCoolingStart, lambdaFrequencies, lambdaAmplitudes);
+        addDDSPattern(p, "BlueMOTRampStart", BlueMOTRampStart,
+            (double)Parameters["FreqCVB1"], (double)Parameters["FreqCVB2"], (double)Parameters["FreqCVB3"], (double)Parameters["FreqCVB4"],
+            (double)Parameters["BMOTAmpDDS1"], (double)Parameters["BMOTAmpDDS2"], (double)Parameters["BMOTAmpDDS3"], (double)Parameters["BMOTAmpDDS4"]);
 
-        p.AddEvent("BlueMOTRampStart", BlueMOTRampStart, blueMOTFrequencies, blueMOTAmplitudes);
+        addDDSPattern(p, "FreeExpTime", BlueMOTEnd,
+            (double)Parameters["MOTFreqDDS1"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["MOTFreqDDS3"], (double)Parameters["MOTFreqDDS4"],
+            (double)Parameters["LightoffDDS1"], (double)Parameters["LightoffDDS2"], (double)Parameters["LightoffDDS3"], (double)Parameters["LightoffDDS4"]);
 
-        p.AddEvent("FreeExpTime", BlueMOTEnd, resonanceFrequencies, lightOffAmplitudes);
+        addDDSPattern(p, "ImageOn", BlueMOTImageStart,
+            (double)Parameters["ResonanceDDS1"], (double)Parameters["ResonanceDDS2"], (double)Parameters["ResonanceDDS3"], (double)Parameters["ResonanceDDS4"],
+            (double)Parameters["MOTAmpDDS1"], (double)Parameters["MOTAmpDDS2"], (double)Parameters["MOTAmpDDS3"], (double)Parameters["MOTAmpDDS4"]);
+/*
+        addDDSPattern(p, "ImageOff", BlueMOTImageEnd,
+            (double)Parameters["ResonanceDDS1"], (double)Parameters["ResonanceDDS2"], (double)Parameters["ResonanceDDS3"], (double)Parameters["ResonanceDDS4"],
+            (double)Parameters["LightoffDDS1"], (double)Parameters["LightoffDDS1"], (double)Parameters["LightoffDDS1"], (double)Parameters["LightoffDDS1"]);
+*/
 
-        p.AddEvent("image", imageTime + 500, motFrequencies, motAmplitudes);
+        return p;
+    }
 
-        return p.Pattern;
+
+    public void addDDSPattern(Dictionary<string, List<List<double>>> p, String name, int time, double freq1, double freq2, double freq3, double freq4, double amp1, double amp2, double amp3, double amp4,
+    double freqSlope1 = 0.0, double freqSlope2 = 0.0, double freqSlope3 = 0.0, double freqSlope4 = 0.0, double ampSlope1 = 0.0, double ampSlope2 = 0.0, double ampSlope3 = 0.0, double ampSlope4 = 0.0)
+    {
+
+        // List<double> timeDelay, List<double> freq, List<double> amp, List<double> freq_slpoe, List<double> amp_slpoe
+        List<double> timePar = new List<double>();
+        timePar.Add(time / 100.0);
+        List<double> freq = new List<double>();
+        freq.Add(freq1);
+        freq.Add(freq2);
+        freq.Add(freq3);
+        freq.Add(freq4);
+        List<double> amp = new List<double>();
+        amp.Add(amp1);
+        amp.Add(amp2);
+        amp.Add(amp3);
+        amp.Add(amp4);
+        // Scale ramp slope by 100 to convert 10 us clock periods to ms
+        List<double> freqSlope = new List<double>();
+        freqSlope.Add(freqSlope1 * 100.0);
+        freqSlope.Add(freqSlope2 * 100.0);
+        freqSlope.Add(freqSlope3 * 100.0);
+        freqSlope.Add(freqSlope4 * 100.0);
+        List<double> ampSlope = new List<double>();
+        ampSlope.Add(ampSlope1 * 100.0);
+        ampSlope.Add(ampSlope2 * 100.0);
+        ampSlope.Add(ampSlope3 * 100.0);
+        ampSlope.Add(ampSlope4 * 100.0);
+
+        var patternEvent = new List<List<double>>
+        {
+            timePar,
+            freq,
+            amp,
+            freqSlope,
+            ampSlope
+        };
+
+        p.Add(name, patternEvent);
+
     }
 
     public override PatternBuilder32 GetDigitalPattern()
@@ -187,8 +218,8 @@ public class Patterns : MOTMasterScript
         int BlueMOTRampStart = lambdaCoolingStart + (int)Parameters["LambdaCoolingDuration"];
         int BlueMOTRampEnd = BlueMOTRampStart + (int)Parameters["BlueMOTRampDuration"];
         int BlueMOTEnd = BlueMOTRampEnd + (int)Parameters["BlueMOTDuration"];
-        // int imageTime = BlueMOTEnd - (int)Parameters["Frame0TriggerDuration"];
-        int imageTime = BlueMOTEnd + (int)Parameters["FreeExpTime"];
+        int BlueMOTImageStart = BlueMOTEnd + (int)Parameters["FreeExpTime"];
+        int BlueMOTImageEnd = BlueMOTImageStart + (int)Parameters["BlueMOTImageDur"];
 
         //  SETUP //
 
@@ -197,11 +228,7 @@ public class Patterns : MOTMasterScript
 
         // CAMERA //
 
-        //p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
-        p.Pulse(0, imageTime- (int)Parameters["BMTriggerDuration"], (int)Parameters["BMTriggerDuration"], "cameraTrigger");  //camera trigger imaging blue mot
-        //p.Pulse(0, BlueMOTRampEnd, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");  //camera trigger imaging blue mot
-        //p.Pulse(0, imageTime+500, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");  //camera trigger imaging blue mot
-        //p.Pulse(patternStartBeforeQ, (int)Parameters["MOTCoilsSwitchOff"] + 1000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
+        p.Pulse(0, BlueMOTImageStart, (int)Parameters["BlueMOTImageDur"], "cameraTrigger");  //camera trigger imaging blue mot
 
         // SLOWING //
 
@@ -218,10 +245,6 @@ public class Patterns : MOTMasterScript
         // BX Shutter
         p.Pulse(patternStartBeforeQ, (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"] + 200, (int)Parameters["MOTCoilsSwitchOff"] - ((int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"] + 200), "bXSlowingShutter");
 
-        //p.Pulse(patternStartBeforeQ, 0, 100000, "MOT1Shutter");
-        //p.Pulse(patternStartBeforeQ, 0, 100000, "MOT2Shutter");
-        //p.Pulse(patternStartBeforeQ, 0, 100000, "MOT3Shutter");
-
         return p;
     }
 
@@ -235,7 +258,8 @@ public class Patterns : MOTMasterScript
         int BlueMOTRampStart = lambdaCoolingStart + (int)Parameters["LambdaCoolingDuration"];
         int BlueMOTRampEnd = BlueMOTRampStart + (int)Parameters["BlueMOTRampDuration"];
         int BlueMOTEnd = BlueMOTRampEnd + (int)Parameters["BlueMOTDuration"];
-        int imageTime = BlueMOTEnd + (int)Parameters["FreeExpTime"];
+        int BlueMOTImageStart = BlueMOTEnd + (int)Parameters["FreeExpTime"];
+        int BlueMOTImageEnd = BlueMOTImageStart + (int)Parameters["BlueMOTImageDur"];
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOTNoSlowingEdge(p, Parameters);
 
@@ -300,10 +324,7 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("MOTCoilsCurrent", lambdaCoolingStart, (double)Parameters["MOTCoilsOffValue"]); // switch off for molasses
         p.AddLinearRamp("MOTCoilsCurrent", BlueMOTRampStart, (int)Parameters["BlueMOTRampDuration"], (double)Parameters["BlueMOTField"]);
         p.AddAnalogValue("MOTCoilsCurrent", BlueMOTEnd, (double)Parameters["MOTCoilsOffValue"]);
-        p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTCoilsSwitchOff"], 0.0);
-        p.AddAnalogValue("MOTCoilsCurrent", imageTime - 100, 1.0);
-        p.AddAnalogValue("MOTCoilsCurrent", imageTime + (int)Parameters["Frame0TriggerDuration"], 0.0);
-
+    
         //p.AddAnalogValue("lightSwitch", 1000, 2.0);
 
         return p;

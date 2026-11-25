@@ -4,7 +4,6 @@ C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\Newport.XPS.Comma
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\CmdLib8742.dll
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\DeviceIOLib.dll
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\MOTMaster.exe
-C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\NationalInstruments.DAQmx.dll
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\NationalInstruments.UI.Styles3D.dll
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\SharedCode.dll
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\Wolfram.NETLink.dll

@@ -27,10 +27,15 @@ namespace MOTMaster
 
         public void AppendToZip(String filePath)
         {
+            string[] bits = (filePath.Split('\\'));
+            AppendToZip(filePath, bits[bits.Length - 1]);
+        }
+
+        // entryName may include a folder, e.g. "HamCam/image.tif".
+        public void AppendToZip(String filePath, String entryName)
+        {
             lock (this)
             {
-                string[] bits = (filePath.Split('\\'));
-                string entryName = bits[bits.Length - 1];
                 string cleanedEntryName = ZipEntry.CleanName(entryName);
                 ZipEntry entry = new ZipEntry(cleanedEntryName);
                 FileInfo f = new FileInfo(filePath);

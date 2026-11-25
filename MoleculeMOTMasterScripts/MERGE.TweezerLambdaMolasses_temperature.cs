@@ -54,20 +54,20 @@ public class Patterns : MOTMasterScript
         Parameters["tDropDuration"] = 1; //done
 
         Parameters["tBlueMOTDuration"] = 1000;
-        Parameters["tBlueMOTField"] = 1.0; //0.48 Rb = 30G/cm
+        Parameters["tBlueMOTField"] = 0.48; //0.48 Rb = 30G/cm
 
         Parameters["tCoilOffDur"] = 1; //done
 
-        Parameters["tBlueMOTShimXccValue"] = 1.07; // 8.8 // 10.0
+        Parameters["tBlueMOTShimXccValue"] = 0.0; // 8.8 // 10.0
         Parameters["tBlueMOTShimYccValue"] = 0.0; // 3.8 // 3.29
-        Parameters["tBlueMOTShimZccValue"] = -0.47; // 0.3 // 0.52
+        Parameters["tBlueMOTShimZccValue"] = 0.0; // 0.3 // 0.52
 
         Parameters["tMolassesShimXccValue"] = 3.0; // 8.8 // 10.0
         Parameters["tMolassesShimYccValue"] = 3.8; // 3.8 // 3.29
         Parameters["tMolassesShimZccValue"] = 0.3; // 0.3 // 0.52
 
         Parameters["tLambdaCoolingDuration"] = 500;
-        Parameters["tFreeFallDuration"] = 400;
+        Parameters["tFreeFallDuration"] = 1;
         Parameters["tImageExpo"] = 100;
     }
 
@@ -231,6 +231,7 @@ public class Patterns : MOTMasterScript
 
         //p.Pulse(0, tBlueMOTRampEnd, (int)Parameters["OrcaExposure"], "tMOTCamTrig");
         p.Pulse(0, tTemperatureImage, (int)Parameters["tImageExpo"], "tMOTCamTrig");
+        p.Pulse(0, tTemperatureImage, (int)Parameters["tImageExpo"], "tHamCamTrig");
         // preset load
         MOTMasterScriptSnippet lm = new LoadMoleculeMOTNoSlowingEdge(p, Parameters);
         p.Pulse(patternStartBeforeQ, 0, (int)Parameters["QSwitchPulseDuration"], "DDS_Analog_Trg");  // DDS trigger

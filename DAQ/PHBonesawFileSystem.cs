@@ -12,6 +12,10 @@ namespace DAQ.Environment
             Paths.Add("daqDLLPath", "C:\\ControlPrograms\\EDMSuite\\DAQ\\bin\\CaF\\daq.dll");
             Paths.Add("MOTMasterExePath", "C:\\ControlPrograms\\EDMSuite\\MOTMaster\\bin\\CaF\\");
             Paths.Add("ExternalFilesPath", "C:\\Users\\cafmot\\Documents\\TempCameraImages");
+            // Other cameras' images, zipped with each run under their own folder (zip folder -> local folder).
+            // The HamCam on ph-beast writes here over the network, through the \\ph-bonesaw\Users share.
+            Paths.Add("ExternalFileFolders", new Dictionary<string, string> {
+                { "HamCam", "C:\\Users\\cafmot\\Documents\\TempHamCamImages" } });
             Paths.Add("HardwareClassPath", "C:\\ControlPrograms\\EDMSuite\\DAQ\\MoleculeMOTHardware.cs");
             Paths.Add("settingsPath", "C:\\ControlPrograms\\Settings\\ScanMaster\\");
             Paths.Add("scanMasterDataPath", "C:\\Users\\cafmot\\Box\\CaF MOT\\MOTData\\MOTScanMasterData\\");//where scan master will save data

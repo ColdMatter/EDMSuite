@@ -21,7 +21,7 @@ public class Patterns : MOTMasterScript
 
 
         Parameters["ThorCamExposure"] = 250;
-        Parameters["OrcaExposure"] = 2000;
+        Parameters["OrcaExposure"] = 4000;
 
         // Shim Coils
         Parameters["xShimLoadCurrent"] = -3.20;
@@ -46,6 +46,16 @@ public class Patterns : MOTMasterScript
         Parameters["LambdaCooling2Duration"] = 300;
         Parameters["MagTrapField"] = 1.6;
 
+        // Hyperbolic blue-MOT field ramp - CaF chamber blue MOT ONLY (the tweezer-chamber blue MOT keeps its
+        // linear ramp over BlueMOTRampDuration). B(t) = B0 / (1 - a*B0*t), i.e. 1/B falls linearly in time at
+        // rate a (t in 10 us clock ticks). Coils step to B0 = BlueMOTInitialField at the start of the ramp, then
+        // ramp hyperbolically until they reach BlueMOTField. Scan B0 and a; BlueMOTHyperbolicRampDuration is NOT
+        // an input - it is recalculated every shot as (1/B0 - 1/BlueMOTField)/a, and everything after the CaF
+        // blue-MOT ramp (blue MOT hold, lambda cooling 2, magtrap, transport, tweezer chamber) moves with it.
+        // B0 must be non-zero and the same sign as BlueMOTField; a must have that sign too (a > 0 for positive fields).
+        Parameters["BlueMOTInitialField"] = 0.1;
+        Parameters["BlueMOTHyperbolicRampSpeed"] = 0.002; // "a"; 0.0016 with B0 = 0.142, BlueMOTField = 1.42 gives ~40 ms
+
         Parameters["HandoverDur"] = 10000;  // can I scan this?
         Parameters["MoveDuration"] = 154000; //done
 
@@ -53,40 +63,39 @@ public class Patterns : MOTMasterScript
         Parameters["tMagtrapDuration"] = 1; // done
         Parameters["tDropDuration"] = 1; //done
 
-        Parameters["tBlueMOTDuration"] = 2000;
-        Parameters["tBlueMOTField"] = 1.0; //0.48 Rb = 30G/cm
+        Parameters["tBlueMOTDuration"] = 4000;
+        Parameters["tBlueMOTField"] = 0.7; //0.48 Rb = 30G/cm
 
         Parameters["tCoilOffDur"] = 1; //done
-
-        // Shim Coils Molasses
-        Parameters["tMolassesShimXccValue"] = 10.0000; // 8.8 // 10.0
-        Parameters["tMolassesShimYccValue"] = 2.80; // 3.8 // 3.29
-        Parameters["tMolassesShimZccValue"] = 0.408; // 0.3 // 0.52
-
+        /*
         Parameters["tBlueMOTShimXccValue"] = 1.07; // 8.8 // 10.0
         Parameters["tBlueMOTShimYccValue"] = 0.0; // 3.8 // 3.29
         Parameters["tBlueMOTShimZccValue"] = -0.47; // 0.3 // 0.52
+        */
+        Parameters["tBlueMOTShimXccValue"] = 10.0; // 8.8 // 10.0
+        Parameters["tBlueMOTShimYccValue"] = 0.0; // 3.8 // 3.29
+        Parameters["tBlueMOTShimZccValue"] = -1.13; // 0.3 // 0.52
 
-        Parameters["tMolassesShimXccValue"] = 10.0;//3.0; // 8.8 // 10.0
-        Parameters["tMolassesShimYccValue"] = 2.8; // 3.8 // 3.29
-        Parameters["tMolassesShimZccValue"] = 0.41; // 0.3 // 0.52
-
-        
+        // This makes the temperature 50uK
+        Parameters["tMolassesShimXccValue"] = 3.0; // 8.8 // 10.0
+        Parameters["tMolassesShimYccValue"] = 3.8; // 3.8 // 3.29
+        Parameters["tMolassesShimZccValue"] = 0.3; // 0.3 // 0.52
 
         Parameters["tLambdaLoadingDuration"] = 3000;
-        Parameters["tFreeFallDuration"] = 2500;
+        Parameters["tFreeFallDuration"] = 3500;
         Parameters["tImageExpo"] = 4000;
     }
 
     public override Dictionary<string, List<List<double>>> GetDDSPattern()
     {
+        SetBlueMOTHyperbolicRampDuration();
         Dictionary<string, List<List<double>>> p = new Dictionary<string, List<List<double>>>();
 
         int CompressRampDownStartTime = (int)Parameters["CompressRampDownStartTime"];
         int CompressRampDownEndTime = CompressRampDownStartTime + (int)Parameters["CompressRampDownDuration"];
         int lambdaCoolingStart = CompressRampDownEndTime + (int)Parameters["CompressRampDownHoldDuration"];
         int BlueMOTRampStart = lambdaCoolingStart + (int)Parameters["LambdaCoolingDuration"];
-        int BlueMOTRampEnd = BlueMOTRampStart + (int)Parameters["BlueMOTRampDuration"];
+        int BlueMOTRampEnd = BlueMOTRampStart + (int)Parameters["BlueMOTHyperbolicRampDuration"];
         int BlueMOTEnd = BlueMOTRampEnd + (int)Parameters["BlueMOTDuration"];
         int lambdaCooling2end = BlueMOTEnd + (int)Parameters["LambdaCooling2Duration"];
         int OPStart = lambdaCooling2end + 100;
@@ -198,13 +207,14 @@ public class Patterns : MOTMasterScript
 
     public override PatternBuilder32 GetDigitalPattern()
     {
+        SetBlueMOTHyperbolicRampDuration();
         PatternBuilder32 p = new PatternBuilder32();
         int patternStartBeforeQ = (int)Parameters["TCLBlockStart"];
         int CompressRampDownStartTime = (int)Parameters["CompressRampDownStartTime"] + patternStartBeforeQ;
         int CompressRampDownEndTime = CompressRampDownStartTime + (int)Parameters["CompressRampDownDuration"];
         int lambdaCoolingStart = CompressRampDownEndTime + (int)Parameters["CompressRampDownHoldDuration"];
         int BlueMOTRampStart = lambdaCoolingStart + (int)Parameters["LambdaCoolingDuration"];
-        int BlueMOTRampEnd = BlueMOTRampStart + (int)Parameters["BlueMOTRampDuration"];
+        int BlueMOTRampEnd = BlueMOTRampStart + (int)Parameters["BlueMOTHyperbolicRampDuration"];
         int BlueMOTEnd = BlueMOTRampEnd + (int)Parameters["BlueMOTDuration"];
         int lambdaCooling2end = BlueMOTEnd + (int)Parameters["LambdaCooling2Duration"];
         int OPStart = lambdaCooling2end + 100;
@@ -234,9 +244,12 @@ public class Patterns : MOTMasterScript
         // CAMERA //
         p.Pulse(0, BlueMOTEnd - (int)Parameters["ThorCamExposure"], (int)Parameters["ThorCamExposure"], "cameraTrigger"); //camera trigger for first frame thorcam
 
-        p.Pulse(0, tBlueMOTRampEnd, (int)Parameters["OrcaExposure"], "tMOTCamTrig"); // Orca
- 
-        p.Pulse(0, tTweezerImage, (int)Parameters["tImageExpo"], "tHamCamTrig"); // EMCCD
+        p.Pulse(0, tLambdaLoadingStart - (int)Parameters["OrcaExposure"], (int)Parameters["OrcaExposure"], "tMOTCamTrig");
+        p.Pulse(0, tLambdaLoadingStart - (int)Parameters["OrcaExposure"], (int)Parameters["OrcaExposure"], "tHamCamTrig");
+
+        //p.Pulse(0, tTweezerImage, (int)Parameters["OrcaExposure"], "tHamCamTrig");
+        
+        //p.Pulse(0, tTweezerImage, (int)Parameters["tImageExpo"], "tHamCamTrig"); // EMCCD
 
 
         // preset load
@@ -284,13 +297,14 @@ public class Patterns : MOTMasterScript
 
     public override AnalogPatternBuilder GetAnalogPattern()
     {
+        SetBlueMOTHyperbolicRampDuration();
         AnalogPatternBuilder p = new AnalogPatternBuilder((int)Parameters["PatternLength"]);
 
         int CompressRampDownStartTime = (int)Parameters["CompressRampDownStartTime"];
         int CompressRampDownEndTime = CompressRampDownStartTime + (int)Parameters["CompressRampDownDuration"];
         int lambdaCoolingStart = CompressRampDownEndTime + (int)Parameters["CompressRampDownHoldDuration"];
         int BlueMOTRampStart = lambdaCoolingStart + (int)Parameters["LambdaCoolingDuration"];
-        int BlueMOTRampEnd = BlueMOTRampStart + (int)Parameters["BlueMOTRampDuration"];
+        int BlueMOTRampEnd = BlueMOTRampStart + (int)Parameters["BlueMOTHyperbolicRampDuration"];
         int BlueMOTEnd = BlueMOTRampEnd + (int)Parameters["BlueMOTDuration"];
         int lambdaCooling2end = BlueMOTEnd + (int)Parameters["LambdaCooling2Duration"];
         int OPStart = lambdaCooling2end + 100;
@@ -369,7 +383,9 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("transferCoils", 0, -0.1);
         p.AddLinearRamp("MOTCoilsCurrent", CompressRampDownStartTime, (int)Parameters["CompressRampDownDuration"], (double)Parameters["MOTCoilsCompressionValue"]); // Ramp up -MOT Compress
         p.AddAnalogValue("MOTCoilsCurrent", lambdaCoolingStart, (double)Parameters["MOTCoilsOffValue"]);                                                            // OFF - lambda molasses
-        p.AddLinearRamp("MOTCoilsCurrent", BlueMOTRampStart, (int)Parameters["BlueMOTRampDuration"], (double)Parameters["BlueMOTField"]);                           // Ramp up - Blue MOT
+        AddHyperbolicRamp(p, "MOTCoilsCurrent", BlueMOTRampStart, (int)Parameters["BlueMOTHyperbolicRampDuration"],                                                 // Hyperbolic ramp up - Blue MOT (CaF chamber only)
+            Convert.ToDouble(Parameters["BlueMOTInitialField"]), Convert.ToDouble(Parameters["BlueMOTField"]),
+            Convert.ToDouble(Parameters["BlueMOTHyperbolicRampSpeed"]));
         p.AddAnalogValue("MOTCoilsCurrent", BlueMOTEnd, (double)Parameters["MOTCoilsOffValue"]);                                                                    // OFF - lambda molasses 2
         p.AddAnalogValue("MOTCoilsCurrent", Magtrap1Start, (double)Parameters["MagTrapField"]);                                                                      // ON  - magtrap
 
@@ -389,6 +405,47 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("tMOTcc", tLambdaLoadingStart, 0.0);
 
         return p;
+    }
+
+    // Sets BlueMOTHyperbolicRampDuration (CaF chamber blue MOT only) from the hyperbolic ramp parameters. Called at
+    // the top of every Get*Pattern, because MOTMaster applies scan values (EditDictionary) after the constructor and
+    // before GetSequence. The ramp reaches BlueMOTField at T = (1/B0 - 1/Bf)/a ticks; the duration is ceil(T) + 1 so
+    // the last hyperbolic sample is strictly before T (no overshoot) and the final tick is exactly Bf.
+    // BlueMOTRampDuration is left alone - the tweezer-chamber blue MOT still uses it.
+    private void SetBlueMOTHyperbolicRampDuration()
+    {
+        double b0 = Convert.ToDouble(Parameters["BlueMOTInitialField"]);
+        double bf = Convert.ToDouble(Parameters["BlueMOTField"]);
+        double a = Convert.ToDouble(Parameters["BlueMOTHyperbolicRampSpeed"]);
+
+        if (b0 == 0.0 || bf == 0.0 || Math.Sign(b0) != Math.Sign(bf))
+            throw new ArgumentException("Hyperbolic blue-MOT ramp needs BlueMOTInitialField and BlueMOTField non-zero and of the same sign (got "
+                + b0 + " -> " + bf + ").");
+        if (a == 0.0 || Math.Sign(a) != Math.Sign(bf))
+            throw new ArgumentException("BlueMOTHyperbolicRampSpeed (a = " + a + ") must be non-zero and the same sign as the fields.");
+
+        double t = (1.0 / b0 - 1.0 / bf) / a;
+        if (t < 0.0)
+            throw new ArgumentException("With a = " + a + " the ramp moves away from BlueMOTField (" + b0 + " -> " + bf
+                + ") and never reaches it. Check the sign of BlueMOTHyperbolicRampSpeed.");
+        if (t > (int)Parameters["PatternLength"])
+            throw new ArgumentException("Hyperbolic blue-MOT ramp would take " + Math.Round(t) + " ticks (B0 = " + b0 + ", a = " + a
+                + "), longer than PatternLength (" + Parameters["PatternLength"] + ").");
+
+        Parameters["BlueMOTHyperbolicRampDuration"] = (int)Math.Ceiling(t) + 1;
+    }
+
+    // Hyperbolic ramp B(t) = B0 / (1 - a*B0*t), sampled every clock tick from startTime, with the last
+    // sample (startTime + steps - 1) set exactly to finalValue. Inputs are checked in SetBlueMOTHyperbolicRampDuration:
+    // with B0, Bf and a all the same sign the ramp is monotonic and stops before the pole at t = 1/(a*B0).
+    private void AddHyperbolicRamp(AnalogPatternBuilder p, string channel, int startTime, int steps,
+        double initialValue, double finalValue, double a)
+    {
+        for (int i = 0; i < steps - 1; i++)
+        {
+            p.AddAnalogValue(channel, startTime + i, initialValue / (1.0 - a * initialValue * i));
+        }
+        p.AddAnalogValue(channel, startTime + steps - 1, finalValue);
     }
 
 }
