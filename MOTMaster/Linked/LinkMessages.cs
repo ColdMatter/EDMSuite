@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace MOTMaster
 {
@@ -42,6 +43,9 @@ namespace MOTMaster
         /// it, so a primary that died mid-run cannot leave it armed. 0 or less (and any older primary): no bound.
         /// </summary>
         public int ContactTimeoutMs;
+        /// <summary>True only from a primary running GoCachedRecording: return the secondary's SequenceRecord too.</summary>
+        [OptionalField]
+        public bool RecordSequence;
     }
 
     /// <summary>The secondary's answer to PrepareLinkedRun: what it compiled and what it will run.</summary>
@@ -58,6 +62,10 @@ namespace MOTMaster
         public int ProcessBits;
         /// <summary>The secondary's running MOTMaster.exe, so a refusal can say which build it is.</summary>
         public string ExePath;
+        /// <summary>JSON of the secondary's built sequence (see SequenceRecord), when the request asked for it; else null,
+        /// as from any older secondary.</summary>
+        [OptionalField]
+        public string SequenceRecord;
     }
 
     [Serializable]
