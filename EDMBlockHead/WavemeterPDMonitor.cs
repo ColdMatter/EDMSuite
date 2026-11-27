@@ -26,6 +26,10 @@ namespace EDMBlockHead.Acquire
     ///   pdChannels          e.g. "1,2,3"    photodiodes 1-8 of the hardware controller. Stored as PD{n}Voltage, in V.
     ///   wavemeterPDTimeoutMs e.g. 200       how long to wait for the readings once the PMT gate has been read (default 200)
     ///
+    /// If pdChannels is set, the voltage-to-power calibration of each recorded PD is also written
+    /// into the block config at the start of the block (PD{n}CalSlope, PD{n}CalIntercept, PD{n}Gain),
+    /// together with the name of the laser it monitors (PD{n}Laser, from the hardware controller UI).
+    ///
     /// Every point gets the same set of keys. A reading that fails or times out is stored as NaN
     /// (Block.TOFuliseSinglePointData needs every point to have every key).
     /// </summary>
@@ -85,6 +89,65 @@ namespace EDMBlockHead.Acquire
 
             foreach (int ch in wavemeterChannels) keys.Add(WavemeterKey(ch));
             foreach (int ch in pdChannels) keys.Add(PDKey(ch));
+
+            if (pdChannels.Length > 0) RecordPDCalibration(config);
+        }
+
+        /// <summary>
+        /// Stores the voltage-to-power calibration of each recorded photodiode in the block config,
+        /// as it is in the hardware controller when the block starts (including any edits made on its UI):
+        ///   PD{n}CalSlope (mW/V), PD{n}CalIntercept (mW), with Power (mW) = slope * PD{n}Voltage + intercept,
+        ///   PD{n}Gain (the amplifier gain the calibration was taken at) and PD{n}Laser (the monitored laser).
+        /// NaN = that PD is not calibrated. Never throws: if the hardware controller can't be reached,
+        /// the hardcoded default calibrations are stored and PDCalibrationSource says so.
+        /// </summary>
+        private void RecordPDCalibration(BlockConfig config)
+        {
+            double[] slopes = null;
+            double[] intercepts = null;
+            string[] laserNames = null;
+            string source = "UEDMHardwareControl (live)";
+            if (!Environs.Debug)
+            {
+                try
+                {
+                    slopes = hardwareController.GetPDCalibrationSlopes();
+                    intercepts = hardwareController.GetPDCalibrationIntercepts();
+                }
+                catch (Exception e)
+                {
+                    slopes = null;
+                    intercepts = null;
+                    Console.WriteLine("Wavemeter/PD monitor: could not get the PD calibrations from the hardware controller, storing the defaults. " + e.Message);
+                }
+                // separate try, so an older hardware controller without the names still gives the calibrations
+                try
+                {
+                    laserNames = hardwareController.GetPDLaserNames();
+                }
+                catch (Exception e)
+                {
+                    laserNames = null;
+                    Console.WriteLine("Wavemeter/PD monitor: could not get the PD laser names from the hardware controller, storing 'unknown'. " + e.Message);
+                }
+            }
+            if (slopes == null || intercepts == null)
+            {
+                slopes = UEDMHardwareControl.UEDMController.PDDefaultCalSlope;
+                intercepts = UEDMHardwareControl.UEDMController.PDDefaultCalIntercept;
+                source = "UEDMHardwareControl defaults";
+            }
+            string[] gains = UEDMHardwareControl.UEDMController.PDGainSettings;
+
+            config.Settings["PDCalibrationSource"] = source;
+            foreach (int ch in pdChannels)
+            {
+                int i = ch - 1;
+                config.Settings["PD" + ch + "CalSlope"] = i < slopes.Length ? slopes[i] : double.NaN;
+                config.Settings["PD" + ch + "CalIntercept"] = i < intercepts.Length ? intercepts[i] : double.NaN;
+                if (i < gains.Length) config.Settings["PD" + ch + "Gain"] = gains[i];
+                config.Settings["PD" + ch + "Laser"] = (laserNames != null && i < laserNames.Length && !string.IsNullOrEmpty(laserNames[i])) ? laserNames[i] : "unknown";
+            }
         }
 
         public static string WavemeterKey(int channel) { return "WS" + channel + "Frequency"; }

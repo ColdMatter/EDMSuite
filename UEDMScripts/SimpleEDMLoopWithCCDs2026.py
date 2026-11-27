@@ -16,6 +16,11 @@
 ## The CCD acquisition software must be running on both CCD PCs before starting:
 ## SyncCCDBlockName and AcquireAndWait both wait (with no timeout) until CCDA and CCDB
 ## report ready.
+##
+## CCD set-up: at the start the script does what used to be clicked through on the CCD tab
+## of the hardware controller (see initialiseCCDs): TCP connection to CCD A and CCD B, gain,
+## exposure time, frame count and trigger mode, then reads the settings back from both CCDs.
+## Edit the kCCD... constants below; set kInitialiseCCDs = False to keep the old manual set-up.
 
 ## Import a whole load of stuff
 from System.IO import *
@@ -153,6 +158,86 @@ def windowValue(value, minValue, maxValue):
 kTargetRotationPeriod = 100
 kReZeroLeakageMonitorsPeriod = 100
 
+## CCD set-up done by initialiseCCDs() at the start of the run (replaces the CCD tab clicks).
+kInitialiseCCDs = True    # False: don't touch the CCDs, use them as already set up on the CCD tab
+kCCDAGain = 1200          # EM gain, CCD A
+kCCDBGain = 1200          # EM gain, CCD B
+kCCDAExposureMs = 4.32    # CCD A exposure time in ms. None = ask at the start (Enter keeps the camera's current value).
+kCCDBExposureMs = 4.87    # CCD B exposure time in ms, sent to CCD B as-is. None = ask at the start.
+kCCDFrameCount = 20       # frames per burst shot, both CCDs (the CCD tab's default)
+kCCDTriggerMode = 1       # 0 = internal, 1 = external burst, 2 = external edge
+
+def printCCDSettings(s):
+    # s = hc.GetCCDSettings(): gainA, gainB, exposureA, exposureB (ms), framesA, framesB, temperatureA, temperatureB (C)
+    def fmt(v, f):
+        return "N/A" if isNaN(v) else (f % v)
+    print("          gain    exposure (ms)  frames  temperature (C)")
+    print("  CCD A  " + fmt(s[0], "%6.0f") + "  " + fmt(s[2], "%13.3f") + "  " + fmt(s[4], "%6.0f") + "  " + fmt(s[6], "%15.2f"))
+    print("  CCD B  " + fmt(s[1], "%6.0f") + "  " + fmt(s[3], "%13.3f") + "  " + fmt(s[5], "%6.0f") + "  " + fmt(s[7], "%15.2f"))
+
+def isNaN(v):
+    v = float(v)
+    return v != v
+
+def initialiseCCDs():
+    # Does what used to be clicked on the hardware controller's CCD tab, in the same order:
+    # tick "TCP CCD A" / "TCP CCD B", Update gain, Update exposure, Update frame count, Set Trigger.
+    # The CCD programs on both CCD PCs must already be running and initialised (their own Init button).
+    print("Initialising CCDs ...")
+    print("Connecting to CCD A and CCD B ...")
+    hc.InitialiseTCPforCCDA()
+    hc.InitialiseTCPforCCDB()
+    hc.UpdateCCDConnectionUI()   # tick the TCP boxes and enable the CCD tab, as clicking them would
+
+    # the TCP set-up above doesn't talk to the CCD PCs, so read from them to check they answer
+    before = list(hc.GetCCDSettings())
+    for name, gain in (("A", before[0]), ("B", before[1])):
+        if isNaN(gain):
+            raise Exception("CCD " + name + " is not answering. Check its CCD program is running and initialised, then restart the script.")
+    print("Both CCDs answered. Current settings:")
+    printCCDSettings(before)
+
+    exposureA = kCCDAExposureMs
+    if exposureA is None:
+        answer = input("CCD A exposure time in ms [" + ("%.3f" % before[2]) + "]: ").strip()
+        exposureA = float(answer) if answer != "" else float(before[2])
+    exposureB = kCCDBExposureMs
+    if exposureB is None:
+        answer = input("CCD B exposure time in ms [" + ("%.3f" % before[3]) + "]: ").strip()
+        exposureB = float(answer) if answer != "" else float(before[3])
+
+    print("Setting gain A = " + str(kCCDAGain) + ", gain B = " + str(kCCDBGain) + " ...")
+    hc.SetCCDGain(float(kCCDAGain), float(kCCDBGain))
+    print("Setting exposure A = " + ("%.3f" % exposureA) + " ms, exposure B = " + ("%.3f" % exposureB) + " ms ...")
+    hc.SetCCDExposureTime(float(exposureA), float(exposureB))
+    print("Setting frame count = " + str(kCCDFrameCount) + " on both CCDs ...")
+    hc.SetCCDFrameCount(int(kCCDFrameCount), int(kCCDFrameCount))
+    print("Setting trigger mode " + str(kCCDTriggerMode) + " ...")
+    if not hc.SetCCDTriggerMode(int(kCCDTriggerMode)):
+        raise Exception("A CCD did not accept trigger mode " + str(kCCDTriggerMode) + ". Check the CCD programs, then restart the script.")
+
+    # refresh the read-back labels on the CCD tab (the Query buttons)
+    hc.QueryCCDTemperature()
+    hc.QueryCCDGain()
+    hc.QueryExposureTime()
+    hc.QueryFrameCount()
+
+    after = list(hc.GetCCDSettings())
+    print("CCD settings now:")
+    printCCDSettings(after)
+    problems = []
+    if isNaN(after[0]) or abs(after[0] - kCCDAGain) > 0.5: problems.append("CCD A gain")
+    if isNaN(after[1]) or abs(after[1] - kCCDBGain) > 0.5: problems.append("CCD B gain")
+    if isNaN(after[4]) or after[4] != kCCDFrameCount: problems.append("CCD A frame count")
+    if isNaN(after[5]) or after[5] != kCCDFrameCount: problems.append("CCD B frame count")
+    # the camera rounds the exposure time to what it supports, so only flag a large difference
+    if isNaN(after[2]) or abs(after[2] - exposureA) > 0.05 * exposureA + 0.01: problems.append("CCD A exposure")
+    if isNaN(after[3]) or abs(after[3] - exposureB) > 0.05 * exposureB + 0.01: problems.append("CCD B exposure")
+    if problems:
+        print("WARNING: these CCD settings did not take the requested value: " + ", ".join(problems))
+        input("Hit enter to carry on anyway, or Ctrl+C to stop.")
+    print("CCDs initialised.")
+
 ## Target back-and-forth sweep.
 ## Each block moves the target by N steps (N = "target move steps" box in the hardware
 ## controller, only if "Serial move N before each block" is ticked). The script tracks
@@ -215,6 +300,12 @@ def EDMGo():
     # Setup E field voltages
     eFieldVoltagesInput = input("E-field voltages in kV: ")
     eFieldVoltages = [v.strip() for v in eFieldVoltagesInput.split(",") if v.strip() != ""]
+
+    # set up the CCDs (what used to be clicked on the hardware controller's CCD tab)
+    if kInitialiseCCDs:
+        initialiseCCDs()
+    else:
+        print("Skipping CCD set-up: using the CCDs as set up on the hardware controller's CCD tab.")
 
     # Setup file
     f = None

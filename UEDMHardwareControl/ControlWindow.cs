@@ -1890,14 +1890,12 @@ namespace UEDMHardwareControl
             double exposureA = -1;
             double exposureB = -1;
 
-            // Case 1: CCD A connected => user input CCD A, CCD B auto calculated
+            // Each connected CCD gets the exposure typed in its own box (CCD B default 4.87 ms), sent as-is.
             if (checkboxTCPCCDA.Checked)
             {
                 if (double.TryParse(tbCCDAExposure.Text, out double expA))
                 {
                     exposureA = expA;
-                    // CCD B exposure depends on CCD A formula
-                    exposureB = (1.11 * expA + 0.000033 * 1000.0);
                 }
                 else
                 {
@@ -1905,8 +1903,7 @@ namespace UEDMHardwareControl
                     return;
                 }
             }
-            // Case 2: Only CCD B connected => user input CCD B directly
-            else if (checkboxTCPCCDB.Checked)
+            if (checkboxTCPCCDB.Checked)
             {
                 if (double.TryParse(tbCCDBExposure.Text, out double expB))
                 {
@@ -2118,10 +2115,9 @@ namespace UEDMHardwareControl
         {
             MessageBox.Show(
                 "Exposure Time Note:\n\n" +
-                "In burst trigger mode, CCD B's exposure time is calculated automatically as:\n" +
-                "    t_B = 1.11 × t_A + 0.11 × t_dead\n\n" +
-                "Where t_dead = 0.3 ms.\n\n" +
-                "Please only enter the exposure time for CCD A in milliseconds.",
+                "Enter the exposure time for each CCD in milliseconds; each camera is set to exactly the value in its box.\n\n" +
+                "Burst-mode defaults: CCD A 4.32 ms, CCD B 4.87 ms (changed 09/11/2026 from the old\n" +
+                "t_B = 1.11 × t_A + 0.11 × t_dead formula, t_dead = 0.3 ms).",
                 "CCD Exposure Time Info",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information
@@ -2222,6 +2218,9 @@ namespace UEDMHardwareControl
 
         public System.Windows.Forms.Label[] PDGainLabels => new System.Windows.Forms.Label[] {
             PD1GainLabel, PD2GainLabel, PD3GainLabel, PD4GainLabel, PD5GainLabel, PD6GainLabel, PD7GainLabel, PD8GainLabel };
+        // "Monitored Laser" column of the PD monitor tab, PD1..PD8 (names are set in the designer).
+        public System.Windows.Forms.Label[] PDLaserNameLabels => new System.Windows.Forms.Label[] {
+            label56, label55, label54, label53, label52, label51, label50, label49 };
         public System.Windows.Forms.TextBox[] PDVoltageTextBoxes => new System.Windows.Forms.TextBox[] {
             PD1MonitorTextBox, PD2MonitorTextBox, PD3MonitorTextBox, PD4MonitorTextBox,
             PD5MonitorTextBox, PD6MonitorTextBox, PD7MonitorTextBox, PD8MonitorTextBox };

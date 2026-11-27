@@ -124,7 +124,7 @@ namespace ScanMaster.Acquire.Plugins
             settings["ccdTriggerMode"] = 1; //burst mode = 1, edge mode = 2
             settings["ccdNBurstFrames"] = 20; //number of frames per shot in burst mode
             settings["ccdAExposureTime"] = 0.00432; //burst mode exposure time
-            settings["ccdBExposureTime"] = 0.004828; //burst mode exposure time
+            settings["ccdBExposureTime"] = 0.00487; //burst mode exposure time. 4.87 ms since 09/11/2026 (was 1.11*4.32 + 0.033 = 4.828 ms); keep in step with UEDMController.CCDBDefaultExposureMs
             settings["ccd1Gain"] = 600;  // default CCDA at 600
             settings["ccd2Gain"] = 1200; // default CCDB at 1200
             settings["clockPeriod"] = 1;

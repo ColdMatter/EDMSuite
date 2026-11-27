@@ -516,8 +516,8 @@ namespace UEDMHardwareControl
             // Pre-fill default values in UI
             window.tbCCDAGain.Text = "1200";
             window.tbCCDBGain.Text = "1200";
-            window.tbCCDAExposure.Text = "4.32";
-            window.tbCCDBExposure.Text = "4.87"; // based on 1.11 * 4.32 + deadtime // On 09/11/2026, we changed it to 4.87 ms
+            window.tbCCDAExposure.Text = CCDADefaultExposureMs.ToString("F3");
+            window.tbCCDBExposure.Text = CCDBDefaultExposureMs.ToString("F3"); // On 09/11/2026, we changed it to 4.87 ms
             window.tbCCDAFrameCount.Text = "20";
             window.comboBoxCCDTriggerMode.SelectedIndex = 1; // Burst mode
 
@@ -526,7 +526,7 @@ namespace UEDMHardwareControl
             if (window.checkboxTCPCCDA.Checked && ccdA != null)
             {
                 SetCCDGain(1200, -1); // On 09/11/2026, we changed this from 100 to 1200
-                SetCCDExposureTime(4.32, -1);
+                SetCCDExposureTime(CCDADefaultExposureMs, -1);
                 SetCCDFrameCount(20, -1);
 
             }
@@ -534,7 +534,7 @@ namespace UEDMHardwareControl
             if (window.checkboxTCPCCDB.Checked && ccdB != null)
             {
                 SetCCDGain(-1, 1200); // On 09/11/2026, we changed this from 100 to 1200
-                SetCCDExposureTime(-1, 4.87); // On 09/11/2026, we changed this from 1.11 * 4.32 + 0.000033 * 1000 to 4.87
+                SetCCDExposureTime(-1, CCDBDefaultExposureMs); // 
                 SetCCDFrameCount(-1, 20);
 
             }
@@ -8782,14 +8782,16 @@ namespace UEDMHardwareControl
 
                 if (exposureB >= 0 && ccdB != null)
                 {
-                    double secB = (1.08 * exposureB + 0.000033 * 1000.0) / 1000.0; //secB = (1.11 * exposureB + 0.000033 * 1000.0) / 1000.0
-                ccdB.UpdateExposureTime(secB);
+                    // CCD B gets exactly the exposure asked for. (A hidden 1.08 * t + 0.033 ms correction here used to
+                    // turn the 4.828 ms in the CCD B box into 5.25 ms on the camera; removed on 27/11/2026.)
+                    double secB = exposureB / 1000.0;
+                    ccdB.UpdateExposureTime(secB);
                     Console.WriteLine($"CCD B exposure set to {exposureB} ms");
                 }
 
                 // Show updated values back in ms
-                window.SetTextBox(window.tbCCDAExposure, exposureA.ToString("F3"));
-                window.SetTextBox(window.tbCCDBExposure, exposureB.ToString("F3"));
+                if (exposureA >= 0) window.SetTextBox(window.tbCCDAExposure, exposureA.ToString("F3"));
+                if (exposureB >= 0) window.SetTextBox(window.tbCCDBExposure, exposureB.ToString("F3"));
             }
 
 
@@ -8837,38 +8839,84 @@ namespace UEDMHardwareControl
                 window.SetTextBox(window.tbCCDBGain, gainB.ToString("F0"));
             }
 
+            // "Set Trigger" button on the CCD tab: uses the mode selected in the combo box and confirms with a message box.
             public void SetCCDTriggerModeRemote()
             {
                 int triggerMode = window.comboBoxCCDTriggerMode.SelectedIndex; // Get selected index from ComboBox
 
-                if (ccdA != null)
-                {
-                    ccdA.ApplySelectedTriggerSource(triggerMode);
-                }
+                SetCCDTriggerMode(triggerMode);
 
-                if (ccdB != null)
-                {
-                    ccdB.ApplySelectedTriggerSource(triggerMode);
-                }
+                MessageBox.Show($"CCD Trigger mode set to: {CCDTriggerModeLabel(triggerMode)}", "Trigger Mode Update");
+            }
 
-                string modeLabel;
+            public static string CCDTriggerModeLabel(int triggerMode)
+            {
                 switch (triggerMode)
                 {
-                    case 0:
-                        modeLabel = "Internal Trigger";
-                        break;
-                    case 1:
-                        modeLabel = "External Burst Trigger";
-                        break;
-                    case 2:
-                        modeLabel = "External Edge Trigger";
-                        break;
-                    default:
-                        modeLabel = "Unknown";
-                        break;
+                    case 0: return "Internal Trigger";
+                    case 1: return "External Burst Trigger";
+                    case 2: return "External Edge Trigger";
+                    default: return "Unknown";
                 }
+            }
 
-                MessageBox.Show($"CCD Trigger mode set to: {modeLabel}", "Trigger Mode Update");
+            // Sets the trigger mode on both connected CCDs (0 = internal, 1 = external burst, 2 = external edge)
+            // and shows it in the CCD tab's combo box. No message box, so it can be called from a script.
+            // Returns true if every connected CCD accepted the mode.
+            public bool SetCCDTriggerMode(int triggerMode)
+            {
+                bool ok = true;
+                if (ccdA != null) ok &= ccdA.ApplySelectedTriggerSource(triggerMode);
+                if (ccdB != null) ok &= ccdB.ApplySelectedTriggerSource(triggerMode);
+                Console.WriteLine($"CCD trigger mode set to {CCDTriggerModeLabel(triggerMode)} (accepted by all connected CCDs: {ok})");
+
+                if (triggerMode >= 0 && triggerMode < window.comboBoxCCDTriggerMode.Items.Count)
+                    window.Invoke(new Action(() => window.comboBoxCCDTriggerMode.SelectedIndex = triggerMode));
+                return ok;
+            }
+
+            // Default burst-mode exposure times (ms). CCD B is set independently of CCD A (since 09/11/2026: 4.87 ms),
+            // and is sent to the camera exactly as given. Keep ScanMaster's CCDModulatedAnalogShotGathererPlugin in step.
+            public const double CCDADefaultExposureMs = 4.32;
+            public const double CCDBDefaultExposureMs = 4.87;
+
+            // For scripts: ticks the CCD A / CCD B TCP check boxes to match the connections made with
+            // InitialiseTCPforCCDA/B, and enables the CCD tab controls, as clicking the check boxes would.
+            public void UpdateCCDConnectionUI()
+            {
+                window.Invoke(new Action(() =>
+                {
+                    window.checkboxTCPCCDA.Checked = ccdA != null;
+                    window.checkboxTCPCCDB.Checked = ccdB != null;
+                    window.ToggleCCDControls(ccdA != null || ccdB != null);
+                }));
+            }
+
+            // For scripts: reads the settings back from both CCDs. Talks to the CCD PCs, so it also checks the connections.
+            // Returns { gainA, gainB, exposureA (ms), exposureB (ms), frameCountA, frameCountB, temperatureA (C), temperatureB (C) };
+            // NaN for a CCD that is not connected or does not answer.
+            public double[] GetCCDSettings()
+            {
+                double[] s = new double[8];
+                for (int i = 0; i < s.Length; i++) s[i] = double.NaN;
+                csAcq4.CCDController[] ccds = { ccdA, ccdB };
+                string[] names = { "CCD A", "CCD B" };
+                for (int c = 0; c < 2; c++)
+                {
+                    if (ccds[c] == null) continue;
+                    try
+                    {
+                        s[0 + c] = ccds[c].GetGainValue();
+                        s[2 + c] = ccds[c].GetExposureTime() * 1000.0;
+                        s[4 + c] = ccds[c].GetFrameCountforHardwareController();
+                        s[6 + c] = ccds[c].GetSensorTemperature();
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"Could not read the settings of {names[c]}: {e.Message}");
+                    }
+                }
+                return s;
             }
 
 
@@ -9327,6 +9375,16 @@ namespace UEDMHardwareControl
             pdCalIntercept[channel] = intercept;
         }
 
+        // Copies of the live calibration (index 0..7 = PD1..PD8), i.e. the defaults above plus any edits made on the UI.
+        // Used by EDMBlockHead to record the calibration in the block config. NaN = not calibrated.
+        public double[] GetPDCalibrationSlopes() { return (double[])pdCalSlope.Clone(); }
+        public double[] GetPDCalibrationIntercepts() { return (double[])pdCalIntercept.Clone(); }
+
+        // Name of the laser each PD monitors, as shown in the "Monitored Laser" column of the PD monitor tab.
+        // Copied from the UI labels when the window loads (InitialisePDMonitorUI), so it can be read from any thread.
+        private string[] pdLaserNames = { "PD1", "PD2", "PD3", "PD4", "PD5", "PD6", "PD7", "PD8" };
+        public string[] GetPDLaserNames() { return (string[])pdLaserNames.Clone(); }
+
         public void SetPDThreshold(int channel, double thresholdMw)
         {
             if (channel < 0 || channel >= 8) return;
@@ -9346,6 +9404,8 @@ namespace UEDMHardwareControl
             for (int i = 0; i < 8; i++)
             {
                 window.PDGainLabels[i].Text = PDGainSettings[i];
+                string laserName = window.PDLaserNameLabels[i].Text.Trim();
+                if (laserName != "") pdLaserNames[i] = laserName;
                 window.PDCalATextBoxes[i].Text = double.IsNaN(pdCalSlope[i]) ? "" : pdCalSlope[i].ToString("G6", CultureInfo.InvariantCulture);
                 window.PDCalBTextBoxes[i].Text = double.IsNaN(pdCalIntercept[i]) ? "" : pdCalIntercept[i].ToString("G6", CultureInfo.InvariantCulture);
                 window.PDThresholdTextBoxes[i].Text = double.IsNaN(pdThresholds[i]) ? "" : pdThresholds[i].ToString("G6", CultureInfo.InvariantCulture);

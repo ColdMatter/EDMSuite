@@ -10723,7 +10723,7 @@ namespace UEDMHardwareControl
             this.label56.Name = "label56";
             this.label56.Size = new System.Drawing.Size(187, 22);
             this.label56.TabIndex = 50;
-            this.label56.Text = "v0 Horiztonal Cooling";
+            this.label56.Text = "v0 Horizontal Cooling";
             // 
             // label55
             // 
