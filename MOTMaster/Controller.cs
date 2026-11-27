@@ -951,20 +951,25 @@ namespace MOTMaster
                             config.DigitalPatternClockFrequency, config.AnalogPatternClockFrequency, provenance);
                         if (recording != null)
                         {
+                            var linkRecord = new Dictionary<string, object>
+                            {
+                                { "role", "primary" },
+                                { "link_run_id", linkRunId },
+                                { "secondary_url", LinkConfig.SecondaryUrl },
+                                { "analog_origin", linkBuild.AnalogOrigin },
+                                { "trigger_delay", linkBuild.TriggerDelay },
+                                { "secondary", linkReady.SequenceRecord == null ? null : new SequenceRecord.RawJson(linkReady.SequenceRecord) }
+                            };
+                            // An older secondary cannot record; the run goes ahead and the record says why its half is missing.
                             if (linkReady.SequenceRecord == null)
-                                throw new LinkedRunException("The secondary MOTMaster at " + LinkConfig.SecondaryUrl
-                                    + " did not return its sequence record, so it runs a MOTMaster without sequence recording; rebuild it.");
+                            {
+                                string missing = "The secondary MOTMaster at " + LinkConfig.SecondaryUrl
+                                    + " returned no sequence record: it runs a MOTMaster without sequence recording.";
+                                SharedCode.AppLog.Write("Controller.Go", missing);
+                                linkRecord["secondary_unrecorded"] = missing;
+                            }
                             recording.Json = SequenceRecord.ToJson(sequence, linkScriptFileName, recordedScriptText, script.Parameters,
-                                config.DigitalPatternClockFrequency, config.AnalogPatternClockFrequency, config.Debug,
-                                new Dictionary<string, object>
-                                {
-                                    { "role", "primary" },
-                                    { "link_run_id", linkRunId },
-                                    { "secondary_url", LinkConfig.SecondaryUrl },
-                                    { "analog_origin", linkBuild.AnalogOrigin },
-                                    { "trigger_delay", linkBuild.TriggerDelay },
-                                    { "secondary", new SequenceRecord.RawJson(linkReady.SequenceRecord) }
-                                });
+                                config.DigitalPatternClockFrequency, config.AnalogPatternClockFrequency, config.Debug, linkRecord);
                         }
                     }
                     else if (recording != null)

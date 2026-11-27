@@ -62,7 +62,8 @@ namespace MOTMaster
         public int ProcessBits;
         /// <summary>The secondary's running MOTMaster.exe, so a refusal can say which build it is.</summary>
         public string ExePath;
-        /// <summary>JSON of the secondary's built sequence (see SequenceRecord), when the request asked for it; else null.</summary>
+        /// <summary>JSON of the secondary's built sequence (see SequenceRecord), when the request asked for it; else null,
+        /// as from any older secondary.</summary>
         [OptionalField]
         public string SequenceRecord;
     }
