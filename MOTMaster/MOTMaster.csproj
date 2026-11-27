@@ -509,6 +509,7 @@
     <Compile Include="Linked\LinkedScriptBuilder.cs" />
     <Compile Include="MOTMasterScriptSnippet.cs" />
     <Compile Include="MOTMasterSequence.cs" />
+    <Compile Include="SequenceRecord.cs" />
     <Compile Include="PreviewWindow.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -604,7 +604,23 @@ namespace MOTMaster
             go(dict, true);
         }
 
-        private void go(Dictionary<String, Object> dict, bool useScriptCache)
+        /// <summary>
+        /// GoCached, returning the JSON record of the sequence it ran (see <see cref="SequenceRecord"/>), with the
+        /// linked secondary's own record inside it for a linked run. Opt-in for remote callers such as pytweezer:
+        /// nothing else records. Unlike Go, a failure to compile, build or arm throws to the caller instead of
+        /// showing a MessageBox, so a run that returns has a record.
+        /// </summary>
+        public string GoCachedRecording(Dictionary<String, Object> dict)
+        {
+            var recording = new SequenceRecording();
+            go(dict, true, recording);
+            if (recording.Json == null)
+                throw new InvalidOperationException("MOTMaster (" + System.Environment.MachineName
+                    + ") did not run the sequence (is another run in progress?), so it has no record of it; see its log.");
+            return recording.Json;
+        }
+
+        private void go(Dictionary<String, Object> dict, bool useScriptCache, SequenceRecording recording = null)
         {
             secondaryState.ThrowIfClaimed("Go");
             // Only one run may drive the pattern generators at a time. Go is reached
@@ -622,7 +638,7 @@ namespace MOTMaster
             controllerWindow.RefreshRunControls();
             try
             {
-                goClaimed(dict, useScriptCache);
+                goClaimed(dict, useScriptCache, recording);
             }
             catch (Exception ex)
             {
@@ -787,7 +803,9 @@ namespace MOTMaster
             }
         }
 
-        private void goClaimed(Dictionary<String, Object> dict, bool useScriptCache)
+        /// <param name="recording">Non-null only for GoCachedRecording: it receives the sequence's record, and every
+        /// failure before the shots throws. Null (every other run) leaves this method doing what it always did.</param>
+        private void goClaimed(Dictionary<String, Object> dict, bool useScriptCache, SequenceRecording recording)
         {
             {
                 // Linked mode is decided once, here, for the whole run. When link is null (every non-linked run,
@@ -833,8 +851,19 @@ namespace MOTMaster
                     linkScriptPath = LinkedScriptBuilder.PrimaryScriptPathFor(linkRunId, linkScriptFileName);
                     LinkedScriptBuilder.WriteScript(linkScriptPath, linkScriptText);
                 }
-                // Linked: a compile or load failure throws (with the compiler errors) instead of a MessageBox.
-                MOTMasterScript script = link == null ? prepareScript(scriptPath, dict, useScriptCache) : prepareScriptOrThrow(linkScriptPath, dict, useScriptCache);
+                // Recording: the text recorded is the text compiled. Linked runs already read the file once; a
+                // non-linked recording run reads it once here and compiles that text.
+                string recordedScriptText = null;
+                if (recording != null)
+                    recordedScriptText = link == null ? File.ReadAllText(scriptPath) : linkScriptText;
+                // Linked and recording runs: a compile or load failure throws (with the compiler errors) instead of a MessageBox.
+                MOTMasterScript script;
+                if (link != null)
+                    script = prepareScriptOrThrow(linkScriptPath, dict, useScriptCache);
+                else if (recording != null)
+                    script = prepareScriptTextOrThrow(recordedScriptText, dict);
+                else
+                    script = prepareScript(scriptPath, dict, useScriptCache);
                 if (link != null && script == null) throw new LinkedRunException("script did not compile or load");
                 if (script != null)
                 {
@@ -870,6 +899,9 @@ namespace MOTMaster
                             if (link != null)
                                 throw new LinkedRunException("The Spectrum DDS could not be armed on "
                                     + System.Environment.MachineName + "; the linked run was not started.");
+                            if (recording != null)
+                                throw new InvalidOperationException("The Spectrum DDS could not be armed on "
+                                    + System.Environment.MachineName + "; the run was not started.");
                             return;
                         }
                         ddsInUse = true;
@@ -909,13 +941,36 @@ namespace MOTMaster
                             PrimaryProvenance = provenance,
                             // The secondary ends its armed run if this primary goes quiet for longer (e.g. it died).
                             ContactTimeoutMs = LinkedPrimary.ContactTimeoutFor(linkBuild.DigitalLength,
-                                config.DigitalPatternClockFrequency, LinkConfig.ArmTimeoutMs)
+                                config.DigitalPatternClockFrequency, LinkConfig.ArmTimeoutMs),
+                            RecordSequence = recording != null
                         };
                         SharedCode.AppLog.Write("Controller.Go", "Linked run " + request.LinkRunId + ": preparing the secondary ("
                             + request.ScriptFileName + ")");
                         linkBegun = true;
-                        link.Begin(request, LinkFingerprint.OfText(linkScriptText), LinkFingerprint.OfParameters(script.Parameters),
+                        LinkReadyInfo linkReady = link.Begin(request, LinkFingerprint.OfText(linkScriptText), LinkFingerprint.OfParameters(script.Parameters),
                             config.DigitalPatternClockFrequency, config.AnalogPatternClockFrequency, provenance);
+                        if (recording != null)
+                        {
+                            if (linkReady.SequenceRecord == null)
+                                throw new LinkedRunException("The secondary MOTMaster at " + LinkConfig.SecondaryUrl
+                                    + " did not return its sequence record, so it runs a MOTMaster without sequence recording; rebuild it.");
+                            recording.Json = SequenceRecord.ToJson(sequence, linkScriptFileName, recordedScriptText, script.Parameters,
+                                config.DigitalPatternClockFrequency, config.AnalogPatternClockFrequency, config.Debug,
+                                new Dictionary<string, object>
+                                {
+                                    { "role", "primary" },
+                                    { "link_run_id", linkRunId },
+                                    { "secondary_url", LinkConfig.SecondaryUrl },
+                                    { "analog_origin", linkBuild.AnalogOrigin },
+                                    { "trigger_delay", linkBuild.TriggerDelay },
+                                    { "secondary", new SequenceRecord.RawJson(linkReady.SequenceRecord) }
+                                });
+                        }
+                    }
+                    else if (recording != null)
+                    {
+                        recording.Json = SequenceRecord.ToJson(sequence, Path.GetFileName(scriptPath), recordedScriptText, script.Parameters,
+                            config.DigitalPatternClockFrequency, config.AnalogPatternClockFrequency, config.Debug, null);
                     }
 
                     //if (config.CameraUsed) waitUntilCameraIsReadyForAcquisition();
@@ -1071,16 +1126,16 @@ namespace MOTMaster
                     MessageBox.Show("Unable to load pattern. \n Check that the script file exists and that it compiled successfully");
                 }
                 }
-                // Not for linked runs: those must throw to the caller (Go rethrows, so Python sees it), never
+                // Not for linked or recording runs: those must throw to the caller (Go rethrows, so Python sees it), never
                 // end in a MessageBox.
-                catch (AnalogPatternBuilderSingleBoard.InsufficientPatternLengthException ex) when (link == null)
+                catch (AnalogPatternBuilderSingleBoard.InsufficientPatternLengthException ex) when (link == null && recording == null)
                 {
                     SharedCode.AppLog.Error("Controller.Go (analog pattern length)", ex);
                     MessageBox.Show("The pattern length is too short to fit all the requested analog events.\n\n"
                         + ex.Message + "\n\nIncrease PatternLength in the script and try again.",
                         "Insufficient Pattern Length", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
-                catch (DAQ.Pattern.InsufficientPatternLengthException ex) when (link == null)
+                catch (DAQ.Pattern.InsufficientPatternLengthException ex) when (link == null && recording == null)
                 {
                     SharedCode.AppLog.Error("Controller.Go (digital pattern length)", ex);
                     MessageBox.Show("The pattern length is too short to fit all the requested digital events.\n\n"
@@ -1349,10 +1404,11 @@ namespace MOTMaster
                 string[] clamped = new List<string>(build.Routing.ClampedEvents).ToArray();
                 foreach (string line in clamped) SharedCode.AppLog.Write("Controller.PrepareLinkedRun", line);
 
+                // The text actually compiled: read back from the file BuildSecondary wrote.
+                string compiledText = File.ReadAllText(LinkedScriptBuilder.ScriptPathFor(request));
                 LinkReadyInfo info = new LinkReadyInfo
                 {
-                    // The text actually compiled: read back from the file BuildSecondary wrote.
-                    ScriptHash = LinkFingerprint.OfText(File.ReadAllText(LinkedScriptBuilder.ScriptPathFor(request))),
+                    ScriptHash = LinkFingerprint.OfText(compiledText),
                     ParameterHash = LinkFingerprint.OfParameters(build.Script.Parameters),
                     Provenance = BuildProvenance.Describe(),
                     DigitalClockFrequency = config.DigitalPatternClockFrequency,
@@ -1361,6 +1417,18 @@ namespace MOTMaster
                     ProcessBits = LinkedPrimary.ProcessBits,
                     ExePath = typeof(Controller).Assembly.Location
                 };
+                // Only a primary running GoCachedRecording asks; false from every other primary, including older ones.
+                if (request.RecordSequence)
+                    info.SequenceRecord = SequenceRecord.ToJson(build.Sequence, request.ScriptFileName, compiledText,
+                        build.Script.Parameters, config.DigitalPatternClockFrequency, config.AnalogPatternClockFrequency, false,
+                        new Dictionary<string, object>
+                        {
+                            { "role", "secondary" },
+                            { "link_run_id", request.LinkRunId },
+                            { "primary", request.PrimaryName },
+                            { "analog_origin", request.AnalogOrigin },
+                            { "trigger_delay", build.TriggerDelay }
+                        });
 
                 // The build can take seconds; the link may have been released or broken meanwhile. Re-check it
                 // atomically with marking the run started (see linkStartGate). If it is gone this throws, and the
@@ -1882,7 +1950,11 @@ namespace MOTMaster
             if (!useScriptCache)
                 return new CSharpCodeProvider().CompileAssemblyFromFile(scriptCompilerOptions(), scriptPath);
 
-            string text = File.ReadAllText(scriptPath);
+            return compileCachedText(File.ReadAllText(scriptPath));
+        }
+
+        private CompilerResults compileCachedText(string text)
+        {
             string key = LinkFingerprint.OfText(text);
             lock (scriptCompileCacheLock)
             {
@@ -1919,10 +1991,26 @@ namespace MOTMaster
         /// <summary>Linked path: compiles the script, throwing LinkedRunException (with the compiler errors) on any failure.</summary>
         private CompilerResults compileFromFileOrThrow(string scriptPath, bool useScriptCache = false)
         {
+            return compileOrThrow(() => compileScript(scriptPath, useScriptCache), scriptPath);
+        }
+
+        /// <summary>Recording path: compileFromFileOrThrow for text already read, through the compile cache.</summary>
+        private MOTMasterScript prepareScriptTextOrThrow(string text, Dictionary<String, Object> dict)
+        {
+            MOTMasterScript script = loadScriptOrThrow(compileOrThrow(() => compileCachedText(text), scriptPath));
+            if (dict != null)
+            {
+                script.EditDictionary(dict);
+            }
+            return script;
+        }
+
+        private CompilerResults compileOrThrow(Func<CompilerResults> compile, string scriptPath)
+        {
             CompilerResults results;
             try
             {
-                results = compileScript(scriptPath, useScriptCache);
+                results = compile();
             }
             catch (Exception e)
             {
