@@ -2318,7 +2318,32 @@ namespace csAcq4
         //}
 
         //Shirley adapted from ScanMaster Burst Mode Acquisition on 06/11/2026
+        // Wrapper so the "ready for next block" flag is always set again when the burst loop ends,
+        // however it ends (completed, aborted by StopBurstAcquisition, buffer allocation failure, exception).
+        // Otherwise BlockHead / the hardware controller wait in IsCCDReady() forever.
         public void ContinuousSnapAndSaveBlockhead(CancellationToken token)
+        {
+            try
+            {
+                ContinuousSnapAndSaveBlockheadCore(token);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Blockhead burst acquisition error: " + ex);
+                try { mydcam.cap_stop(); } catch (Exception) { }
+                try { mydcam.buf_release(); } catch (Exception) { }
+            }
+            finally
+            {
+                if (!ccdReadyForNextBlock)
+                {
+                    ccdReadyForNextBlock = true;
+                    Console.WriteLine("CCD is now ready for next block.");
+                }
+            }
+        }
+
+        private void ContinuousSnapAndSaveBlockheadCore(CancellationToken token)
         {
             if (mydcam == null)
             {

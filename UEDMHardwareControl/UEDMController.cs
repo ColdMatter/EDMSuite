@@ -3516,6 +3516,7 @@ namespace UEDMHardwareControl
         private bool NeonFlowSetPointFlag;
         private bool SF6FlowSetPointFlag;
         private Object NeonFlowMonitorLock;
+        private bool pollNeonFlowController = true; // set false if the MKS PR4000B can't be reached, so the Alicat keeps being polled on its own
 
         internal void StartNeonFlowMonitorPoll()
         {
@@ -3532,6 +3533,7 @@ namespace UEDMHardwareControl
             NeonFlowMonitorFlag = false;
             NeonFlowSetPointFlag = false;
             SF6FlowSetPointFlag = false;
+            pollNeonFlowController = true; // retry the MKS PR4000B each time Start is pressed
             NeonFlowMonitorPollThread.Start();
         }
         internal void StopNeonFlowMonitorPoll()
@@ -3545,9 +3547,20 @@ namespace UEDMHardwareControl
                 Thread.Sleep(NeonFlowMonitorPollPeriod);
                 lock (NeonFlowMonitorLock)
                 {
-                    UpdateNeonFlowActMonitor();
-                    PlotLastNeonFlowAct();
-                    UpdateNeonFlowSetpointMonitor();
+                    if (pollNeonFlowController)
+                    {
+                        try
+                        {
+                            UpdateNeonFlowActMonitor();
+                            PlotLastNeonFlowAct();
+                            UpdateNeonFlowSetpointMonitor();
+                        }
+                        catch (Exception e)
+                        {
+                            // Stop polling the MKS only; the Alicat carries on
+                            HandleNeonFlowControllerError(e);
+                        }
+                    }
                     if (window.cbSF6Valve.Checked)
                     {
                         try
@@ -3562,8 +3575,18 @@ namespace UEDMHardwareControl
                     }
                     if (NeonFlowSetPointFlag)
                     {
-                        neonFlowController.SetSetpoint(neonFlowChannelNumber, newNeonFlowSetpoint.ToString());
                         NeonFlowSetPointFlag = false;
+                        if (pollNeonFlowController)
+                        {
+                            try
+                            {
+                                neonFlowController.SetSetpoint(neonFlowChannelNumber, newNeonFlowSetpoint.ToString());
+                            }
+                            catch (Exception e)
+                            {
+                                HandleNeonFlowControllerError(e);
+                            }
+                        }
                     }
                     if (SF6FlowSetPointFlag)
                     {
@@ -3593,6 +3616,18 @@ namespace UEDMHardwareControl
             window.EnableControl(window.btSetNewHeliumFlowSetpoint, false);
             window.EnableControl(window.tbNewSF6FlowSetpoint, false);
             window.EnableControl(window.btSetNewSF6FlowSetpoint, false);
+        }
+
+        // If the MKS PR4000B doesn't respond or its port can't be opened, the poll loop stops and tells the user, rather than crashing the app.
+        private void HandleNeonFlowControllerError(Exception e)
+        {
+            pollNeonFlowController = false;
+            string message = "Could not communicate with the MKS PR4000B (helium/neon) flow controller, so it will not be polled until Start is pressed again. "
+                + "The Alicat SF6 flow controller is unaffected and keeps being polled.\n\n"
+                + "If you do want the PR4000B, check it is powered and on the right COM port (and that nothing else, e.g. NI MAX, has the port open).\n\n"
+                + e.GetType().Name + ": " + e.Message;
+            // BeginInvoke so the poll thread isn't blocked while the message box is open
+            window.BeginInvoke(new Action(() => MessageBox.Show(message, "MKS flow controller error", MessageBoxButtons.OK)));
         }
 
         // If the Alicat doesn't respond (e.g. wrong COM port or unit ID), stop polling it rather than crashing the app.
@@ -8918,9 +8953,17 @@ namespace UEDMHardwareControl
             {
                 string nameMeassgae = $"{cluster}_{blockIndex:D5}";
 
+                Stopwatch notReadyTimer = Stopwatch.StartNew();
+                long nextReportMs = 10000;
                 while (!IsCCDReady())
                 {
                     Thread.Sleep(1);
+                    if (notReadyTimer.ElapsedMilliseconds > nextReportMs)
+                    {
+                        Console.WriteLine($"Still waiting for CCDs to be ready ({nextReportMs / 1000} s): CCDA ready = {ccdA.IsCCDReadyForNextBlock()}, CCDB ready = {ccdB.IsCCDReadyForNextBlock()}. "
+                            + "If a block was stopped midway, the CCD burst may still be running; StopCCDBurst() will end it.");
+                        nextReportMs += 10000;
+                    }
                 }
                 try
                 {

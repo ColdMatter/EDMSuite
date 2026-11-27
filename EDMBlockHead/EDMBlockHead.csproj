@@ -464,7 +464,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.DAQmx, Version=26.5.45.49613, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
+    <Reference Include="NationalInstruments.DAQmx, Version=24.3.45.49472, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=AMD64">
+      <!-- Version-agnostic on purpose: lab PCs have different NI DAQmx versions installed. Do not let VS pin a specific version here. -->
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Program Files (x86)\National Instruments\MeasurementStudioVS2012\DotNET\Assemblies\Current\NationalInstruments.DAQmx.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="NationalInstruments.UI, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
@@ -539,6 +542,7 @@
     <Compile Include="SwitchedChannel.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="WavemeterPDMonitor.cs" />
     <Compile Include="TTLSwitchedChannel.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -615,6 +619,10 @@
     <ProjectReference Include="..\UEDMHardwareControl\UEDMHardwareControl.csproj">
       <Project>{cfd6eb01-f4fc-4f62-b476-f132f79d22e4}</Project>
       <Name>UEDMHardwareControl</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WaveMeterExample\WavemeterLockServer.csproj">
+      <Project>{d2b91c87-f586-4ebc-9f5b-86b71999eafc}</Project>
+      <Name>WavemeterLockServer</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

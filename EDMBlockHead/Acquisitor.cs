@@ -74,6 +74,10 @@ namespace EDMBlockHead.Acquire
         // (SnapshotCCDSettings) and written to a CCD config xml once the block completes (SaveCCDConfigXml).
         // Uses the same CCDSettings class as ScanMaster's CCDModulatedAnalogShotGathererPlugin so the xml files match.
         private ScanMaster.Acquire.Plugins.CCDModulatedAnalogShotGathererPlugin.CCDSettings blockCCDSettings;
+
+        // Optional wavemeter frequency / laser photodiode readings for every point (see WavemeterPDMonitor.cs).
+        // Only used by Acquire(), and only if the block config has wavemeterChannels and/or pdChannels. Null otherwise.
+        private WavemeterPDMonitor wavemeterPDMonitor;
     
         //NationalInstruments.DAQmx.Task counterTaskCCD;
 
@@ -167,6 +171,8 @@ namespace EDMBlockHead.Acquire
 			// map the analog inputs
 			MapAnalogInputs();
 
+            wavemeterPDMonitor = null;
+
             
 			Block b = new Block();
 			b.Config = config;
@@ -184,10 +190,22 @@ namespace EDMBlockHead.Acquire
                 // get things going, where the input task and counter task for CCD are configured
                 AcquisitionStarting();
 
+                // optional wavemeter / photodiode readings (null unless the block config asks for them)
+                wavemeterPDMonitor = WavemeterPDMonitor.FromConfig(config, hardwareController);
+                if (wavemeterPDMonitor != null) wavemeterPDMonitor.Connect();
+
                 // shirley adds on 14/07 to implement the handshake between CCD ready for next block and blockhead
+                Stopwatch ccdReadyTimer = Stopwatch.StartNew();
+                long nextCCDReadyReportMs = 5000;
                 while (!hardwareController.IsCCDReady())
                 {
                     Thread.Sleep(1);
+                    if (StopRequested()) throw new OperationCanceledException("Block stopped while waiting for the CCDs to be ready for the block.");
+                    if (ccdReadyTimer.ElapsedMilliseconds > nextCCDReadyReportMs)
+                    {
+                        Console.WriteLine($"[Wait] CCDs not ready for the block after {nextCCDReadyReportMs / 1000} s: CCDA ready = {hardwareController.ccdA.IsCCDReadyForNextBlock()}, CCDB ready = {hardwareController.ccdB.IsCCDReadyForNextBlock()}");
+                        nextCCDReadyReportMs += 5000;
+                    }
                 }
                 // record the CCD settings for this block (stored in the block config and in the CCD config xml)
                 SnapshotCCDSettings();
@@ -204,6 +222,7 @@ namespace EDMBlockHead.Acquire
                     // take a point
                     Shot s;
                     EDMPoint p = null;
+                    System.Collections.Generic.Dictionary<string, double> wavemeterPDValues = null;
                     if (Environs.Debug)
                     {
                         // just stuff a made up shot in
@@ -212,6 +231,7 @@ namespace EDMBlockHead.Acquire
                         ((TOF)s.TOFs[0]).Calibration = ((ScannedAnalogInput)inputs.Channels[0]).Calibration;
                         p = new EDMPoint();
                         p.Shot = s;
+                        if (wavemeterPDMonitor != null) wavemeterPDValues = wavemeterPDMonitor.FakeValues();
                         //Thread.Sleep(20);
                     }
                     else
@@ -239,6 +259,8 @@ namespace EDMBlockHead.Acquire
                             CCDReadyStatusTask.Start();
                             bool isCCDAready = false;
                             bool isCCDBready = false;
+                            Stopwatch ttlTimer = Stopwatch.StartNew();
+                            long nextTTLReportMs = 5000;
                             while (!isCCDAready || !isCCDBready) //while(!isCCDAready)  
                             {
                                 bool[,] ttlState = CCDReadyStatusReader.ReadSingleSampleMultiLine();
@@ -246,6 +268,16 @@ namespace EDMBlockHead.Acquire
                                 isCCDBready = ttlState[1, 0];
                                 //if (!isCCDAready) Thread.Sleep(1); 
                                 if (!isCCDAready || !isCCDBready) Thread.Sleep(1);
+                                if (ttlTimer.ElapsedMilliseconds > nextTTLReportMs)
+                                {
+                                    Console.WriteLine($"[Wait] point {point}: CCD trigger-ready TTL not high after {nextTTLReportMs / 1000} s: CCDA = {isCCDAready}, CCDB = {isCCDBready}");
+                                    nextTTLReportMs += 5000;
+                                }
+                                if ((!isCCDAready || !isCCDBready) && StopRequested())
+                                {
+                                    CCDReadyStatusTask.Stop();
+                                    throw new OperationCanceledException($"Block stopped while waiting for the CCD trigger-ready TTL (point {point}).");
+                                }
                             }
                             Console.WriteLine($"CCD Ready Status CCDA={isCCDAready}, CCDB={isCCDBready}");
                             CCDReadyStatusTask.Stop();
@@ -279,6 +311,10 @@ namespace EDMBlockHead.Acquire
                             //We make sure to wait for the pmt to have finised reading, after the ccd check. see below double[,] analogData = analogReadTask.Result;
                             System.Threading.Tasks.Task<double[,]> analogReadTask = System.Threading.Tasks.Task.Run(() => inputReader.ReadMultiSample(inputs.GateLength));
 
+                            // optional wavemeter / photodiode reading, in parallel with the PMT gate so it adds no time when it is fast enough
+                            System.Threading.Tasks.Task<System.Collections.Generic.Dictionary<string, double>> wavemeterPDRead = null;
+                            if (wavemeterPDMonitor != null) wavemeterPDRead = wavemeterPDMonitor.StartRead();
+
 
                             // Read the CCD TTL status mid PMT gate. i.e . at 60 ms. Immediately update the CCDs via tcp blockhead->tcp->ccd.
                             //tcp can be slow. Fluctuates between 2 - 30 ms depending on traffic/processes. 
@@ -310,6 +346,7 @@ namespace EDMBlockHead.Acquire
                             // Wait for PMT read to finish (this remains blocking)
                             double[,] analogData = analogReadTask.Result; // this line blocks until the pmt read task is complete
                             Console.WriteLine("PMT data acquisition complete.");
+                            bool wavemeterPDDoneBeforePMT = wavemeterPDRead == null || wavemeterPDRead.IsCompleted;
                             ////////////////////////////////////////// 
                             
                             // get the raw data
@@ -419,6 +456,9 @@ namespace EDMBlockHead.Acquire
                                 p = new EDMPoint();
                                 p.Shot = s;
 
+                                // collect the wavemeter / photodiode reading for this shot (NaN if it failed or timed out)
+                                if (wavemeterPDMonitor != null) wavemeterPDValues = wavemeterPDMonitor.Collect(wavemeterPDRead, wavemeterPDDoneBeforePMT);
+
                                 timer2.Stop();
                                 Console.WriteLine($"Extracting the raw analog data and plotting them onto a TOF took {timer2.ElapsedMilliseconds} ms.");
 
@@ -443,6 +483,9 @@ namespace EDMBlockHead.Acquire
 
                     p.SinglePointData.Add("PhaseLockFrequency", phaseLock.OutputFrequency);
                     p.SinglePointData.Add("PhaseLockError", phaseLock.PhaseError);
+                    // wavemeter frequencies and photodiode voltages, if switched on in the block config
+                    if (wavemeterPDValues != null)
+                        foreach (System.Collections.Generic.KeyValuePair<string, double> kv in wavemeterPDValues) p.SinglePointData.Add(kv.Key, kv.Value);
                     // scan the analog inputs
                     double[] spd;
                     // fake some data if we're in debug mode
@@ -515,6 +558,10 @@ namespace EDMBlockHead.Acquire
 
                     if (CheckIfStopping())
                     {
+                        // Block stopped midway: abort the CCD burst, as ScanMaster does when a scan is aborted.
+                        // Without this the CCDs keep waiting for/retaking the current shot forever, never set
+                        // their "ready for next block" flag, and the next block hangs in SyncCCDBlockName / IsCCDReady.
+                        AbortCCDBurst();
                         // release hardware
                         AcquisitionStopping();
                         // signal anybody waiting on the lock that we're done
@@ -748,20 +795,37 @@ namespace EDMBlockHead.Acquire
             }
             catch (Exception e)
 			{
+                // was a stop requested? (e.g. "Stop pattern" was clicked, so the PMT read timed out waiting for a trigger)
+                bool stopRequested;
+                lock (this)
+                {
+                    stopRequested = (backendState == AcquisitorState.stopping);
+                    if (stopRequested) backendState = AcquisitorState.stopped;
+                }
 				// try and stop the experiment gracefully
 				try
 				{
 					AcquisitionStopping();
-                    // in case of exceptions, the CCD burst acquisition will be aborted
-                    //hardwareController.StopCCDBurst();
                 }
 				catch (Exception) {}				// about the best that can be done at this stage
+                // in case of exceptions, the CCD burst acquisition will be aborted.
+                // Done separately so it still happens if AcquisitionStopping() throws.
+                AbortCCDBurst();
 				Monitor.Pulse(MonitorLockObject);
 				Monitor.Exit(MonitorLockObject);
+                if (stopRequested)
+                {
+                    // the user stopped the block; don't kill BlockHead by rethrowing on the acquisition thread
+                    Console.WriteLine("Block stopped by user. Acquisition ended with: " + e.Message);
+                    return;
+                }
 				throw e;
 			}
 
 			AcquisitionStopping();
+
+			// record the wavemeter / photodiode summary in the block config (if switched on)
+			if (wavemeterPDMonitor != null) wavemeterPDMonitor.BlockFinished(config);
  
 			// the block completed, so save the CCD config xml next to the CCD data
 			SaveCCDConfigXml();
@@ -2460,6 +2524,32 @@ namespace EDMBlockHead.Acquire
         private void MagDummyAcquisitionStopping()
         {
             foreach (SwitchedChannel s in switchedChannels) s.AcquisitionFinishing();
+        }
+
+        // Abort the CCD burst acquisition on both CCDs (only used when a block is stopped/aborted midway;
+        // a block that completes normally lets the CCDs finish and save on their own).
+        // This tells the CCD loop to exit, after which it releases its buffer and sets its
+        // "ready for next block" flag, so the next block can start. Never throws.
+        private void AbortCCDBurst()
+        {
+            try
+            {
+                if (hardwareController != null)
+                {
+                    hardwareController.StopCCDBurst();
+                    Console.WriteLine("CCD burst acquisition aborted.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Could not abort the CCD burst acquisition: " + ex.Message);
+            }
+        }
+
+        // true if Stop block has been clicked (does not change the state, unlike CheckIfStopping)
+        private bool StopRequested()
+        {
+            lock (this) { return backendState == AcquisitorState.stopping; }
         }
 
         private bool CheckIfStopping() 

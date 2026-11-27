@@ -58,6 +58,9 @@ namespace DAQ.HAL
 
         private void ConnectToFlowController()
         {
+            // If a previous query failed part-way, a session may still be open in this process.
+            // Release it first, otherwise opening the port again fails with "resource busy" (0xBFFF0072).
+            if (serial != null) Disconnect();
             Connect(TerminationMethod);
         }
 
@@ -70,10 +73,15 @@ namespace DAQ.HAL
         private string QueryParameter(string cmd, string parameter)
         {
             ConnectToFlowController();
-            string query = SetCarriageReturn(String.Concat("?", cmd, parameter));
-            string response = Query(query);
-            Disconnect();
-            return response;
+            try
+            {
+                string query = SetCarriageReturn(String.Concat("?", cmd, parameter));
+                return Query(query);
+            }
+            finally
+            {
+                Disconnect(); // Always release the port, even if the query times out
+            }
         }
 
         /// <summary>
@@ -84,10 +92,16 @@ namespace DAQ.HAL
         private void SetParameter(string cmd, string parameter)
         {
             ConnectToFlowController();
-            string command = SetCarriageReturn(String.Concat(cmd,",", parameter));
-            Write(command);
-            Thread.Sleep(100);
-            Disconnect();
+            try
+            {
+                string command = SetCarriageReturn(String.Concat(cmd,",", parameter));
+                Write(command, true);
+                Thread.Sleep(100);
+            }
+            finally
+            {
+                Disconnect();
+            }
         }
 
         /// <summary>
@@ -99,10 +113,16 @@ namespace DAQ.HAL
         private void SetChannelParameter(string cmd, string ChannelNumber, string parameter)
         {
             ConnectToFlowController();
-            string command = SetCarriageReturn(String.Concat(cmd, ChannelNumber, ",", parameter));
-            Write(command);
-            Thread.Sleep(100);
-            Disconnect();
+            try
+            {
+                string command = SetCarriageReturn(String.Concat(cmd, ChannelNumber, ",", parameter));
+                Write(command, true);
+                Thread.Sleep(100);
+            }
+            finally
+            {
+                Disconnect();
+            }
         }
 
         /// <summary>
@@ -115,10 +135,15 @@ namespace DAQ.HAL
         private string SetAndQueryParameter(string cmd, string parameter)
         {
             ConnectToFlowController();
-            string query = SetCarriageReturn(String.Concat(cmd, parameter));
-            string response = Query(query);
-            Disconnect();
-            return response;
+            try
+            {
+                string query = SetCarriageReturn(String.Concat(cmd, parameter));
+                return Query(query);
+            }
+            finally
+            {
+                Disconnect();
+            }
         }
 
         #endregion

@@ -134,6 +134,11 @@ def measureParametersAndMakeBC(cluster, eState, bState, mwState):
     bc.Settings["minimumSignalToRun"] = 100.0
     bc.Settings["targetStepperGateStartTime"] = 2380.0
     bc.Settings["targetStepperGateEndTime"] = 2580.0
+
+    # ccd config
+    #gains = hc.QueryCCDGain()
+    #bc.Settings["CCDAGain"] = gains[0]
+    #bc.Settings["CCDBGain"] = gains[1]
     return bc
 
 def windowValue(value, minValue, maxValue):
@@ -147,6 +152,63 @@ def windowValue(value, minValue, maxValue):
 
 kTargetRotationPeriod = 100
 kReZeroLeakageMonitorsPeriod = 100
+
+## Target back-and-forth sweep.
+## Each block moves the target by N steps (N = "target move steps" box in the hardware
+## controller, only if "Serial move N before each block" is ticked). The script tracks
+## the net position relative to where the sweep started and reverses direction whenever
+## the next move would take it outside [0, kTargetTravelRange]. So the target walks
+## 0 -> kTargetTravelRange -> 0 -> ... and never goes further than kTargetTravelRange
+## steps from the start position.
+## The position and direction are saved to a file after every successful move so that
+## restarting the script continues the same sweep instead of starting a new window from
+## wherever the target happens to be.
+kTargetTravelRange = 1000      # max net steps away from the start position
+kTargetStartDirection = 1     # +1 or -1: direction of the first leg of a fresh sweep
+
+def targetSweepFile(settingsPath):
+    return settingsPath + "targetSweepPosition.txt"
+
+def loadTargetSweepState(settingsPath):
+    # returns (position, direction); a fresh sweep if the file is missing or unreadable
+    try:
+        parts = File.ReadAllText(targetSweepFile(settingsPath)).split()
+        position = int(parts[0])
+        direction = 1 if int(parts[1]) >= 0 else -1
+        return position, direction
+    except Exception:
+        return 0, kTargetStartDirection
+
+def saveTargetSweepState(settingsPath, position, direction):
+    try:
+        File.WriteAllText(targetSweepFile(settingsPath), str(position) + " " + str(direction))
+    except Exception as e:
+        print("Warning: could not save target sweep position: " + str(e))
+
+def moveTargetSweep(position, direction):
+    # Moves the target one step of the sweep. Returns (stepsMoved, position, direction);
+    # stepsMoved is signed and 0 if moving is disabled or the move failed.
+    if not hc.moveTargetBeforeBlock:
+        return 0, position, direction
+    try:
+        n = abs(int(hc.targetMoveSteps))
+    except Exception:
+        print("Target move skipped: steps box is not a whole number.")
+        return 0, position, direction
+    if n == 0:
+        return 0, position, direction
+    if n > kTargetTravelRange:
+        print("Target move skipped: N = " + str(n) + " is larger than the travel range " + str(kTargetTravelRange) + ".")
+        return 0, position, direction
+    # reverse if this move would leave the window
+    if not (0 <= position + direction * n <= kTargetTravelRange):
+        direction = -direction
+        print("Target sweep reversing direction.")
+    steps = direction * n
+    if hc.MoveTarget(steps):
+        return steps, position + steps, direction
+    print("Target move of " + str(steps) + " steps FAILED.")
+    return 0, position, direction
 #r = Random()
 
 def EDMGo():
@@ -188,6 +250,17 @@ def EDMGo():
     hc.EnableEField(True)
     print("leakage monitors calibrated")
 
+    # target sweep state (carried over from the last run unless reset)
+    targetPosition, targetDirection = loadTargetSweepState(settingsPath)
+    print("Target sweep: position " + str(targetPosition) + " of 0.." + str(kTargetTravelRange)
+          + " steps, direction " + ("+" if targetDirection > 0 else "-")
+          + ". Before-block move is " + ("ON" if hc.moveTargetBeforeBlock else "OFF") + ".")
+    resetInput = input("Press Enter to continue this sweep, or type r to start a new sweep from the current target position: ")
+    if resetInput.strip().lower() == "r":
+        targetPosition, targetDirection = 0, kTargetStartDirection
+        saveTargetSweepState(settingsPath, targetPosition, targetDirection)
+        print("Target sweep reset.")
+
     # loop and take data
     blockIndex = 0
     maxBlockIndex = 10000
@@ -209,18 +282,20 @@ def EDMGo():
             print("Waiting for CCDs to be ready and syncing CCD block name ...")
             hc.SyncCCDBlockName(cluster, blockIndex)
 
-            # move the target to a fresh spot at the start of the block.
-            # Only moves if "Serial move N before each block" is ticked in the hardware
-            # controller (N from the target move steps box); returns steps moved, 0 if
-            # disabled or the move failed. Recorded in the block config.
-            # targetStepsMoved = hc.MoveTargetBeforeBlock()
-            # print("Target moved " + str(targetStepsMoved) + " steps.")
+            # move the target to a fresh spot at the start of the block, sweeping back and
+            # forth within kTargetTravelRange (see moveTargetSweep). Only moves if
+            # "Serial move N before each block" is ticked in the hardware controller.
+            targetStepsMoved, targetPosition, targetDirection = moveTargetSweep(targetPosition, targetDirection)
+            if targetStepsMoved != 0:
+                saveTargetSweepState(settingsPath, targetPosition, targetDirection)
+                print("Target moved " + str(targetStepsMoved) + " steps, sweep position " + str(targetPosition) + ".")
 
             print("Acquiring EDM block " + str(blockIndex) + " at " + str(i) + " kV ...")
             # save the block config and load into blockhead
             print("Saving temp config.")
             bc.Settings["clusterIndex"] = System.Int32(blockIndex)
-            # bc.Settings["targetStepsMoved"] = System.Int32(targetStepsMoved)
+            bc.Settings["targetStepsMoved"] = System.Int32(targetStepsMoved)
+            bc.Settings["targetSweepPosition"] = System.Int32(targetPosition)
             tempConfigFile =str('%(p)stemp%(c)s_%(i)s.xml' % {'p': settingsPath, 'c': cluster, 'i': blockIndex})
             saveBlockConfig(tempConfigFile, bc)
             System.Threading.Thread.CurrentThread.Join(500)

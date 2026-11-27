@@ -1,0 +1,24 @@
+ScanMaster.Controller
+EDMPhaseLock.MainForm
+UEDMHardwareControl.UEDMController
+Trying to get SPData
+Setting the number of shots to CCDs...
+CCD CounterTask has been configured.
+CCD ready status Task has been configured.
+CCD acquire status Task has been configured.
+Digital Out Task has been configured.
+CCD Burst Acquisition Start!
+
+Unhandled Exception: NationalInstruments.DAQmx.DaqException: Requested operation could not be performed, because the specified digital lines are either reserved or the device is not present in NI-DAQmx.
+It is possible that these lines are reserved by another task or the device is being reset. If you are using these lines with another task, wait for the task to complete.  If you want to force the other task to relinquish the device, reset the device. If you are resetting the device, wait for the reset to finish.
+
+Device:  DAQ_PXIe_6363
+
+Task Name: ccdAcquireStatusInput
+
+Status Code: -200587
+   at EDMBlockHead.Acquire.Acquisitor.Acquire() in C:\Users\UEDM\EDMSuite\EDMBlockHead\Acquisitor.cs:line 784
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state, Boolean preserveSyncCtx)
+   at System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, Object state, Boolean preserveSyncCtx)
+   at System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.ThreadHelper.ThreadStart()
